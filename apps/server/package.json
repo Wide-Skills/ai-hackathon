@@ -23,6 +23,7 @@
     "@react-email/components": "^1.0.11",
     "@trpc/server": "catalog:",
     "ai": "^6.0.146",
+    "@ai-sdk/google": "^1.1.13",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "express": "^5.2.1",

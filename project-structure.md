@@ -1,4 +1,4 @@
-# AI-Powered Talent Screening Platform
+# Project Description: AI-Powered Talent Screening Platform
 
 ## 1. Project Overview
 This project is an AI-driven talent profile screening application developed for the Umurava AI Hackathon. It is designed to augment the recruitment process by automating the initial evaluation and shortlisting of candidates. The core objective is to drastically reduce time-to-hire while maintaining human oversight, ensuring that recruiters make the final hiring decisions based on transparent, AI-generated insights.
@@ -10,7 +10,7 @@ Modern recruiters face significant bottlenecks in the hiring pipeline:
 * **Subjectivity:** Ensuring objective, consistent evaluation across hundreds of diverse applications is nearly impossible for human screeners alone.
 
 ## 3. The Solution
-We are building a full-stack, AI-powered platform that acts as an intelligent assistant for recruiters. By leveraging Advanced Large Language Models (LLMs), specifically the **Gemini API** via the Vercel AI SDK, the system accurately parses, evaluates, and ranks candidates against specific job requirements. 
+We are building a full-stack, AI-powered platform that acts as an intelligent assistant for recruiters. By leveraging Advanced Large Language Models (LLMs), the system accurately parses, evaluates, and ranks candidates against specific job requirements. 
 
 Critically, the platform is designed for **explainability**. It does not act as a "black box" that simply spits out a number. Instead, it provides a clear, natural-language breakdown of why a candidate was shortlisted, highlighting their specific strengths, potential skill gaps, and overall relevance to the role.
 
@@ -36,62 +36,29 @@ A user-friendly web interface that allows recruiters to:
 
 ## 5. Technical Architecture and Stack
 
-The application is built using a modern, scalable JavaScript/TypeScript ecosystem on top of Turborepo.
+The application is built using a modern, scalable JavaScript/TypeScript ecosystem.
 
 * **Frontend Layer:**
   * **Framework:** Next.js (React)
   * **Language:** TypeScript
   * **State Management:** Redux + Redux Toolkit
-  * **Styling:** Tailwind CSS + shadcn/ui
+  * **Styling:** Tailwind CSS
 * **Backend Layer:**
   * **Environment:** Node.js
-  * **Framework:** NestJS
-  * **Architecture:** tRPC and RESTful API design handling business logic and data pipelines.
+  * **Language:** TypeScript
+  * **Architecture:** RESTful API design handling business logic and data pipelines.
 * **Database Layer:**
-  * **Database:** MongoDB
-  * **ORM:** Mongoose (handling Jobs, Applicants, and Screening Results)
+  * **Database:** MongoDB (handling Jobs, Applicants, and Screening Results)
 * **AI Orchestration Layer (Mandatory):**
   * **Core Model:** Gemini API
-  * **Integration:** Vercel AI SDK
   * **Function:** Handles prompt execution, multi-candidate evaluation, weighted scoring algorithms, and natural-language reasoning generation.
 
-## Getting Started
+## 6. AI Implementation Details
+The integration of the Gemini API is the focal point of the application. The AI logic relies on advanced prompt engineering to ensure outputs are clean, structured, and recruiter-friendly. 
 
-First, install the dependencies:
-
-```bash
-bun install
-```
-
-## Database and Setup
-
-This project requires MongoDB and a Gemini API Key.
-
-1. Ensure MongoDB is accessible.
-2. Ensure you have obtained a Gemini API Key.
-3. Update your `apps/server/.env` file:
-   - `DATABASE_URL` for MongoDB connection.
-   - `GEMINI_API_KEY` for AI functionalities.
-
-To run the full stack:
-
-```bash
-bun run dev
-```
-
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the frontend application.
-The API runs at [http://localhost:3000](http://localhost:3000).
-
-## Project Structure
-
-```
-ai-hackathon/
-├── apps/
-│   ├── web/         # Recruiter Dashboard (Next.js)
-│   └── server/      # Backend API and AI Jobs (NestJS + tRPC)
-├── packages/
-│   ├── api/         # Core tRPC / API layer
-│   ├── auth/        # Authentication implementation
-│   ├── db/          # MongoDB Schemas and models
-│   ├── env/         # Environment variable validation schemas
-```
+**Expected AI Output per Candidate:**
+* **Candidate Rank:** Position in the shortlist.
+* **Match Score:** A weighted percentage (0 to 100) based on skills, experience, and education.
+* **Strengths:** Bulleted list of highly relevant qualifications.
+* **Gaps/Risks:** Identification of missing skills or experience mismatches.
+* **Final Recommendation:** A brief, human-readable summary for the recruiter.
