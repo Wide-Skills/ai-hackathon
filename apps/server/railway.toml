@@ -1,0 +1,13 @@
+# Railway configuration for ai-hackathon server
+# See https://docs.railway.app/reference/config-as-code for all options
+
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "bun run dist/index.js"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3

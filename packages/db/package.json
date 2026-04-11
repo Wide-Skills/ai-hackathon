@@ -1,0 +1,23 @@
+{
+  "name": "@ai-hackathon/db",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@ai-hackathon/env": "workspace:*",
+    "dotenv": "catalog:",
+    "mongoose": "^9.4.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@ai-hackathon/config": "workspace:*",
+    "typescript": "^6.0.2"
+  }
+}
