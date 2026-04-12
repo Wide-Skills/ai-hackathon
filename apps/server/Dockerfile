@@ -2,26 +2,26 @@
 # Optimized multi-stage build for Railway deployment
 
 # Build stage
-FROM oven/bun:1 AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
 # Copy package files
-COPY package.json bun.lock* ./
+COPY package.json package-lock.json* ./
 COPY apps/server/package.json ./apps/server/
 COPY packages/db/package.json ./packages/db/
 
 # Install dependencies
-RUN bun install --frozen-lockfile
+RUN npm install
 
 # Copy source code
 COPY . .
 
 # Build the application
-RUN bun run build --filter=@ai-hackathon/server
+RUN npx turbo run build --filter=@ai-hackathon/server
 
 # Production stage
-FROM oven/bun:1-slim AS runner
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 
@@ -33,8 +33,8 @@ COPY --from=builder /app/apps/server/dist ./dist
 COPY --from=builder /app/apps/server/package.json ./
 
 # Install production dependencies only
-RUN bun install --production --frozen-lockfile
+RUN npm install --omit=dev
 
 EXPOSE 3000
 
-CMD ["bun", "run", "dist/index.js"]
+CMD ["node", "dist/index.js"]

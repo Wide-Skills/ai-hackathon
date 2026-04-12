@@ -16,7 +16,7 @@ This file provides critical context about the project's architecture and domain 
 ## Tech Stack
 
 - **Ecosystem**: Typescript Strict, Turborepo Monorepo
-- **Runtime & PM**: Node, bun
+- **Runtime & PM**: Node, npm
 
 ### Frontend (`apps/web`)
 
@@ -62,10 +62,10 @@ ai-hackathon/
 
 ## Common Commands
 
-- `bun install` - Install dependencies
-- `bun dev` - Start development server (both web and API)
-- `bun test` - Run Vitest suites
-- `bun check` - Run Biome formatter/linter
+- `npm install` - Install dependencies
+- `npm run dev` - Start development server (both web and API)
+- `npm run test` - Run Vitest suites
+- `npm run check` - Run Biome formatter/linter
 
 ## AI Assistant Instructions
 

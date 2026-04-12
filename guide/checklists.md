@@ -17,7 +17,7 @@ Whenever building a new feature (e.g., adding an 'Interviews' tab), follow this 
 Before merging into main, ensure the following is green:
 
 1. [ ] Code follows existing Biome formatting.
-2. [ ] `bun run check-types` executes successfully (No TS Errors anywhere in the monorepo).
+2. [ ] `npm run check-types` executes successfully (No TS Errors anywhere in the monorepo).
 3. [ ] UI state utilizes Redux Toolkit appropriately.
 4. [ ] AI interactions leverage `@ai-sdk/google` properly.
 
