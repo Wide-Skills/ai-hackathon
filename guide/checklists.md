@@ -21,4 +21,4 @@ Before merging into main, ensure the following is green:
 3. [ ] UI state utilizes Redux Toolkit appropriately.
 4. [ ] AI interactions leverage `@ai-sdk/google` properly.
 
-*Note: Husky will legally block your commit if Biome or TS validations fail.*
+*Note: Husky will legally block your push if Biome or TS validations fail.*
