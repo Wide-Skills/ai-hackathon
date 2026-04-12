@@ -8,11 +8,15 @@ import { queryClient } from "@/utils/trpc";
 import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "./ui/sonner";
 
+import { ReduxProvider } from "./ReduxProvider";
+
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <ReduxProvider>
+          {children}
+        </ReduxProvider>
         <ReactQueryDevtools />
       </QueryClientProvider>
       <Toaster richColors />
