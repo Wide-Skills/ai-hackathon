@@ -16,7 +16,7 @@ This file provides critical context about the project's architecture and domain 
 ## Tech Stack
 
 - **Ecosystem**: Typescript Strict, Turborepo Monorepo
-- **Runtime & PM**: Node, npm
+- **Runtime & PM**: Node, pnpm
 
 ### Frontend (`apps/web`)
 
@@ -62,10 +62,10 @@ ai-hackathon/
 
 ## Common Commands
 
-- `npm install` - Install dependencies
-- `npm run dev` - Start development server (both web and API)
-- `npm run test` - Run Vitest suites
-- `npm run check` - Run Biome formatter/linter
+- `pnpm install` - Install dependencies
+- `pnpm dev` - Start development server (both web and API)
+- `pnpm test` - Run Vitest suites
+- `pnpm check` - Run Biome formatter/linter
 
 ## AI Assistant Instructions
 

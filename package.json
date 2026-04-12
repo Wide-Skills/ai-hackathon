@@ -31,7 +31,7 @@
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
     "check": "biome check --write .",
-    "prepare": "husky"
+    "prepare": "pnpm dlx husky install"
   },
   "dependencies": {
     "@ai-hackathon/env": "workspace:*",
@@ -47,5 +47,5 @@
     "vercel": "^41.7.4",
     "husky": "^9.0.11"
   },
-  "packageManager": "npm@10.8.2"
+  "packageManager": "pnpm@9.12.2"
 }

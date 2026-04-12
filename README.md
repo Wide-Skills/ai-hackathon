@@ -76,7 +76,7 @@ This project requires MongoDB and a Gemini API Key.
 To run the full stack:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the frontend application.
