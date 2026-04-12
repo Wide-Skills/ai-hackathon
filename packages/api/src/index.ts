@@ -1,10 +1,13 @@
 import { initTRPC, TRPCError } from "@trpc/server";
+import { OpenApiMeta } from "trpc-openapi";
 
 import type { Context } from "./context.js";
 
-export const t = initTRPC.context<Context>().create();
+export const t = initTRPC.context<Context>().meta<OpenApiMeta>().create();
 
 export const router = t.router;
+
+export * from "./openapi.js";
 
 export const publicProcedure = t.procedure;
 
