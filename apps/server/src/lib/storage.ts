@@ -1,3 +1,4 @@
+import { env } from "@ai-hackathon/env/server";
 import {
   S3Client,
   PutObjectCommand,
@@ -18,14 +19,14 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
  */
 export const r2Client = new S3Client({
   region: "auto",
-  endpoint: `https://${process.env.R2_ACCOUNT_ID!}.r2.cloudflarestorage.com`,
+  endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+    accessKeyId: env.R2_ACCESS_KEY_ID,
+    secretAccessKey: env.R2_SECRET_ACCESS_KEY,
   },
 });
 
-const BUCKET_NAME = process.env.R2_BUCKET_NAME!;
+const BUCKET_NAME = env.R2_BUCKET_NAME;
 
 /**
  * Storage utilities for common R2 operations

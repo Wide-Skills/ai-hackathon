@@ -1,7 +1,8 @@
+import { env } from "@ai-hackathon/env/server";
 import { Resend } from "resend";
 
 // Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(env.RESEND_API_KEY);
 
 export interface SendEmailOptions {
   to: string | string[];
@@ -20,7 +21,7 @@ export interface SendEmailOptions {
 export async function sendEmail(options: SendEmailOptions) {
   const { to, subject, html, text, react, from, replyTo } = options;
 
-  const fromAddress = from || process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+  const fromAddress = from || env.RESEND_FROM_EMAIL;
 
   try {
     const { data, error } = await resend.emails.send({

@@ -1,10 +1,11 @@
+import { env } from "@ai-hackathon/env/server";
 import type { Logger, LoggerOptions } from "pino";
 
 import pino from "pino";
 
 // Log levels: trace, debug, info, warn, error, fatal
-const logLevel = (process.env.LOG_LEVEL || "info") as pino.LevelWithSilent;
-const isDevelopment = process.env.NODE_ENV !== "production";
+const logLevel = env.LOG_LEVEL;
+const isDevelopment = env.NODE_ENV !== "production";
 
 // Create logger options
 const loggerOptions: LoggerOptions = {
@@ -13,7 +14,7 @@ const loggerOptions: LoggerOptions = {
   timestamp: pino.stdTimeFunctions.isoTime,
   // Base context for all logs
   base: {
-    env: process.env.NODE_ENV || "development",
+    env: env.NODE_ENV,
   },
 };
 
@@ -21,7 +22,7 @@ const loggerOptions: LoggerOptions = {
 // In production, use raw JSON for better performance and log aggregation
 let logger: Logger;
 
-if (isDevelopment && process.env.PINO_PRETTY !== "false") {
+if (isDevelopment && env.PINO_PRETTY !== "false") {
   logger = pino({
     ...loggerOptions,
     transport: {
