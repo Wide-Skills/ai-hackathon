@@ -6,6 +6,7 @@ const { Schema } = mongoose;
 const applicantSchema = new Schema(
   {
     jobId: { type: Schema.Types.ObjectId, ref: "Job", required: true },
+    userId: { type: String, ref: "User" },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     name: { type: String }, // For convenience, though we have first/last
@@ -104,6 +105,7 @@ const applicantSchema = new Schema(
 export interface ApplicantDocument
   extends Omit<ApplicantRecord, "id" | "jobId" | "createdAt" | "updatedAt"> {
   jobId: mongoose.Types.ObjectId | string;
+  userId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

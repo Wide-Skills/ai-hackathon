@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { appRouter } from "../src/routers/index.js";
+import { appRouter } from "../src/routers/index";
 
 describe("AppRouter", () => {
   it("should have jobs router registered", () => {

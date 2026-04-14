@@ -5,19 +5,11 @@ import {
   JobSchema,
 } from "@ai-hackathon/shared";
 import { z } from "zod";
-import { protectedProcedure, router } from "../index.js";
-import { serializeJob } from "../serializers.js";
+import { protectedProcedure, router } from "../trpc";
+import { serializeJob } from "../serializers";
 
 export const jobRouter = router({
   create: protectedProcedure
-    .meta({
-      openapi: {
-        method: "POST",
-        path: "/jobs",
-        tags: ["jobs"],
-        summary: "Create a new Job",
-      },
-    })
     .input(CreateJobSchema)
     .output(JobSchema)
     .mutation(async ({ input }) => {
@@ -27,14 +19,6 @@ export const jobRouter = router({
     }),
 
   list: protectedProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/jobs",
-        tags: ["jobs"],
-        summary: "List all Jobs",
-      },
-    })
     .input(z.void())
     .output(z.array(JobSchema))
     .query(async () => {
@@ -43,14 +27,6 @@ export const jobRouter = router({
     }),
 
   getById: protectedProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/jobs/{id}",
-        tags: ["jobs"],
-        summary: "Get a specific Job",
-      },
-    })
     .input(z.object({ id: z.string() }))
     .output(JobSchema.nullable())
     .query(async ({ input }) => {
@@ -59,14 +35,6 @@ export const jobRouter = router({
     }),
 
   stats: protectedProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/dashboard/stats",
-        tags: ["dashboard"],
-        summary: "Get Dashboard Statistics",
-      },
-    })
     .input(z.void())
     .output(DashboardStatsSchema)
     .query(async () => {

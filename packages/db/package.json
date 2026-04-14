@@ -17,7 +17,7 @@
     "@ai-hackathon/env": "workspace:*",
     "@ai-hackathon/shared": "workspace:^",
     "dotenv": "catalog:",
-    "mongoose": "^9.4.1",
+    "mongoose": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

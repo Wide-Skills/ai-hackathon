@@ -20,7 +20,7 @@
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
     "dotenv": "catalog:",
-    "trpc-openapi": "^1.2.0",
+    "mongoose": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

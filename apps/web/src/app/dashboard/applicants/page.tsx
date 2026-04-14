@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -31,22 +30,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import type { RootState } from "@/store";
-import { setStatusFilter } from "@/store/slices/applicantsSlice";
 import { trpc } from "@/utils/trpc";
-
-function isStatusFilter(value: string): value is ApplicationStatus | "all" {
-  return [
-    "all",
-    "pending",
-    "screening",
-    "shortlisted",
-    "rejected",
-    "hired",
-  ].includes(value);
-}
 
 const statusConfig: Record<
   ApplicationStatus,
@@ -107,26 +92,27 @@ function MatchScore({ score }: { score: number }) {
 type SortField = "score" | "name" | "applied" | "status";
 type SortDir = "asc" | "desc";
 
-export default function ApplicantsPage() {
-  const dispatch = useDispatch();
-  const statusFilter = useSelector(
-    (state: RootState) => state.applicants.statusFilter,
-  );
+function isStatusFilter(value: string): value is ApplicationStatus | "all" {
+  return [
+    "all",
+    "pending",
+    "screening",
+    "shortlisted",
+    "rejected",
+    "hired",
+  ].includes(value);
+}
 
+export default function ApplicantsPage() {
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [jobFilter, setJobFilter] = useState<string>("all");
   const [sortField, setSortField] = useState<SortField>("score");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
-
-  const { data: applicantsData, isLoading: appsLoading } = useQuery(
+  const { data: applicantsData = [] } = useQuery(
     trpc.applicants.list.queryOptions(),
   );
-  const { data: jobsData, isLoading: jobsLoading } = useQuery(
-    trpc.jobs.list.queryOptions(),
-  );
-
-  const applicants = applicantsData || [];
-  const jobs = jobsData || [];
+  const { data: jobsData = [] } = useQuery(trpc.jobs.list.queryOptions());
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -137,7 +123,7 @@ export default function ApplicantsPage() {
     }
   };
 
-  const filtered = applicants
+  const filtered = applicantsData
     .filter((a) => {
       const name = `${a.firstName} ${a.lastName}`.toLowerCase();
       const matchesSearch =
@@ -187,15 +173,6 @@ export default function ApplicantsPage() {
     </button>
   );
 
-  if (appsLoading || jobsLoading) {
-    return (
-      <div className="mx-auto max-w-7xl space-y-5">
-        <Skeleton className="h-12 w-full rounded-xl" />
-        <Skeleton className="h-96 w-full rounded-xl" />
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto max-w-7xl space-y-5">
       <div className="flex flex-wrap items-center gap-3">
@@ -219,7 +196,7 @@ export default function ApplicantsPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Jobs</SelectItem>
-            {jobs.map((j) => (
+            {jobsData.map((j) => (
               <SelectItem key={j.id} value={j.id}>
                 {j.title}
               </SelectItem>
@@ -231,12 +208,12 @@ export default function ApplicantsPage() {
           value={statusFilter}
           onValueChange={(value) => {
             if (value === null) {
-              dispatch(setStatusFilter("all"));
+              setStatusFilter("all");
               return;
             }
 
             if (isStatusFilter(value)) {
-              dispatch(setStatusFilter(value));
+              setStatusFilter(value);
             }
           }}
         >
@@ -290,9 +267,9 @@ export default function ApplicantsPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map((applicant) => {
-                const sc = statusConfig[applicant.status as ApplicationStatus];
+                const sc = statusConfig[applicant.status];
                 const StatusIcon = sc.icon;
-                const job = jobs.find((j) => j.id === applicant.jobId);
+                const job = jobsData.find((j) => j.id === applicant.jobId);
                 return (
                   <tr
                     key={applicant.id}
@@ -400,7 +377,7 @@ export default function ApplicantsPage() {
           </span>{" "}
           of{" "}
           <span className="font-semibold text-slate-700">
-            {applicants.length}
+            {applicantsData.length}
           </span>{" "}
           candidates
         </p>

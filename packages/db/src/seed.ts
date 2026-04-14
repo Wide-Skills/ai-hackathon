@@ -1,7 +1,66 @@
 import { env } from "@ai-hackathon/env/server";
+import { randomBytes, scryptSync, randomUUID } from "node:crypto";
 import mongoose from "mongoose";
-import { Applicant } from "./models/applicant.model.js";
-import { Job } from "./models/job.model.js";
+import {
+  Account,
+  Session,
+  User,
+  Verification,
+} from "./models/auth.model";
+import { Applicant } from "./models/applicant.model";
+import { Job } from "./models/job.model";
+import { ScreeningResult } from "./models/screening.model";
+
+const recruiterSeedUsers = [
+  {
+    id: "usr-system",
+    name: "TalentAI System",
+    email: "system@talentai.local",
+    image:
+      "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?w=100",
+    password: "SystemSeed123!",
+  },
+  {
+    id: "usr-recruiter-a",
+    name: "Diane Uwase",
+    email: "diane@talentai.africa",
+    image:
+      "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?w=100",
+    password: "Recruiter123!",
+  },
+  {
+    id: "usr-recruiter-b",
+    name: "Samuel Kibet",
+    email: "samuel@talentai.africa",
+    image:
+      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?w=100",
+    password: "Recruiter123!",
+  },
+  {
+    id: "usr-recruiter-c",
+    name: "Amina Diallo",
+    email: "amina@talentai.africa",
+    image:
+      "https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?w=100",
+    password: "Recruiter123!",
+  },
+] as const;
+
+function toDate(value: string) {
+  return new Date(value);
+}
+
+function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const hash = scryptSync(password, salt, 64).toString("hex");
+  return `${salt}:${hash}`;
+}
+
+function plusDays(value: string, days: number) {
+  const date = new Date(value);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date;
+}
 
 const mockJobs = [
   {
@@ -621,30 +680,121 @@ const mockApplicants = [
 async function seed() {
   try {
     console.log("Connecting to database...");
-    await mongoose.connect(env.DATABASE_URL);
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(env.DATABASE_URL);
+    }
     console.log("Connected to database.");
 
-    // Clear existing data
-    console.log("Clearing existing jobs and applicants...");
-    await Job.deleteMany({});
+    console.log("Clearing existing seeded data...");
+    await Session.deleteMany({});
+    await Account.deleteMany({});
+    await Verification.deleteMany({});
+    await ScreeningResult.deleteMany({});
     await Applicant.deleteMany({});
+    await Job.deleteMany({});
+    await User.deleteMany({});
     console.log("Cleared existing data.");
 
-    // Insert Jobs
-    console.log("Inserting jobs...");
+    console.log("Creating auth users, accounts, and sessions...");
+    const candidateSeedUsers = mockApplicants.map((applicant) => ({
+      id: `usr-${applicant.id}`,
+      name: `${applicant.firstName} ${applicant.lastName}`,
+      email: applicant.email,
+      image: applicant.avatarUrl,
+      password: "Candidate123!",
+      createdAt: toDate(applicant.appliedAt),
+    }));
+
+    const authUsers = [
+      ...recruiterSeedUsers.map((user, index) => ({
+        ...user,
+        createdAt: plusDays("2026-03-01", index * 2),
+      })),
+      ...candidateSeedUsers,
+    ];
+
+    await User.insertMany(
+      authUsers.map((user) => ({
+        _id: user.id,
+        name: user.name,
+        email: user.email,
+        emailVerified: true,
+        image: user.image,
+        createdAt: user.createdAt,
+        updatedAt: user.createdAt,
+      })),
+    );
+
+    await Account.insertMany(
+      authUsers.map((user) => ({
+        _id: `acc-${user.id}`,
+        accountId: user.email,
+        providerId: "credential",
+        userId: user.id,
+        password: hashPassword(user.password),
+        createdAt: user.createdAt,
+        updatedAt: user.createdAt,
+      })),
+    );
+
+    const recruiterSessions = recruiterSeedUsers.map((user, index) => ({
+      _id: `ses-${user.id}`,
+      token: randomUUID(),
+      expiresAt: plusDays("2026-05-01", 30 + index),
+      createdAt: plusDays("2026-04-12", index),
+      updatedAt: plusDays("2026-04-12", index),
+      ipAddress: `10.0.0.${index + 10}`,
+      userAgent: "seed-script/recruiter-session",
+      userId: user.id,
+    }));
+
+    await Session.insertMany(recruiterSessions);
+    console.log(
+      `Created ${authUsers.length} users, ${authUsers.length} accounts, and ${recruiterSessions.length} recruiter sessions.`,
+    );
+
+    console.log("Creating jobs...");
+    const recruiterOwners = recruiterSeedUsers.filter(
+      (user) => user.id !== "usr-system",
+    );
     const jobMapping: Record<string, string> = {};
 
-    for (const mockJob of mockJobs) {
-      const { id, ...jobData } = mockJob;
-      const job = await Job.create(jobData);
+    for (const [index, mockJob] of mockJobs.entries()) {
+      const { id, applicantsCount, screenedCount, shortlistedCount, ...jobData } =
+        mockJob;
+      const owner = recruiterOwners[index % recruiterOwners.length];
+      if (!owner) {
+        throw new Error("No recruiter owner available for seeded job creation.");
+      }
+      const job = await Job.create({
+        ...jobData,
+        createdByUserId: owner.id,
+        createdAt: toDate(mockJob.createdAt),
+        updatedAt: toDate(mockJob.createdAt),
+        applicantsCount: 0,
+        screenedCount: 0,
+        shortlistedCount: 0,
+      });
       jobMapping[id] = job._id.toString();
     }
-    console.log(`Inserted ${mockJobs.length} jobs.`);
+    console.log(`Inserted ${mockJobs.length} jobs with recruiter ownership.`);
 
-    // Insert Applicants
-    console.log("Inserting applicants...");
+    console.log("Creating applicants and screening relationships...");
+    const applicantStats = new Map<
+      string,
+      { applicantsCount: number; screenedCount: number; shortlistedCount: number }
+    >();
+
+    for (const mockJob of mockJobs) {
+      applicantStats.set(jobMapping[mockJob.id]!, {
+        applicantsCount: 0,
+        screenedCount: 0,
+        shortlistedCount: 0,
+      });
+    }
+
     for (const mockApplicant of mockApplicants) {
-      const { id, jobId, ...applicantData } = mockApplicant;
+      const { id, jobId, screening, ...applicantData } = mockApplicant;
       const realJobId = jobMapping[jobId];
 
       if (!realJobId) {
@@ -654,19 +804,68 @@ async function seed() {
         continue;
       }
 
-      await Applicant.create({
+      const applicantUserId = `usr-${id}`;
+      const appliedAt = toDate(mockApplicant.appliedAt);
+
+      const applicant = await Applicant.create({
         ...applicantData,
+        screening,
         name: `${mockApplicant.firstName} ${mockApplicant.lastName}`,
         jobId: realJobId,
+        userId: applicantUserId,
+        createdAt: appliedAt,
+        updatedAt: appliedAt,
+      });
+
+      const stats = applicantStats.get(realJobId);
+      if (stats) {
+        stats.applicantsCount += 1;
+        if (screening) {
+          stats.screenedCount += 1;
+        }
+        if (
+          mockApplicant.status === "shortlisted" ||
+          mockApplicant.status === "hired"
+        ) {
+          stats.shortlistedCount += 1;
+        }
+      }
+
+      if (screening) {
+        await ScreeningResult.create({
+          applicantId: applicant._id,
+          jobId: realJobId,
+          createdByUserId: "usr-system",
+          matchScore: screening.matchScore,
+          strengths: screening.strengths,
+          gaps: screening.gaps,
+          recommendation: screening.recommendation,
+          createdAt: appliedAt,
+          updatedAt: appliedAt,
+        });
+      }
+    }
+
+    for (const [jobObjectId, stats] of applicantStats.entries()) {
+      await Job.findByIdAndUpdate(jobObjectId, {
+        applicantsCount: stats.applicantsCount,
+        screenedCount: stats.screenedCount,
+        shortlistedCount: stats.shortlistedCount,
       });
     }
-    console.log(`Inserted ${mockApplicants.length} applicants.`);
 
+    console.log(`Inserted ${mockApplicants.length} applicants.`);
+    console.log("Created linked screening records and refreshed job counters.");
+    console.log("Seeded login credentials:");
+    console.log("  Recruiters: password = Recruiter123!");
+    console.log("  Candidates: password = Candidate123!");
+    console.log("  System user: password = SystemSeed123!");
     console.log("Seeding completed successfully!");
-    process.exit(0);
   } catch (error) {
     console.error("Error seeding database:", error);
-    process.exit(1);
+    process.exitCode = 1;
+  } finally {
+    await mongoose.disconnect();
   }
 }
 

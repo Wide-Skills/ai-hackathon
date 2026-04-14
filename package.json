@@ -18,7 +18,8 @@
       "@vitest/ui": "^4.1.2",
       "@vitest/coverage-v8": "^4.1.2",
       "jsdom": "^29.0.1",
-      "@trpc/client": "^11.16.0"
+      "@trpc/client": "^11.16.0",
+      "mongoose": "^9.4.1"
     }
   },
   "type": "module",

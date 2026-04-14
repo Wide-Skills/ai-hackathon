@@ -7,9 +7,9 @@ await mongoose.connect(env.DATABASE_URL).catch((error) => {
 
 const client = mongoose.connection.getClient().db("myDB");
 
-export * from "./models/applicant.model.js";
-export * from "./models/auth.model.js";
-export * from "./models/job.model.js";
-export * from "./models/screening.model.js";
+export * from "./models/applicant.model";
+export * from "./models/auth.model";
+export * from "./models/job.model";
+export * from "./models/screening.model";
 
 export { client };

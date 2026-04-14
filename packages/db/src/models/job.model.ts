@@ -20,6 +20,7 @@ const jobSchema = new Schema(
     salaryMax: { type: Number },
     currency: { type: String, default: "USD" },
     closingDate: { type: String },
+    createdByUserId: { type: String, ref: "User" },
     status: {
       type: String,
       enum: ["active", "closed", "draft"],
@@ -32,9 +33,9 @@ const jobSchema = new Schema(
   { timestamps: true },
 );
 
-// To avoid over-writing models in hot-reloads
 export interface JobDocument
   extends Omit<JobRecord, "id" | "createdAt" | "updatedAt"> {
+  createdByUserId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

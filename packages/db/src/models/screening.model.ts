@@ -11,6 +11,7 @@ const screeningSchema = new Schema(
       required: true,
     },
     jobId: { type: Schema.Types.ObjectId, ref: "Job", required: true },
+    createdByUserId: { type: String, ref: "User" },
     matchScore: { type: Number, min: 0, max: 100, required: true },
     strengths: { type: [String], default: [] },
     gaps: { type: [String], default: [] },
@@ -26,6 +27,7 @@ export interface ScreeningResultDocument
   > {
   applicantId: mongoose.Types.ObjectId | string;
   jobId: mongoose.Types.ObjectId | string;
+  createdByUserId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

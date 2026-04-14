@@ -1,19 +1,11 @@
 import { ScreeningResult } from "@ai-hackathon/db";
 import { ScreeningResultSchema } from "@ai-hackathon/shared";
 import { z } from "zod";
-import { protectedProcedure, router } from "../index.js";
-import { serializeScreening } from "../serializers.js";
+import { protectedProcedure, router } from "../trpc";
+import { serializeScreening } from "../serializers";
 
 export const screeningRouter = router({
   generateMock: protectedProcedure
-    .meta({
-      openapi: {
-        method: "POST",
-        path: "/screenings/mock",
-        tags: ["screenings"],
-        summary: "Generate a mock screening",
-      },
-    })
     .input(
       z.object({
         applicantId: z.string(),
@@ -34,14 +26,6 @@ export const screeningRouter = router({
     }),
 
   getByApplicant: protectedProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/screenings/applicant/{applicantId}",
-        tags: ["screenings"],
-        summary: "Get screening result by applicant ID",
-      },
-    })
     .input(z.object({ applicantId: z.string() }))
     .output(ScreeningResultSchema.nullable())
     .query(async ({ input }) => {
@@ -52,14 +36,6 @@ export const screeningRouter = router({
     }),
 
   list: protectedProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/screenings",
-        tags: ["screenings"],
-        summary: "List all screenings",
-      },
-    })
     .input(z.void())
     .output(z.array(ScreeningResultSchema))
     .query(async () => {
@@ -68,14 +44,6 @@ export const screeningRouter = router({
     }),
 
   listByJob: protectedProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/screenings/job/{jobId}",
-        tags: ["screenings"],
-        summary: "List screenings for a specific Job",
-      },
-    })
     .input(z.object({ jobId: z.string() }))
     .output(z.array(ScreeningResultSchema))
     .query(async ({ input }) => {
