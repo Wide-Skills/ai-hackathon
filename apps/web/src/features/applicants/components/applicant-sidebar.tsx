@@ -1,12 +1,12 @@
 import type { Applicant } from "@ai-hackathon/shared";
 import {
   Briefcase,
+  CircleCheck as CheckCircle2,
   Code2,
   Globe,
   Mail,
   MapPin,
   Circle as XCircle,
-  CircleCheck as CheckCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,7 +17,10 @@ interface ApplicantSidebarProps {
   jobTitle?: string;
 }
 
-export function ApplicantSidebar({ applicant, jobTitle }: ApplicantSidebarProps) {
+export function ApplicantSidebar({
+  applicant,
+  jobTitle,
+}: ApplicantSidebarProps) {
   return (
     <div className="space-y-5 lg:col-span-1">
       <Card className="border-border shadow-sm">
@@ -164,9 +167,7 @@ export function ApplicantSidebar({ applicant, jobTitle }: ApplicantSidebarProps)
                 key={lang.name}
                 className="flex items-center justify-between"
               >
-                <span className="text-foreground/80 text-sm">
-                  {lang.name}
-                </span>
+                <span className="text-foreground/80 text-sm">{lang.name}</span>
                 <span className="rounded-full bg-muted px-2 py-0.5 text-muted-foreground text-xs">
                   {lang.proficiency}
                 </span>

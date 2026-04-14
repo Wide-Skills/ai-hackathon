@@ -29,32 +29,32 @@ const navItems: Array<{
   url: Route;
   icon: React.ReactNode;
 }> = [
-    {
-      title: "Overview",
-      url: "/dashboard",
-      icon: <LayoutDashboardIcon />,
-    },
-    {
-      title: "Jobs",
-      url: "/dashboard/jobs",
-      icon: <BriefcaseIcon />,
-    },
-    {
-      title: "Applicants",
-      url: "/dashboard/applicants",
-      icon: <UsersIcon />,
-    },
-    {
-      title: "AI Screening",
-      url: "/dashboard/screening",
-      icon: <SparklesIcon />,
-    },
-    {
-      title: "Settings",
-      url: "/dashboard/settings",
-      icon: <Settings2Icon />,
-    },
-  ];
+  {
+    title: "Overview",
+    url: "/dashboard",
+    icon: <LayoutDashboardIcon />,
+  },
+  {
+    title: "Jobs",
+    url: "/dashboard/jobs",
+    icon: <BriefcaseIcon />,
+  },
+  {
+    title: "Applicants",
+    url: "/dashboard/applicants",
+    icon: <UsersIcon />,
+  },
+  {
+    title: "AI Screening",
+    url: "/dashboard/screening",
+    icon: <SparklesIcon />,
+  },
+  {
+    title: "Settings",
+    url: "/dashboard/settings",
+    icon: <Settings2Icon />,
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = authClient.useSession();

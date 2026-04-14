@@ -1,8 +1,8 @@
 "use client";
 
 import { Bell, Plus, Search } from "lucide-react";
-import Link from "next/link";
 import type { Route } from "next";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,11 +51,13 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-border border-b bg-background/80 px-6 backdrop-blur-sm">
       <div>
-        <h1 className="font-bold text-lg text-foreground leading-none">
+        <h1 className="font-bold text-foreground text-lg leading-none">
           {info.title}
         </h1>
         {info.description && (
-          <p className="mt-0.5 text-muted-foreground text-xs">{info.description}</p>
+          <p className="mt-0.5 text-muted-foreground text-xs">
+            {info.description}
+          </p>
         )}
       </div>
 
@@ -77,7 +79,7 @@ export default function Header() {
           <Link href={info.action.href}>
             <Button
               size="sm"
-              className="h-9 gap-1.5 rounded-lg bg-primary font-semibold text-sm text-primary-foreground hover:bg-primary/90"
+              className="h-9 gap-1.5 rounded-lg bg-primary font-semibold text-primary-foreground text-sm hover:bg-primary/90"
             >
               <Plus className="h-3.5 w-3.5" />
               {info.action.label}

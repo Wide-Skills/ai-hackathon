@@ -41,7 +41,10 @@ export function ProfileSettings() {
             <Label className="font-medium text-foreground/80 text-sm">
               Last Name
             </Label>
-            <Input defaultValue="Manager" className="h-9 border-border text-sm" />
+            <Input
+              defaultValue="Manager"
+              className="h-9 border-border text-sm"
+            />
           </div>
           <div className="space-y-1.5">
             <Label className="font-medium text-foreground/80 text-sm">
@@ -64,7 +67,7 @@ export function ProfileSettings() {
         </div>
         <Button
           onClick={handleSave}
-          className="h-9 gap-2 bg-primary text-sm text-foreground hover:bg-primary/90"
+          className="h-9 gap-2 bg-primary text-foreground text-sm hover:bg-primary/90"
         >
           <Save className="h-4 w-4" />
           Save Changes

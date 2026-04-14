@@ -157,7 +157,7 @@ export function DashboardOverview() {
                         className="h-9 w-9 flex-shrink-0 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-primary font-bold text-sm text-primary-foreground">
+                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-primary font-bold text-primary-foreground text-sm">
                         {applicant.firstName[0]}
                         {applicant.lastName[0]}
                       </div>
@@ -300,7 +300,7 @@ export function DashboardOverview() {
             <CardContent className="p-5">
               <div className="mb-3 flex items-center gap-2">
                 <Zap className="h-4 w-4 text-primary" />
-                <p className="font-semibold text-sm text-background">
+                <p className="font-semibold text-background text-sm">
                   AI Summary
                 </p>
               </div>
@@ -320,7 +320,7 @@ export function DashboardOverview() {
                   { label: "Top Match", value: "96%" },
                 ].map((s) => (
                   <div key={s.label} className="text-center">
-                    <p className="font-bold text-lg text-background">
+                    <p className="font-bold text-background text-lg">
                       {s.value}
                     </p>
                     <p className="text-[10px] text-background/50">{s.label}</p>

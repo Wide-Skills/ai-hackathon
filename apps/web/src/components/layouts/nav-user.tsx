@@ -47,11 +47,15 @@ export function NavUser({
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger render={<SidebarMenuButton
-            size="lg"
-            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-          />} className="w-full">
-
+          <DropdownMenuTrigger
+            render={
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              />
+            }
+            className="w-full"
+          >
             <Avatar className="h-8 w-8 rounded-lg">
               <AvatarImage src={user.avatar} alt={user.name} />
               <AvatarFallback className="rounded-lg">
@@ -65,7 +69,6 @@ export function NavUser({
               </span>
             </div>
             <ChevronsUpDownIcon className="ml-auto size-4" />
-
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
@@ -94,10 +97,8 @@ export function NavUser({
               <DropdownMenuGroup>
                 <Link href="/dashboard/settings" passHref legacyBehavior>
                   <DropdownMenuItem render={<a className="cursor-pointer" />}>
-
                     <BadgeCheckIcon className="mr-2 size-4" />
                     Account
-
                   </DropdownMenuItem>
                 </Link>
               </DropdownMenuGroup>

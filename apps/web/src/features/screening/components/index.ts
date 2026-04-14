@@ -1,3 +1,3 @@
-export { ScreeningDashboard } from "./screening-dashboard";
-export { ScreeningCard } from "./screening-card";
 export { ScoreGauge } from "./score-gauge";
+export { ScreeningCard } from "./screening-card";
+export { ScreeningDashboard } from "./screening-dashboard";

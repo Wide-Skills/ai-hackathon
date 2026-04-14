@@ -41,7 +41,7 @@ export function NotificationSettings() {
         ))}
         <Button
           onClick={handleSave}
-          className="h-9 gap-2 bg-primary text-sm text-foreground hover:bg-primary/90"
+          className="h-9 gap-2 bg-primary text-foreground text-sm hover:bg-primary/90"
         >
           <Save className="h-4 w-4" />
           Save Preferences

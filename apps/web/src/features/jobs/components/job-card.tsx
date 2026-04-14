@@ -115,19 +115,19 @@ export function JobCard({ job }: JobCardProps) {
         <div className="mt-5 flex items-center justify-between gap-4 border-border/50 border-t pt-4">
           <div className="flex items-center gap-5">
             <div className="text-center">
-              <p className="font-bold text-lg text-foreground">
+              <p className="font-bold text-foreground text-lg">
                 {job.applicantsCount}
               </p>
               <p className="text-[10px] text-muted-foreground/70">Applied</p>
             </div>
             <div className="text-center">
-              <p className="font-bold text-primary text-lg">
+              <p className="font-bold text-lg text-primary">
                 {job.screenedCount}
               </p>
               <p className="text-[10px] text-muted-foreground/70">Screened</p>
             </div>
             <div className="text-center">
-              <p className="font-bold text-success text-lg">
+              <p className="font-bold text-lg text-success">
                 {job.shortlistedCount}
               </p>
               <p className="text-[10px] text-muted-foreground/70">

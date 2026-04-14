@@ -54,7 +54,9 @@ export function serializeJob(doc: MongoDocument<JobDocument>) {
   });
 }
 
-export function serializeScreening(doc: MongoDocument<ScreeningResultDocument>) {
+export function serializeScreening(
+  doc: MongoDocument<ScreeningResultDocument>,
+) {
   const screening = doc.toObject();
 
   return ScreeningResultSchema.parse({

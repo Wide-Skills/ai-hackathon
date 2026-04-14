@@ -1,8 +1,8 @@
 import { ScreeningResult } from "@ai-hackathon/db";
 import { ScreeningResultSchema } from "@ai-hackathon/shared";
 import { z } from "zod";
-import { protectedProcedure, router } from "../trpc";
 import { serializeScreening } from "../serializers";
+import { protectedProcedure, router } from "../trpc";
 
 export const screeningRouter = router({
   generateMock: protectedProcedure
@@ -47,11 +47,11 @@ export const screeningRouter = router({
     .input(z.object({ jobId: z.string() }))
     .output(z.array(ScreeningResultSchema))
     .query(async ({ input }) => {
-      const screenings = await ScreeningResult.find({ jobId: input.jobId }).sort(
-        {
-          createdAt: -1,
-        },
-      );
+      const screenings = await ScreeningResult.find({
+        jobId: input.jobId,
+      }).sort({
+        createdAt: -1,
+      });
       return screenings.map(serializeScreening);
     }),
 });

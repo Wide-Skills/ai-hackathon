@@ -364,7 +364,7 @@ export function ApplicantsList() {
           <Button
             variant="outline"
             size="sm"
-            className="h-8 border-primary/20 border-border bg-primary/10 text-primary text-xs"
+            className="h-8 border-border border-primary/20 bg-primary/10 text-primary text-xs"
           >
             1
           </Button>

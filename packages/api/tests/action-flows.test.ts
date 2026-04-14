@@ -4,7 +4,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const jobSaveMock = vi.fn();
 const applicantSaveMock = vi.fn();
 
-const Job = vi.fn(function Job(this: Record<string, unknown>, input: Record<string, unknown>) {
+const Job = vi.fn(function Job(
+  this: Record<string, unknown>,
+  input: Record<string, unknown>,
+) {
   const now = new Date("2026-04-15T00:00:00.000Z");
   Object.assign(this, {
     _id: new Types.ObjectId(),

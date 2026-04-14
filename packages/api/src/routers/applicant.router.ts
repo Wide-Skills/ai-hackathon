@@ -1,8 +1,8 @@
 import { Applicant } from "@ai-hackathon/db";
 import { ApplicantSchema, CreateApplicantSchema } from "@ai-hackathon/shared";
 import { z } from "zod";
-import { protectedProcedure, router } from "../trpc";
 import { serializeApplicant } from "../serializers";
+import { protectedProcedure, router } from "../trpc";
 
 export const applicantRouter = router({
   create: protectedProcedure

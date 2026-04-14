@@ -63,7 +63,7 @@ export default function AuthLayout({
                   <f.icon className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <p className="font-medium text-sm text-primary-foreground">
+                  <p className="font-medium text-primary-foreground text-sm">
                     {f.title}
                   </p>
                   <p className="text-primary-foreground/50 text-sm">{f.desc}</p>
@@ -109,7 +109,7 @@ export default function AuthLayout({
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <BrainCircuit className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-bold text-lg text-foreground">TalentAI</span>
+            <span className="font-bold text-foreground text-lg">TalentAI</span>
           </div>
 
           <div className="rounded-2xl border border-border bg-background shadow-sm">

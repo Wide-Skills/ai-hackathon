@@ -1,10 +1,10 @@
-export { ApplicantDetail } from "./applicant-detail";
-export { ApplicantsList } from "./applicants-list";
-export { ApplicantSidebar } from "./applicant-sidebar";
 export { AIAnalysisCard } from "./ai-analysis-card";
-export { SkillsCard } from "./skills-card";
-export { ExperienceCard } from "./experience-card";
-export { EducationCard } from "./education-card";
+export { ApplicantDetail } from "./applicant-detail";
+export { ApplicantSidebar } from "./applicant-sidebar";
+export { ApplicantsList } from "./applicants-list";
 export { CertificationsCard } from "./certifications-card";
-export { ProjectsCard } from "./projects-card";
+export { EducationCard } from "./education-card";
+export { ExperienceCard } from "./experience-card";
 export { MatchScore } from "./match-score";
+export { ProjectsCard } from "./projects-card";
+export { SkillsCard } from "./skills-card";

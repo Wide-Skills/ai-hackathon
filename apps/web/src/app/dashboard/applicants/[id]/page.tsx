@@ -1,7 +1,7 @@
 "use client";
 
-import { ApplicantDetail } from "@/features/applicants/components";
 import * as React from "react";
+import { ApplicantDetail } from "@/features/applicants/components";
 
 export default function ApplicantDetailPage({
   params,

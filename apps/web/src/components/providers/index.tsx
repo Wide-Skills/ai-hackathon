@@ -4,10 +4,10 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { queryClient } from "@/utils/trpc";
-import { ReduxProvider } from "./redux-provider";
-import { ThemeProvider } from "./theme-provider";
 import { Toaster } from "../ui/sonner";
 import { TooltipProvider } from "../ui/tooltip";
+import { ReduxProvider } from "./redux-provider";
+import { ThemeProvider } from "./theme-provider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -19,7 +19,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     >
       <QueryClientProvider client={queryClient}>
         <ReduxProvider>
-          <TooltipProvider>{children}</TooltipProvider></ReduxProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+        </ReduxProvider>
         <ReactQueryDevtools />
       </QueryClientProvider>
       <Toaster richColors />

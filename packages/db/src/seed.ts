@@ -1,13 +1,8 @@
+import { randomBytes, randomUUID, scryptSync } from "node:crypto";
 import { env } from "@ai-hackathon/env/server";
-import { randomBytes, scryptSync, randomUUID } from "node:crypto";
 import mongoose from "mongoose";
-import {
-  Account,
-  Session,
-  User,
-  Verification,
-} from "./models/auth.model";
 import { Applicant } from "./models/applicant.model";
+import { Account, Session, User, Verification } from "./models/auth.model";
 import { Job } from "./models/job.model";
 import { ScreeningResult } from "./models/screening.model";
 
@@ -765,11 +760,18 @@ async function seed() {
     const jobMapping: Record<string, string> = {};
 
     for (const [index, mockJob] of mockJobs.entries()) {
-      const { id, applicantsCount, screenedCount, shortlistedCount, ...jobData } =
-        mockJob;
+      const {
+        id,
+        applicantsCount,
+        screenedCount,
+        shortlistedCount,
+        ...jobData
+      } = mockJob;
       const owner = recruiterOwners[index % recruiterOwners.length];
       if (!owner) {
-        throw new Error("No recruiter owner available for seeded job creation.");
+        throw new Error(
+          "No recruiter owner available for seeded job creation.",
+        );
       }
       const job = await Job.create({
         ...jobData,
@@ -787,7 +789,11 @@ async function seed() {
     console.log("Creating applicants and screening relationships...");
     const applicantStats = new Map<
       string,
-      { applicantsCount: number; screenedCount: number; shortlistedCount: number }
+      {
+        applicantsCount: number;
+        screenedCount: number;
+        shortlistedCount: number;
+      }
     >();
 
     for (const mockJob of mockJobs) {

@@ -6,7 +6,9 @@ interface CertificationsCardProps {
   certifications: Certification[];
 }
 
-export function CertificationsCard({ certifications }: CertificationsCardProps) {
+export function CertificationsCard({
+  certifications,
+}: CertificationsCardProps) {
   if (certifications.length === 0) return null;
 
   return (

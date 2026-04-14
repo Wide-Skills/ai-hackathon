@@ -57,7 +57,9 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
               </span>
             </div>
             <div className="flex items-end gap-3">
-              <span className={cn("font-black text-5xl tabular-nums", scoreColor)}>
+              <span
+                className={cn("font-black text-5xl tabular-nums", scoreColor)}
+              >
                 {screening.matchScore}%
               </span>
               <div className="mb-1">
@@ -114,7 +116,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
         </p>
       </div>
 
-      <CardContent className=" p-5">
+      <CardContent className="p-5">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <div>
             <h4 className="mb-3 flex items-center gap-1.5 font-semibold text-muted-foreground text-xs uppercase tracking-wider">

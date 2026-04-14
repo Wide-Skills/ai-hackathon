@@ -2,10 +2,10 @@ import "reflect-metadata";
 import { createContext as createTrpcContext } from "@ai-hackathon/api/context";
 import { appRouter } from "@ai-hackathon/api/routers/index";
 import { auth } from "@ai-hackathon/auth";
-import { toNodeHandler } from "better-auth/node";
 import { env } from "@ai-hackathon/env/server";
 import { NestFactory } from "@nestjs/core";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { toNodeHandler } from "better-auth/node";
 
 import { AppModule } from "./app.module";
 

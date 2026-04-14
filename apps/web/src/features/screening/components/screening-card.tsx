@@ -1,10 +1,10 @@
 import type { Applicant } from "@ai-hackathon/shared";
 import {
+  CircleAlert as AlertCircle,
   ArrowUpRight,
   CircleCheck as CheckCircle2,
   ThumbsUp,
   Circle as XCircle,
-  CircleAlert as AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";

@@ -5,8 +5,8 @@ import {
   JobSchema,
 } from "@ai-hackathon/shared";
 import { z } from "zod";
-import { protectedProcedure, router } from "../trpc";
 import { serializeJob } from "../serializers";
+import { protectedProcedure, router } from "../trpc";
 
 export const jobRouter = router({
   create: protectedProcedure
