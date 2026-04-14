@@ -35,13 +35,13 @@ function StatCard({
   trend?: string;
 }) {
   return (
-    <Card className="border-gray-200 shadow-sm transition-shadow hover:shadow-md">
+    <Card className="border-border shadow-sm transition-shadow hover:shadow-md">
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div>
-            <p className="font-medium text-slate-500 text-sm">{label}</p>
-            <p className="mt-1 font-bold text-3xl text-slate-900">{value}</p>
-            <p className="mt-1 text-slate-400 text-xs">{sublabel}</p>
+            <p className="font-medium text-muted-foreground text-sm">{label}</p>
+            <p className="mt-1 font-bold text-3xl text-foreground">{value}</p>
+            <p className="mt-1 text-muted-foreground/60 text-xs">{sublabel}</p>
           </div>
           <div
             className={`flex h-11 w-11 items-center justify-center rounded-xl ${color}`}
@@ -50,9 +50,9 @@ function StatCard({
           </div>
         </div>
         {trend && (
-          <div className="mt-4 flex items-center gap-1 border-gray-100 border-t pt-4">
-            <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
-            <span className="font-medium text-emerald-600 text-xs">
+          <div className="mt-4 flex items-center gap-1 border-border border-t pt-4">
+            <TrendingUp className="h-3.5 w-3.5 text-success" />
+            <span className="font-medium text-success text-xs">
               {trend}
             </span>
           </div>
@@ -65,12 +65,12 @@ function StatCard({
 function ScoreBadge({ score }: { score: number }) {
   const color =
     score >= 85
-      ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+      ? "text-success bg-success/10 border-success/20"
       : score >= 70
-        ? "text-blue-700 bg-blue-50 border-blue-200"
+        ? "text-primary bg-primary/10 border-primary/20"
         : score >= 55
-          ? "text-amber-700 bg-amber-50 border-amber-200"
-          : "text-red-700 bg-red-50 border-red-200";
+          ? "text-warning bg-warning/10 border-warning/20"
+          : "text-destructive bg-destructive/10 border-destructive/20";
   return (
     <span
       className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 font-bold text-xs ${color}`}
@@ -84,17 +84,17 @@ function ScoreBadge({ score }: { score: number }) {
 const activityConfig = {
   screened: {
     label: "Screened",
-    color: "bg-blue-50 text-blue-600",
+    color: "bg-primary/10 text-primary",
     icon: BrainCircuit,
   },
   applied: {
     label: "Applied",
-    color: "bg-slate-50 text-slate-600",
+    color: "bg-muted text-muted-foreground",
     icon: Users,
   },
   shortlisted: {
     label: "Shortlisted",
-    color: "bg-emerald-50 text-emerald-600",
+    color: "bg-success/10 text-success",
     icon: CheckCircle2,
   },
 };
@@ -158,7 +158,7 @@ export default function DashboardPage() {
           value={stats?.openPositions || 0}
           sublabel="total positions"
           icon={Briefcase}
-          color="bg-blue-50 text-blue-600"
+          color="bg-primary/10 text-primary"
           trend="+2 this week"
         />
         <StatCard
@@ -166,7 +166,7 @@ export default function DashboardPage() {
           value={stats?.totalCandidates || 0}
           sublabel="across all positions"
           icon={Users}
-          color="bg-slate-100 text-slate-600"
+          color="bg-muted text-muted-foreground"
           trend="+18 today"
         />
         <StatCard
@@ -174,7 +174,7 @@ export default function DashboardPage() {
           value={stats?.screenedToday || 0}
           sublabel="by AI automatically"
           icon={Cpu}
-          color="bg-violet-50 text-violet-600"
+          color="bg-accent text-accent-foreground"
           trend="Real-time"
         />
         <StatCard
@@ -182,34 +182,34 @@ export default function DashboardPage() {
           value={`${stats?.avgMatchScore || 0}%`}
           sublabel="overall avg score"
           icon={CheckCircle2}
-          color="bg-emerald-50 text-emerald-600"
+          color="bg-success/10 text-success"
           trend="+5% this week"
         />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="font-semibold text-base text-slate-900">
+              <CardTitle className="font-semibold text-base text-foreground">
                 Top AI-Ranked Candidates
               </CardTitle>
               <Link
                 href="/dashboard/applicants"
-                className="flex items-center gap-1 font-medium text-blue-600 text-sm hover:text-blue-700"
+                className="flex items-center gap-1 font-medium text-primary text-sm hover:text-primary/90"
               >
                 View all <ChevronRight className="h-3.5 w-3.5" />
               </Link>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-border">
                 {topApplicants.map((applicant, idx) => (
                   <Link
                     key={applicant.id}
                     href={`/dashboard/applicants/${applicant.id}`}
-                    className="group flex items-center gap-4 px-6 py-4 transition-colors hover:bg-gray-50"
+                    className="group flex items-center gap-4 px-6 py-4 transition-colors hover:bg-muted"
                   >
-                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 font-bold text-gray-500 text-xs">
+                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-muted font-bold text-muted-foreground text-xs">
                       {idx + 1}
                     </div>
                     {applicant.avatarUrl ? (
@@ -219,22 +219,22 @@ export default function DashboardPage() {
                         className="h-9 w-9 flex-shrink-0 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-blue-600 font-bold text-sm text-white">
+                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-primary font-bold text-sm text-primary-foreground">
                         {applicant.firstName[0]}
                         {applicant.lastName[0]}
                       </div>
                     )}
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-slate-900 text-sm transition-colors group-hover:text-blue-600">
+                      <p className="font-semibold text-foreground text-sm transition-colors group-hover:text-primary">
                         {applicant.firstName} {applicant.lastName}
                       </p>
-                      <p className="truncate text-slate-500 text-xs">
+                      <p className="truncate text-muted-foreground text-xs">
                         {applicant.headline}
                       </p>
                     </div>
                     <div className="flex flex-shrink-0 items-center gap-3">
                       <ScoreBadge score={applicant.screening?.matchScore ?? 0} />
-                      <ArrowUpRight className="h-4 w-4 text-gray-300 transition-colors group-hover:text-blue-500" />
+                      <ArrowUpRight className="h-4 w-4 text-muted-foreground/30 transition-colors group-hover:text-primary" />
                     </div>
                   </Link>
                 ))}
@@ -242,20 +242,20 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="font-semibold text-base text-slate-900">
+              <CardTitle className="font-semibold text-base text-foreground">
                 Active Positions
               </CardTitle>
               <Link
                 href="/dashboard/jobs"
-                className="flex items-center gap-1 font-medium text-blue-600 text-sm hover:text-blue-700"
+                className="flex items-center gap-1 font-medium text-primary text-sm hover:text-primary/90"
               >
                 All jobs <ChevronRight className="h-3.5 w-3.5" />
               </Link>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-border">
                 {activeJobs.map((job) => {
                   const pct =
                     job.applicantsCount > 0
@@ -267,32 +267,32 @@ export default function DashboardPage() {
                     <Link
                       key={job.id}
                       href={"/dashboard/jobs"}
-                      className="group flex items-center gap-4 px-6 py-4 transition-colors hover:bg-gray-50"
+                      className="group flex items-center gap-4 px-6 py-4 transition-colors hover:bg-muted"
                     >
-                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50">
-                        <Briefcase className="h-4 w-4 text-blue-600" />
+                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10">
+                        <Briefcase className="h-4 w-4 text-primary" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
-                          <p className="font-semibold text-slate-900 text-sm transition-colors group-hover:text-blue-600">
+                          <p className="font-semibold text-foreground text-sm transition-colors group-hover:text-primary">
                             {job.title}
                           </p>
                           <Badge
                             variant="outline"
-                            className="border-green-200 bg-green-50 px-1.5 text-[10px] text-green-700"
+                            className="border-success/20 bg-success/10 px-1.5 text-[10px] text-success"
                           >
                             {job.type}
                           </Badge>
                         </div>
-                        <p className="text-slate-500 text-xs">
+                        <p className="text-muted-foreground text-xs">
                           {job.location} · {job.department}
                         </p>
                       </div>
                       <div className="flex-shrink-0 text-right">
-                        <p className="font-bold text-slate-900 text-sm">
+                        <p className="font-bold text-foreground text-sm">
                           {job.applicantsCount}
                         </p>
-                        <p className="text-[10px] text-slate-400">
+                        <p className="text-[10px] text-muted-foreground">
                           {pct}% screened
                         </p>
                       </div>
@@ -305,14 +305,14 @@ export default function DashboardPage() {
         </div>
 
         <div className="space-y-6">
-          <Card className="border-gray-200 shadow-sm">
+          <Card className="border-border shadow-sm">
             <CardHeader className="pb-3">
-              <CardTitle className="font-semibold text-base text-slate-900">
+              <CardTitle className="font-semibold text-base text-foreground">
                 Recent Activity
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-border">
                 {recentActivity.map((item) => {
                   const config =
                     activityConfig[item.type as keyof typeof activityConfig];
@@ -328,24 +328,24 @@ export default function DashboardPage() {
                         <Icon className="h-3.5 w-3.5" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="font-medium text-slate-800 text-xs leading-snug">
+                        <p className="font-medium text-foreground/80 text-xs leading-snug">
                           <span className="font-semibold">
                             {item.candidate}
                           </span>{" "}
                           {config.label === "Applied"
                             ? "applied for"
                             : `${config.label.toLowerCase()} for`}{" "}
-                          <span className="text-blue-600">{item.job}</span>
+                          <span className="text-primary">{item.job}</span>
                         </p>
                         {item.score && (
-                          <p className="mt-0.5 text-[10px] text-slate-500">
+                          <p className="mt-0.5 text-[10px] text-muted-foreground">
                             Score:{" "}
-                            <span className="font-semibold text-emerald-600">
+                            <span className="font-semibold text-success">
                               {item.score}%
                             </span>
                           </p>
                         )}
-                        <p className="mt-0.5 text-[10px] text-slate-400">
+                        <p className="mt-0.5 text-[10px] text-muted-foreground/60">
                           {item.time}
                         </p>
                       </div>
@@ -356,19 +356,19 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-gray-200 bg-gradient-to-br from-slate-900 to-slate-800 shadow-sm">
+          <Card className="border-border bg-foreground text-background shadow-sm">
             <CardContent className="p-5">
               <div className="mb-3 flex items-center gap-2">
-                <Zap className="h-4 w-4 text-blue-400" />
-                <p className="font-semibold text-sm text-white">AI Summary</p>
+                <Zap className="h-4 w-4 text-primary" />
+                <p className="font-semibold text-sm text-background">AI Summary</p>
               </div>
-              <p className="text-slate-300 text-xs leading-relaxed">
+              <p className="text-background/80 text-xs leading-relaxed">
                 Today&apos;s AI screening identified{" "}
-                <span className="font-semibold text-white">
+                <span className="font-semibold text-background">
                   3 standout candidates
                 </span>{" "}
                 for the Backend Engineer role. Avg match score is{" "}
-                <span className="font-semibold text-blue-400">81%</span> — 14
+                <span className="font-semibold text-primary">81%</span> — 14
                 points above your historical average.
               </p>
               <div className="mt-4 grid grid-cols-3 gap-3">
@@ -378,8 +378,8 @@ export default function DashboardPage() {
                   { label: "Top Match", value: "96%" },
                 ].map((s) => (
                   <div key={s.label} className="text-center">
-                    <p className="font-bold text-lg text-white">{s.value}</p>
-                    <p className="text-[10px] text-slate-500">{s.label}</p>
+                    <p className="font-bold text-lg text-background">{s.value}</p>
+                    <p className="text-[10px] text-background/50">{s.label}</p>
                   </div>
                 ))}
               </div>

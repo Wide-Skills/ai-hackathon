@@ -3,6 +3,15 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
+const availabilitySchema = new Schema(
+  {
+    status: String,
+    type: String,
+    startDate: String,
+  },
+  { _id: false },
+);
+
 const applicantSchema = new Schema(
   {
     jobId: { type: Schema.Types.ObjectId, ref: "Job", required: true },
@@ -74,11 +83,7 @@ const applicantSchema = new Schema(
         endDate: String,
       },
     ],
-    availability: {
-      status: String,
-      type: String,
-      startDate: String,
-    },
+    availability: availabilitySchema,
     socialLinks: {
       linkedin: String,
       github: String,
