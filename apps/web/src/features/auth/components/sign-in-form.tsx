@@ -1,20 +1,17 @@
 import { useForm } from "@tanstack/react-form";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import z from "zod";
 
 import { authClient } from "@/lib/auth-client";
 
-import Loader from "./loader";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
+import { Spinner } from "../../../components/ui/spinner";
 
-export default function SignInForm({
-  onSwitchToSignUp,
-}: {
-  onSwitchToSignUp: () => void;
-}) {
+export default function SignInForm() {
   const router = useRouter();
   const { isPending } = authClient.useSession();
 
@@ -49,7 +46,7 @@ export default function SignInForm({
   });
 
   if (isPending) {
-    return <Loader />;
+    return <Spinner />;
   }
 
   return (
@@ -101,7 +98,7 @@ export default function SignInForm({
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
                 {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500">
+                  <p key={error?.message} className="text-destructive">
                     {error?.message}
                   </p>
                 ))}
@@ -124,13 +121,11 @@ export default function SignInForm({
       </form>
 
       <div className="mt-4 text-center">
-        <Button
-          variant="link"
-          onClick={onSwitchToSignUp}
-          className="text-primary hover:text-primary/90"
-        >
-          Need an account? Sign Up
-        </Button>
+        <Link href="/auth/sign-up">
+          <Button variant="link" className="text-primary hover:text-primary/90">
+            Need an account? Sign Up
+          </Button>
+        </Link>
       </div>
     </div>
   );

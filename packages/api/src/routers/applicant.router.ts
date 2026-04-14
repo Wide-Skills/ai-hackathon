@@ -8,8 +8,13 @@ export const applicantRouter = router({
   create: protectedProcedure
     .input(CreateApplicantSchema)
     .output(ApplicantSchema)
-    .mutation(async ({ input }) => {
-      const applicant = new Applicant(input);
+    .mutation(async ({ input, ctx }) => {
+      const applicant = new Applicant({
+        ...input,
+        userId: ctx.session.user.id,
+        name: `${input.firstName} ${input.lastName}`,
+        appliedAt: new Date().toISOString(),
+      });
       await applicant.save();
       return serializeApplicant(applicant);
     }),

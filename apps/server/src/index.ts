@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { createContext as createTrpcContext } from "@ai-hackathon/api/context";
 import { appRouter } from "@ai-hackathon/api/routers/index";
 import { auth } from "@ai-hackathon/auth";
+import { toNodeHandler } from "better-auth/node";
 import { env } from "@ai-hackathon/env/server";
 import { NestFactory } from "@nestjs/core";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
@@ -19,6 +20,8 @@ async function bootstrap() {
   });
 
   const expressApp = app.getHttpAdapter().getInstance();
+  const authHandler = toNodeHandler(auth);
+
   expressApp.use(
     "/trpc",
     createExpressMiddleware({
@@ -26,8 +29,8 @@ async function bootstrap() {
       createContext: ({ req }) => createTrpcContext({ req }),
     }),
   );
-  expressApp.all("/api/auth/*path", async (req: any, _res: any) => {
-    return auth.handler(req);
+  expressApp.all("/api/auth/*path", async (req: any, res: any) => {
+    return authHandler(req, res);
   });
 
   await app.listen(3000);

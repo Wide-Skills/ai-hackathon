@@ -1,3 +1,10 @@
-export {};
-// Export your applicant-specific UI components here.
-// e.g., export { ApplicantTable } from './ApplicantTable';
+export { ApplicantDetail } from "./applicant-detail";
+export { ApplicantsList } from "./applicants-list";
+export { ApplicantSidebar } from "./applicant-sidebar";
+export { AIAnalysisCard } from "./ai-analysis-card";
+export { SkillsCard } from "./skills-card";
+export { ExperienceCard } from "./experience-card";
+export { EducationCard } from "./education-card";
+export { CertificationsCard } from "./certifications-card";
+export { ProjectsCard } from "./projects-card";
+export { MatchScore } from "./match-score";

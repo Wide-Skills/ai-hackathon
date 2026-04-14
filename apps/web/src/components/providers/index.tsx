@@ -6,8 +6,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "@/utils/trpc";
 import { ReduxProvider } from "./redux-provider";
 import { ThemeProvider } from "./theme-provider";
-import { Toaster } from "./ui/sonner";
-import { TooltipProvider } from "./ui/tooltip";
+import { Toaster } from "../ui/sonner";
+import { TooltipProvider } from "../ui/tooltip";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (

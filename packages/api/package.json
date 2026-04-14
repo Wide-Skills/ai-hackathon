@@ -10,7 +10,8 @@
     }
   },
   "scripts": {
-    "check-types": "tsc -b"
+    "check-types": "tsc -b",
+    "test": "vitest run tests --exclude dist/**"
   },
   "dependencies": {
     "@ai-hackathon/auth": "workspace:*",

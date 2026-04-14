@@ -1,8 +1,8 @@
 import { auth } from "@ai-hackathon/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { AppSidebar } from "@/components/app-sidebar";
-import Header from "@/components/header";
+import { AppSidebar } from "@/components/layouts/app-sidebar";
+import Header from "@/components/layouts/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function DashboardLayout({
@@ -15,7 +15,7 @@ export default async function DashboardLayout({
   });
 
   if (!session?.user) {
-    redirect("/login");
+    redirect("/auth/sign-in");
   }
   return (
     <SidebarProvider>

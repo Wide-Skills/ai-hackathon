@@ -31,11 +31,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <TooltipProvider>
-          <Providers>
-            <div className="h-svh">{children}</div>
-          </Providers>
-        </TooltipProvider>
+        <Providers>
+          <div className="h-svh">{children}</div>
+        </Providers>
       </body>
     </html>
   );

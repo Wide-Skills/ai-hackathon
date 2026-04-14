@@ -1,5 +1,12 @@
-import { describe, expect, it } from "vitest";
-import { appRouter } from "../src/routers/index";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("@ai-hackathon/db", () => ({
+  Applicant: vi.fn(),
+  Job: vi.fn(),
+  ScreeningResult: vi.fn(),
+}));
+
+const { appRouter } = await import("../src/routers/index");
 
 describe("AppRouter", () => {
   it("should have jobs router registered", () => {

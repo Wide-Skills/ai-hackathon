@@ -5,7 +5,13 @@ await mongoose.connect(env.DATABASE_URL).catch((error) => {
   console.log("Error connecting to database:", error);
 });
 
-const client = mongoose.connection.getClient().db("myDB");
+const database = mongoose.connection.db;
+
+if (!database) {
+  throw new Error("MongoDB database connection is not initialized.");
+}
+
+const client = database;
 
 export * from "./models/applicant.model";
 export * from "./models/auth.model";

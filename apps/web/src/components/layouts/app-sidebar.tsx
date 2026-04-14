@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 import type { Route } from "next";
 import type * as React from "react";
-import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
+import { NavMain } from "@/components/layouts/nav-main";
+import { NavUser } from "@/components/layouts/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -29,32 +29,32 @@ const navItems: Array<{
   url: Route;
   icon: React.ReactNode;
 }> = [
-  {
-    title: "Overview",
-    url: "/dashboard",
-    icon: <LayoutDashboardIcon />,
-  },
-  {
-    title: "Jobs",
-    url: "/dashboard/jobs",
-    icon: <BriefcaseIcon />,
-  },
-  {
-    title: "Applicants",
-    url: "/dashboard/applicants",
-    icon: <UsersIcon />,
-  },
-  {
-    title: "AI Screening",
-    url: "/dashboard/screening",
-    icon: <SparklesIcon />,
-  },
-  {
-    title: "Settings",
-    url: "/dashboard/settings",
-    icon: <Settings2Icon />,
-  },
-];
+    {
+      title: "Overview",
+      url: "/dashboard",
+      icon: <LayoutDashboardIcon />,
+    },
+    {
+      title: "Jobs",
+      url: "/dashboard/jobs",
+      icon: <BriefcaseIcon />,
+    },
+    {
+      title: "Applicants",
+      url: "/dashboard/applicants",
+      icon: <UsersIcon />,
+    },
+    {
+      title: "AI Screening",
+      url: "/dashboard/screening",
+      icon: <SparklesIcon />,
+    },
+    {
+      title: "Settings",
+      url: "/dashboard/settings",
+      icon: <Settings2Icon />,
+    },
+  ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session } = authClient.useSession();

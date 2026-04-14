@@ -100,6 +100,8 @@ export const ApplicantScreeningSchema = ScreeningResultSchema.omit({
   updatedAt: true,
 });
 
+export type ApplicantScreening = z.infer<typeof ApplicantScreeningSchema>;
+
 export const ApplicantSchema = CreateApplicantSchema.extend({
   id: z.string(),
   name: z.string().optional(), // Derived or convenience
@@ -109,6 +111,13 @@ export const ApplicantSchema = CreateApplicantSchema.extend({
   createdAt: z.date().optional().or(z.string()),
   updatedAt: z.date().optional().or(z.string()),
 });
+
+export type Skill = z.infer<typeof SkillSchema>;
+export type Language = z.infer<typeof LanguageSchema>;
+export type Experience = z.infer<typeof ExperienceSchema>;
+export type Education = z.infer<typeof EducationSchema>;
+export type Certification = z.infer<typeof CertificationSchema>;
+export type Project = z.infer<typeof ProjectSchema>;
 
 export type Applicant = z.infer<typeof ApplicantSchema>;
 export type SkillLevel = z.infer<typeof SkillSchema>["level"];

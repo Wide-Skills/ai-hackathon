@@ -20,7 +20,7 @@ const features = [
   },
 ];
 
-export default function LoginLayout({
+export default function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -63,7 +63,9 @@ export default function LoginLayout({
                   <f.icon className="h-4 w-4 text-primary" />
                 </div>
                 <div>
-                  <p className="font-medium text-sm text-primary-foreground">{f.title}</p>
+                  <p className="font-medium text-sm text-primary-foreground">
+                    {f.title}
+                  </p>
                   <p className="text-primary-foreground/50 text-sm">{f.desc}</p>
                 </div>
               </div>
@@ -86,14 +88,18 @@ export default function LoginLayout({
               ))}
             </div>
             <p className="text-primary-foreground/60 text-sm">
-              <span className="font-semibold text-primary-foreground">2,400+</span>{" "}
+              <span className="font-semibold text-primary-foreground">
+                2,400+
+              </span>{" "}
               candidates screened this week
             </p>
           </div>
         </div>
 
         <div className="relative z-10">
-          <p className="text-primary-foreground/40 text-sm">Powered by Red Team Pro</p>
+          <p className="text-primary-foreground/40 text-sm">
+            Powered by Red Team Pro
+          </p>
         </div>
       </div>
 

@@ -12,8 +12,11 @@ export const jobRouter = router({
   create: protectedProcedure
     .input(CreateJobSchema)
     .output(JobSchema)
-    .mutation(async ({ input }) => {
-      const job = new Job(input);
+    .mutation(async ({ input, ctx }) => {
+      const job = new Job({
+        ...input,
+        createdByUserId: ctx.session.user.id,
+      });
       await job.save();
       return serializeJob(job);
     }),
