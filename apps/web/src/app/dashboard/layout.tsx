@@ -1,0 +1,32 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { AppSidebar } from "@/components/app-sidebar";
+import Header from "@/components/header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth-client";
+
+export default async function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await authClient.getSession({
+    fetchOptions: {
+      headers: await headers(),
+      throw: true,
+    },
+  });
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset className="flex-col">
+        <Header />
+        <main className="flex-1 p-6">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}

@@ -1,0 +1,115 @@
+import { z } from "zod";
+import { ScreeningResultSchema } from "./screening.schema";
+
+export const SkillSchema = z.object({
+  name: z.string(),
+  level: z.enum(["Expert", "Advanced", "Intermediate", "Beginner"]),
+  yearsOfExperience: z.number(),
+});
+
+export const LanguageSchema = z.object({
+  name: z.string(),
+  proficiency: z.enum(["Native", "Fluent", "Intermediate", "Basic"]),
+});
+
+export const ExperienceSchema = z.object({
+  company: z.string(),
+  role: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  description: z.string(),
+  technologies: z.array(z.string()),
+  isCurrent: z.boolean(),
+});
+
+export const EducationSchema = z.object({
+  institution: z.string(),
+  degree: z.string(),
+  fieldOfStudy: z.string(),
+  startYear: z.number(),
+  endYear: z.number(),
+});
+
+export const CertificationSchema = z.object({
+  name: z.string(),
+  issuer: z.string(),
+  issueDate: z.string(),
+});
+
+export const ProjectSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  technologies: z.array(z.string()),
+  role: z.string(),
+  link: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+});
+
+export const ApplicationStatusSchema = z.enum([
+  "pending",
+  "screening",
+  "shortlisted",
+  "rejected",
+  "hired",
+]);
+
+export const CreateApplicantSchema = z.object({
+  jobId: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string().email(),
+  resumeText: z.string().optional(),
+  resumeUrl: z.string().url().optional(),
+  headline: z.string().optional(),
+  bio: z.string().optional(),
+  location: z.string().optional(),
+  avatarUrl: z.string().url().optional(),
+  skills: z.array(SkillSchema).default([]),
+  languages: z.array(LanguageSchema).default([]),
+  experience: z.array(ExperienceSchema).default([]),
+  education: z.array(EducationSchema).default([]),
+  certifications: z.array(CertificationSchema).default([]),
+  projects: z.array(ProjectSchema).default([]),
+  availability: z
+    .object({
+      status: z.enum(["Available", "Unavailable"]).optional(),
+      type: z.string().optional(),
+      startDate: z.string().optional(),
+    })
+    .optional()
+    .default({}),
+  socialLinks: z
+    .object({
+      linkedin: z.string().optional(),
+      github: z.string().optional(),
+      portfolio: z.string().optional(),
+      twitter: z.string().optional(),
+    })
+    .optional()
+    .default({}),
+});
+
+export type CreateApplicantInput = z.infer<typeof CreateApplicantSchema>;
+
+export const ApplicantScreeningSchema = ScreeningResultSchema.omit({
+  id: true,
+  applicantId: true,
+  jobId: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const ApplicantSchema = CreateApplicantSchema.extend({
+  id: z.string(),
+  name: z.string().optional(), // Derived or convenience
+  appliedAt: z.string().or(z.date()),
+  status: ApplicationStatusSchema.default("pending"),
+  screening: ApplicantScreeningSchema.optional(),
+  createdAt: z.date().optional().or(z.string()),
+  updatedAt: z.date().optional().or(z.string()),
+});
+
+export type Applicant = z.infer<typeof ApplicantSchema>;
+export type SkillLevel = z.infer<typeof SkillSchema>["level"];
+export type ApplicationStatus = z.infer<typeof ApplicationStatusSchema>;

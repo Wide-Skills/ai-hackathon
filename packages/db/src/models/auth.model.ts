@@ -65,4 +65,4 @@ const Session = model("Session", sessionSchema);
 const Account = model("Account", accountSchema);
 const Verification = model("Verification", verificationSchema);
 
-export { User, Session, Account, Verification };
+export { Account, Session, User, Verification };

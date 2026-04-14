@@ -9,15 +9,20 @@
       "default": "./src/*.ts"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "check-types": "tsc -b",
+    "seed": "tsx src/seed.ts"
+  },
   "dependencies": {
     "@ai-hackathon/env": "workspace:*",
+    "@ai-hackathon/shared": "workspace:^",
     "dotenv": "catalog:",
     "mongoose": "^9.4.1",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@ai-hackathon/config": "workspace:*",
+    "tsx": "^4.19.2",
     "typescript": "^6.0.2"
   }
 }

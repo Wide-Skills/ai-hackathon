@@ -1,21 +1,113 @@
+import type { Applicant as ApplicantRecord } from "@ai-hackathon/shared";
 import mongoose from "mongoose";
 
-const { Schema, model, models } = mongoose;
+const { Schema } = mongoose;
 
 const applicantSchema = new Schema(
   {
     jobId: { type: Schema.Types.ObjectId, ref: "Job", required: true },
-    name: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    name: { type: String }, // For convenience, though we have first/last
     email: { type: String, required: true },
-    resumeText: { type: String }, // Can be the parsed text
-    resumeUrl: { type: String }, // R2/Cloudflare URL
+    headline: { type: String },
+    bio: { type: String },
+    location: { type: String },
+    avatarUrl: { type: String },
+    resumeText: { type: String },
+    resumeUrl: { type: String },
+    appliedAt: { type: String },
     status: {
       type: String,
-      enum: ["pending", "screened", "rejected", "shortlisted"],
+      enum: ["pending", "screening", "shortlisted", "rejected", "hired"],
       default: "pending",
     },
+    skills: [
+      {
+        name: String,
+        level: String,
+        yearsOfExperience: Number,
+      },
+    ],
+    languages: [
+      {
+        name: String,
+        proficiency: String,
+      },
+    ],
+    experience: [
+      {
+        company: String,
+        role: String,
+        startDate: String,
+        endDate: String,
+        description: String,
+        technologies: [String],
+        isCurrent: Boolean,
+      },
+    ],
+    education: [
+      {
+        institution: String,
+        degree: String,
+        fieldOfStudy: String,
+        startYear: Number,
+        endYear: Number,
+      },
+    ],
+    certifications: [
+      {
+        name: String,
+        issuer: String,
+        issueDate: String,
+      },
+    ],
+    projects: [
+      {
+        name: String,
+        description: String,
+        technologies: [String],
+        role: String,
+        link: String,
+        startDate: String,
+        endDate: String,
+      },
+    ],
+    availability: {
+      status: String,
+      type: String,
+      startDate: String,
+    },
+    socialLinks: {
+      linkedin: String,
+      github: String,
+      portfolio: String,
+      twitter: String,
+    },
+    screening: {
+      matchScore: Number,
+      strengths: [String],
+      gaps: [String],
+      recommendation: String,
+      summary: String,
+      skillBreakdown: [
+        {
+          skill: String,
+          score: Number,
+        },
+      ],
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export const Applicant = models.Applicant || model("Applicant", applicantSchema);
+export interface ApplicantDocument
+  extends Omit<ApplicantRecord, "id" | "jobId" | "createdAt" | "updatedAt"> {
+  jobId: mongoose.Types.ObjectId | string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+export const Applicant = mongoose.models.Applicant
+  ? mongoose.model<ApplicantDocument>("Applicant")
+  : mongoose.model<ApplicantDocument>("Applicant", applicantSchema);

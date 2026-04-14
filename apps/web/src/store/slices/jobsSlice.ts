@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface JobsState {
   searchKeyword: string;
@@ -28,5 +28,6 @@ const jobsSlice = createSlice({
   },
 });
 
-export const { setSearchKeyword, setSelectedJobId, setCreateModalOpen } = jobsSlice.actions;
+export const { setSearchKeyword, setSelectedJobId, setCreateModalOpen } =
+  jobsSlice.actions;
 export default jobsSlice.reducer;

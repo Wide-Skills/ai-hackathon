@@ -9,16 +9,19 @@
       "default": "./src/*.ts"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "check-types": "tsc -b"
+  },
   "dependencies": {
     "@ai-hackathon/auth": "workspace:*",
     "@ai-hackathon/db": "workspace:*",
     "@ai-hackathon/env": "workspace:*",
+    "@ai-hackathon/shared": "workspace:^",
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
     "dotenv": "catalog:",
-    "zod": "catalog:",
-    "trpc-openapi": "^1.2.0"
+    "trpc-openapi": "^1.2.0",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@ai-hackathon/config": "workspace:*",

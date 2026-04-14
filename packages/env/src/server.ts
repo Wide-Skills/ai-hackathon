@@ -8,7 +8,9 @@ export const env = createEnv({
     BETTER_AUTH_SECRET: z.string().min(32),
     BETTER_AUTH_URL: z.url(),
     CORS_ORIGIN: z.url(),
-    NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    NODE_ENV: z
+      .enum(["development", "production", "test"])
+      .default("development"),
     GEMINI_API_KEY: z.string().min(1),
     RESEND_API_KEY: z.string().min(1),
     RESEND_FROM_EMAIL: z.string().email().default("onboarding@resend.dev"),
@@ -16,7 +18,9 @@ export const env = createEnv({
     R2_ACCESS_KEY_ID: z.string().min(1),
     R2_SECRET_ACCESS_KEY: z.string().min(1),
     R2_BUCKET_NAME: z.string().min(1),
-    LOG_LEVEL: z.enum(["trace", "debug", "info", "warn", "error", "fatal"]).default("info"),
+    LOG_LEVEL: z
+      .enum(["trace", "debug", "info", "warn", "error", "fatal"])
+      .default("info"),
     PINO_PRETTY: z.string().default("true"),
   },
   runtimeEnv: process.env,

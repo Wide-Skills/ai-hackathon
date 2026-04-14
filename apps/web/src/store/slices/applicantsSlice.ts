@@ -1,7 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { ApplicationStatus } from "@ai-hackathon/shared";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface ApplicantsState {
-  statusFilter: "all" | "pending" | "screened" | "rejected" | "shortlisted";
+  statusFilter: ApplicationStatus | "all";
   sortByScoreDesc: boolean;
   selectedApplicantId: string | null;
 }
@@ -16,7 +17,10 @@ const applicantsSlice = createSlice({
   name: "applicants",
   initialState,
   reducers: {
-    setStatusFilter: (state, action: PayloadAction<ApplicantsState["statusFilter"]>) => {
+    setStatusFilter: (
+      state,
+      action: PayloadAction<ApplicantsState["statusFilter"]>,
+    ) => {
       state.statusFilter = action.payload;
     },
     setSortByScoreDesc: (state, action: PayloadAction<boolean>) => {
@@ -28,5 +32,6 @@ const applicantsSlice = createSlice({
   },
 });
 
-export const { setStatusFilter, setSortByScoreDesc, setSelectedApplicantId } = applicantsSlice.actions;
+export const { setStatusFilter, setSortByScoreDesc, setSelectedApplicantId } =
+  applicantsSlice.actions;
 export default applicantsSlice.reducer;
