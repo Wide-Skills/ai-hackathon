@@ -74,11 +74,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-blue-600 text-sidebar-primary-foreground">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-sidebar-primary-foreground">
                 <BrainCircuit className="size-5 text-white" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text font-semibold text-transparent">
+                <span className="truncate bg-gradient-to-r from-primary to-primary/80 bg-clip-text font-semibold text-transparent">
                   TalentAI
                 </span>
                 <span className="truncate text-muted-foreground text-xs">
