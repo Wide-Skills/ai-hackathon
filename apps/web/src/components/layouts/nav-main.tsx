@@ -39,7 +39,10 @@ export function NavMain({
           if (!item.items || item.items.length === 0) {
             return (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton tooltip={item.title} render={<Link href={item.url} />}>
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  render={<Link href={item.url} />}
+                >
                   {item.icon}
                   <span>{item.title}</span>
                 </SidebarMenuButton>
@@ -65,7 +68,9 @@ export function NavMain({
                 <SidebarMenuSub>
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton render={<Link href={subItem.url} />}>
+                      <SidebarMenuSubButton
+                        render={<Link href={subItem.url} />}
+                      >
                         <span>{subItem.title}</span>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
