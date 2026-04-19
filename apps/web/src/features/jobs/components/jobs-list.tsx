@@ -4,13 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus, Search } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import type { RootState } from "@/store";
 import { setSearchKeyword } from "@/store/slices/jobsSlice";
 import { trpc } from "@/utils/trpc";
+import { CreateJobDialog } from "./create-job-dialog";
 import { JobCard } from "./job-card";
 
 const tabs = ["All", "Active", "Draft", "Closed"] as const;
@@ -91,13 +91,7 @@ export function JobsList() {
               className="h-9 w-52 rounded-lg border-border bg-foreground pl-9 text-sm focus-visible:ring-primary"
             />
           </div>
-          <Button
-            size="sm"
-            className="h-9 gap-1.5 rounded-lg bg-primary font-semibold text-foreground hover:bg-primary/90"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            New Job
-          </Button>
+          <CreateJobDialog />
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   BarChart3,
   BrainCircuit,
@@ -31,12 +31,18 @@ import { ScreeningCard } from "./screening-card";
 export function ScreeningDashboard() {
   const [selectedJob, setSelectedJob] = useState<string>("all");
   const [running, setRunning] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const queryClient = useQueryClient();
 
   const { data: applicantsData, isLoading: appsLoading } = useQuery(
     trpc.applicants.list.queryOptions(),
   );
   const { data: jobsData, isLoading: jobsLoading } = useQuery(
     trpc.jobs.list.queryOptions(),
+  );
+
+  const screenMutation = useMutation(
+    trpc.screenings.generateMock.mutationOptions(),
   );
 
   const applicants = applicantsData || [];
@@ -71,12 +77,50 @@ export function ScreeningDashboard() {
   };
 
   const handleRunScreening = async () => {
+    const pendingToScreen = selectedJob === "all"
+      ? pending
+      : pending.filter((a) => a.jobId === selectedJob);
+
+    if (pendingToScreen.length === 0) {
+      toast.info("No pending candidates to screen.");
+      return;
+    }
+
     setRunning(true);
-    await new Promise((r) => setTimeout(r, 2000));
+    setProgress(0);
+
+    let completed = 0;
+    const errors: string[] = [];
+
+    for (const applicant of pendingToScreen) {
+      try {
+        await screenMutation.mutateAsync({
+          applicantId: applicant.id,
+          jobId: applicant.jobId,
+        });
+        completed++;
+        setProgress(Math.round((completed / pendingToScreen.length) * 100));
+      } catch {
+        errors.push(`${applicant.firstName} ${applicant.lastName}`);
+      }
+    }
+
+    await queryClient.invalidateQueries({ queryKey: [["applicants"]] });
+    await queryClient.invalidateQueries({ queryKey: [["jobs"]] });
+    await queryClient.invalidateQueries({ queryKey: [["screenings"]] });
+
     setRunning(false);
-    toast.success(
-      `AI screening complete! Analyzed ${pending.length} candidates.`,
-    );
+    setProgress(0);
+
+    if (errors.length > 0) {
+      toast.warning(
+        `Screened ${completed} candidates. ${errors.length} failed.`,
+      );
+    } else {
+      toast.success(
+        `AI screening complete! Analyzed ${completed} candidates.`,
+      );
+    }
   };
 
   if (appsLoading || jobsLoading) {
@@ -190,7 +234,7 @@ export function ScreeningDashboard() {
               >
                 {running ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Screening...
+                    <Loader2 className="h-4 w-4 animate-spin" /> Screening... {progress}%
                   </>
                 ) : (
                   <>
@@ -198,6 +242,14 @@ export function ScreeningDashboard() {
                   </>
                 )}
               </Button>
+              {running && (
+                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
+                  <div
+                    className="h-full rounded-full bg-primary transition-all duration-500"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              )}
             </div>
           </Card>
 

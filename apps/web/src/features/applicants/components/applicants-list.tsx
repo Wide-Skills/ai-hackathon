@@ -16,6 +16,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import type { Route } from "next";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,7 @@ import {
 import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 import { MatchScore } from "./match-score";
+import { UploadCandidatesDialog } from "./upload-candidates-dialog";
 
 const statusConfig: Record<
   ApplicationStatus,
@@ -202,6 +204,8 @@ export function ApplicantsList() {
           </SelectContent>
         </Select>
 
+        <UploadCandidatesDialog />
+
         <div className="ml-auto font-medium text-muted-foreground text-sm">
           {filtered.length} candidate{filtered.length !== 1 ? "s" : ""}
         </div>
@@ -315,7 +319,7 @@ export function ApplicantsList() {
                       </span>
                     </td>
                     <td className="px-4 py-4">
-                      <Link href={`/dashboard/applicants/${applicant.id}`}>
+                      <Link href={`/dashboard/applicants/${applicant.id}` as Route}>
                         <Button
                           size="sm"
                           variant="ghost"

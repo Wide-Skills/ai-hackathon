@@ -6,6 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useDispatch } from "react-redux";
+import { setCreateModalOpen } from "@/store/slices/jobsSlice";
 
 const pageInfo: Record<
   string,
@@ -41,6 +43,7 @@ const pageInfo: Record<
 
 export default function Header() {
   const pathname = usePathname();
+  const dispatch = useDispatch();
 
   const currentPage = Object.entries(pageInfo)
     .sort((a, b) => b[0].length - a[0].length)
@@ -76,15 +79,18 @@ export default function Header() {
         </button>
 
         {info.action && (
-          <Link href={info.action.href}>
-            <Button
-              size="sm"
-              className="h-9 gap-1.5 rounded-lg bg-primary font-semibold text-primary-foreground text-sm hover:bg-primary/90"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              {info.action.label}
-            </Button>
-          </Link>
+          <Button
+            size="sm"
+            onClick={() => {
+              if (info.action?.label === "Post a Job" || info.action?.label === "New Job") {
+                dispatch(setCreateModalOpen(true));
+              }
+            }}
+            className="h-9 gap-1.5 rounded-lg bg-primary font-semibold text-primary-foreground text-sm hover:bg-primary/90 animate-in fade-in slide-in-from-right-4 duration-500"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {info.action.label}
+          </Button>
         )}
       </div>
     </header>
