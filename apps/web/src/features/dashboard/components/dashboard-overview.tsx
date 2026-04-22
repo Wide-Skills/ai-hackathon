@@ -7,13 +7,12 @@ import {
   Briefcase,
   ChevronRight,
   Cpu,
-  Plus,
-  Search,
   Sparkles,
   TrendingUp,
   Users,
   Zap,
 } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +25,6 @@ import { ScoreDistributionChart } from "./score-distribution-chart";
 import { ScreeningTrendChart } from "./screening-trend-chart";
 import { SkillsRadarChart } from "./skills-radar-chart";
 import { StatCard } from "./stat-card";
-import type { Route } from "next";
 
 const activityConfig = {
   screened: {
@@ -151,7 +149,9 @@ export function DashboardOverview() {
           {/* Top Candidates Card */}
           <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-base font-bold">Top AI-Ranked Candidates</CardTitle>
+              <CardTitle className="font-bold text-base">
+                Top AI-Ranked Candidates
+              </CardTitle>
               <Link
                 href="/dashboard/applicants"
                 className="flex items-center gap-1 font-medium text-primary text-xs hover:text-primary/90"
@@ -335,13 +335,20 @@ export function DashboardOverview() {
                 across your pipelines. Avg match score is{" "}
                 <span className="font-semibold text-primary">
                   {stats?.avgMatchScore ?? 0}%
-                </span>. AI processing is 100% complete for pending queue.
+                </span>
+                . AI processing is 100% complete for pending queue.
               </p>
               <div className="mt-4 grid grid-cols-3 gap-3">
                 {[
                   { label: "Screened", value: stats?.screenedToday ?? 0 },
-                  { label: "Avg Score", value: `${stats?.avgMatchScore ?? 0}%` },
-                  { label: "Top Match", value: `${topApplicants[0]?.screening?.matchScore ?? 0}%` },
+                  {
+                    label: "Avg Score",
+                    value: `${stats?.avgMatchScore ?? 0}%`,
+                  },
+                  {
+                    label: "Top Match",
+                    value: `${topApplicants[0]?.screening?.matchScore ?? 0}%`,
+                  },
                 ].map((s) => (
                   <div key={s.label} className="text-center">
                     <p className="font-bold text-background text-lg">
@@ -352,12 +359,12 @@ export function DashboardOverview() {
                 ))}
               </div>
               <div className="mt-5">
-                 <Button 
-                   className="h-8 w-full bg-primary font-bold text-white text-xs"
-                   onClick={() => dispatch(setCreateModalOpen(true))}
-                 >
-                   Post New Job
-                 </Button>
+                <Button
+                  className="h-8 w-full bg-primary font-bold text-white text-xs"
+                  onClick={() => dispatch(setCreateModalOpen(true))}
+                >
+                  Post New Job
+                </Button>
               </div>
             </CardContent>
           </Card>

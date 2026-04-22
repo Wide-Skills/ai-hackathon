@@ -13,6 +13,7 @@ import {
   Sparkles,
   Users,
 } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +22,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
-import type { Route } from "next";
 import { MatchScore } from "../../applicants/components/match-score";
 
 const statusConfig = {
@@ -80,7 +80,6 @@ export function JobDetail({ id }: JobDetailProps) {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      {/* Back button */}
       <div className="flex items-center gap-3">
         <Link href="/dashboard/jobs">
           <Button
@@ -94,7 +93,6 @@ export function JobDetail({ id }: JobDetailProps) {
         </Link>
       </div>
 
-      {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10">
@@ -152,9 +150,7 @@ export function JobDetail({ id }: JobDetailProps) {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Main Content */}
         <div className="space-y-6 lg:col-span-2">
-          {/* Description */}
           <Card className="border-border shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="font-semibold text-base">
@@ -168,7 +164,6 @@ export function JobDetail({ id }: JobDetailProps) {
             </CardContent>
           </Card>
 
-          {/* Requirements */}
           <Card className="border-border shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="font-semibold text-base">
@@ -178,10 +173,7 @@ export function JobDetail({ id }: JobDetailProps) {
             <CardContent>
               <ul className="space-y-2">
                 {job.requirements.map((req) => (
-                  <li
-                    key={req}
-                    className="flex items-start gap-2 text-sm"
-                  >
+                  <li key={req} className="flex items-start gap-2 text-sm">
                     <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
                     <span className="text-foreground/80">{req}</span>
                   </li>
@@ -190,7 +182,6 @@ export function JobDetail({ id }: JobDetailProps) {
             </CardContent>
           </Card>
 
-          {/* Skills */}
           {job.skills.length > 0 && (
             <Card className="border-border shadow-sm">
               <CardHeader className="pb-3">
@@ -214,7 +205,6 @@ export function JobDetail({ id }: JobDetailProps) {
             </Card>
           )}
 
-          {/* Applicants for this job */}
           <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between pb-3">
               <CardTitle className="font-semibold text-base">
@@ -266,9 +256,7 @@ export function JobDetail({ id }: JobDetailProps) {
                       </div>
                       <div className="flex items-center gap-3">
                         {applicant.screening ? (
-                          <MatchScore
-                            score={applicant.screening.matchScore}
-                          />
+                          <MatchScore score={applicant.screening.matchScore} />
                         ) : (
                           <span className="flex items-center gap-1 text-muted-foreground/70 text-xs">
                             <Cpu className="h-3 w-3 animate-pulse" />
@@ -285,9 +273,7 @@ export function JobDetail({ id }: JobDetailProps) {
           </Card>
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-5">
-          {/* Stats */}
           <Card className="border-border shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="font-semibold text-sm">
@@ -304,9 +290,7 @@ export function JobDetail({ id }: JobDetailProps) {
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground text-sm">
-                  Screened
-                </span>
+                <span className="text-muted-foreground text-sm">Screened</span>
                 <span className="font-bold text-foreground text-sm">
                   {screenedApplicants.length}
                 </span>
@@ -323,7 +307,7 @@ export function JobDetail({ id }: JobDetailProps) {
                 <span className="text-muted-foreground text-sm">
                   Shortlisted
                 </span>
-                <span className="font-bold text-success text-sm">
+                <span className="font-bold text-sm text-success">
                   {
                     jobApplicants.filter((a) => a.status === "shortlisted")
                       .length
@@ -333,7 +317,6 @@ export function JobDetail({ id }: JobDetailProps) {
             </CardContent>
           </Card>
 
-          {/* Salary */}
           {(job.salaryMin || job.salaryMax) && (
             <Card className="border-border shadow-sm">
               <CardHeader className="pb-3">
@@ -346,7 +329,9 @@ export function JobDetail({ id }: JobDetailProps) {
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                   <span className="font-bold text-foreground text-lg">
                     {job.salaryMin?.toLocaleString()}
-                    {job.salaryMax ? ` – ${job.salaryMax.toLocaleString()}` : "+"}
+                    {job.salaryMax
+                      ? ` – ${job.salaryMax.toLocaleString()}`
+                      : "+"}
                   </span>
                   <span className="text-muted-foreground text-sm">
                     {job.currency}/yr
@@ -356,7 +341,6 @@ export function JobDetail({ id }: JobDetailProps) {
             </Card>
           )}
 
-          {/* Score Distribution */}
           {screenedApplicants.length > 0 && (
             <Card className="border-border bg-foreground shadow-sm">
               <CardContent className="p-5">

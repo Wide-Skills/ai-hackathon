@@ -20,14 +20,17 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
   const screened = applicants.filter((a) => a.screening);
 
   // Group by date
-  const grouped = screened.reduce((acc, a) => {
-    const date = new Date(a.appliedAt).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    });
-    acc[date] = (acc[date] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const grouped = screened.reduce(
+    (acc, a) => {
+      const date = new Date(a.appliedAt).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      acc[date] = (acc[date] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const data = Object.entries(grouped)
     .map(([date, count]) => ({ date, count }))
@@ -37,8 +40,12 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
   return (
     <Card className="border-border shadow-sm">
       <CardHeader className="pb-2">
-        <CardTitle className="font-semibold text-sm">Screening Activity</CardTitle>
-        <p className="text-muted-foreground text-xs">Candidates screened over the last 7 active days</p>
+        <CardTitle className="font-semibold text-sm">
+          Screening Activity
+        </CardTitle>
+        <p className="text-muted-foreground text-xs">
+          Candidates screened over the last 7 active days
+        </p>
       </CardHeader>
       <CardContent>
         <div className="h-48">
@@ -46,8 +53,16 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0} />
+                  <stop
+                    offset="5%"
+                    stopColor="var(--color-primary)"
+                    stopOpacity={0.3}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor="var(--color-primary)"
+                    stopOpacity={0}
+                  />
                 </linearGradient>
               </defs>
               <CartesianGrid

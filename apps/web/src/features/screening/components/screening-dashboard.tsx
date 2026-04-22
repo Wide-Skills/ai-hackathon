@@ -77,9 +77,10 @@ export function ScreeningDashboard() {
   };
 
   const handleRunScreening = async () => {
-    const pendingToScreen = selectedJob === "all"
-      ? pending
-      : pending.filter((a) => a.jobId === selectedJob);
+    const pendingToScreen =
+      selectedJob === "all"
+        ? pending
+        : pending.filter((a) => a.jobId === selectedJob);
 
     if (pendingToScreen.length === 0) {
       toast.info("No pending candidates to screen.");
@@ -117,9 +118,7 @@ export function ScreeningDashboard() {
         `Screened ${completed} candidates. ${errors.length} failed.`,
       );
     } else {
-      toast.success(
-        `AI screening complete! Analyzed ${completed} candidates.`,
-      );
+      toast.success(`AI screening complete! Analyzed ${completed} candidates.`);
     }
   };
 
@@ -234,7 +233,8 @@ export function ScreeningDashboard() {
               >
                 {running ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Screening... {progress}%
+                    <Loader2 className="h-4 w-4 animate-spin" /> Screening...{" "}
+                    {progress}%
                   </>
                 ) : (
                   <>

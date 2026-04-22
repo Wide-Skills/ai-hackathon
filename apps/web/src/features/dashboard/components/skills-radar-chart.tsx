@@ -20,7 +20,9 @@ export function SkillsRadarChart({ applicants }: SkillsRadarChartProps) {
 
   // Aggregate skill scores from the best candidates
   const topCandidates = screened
-    .sort((a, b) => (b.screening?.matchScore ?? 0) - (a.screening?.matchScore ?? 0))
+    .sort(
+      (a, b) => (b.screening?.matchScore ?? 0) - (a.screening?.matchScore ?? 0),
+    )
     .slice(0, 5);
 
   const skillsMap: Record<string, number[]> = {};
@@ -44,8 +46,12 @@ export function SkillsRadarChart({ applicants }: SkillsRadarChartProps) {
   return (
     <Card className="border-border shadow-sm">
       <CardHeader className="pb-2">
-        <CardTitle className="font-semibold text-sm">Talent Skill Matrix</CardTitle>
-        <p className="text-muted-foreground text-xs">Average skill breakdown of top 5 match candidates</p>
+        <CardTitle className="font-semibold text-sm">
+          Talent Skill Matrix
+        </CardTitle>
+        <p className="text-muted-foreground text-xs">
+          Average skill breakdown of top 5 match candidates
+        </p>
       </CardHeader>
       <CardContent>
         <div className="h-64">

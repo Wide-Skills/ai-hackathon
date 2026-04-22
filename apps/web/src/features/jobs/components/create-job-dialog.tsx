@@ -108,10 +108,7 @@ export function CreateJobDialog({ trigger }: CreateJobDialogProps) {
     }));
   };
 
-  const handleKeyDown = (
-    e: React.KeyboardEvent,
-    action: () => void,
-  ) => {
+  const handleKeyDown = (e: React.KeyboardEvent, action: () => void) => {
     if (e.key === "Enter") {
       e.preventDefault();
       action();
@@ -189,7 +186,6 @@ export function CreateJobDialog({ trigger }: CreateJobDialogProps) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-5">
-          {/* Title & Department */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label className="font-medium text-sm">
@@ -217,7 +213,6 @@ export function CreateJobDialog({ trigger }: CreateJobDialogProps) {
             </div>
           </div>
 
-          {/* Description */}
           <div className="space-y-1.5">
             <Label className="font-medium text-sm">
               Description <span className="text-destructive">*</span>
@@ -232,7 +227,6 @@ export function CreateJobDialog({ trigger }: CreateJobDialogProps) {
             />
           </div>
 
-          {/* Location & Type */}
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-1.5">
               <Label className="font-medium text-sm">Location</Label>
@@ -290,7 +284,6 @@ export function CreateJobDialog({ trigger }: CreateJobDialogProps) {
             </div>
           </div>
 
-          {/* Requirements */}
           <div className="space-y-1.5">
             <Label className="font-medium text-sm">
               Requirements <span className="text-destructive">*</span>
@@ -335,7 +328,6 @@ export function CreateJobDialog({ trigger }: CreateJobDialogProps) {
             )}
           </div>
 
-          {/* Skills */}
           <div className="space-y-1.5">
             <Label className="font-medium text-sm">Skills (tags)</Label>
             <div className="flex gap-2">
@@ -378,7 +370,6 @@ export function CreateJobDialog({ trigger }: CreateJobDialogProps) {
             )}
           </div>
 
-          {/* Salary Range */}
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-1.5">
               <Label className="font-medium text-sm">Min Salary</Label>
@@ -417,7 +408,6 @@ export function CreateJobDialog({ trigger }: CreateJobDialogProps) {
             </div>
           </div>
 
-          {/* Submit */}
           <div className="flex justify-end gap-3 pt-2">
             <Button
               type="button"

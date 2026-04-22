@@ -47,7 +47,9 @@ function parseCSV(text: string): ParsedCandidate[] {
   const lines = text.trim().split("\n");
   if (lines.length < 2) return [];
 
-  const headers = lines[0].split(",").map((h) => h.trim().toLowerCase().replace(/['"]/g, ""));
+  const headers = lines[0]
+    .split(",")
+    .map((h) => h.trim().toLowerCase().replace(/['"]/g, ""));
 
   const firstNameIdx = headers.findIndex((h) =>
     ["firstname", "first_name", "first name", "fname"].includes(h),
@@ -76,7 +78,9 @@ function parseCSV(text: string): ParsedCandidate[] {
   const candidates: ParsedCandidate[] = [];
 
   for (let i = 1; i < lines.length; i++) {
-    const values = lines[i].split(",").map((v) => v.trim().replace(/^["']|["']$/g, ""));
+    const values = lines[i]
+      .split(",")
+      .map((v) => v.trim().replace(/^["']|["']$/g, ""));
     if (values.length < 2) continue;
 
     let firstName = "";
@@ -107,7 +111,10 @@ function parseCSV(text: string): ParsedCandidate[] {
       candidate.location = values[locationIdx];
     }
     if (skillsIdx >= 0 && values[skillsIdx]) {
-      candidate.skills = values[skillsIdx].split(/[;|]/).map((s) => s.trim()).filter(Boolean);
+      candidate.skills = values[skillsIdx]
+        .split(/[;|]/)
+        .map((s) => s.trim())
+        .filter(Boolean);
     }
 
     candidates.push(candidate);
@@ -116,7 +123,9 @@ function parseCSV(text: string): ParsedCandidate[] {
   return candidates;
 }
 
-export function UploadCandidatesDialog({ trigger }: UploadCandidatesDialogProps) {
+export function UploadCandidatesDialog({
+  trigger,
+}: UploadCandidatesDialogProps) {
   const [open, setOpen] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string>("");
   const [candidates, setCandidates] = useState<ParsedCandidate[]>([]);
@@ -128,9 +137,7 @@ export function UploadCandidatesDialog({ trigger }: UploadCandidatesDialogProps)
 
   const { data: jobs = [] } = useQuery(trpc.jobs.list.queryOptions());
 
-  const createApplicant = useMutation(
-    trpc.applicants.create.mutationOptions(),
-  );
+  const createApplicant = useMutation(trpc.applicants.create.mutationOptions());
 
   const handleFile = useCallback((file: File) => {
     if (!file.name.endsWith(".csv")) {
@@ -258,12 +265,14 @@ export function UploadCandidatesDialog({ trigger }: UploadCandidatesDialogProps)
         </DialogHeader>
 
         <div className="mt-4 space-y-5">
-          {/* Job Selector */}
           <div className="space-y-1.5">
             <label className="font-medium text-sm">
               Target Position <span className="text-destructive">*</span>
             </label>
-            <Select value={selectedJobId} onValueChange={(val) => setSelectedJobId(val ?? "")}>
+            <Select
+              value={selectedJobId}
+              onValueChange={(val) => setSelectedJobId(val ?? "")}
+            >
               <SelectTrigger className="h-9 border-border text-sm">
                 <SelectValue placeholder="Select a job position..." />
               </SelectTrigger>
@@ -277,7 +286,6 @@ export function UploadCandidatesDialog({ trigger }: UploadCandidatesDialogProps)
             </Select>
           </div>
 
-          {/* Drop Zone */}
           {candidates.length === 0 ? (
             <div
               onDrop={handleDrop}
@@ -302,7 +310,9 @@ export function UploadCandidatesDialog({ trigger }: UploadCandidatesDialogProps)
               </p>
               <p className="mt-3 rounded-lg bg-muted px-3 py-1.5 text-muted-foreground text-xs">
                 Required columns:{" "}
-                <span className="font-semibold">first_name, last_name, email</span>
+                <span className="font-semibold">
+                  first_name, last_name, email
+                </span>
               </p>
               <input
                 ref={fileInputRef}
@@ -317,7 +327,6 @@ export function UploadCandidatesDialog({ trigger }: UploadCandidatesDialogProps)
             </div>
           ) : (
             <div className="space-y-3">
-              {/* File info */}
               <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
                 <div className="flex items-center gap-3">
                   <FileSpreadsheet className="h-5 w-5 text-primary" />
@@ -338,11 +347,10 @@ export function UploadCandidatesDialog({ trigger }: UploadCandidatesDialogProps)
                 </button>
               </div>
 
-              {/* Preview */}
               <div className="max-h-52 overflow-y-auto rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-muted/30">
+                    <tr className="border-border border-b bg-muted/30">
                       <th className="px-3 py-2 text-left font-semibold text-muted-foreground text-xs">
                         Name
                       </th>
@@ -387,7 +395,6 @@ export function UploadCandidatesDialog({ trigger }: UploadCandidatesDialogProps)
                 )}
               </div>
 
-              {/* Status */}
               <div className="flex items-center gap-2 rounded-lg bg-success/10 px-3 py-2">
                 <CheckCircle2 className="h-4 w-4 text-success" />
                 <p className="font-medium text-sm text-success">
@@ -397,7 +404,6 @@ export function UploadCandidatesDialog({ trigger }: UploadCandidatesDialogProps)
             </div>
           )}
 
-          {/* Actions */}
           <div className="flex justify-end gap-3 pt-2">
             <Button
               variant="outline"
@@ -425,18 +431,29 @@ export function UploadCandidatesDialog({ trigger }: UploadCandidatesDialogProps)
             </Button>
           </div>
 
-          {/* Help */}
           <div className="flex items-start gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2">
             <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground/50" />
             <p className="text-muted-foreground text-xs leading-relaxed">
               Your CSV should have headers like{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">first_name</code>,{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">last_name</code>,{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">email</code>.
-              Optional:{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">headline</code>,{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">location</code>,{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">skills</code> (semicolon-separated).
+              <code className="rounded bg-muted px-1 text-[10px]">
+                first_name
+              </code>
+              ,{" "}
+              <code className="rounded bg-muted px-1 text-[10px]">
+                last_name
+              </code>
+              , <code className="rounded bg-muted px-1 text-[10px]">email</code>
+              . Optional:{" "}
+              <code className="rounded bg-muted px-1 text-[10px]">
+                headline
+              </code>
+              ,{" "}
+              <code className="rounded bg-muted px-1 text-[10px]">
+                location
+              </code>
+              ,{" "}
+              <code className="rounded bg-muted px-1 text-[10px]">skills</code>{" "}
+              (semicolon-separated).
             </p>
           </div>
         </div>

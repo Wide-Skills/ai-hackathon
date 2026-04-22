@@ -9,12 +9,12 @@ import {
   MapPin,
   MoveVertical as MoreVertical,
 } from "lucide-react";
+import type { Route } from "next";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import type { Route } from "next";
-import { useRouter } from "next/navigation";
 
 const statusConfig: Record<
   JobStatus,
@@ -50,11 +50,11 @@ export function JobCard({ job }: JobCardProps) {
       : 0;
 
   return (
-    <div 
+    <div
       onClick={() => router.push(`/dashboard/jobs/${job.id}` as Route)}
-      className="block cursor-pointer group"
+      className="group block cursor-pointer"
     >
-      <Card className="border-border shadow-sm transition-all duration-200 hover:shadow-md hover:border-primary/20">
+      <Card className="border-border shadow-sm transition-all duration-200 hover:border-primary/20 hover:shadow-md">
         <CardContent className="p-6">
           <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 flex-1 items-start gap-3">
@@ -99,7 +99,7 @@ export function JobCard({ job }: JobCardProps) {
                 </div>
               </div>
             </div>
-            <button 
+            <button
               onClick={(e) => {
                 e.stopPropagation();
               }}
@@ -161,7 +161,7 @@ export function JobCard({ job }: JobCardProps) {
               </div>
             </div>
 
-            <Link 
+            <Link
               href={`/dashboard/applicants?job=${job.id}` as Route}
               onClick={(e) => e.stopPropagation()}
             >

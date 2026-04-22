@@ -2,11 +2,10 @@
 
 import { Bell, Plus, Search } from "lucide-react";
 import type { Route } from "next";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useDispatch } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useDispatch } from "react-redux";
 import { setCreateModalOpen } from "@/store/slices/jobsSlice";
 
 const pageInfo: Record<
@@ -82,11 +81,14 @@ export default function Header() {
           <Button
             size="sm"
             onClick={() => {
-              if (info.action?.label === "Post a Job" || info.action?.label === "New Job") {
+              if (
+                info.action?.label === "Post a Job" ||
+                info.action?.label === "New Job"
+              ) {
                 dispatch(setCreateModalOpen(true));
               }
             }}
-            className="h-9 gap-1.5 rounded-lg bg-primary font-semibold text-primary-foreground text-sm hover:bg-primary/90 animate-in fade-in slide-in-from-right-4 duration-500"
+            className="fade-in slide-in-from-right-4 h-9 animate-in gap-1.5 rounded-lg bg-primary font-semibold text-primary-foreground text-sm duration-500 hover:bg-primary/90"
           >
             <Plus className="h-3.5 w-3.5" />
             {info.action.label}

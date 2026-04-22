@@ -15,8 +15,8 @@ import {
   SlidersHorizontal,
   Users,
 } from "lucide-react";
-import Link from "next/link";
 import type { Route } from "next";
+import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -319,7 +319,9 @@ export function ApplicantsList() {
                       </span>
                     </td>
                     <td className="px-4 py-4">
-                      <Link href={`/dashboard/applicants/${applicant.id}` as Route}>
+                      <Link
+                        href={`/dashboard/applicants/${applicant.id}` as Route}
+                      >
                         <Button
                           size="sm"
                           variant="ghost"
