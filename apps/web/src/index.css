@@ -5,39 +5,52 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #FFFFFF;
-  --foreground: #000000;
+  /* Core Foundation */
+  --background: oklch(100% 0 0);
+  --foreground: oklch(15% 0 0);
   
-  --card: #FFFFFF;
-  --card-foreground: #000000;
-  --popover: #FFFFFF;
-  --popover-foreground: #000000;
+  /* Component Surfaces */
+  --card: oklch(100% 0 0);
+  --card-foreground: oklch(15% 0 0);
+  --popover: oklch(100% 0 0);
+  --popover-foreground: oklch(15% 0 0);
   
-  --primary: #000000;
-  --primary-foreground: #FFFFFF;
+  /* Brand/Action - Quiet & Powerful */
+  --primary: oklch(15% 0 0);
+  --primary-foreground: oklch(100% 0 0);
   
-  --secondary: #F8F8F8;
-  --secondary-foreground: #000000;
+  --secondary: oklch(98% 0.002 40); /* Subtle warm tint */
+  --secondary-foreground: oklch(25% 0 0);
   
-  --muted: #F5F5F5;
-  --muted-foreground: #777169;
+  --muted: oklch(97% 0 0);
+  --muted-foreground: oklch(50% 0.005 40);
   
-  --accent: rgba(245, 242, 239, 0.6);
-  --accent-foreground: #000000;
+  --accent: oklch(96% 0.01 60); /* Signature Stone */
+  --accent-foreground: oklch(15% 0.01 60);
   
-  --destructive: oklch(0.58 0.22 27);
-  --destructive-foreground: oklch(0.98 0.02 201);
+  /* Precision Palette */
+  --success: oklch(65% 0.08 150);
+  --success-foreground: oklch(25% 0.04 150);
+  --info: oklch(65% 0.08 250);
+  --info-foreground: oklch(25% 0.04 250);
+  --warning: oklch(65% 0.08 60);
+  --warning-foreground: oklch(25% 0.04 60);
   
-  --border: rgba(0, 0, 0, 0.04);
-  --input: rgba(0, 0, 0, 0.04);
-  --ring: rgba(0, 0, 0, 0.08);
+  --destructive: oklch(60% 0.12 25);
+  --destructive-foreground: oklch(98% 0.02 25);
+  
+  /* Interface Tokens */
+  --border: oklch(0% 0 0 / 0.04);
+  --input: oklch(0% 0 0 / 0.04);
+  --ring: oklch(0% 0 0 / 0.08);
   
   --radius: 12px;
 
-  --shadow-inset: inset 0 0 0 0.5px rgba(0, 0, 0, 0.075);
-  --shadow-outline: 0 0 0 1px rgba(0, 0, 0, 0.06);
-  --shadow-elevation: 0 4px 12px rgba(0, 0, 0, 0.03);
-  --shadow-warm: 0 8px 24px rgba(78, 50, 23, 0.04);
+  /* Elevation Utilities */
+  --shadow-inset: inset 0 0 0 0.5px oklch(0% 0 0 / 0.075);
+  --shadow-outline: 0 0 0 1px oklch(0% 0 0 / 0.06);
+  --shadow-elevation: 0 4px 12px oklch(0% 0 0 / 0.03);
+  --shadow-warm: 0 8px 24px oklch(15% 0.01 60 / 0.04);
 }
 
 .dark {
@@ -84,6 +97,12 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -153,15 +172,15 @@
   }
 
   .btn-pill-primary {
-    @apply h-[56px] rounded-full bg-black px-10 text-[15px] font-medium text-white transition-transform duration-200 ease-out active:scale-[0.97] shadow-sm flex items-center justify-center;
+    @apply h-[56px] rounded-full bg-primary px-10 text-[15px] text-primary-foreground transition-transform duration-200 ease-out active:scale-[0.97] shadow-sm flex items-center justify-center;
   }
 
   .btn-pill-warm {
-    @apply h-[52px] rounded-[30px] bg-accent px-10 text-[15px] font-medium text-accent-foreground shadow-ethereal transition-transform duration-200 ease-out active:scale-[0.97] flex items-center justify-center;
+    @apply h-[52px] rounded-[30px] bg-accent px-10 text-[15px] text-accent-foreground shadow-ethereal transition-transform duration-200 ease-out active:scale-[0.97] flex items-center justify-center;
     box-shadow: 0 6px 16px rgba(78, 50, 23, 0.04), inset 0 0 0 0.5px rgba(0,0,0,0.075);
   }
 
   .btn-pill-outline {
-    @apply h-[52px] rounded-full bg-white border border-border px-10 text-[15px] font-medium text-black transition-transform duration-200 ease-out active:scale-[0.97] shadow-sm flex items-center justify-center;
+    @apply h-[52px] rounded-full bg-white border border-border px-10 text-[15px] text-foreground transition-transform duration-200 ease-out active:scale-[0.97] shadow-sm flex items-center justify-center;
   }
 }

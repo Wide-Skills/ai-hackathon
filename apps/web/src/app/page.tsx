@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen overflow-x-hidden selection:bg-[#f5f2ef] selection:text-black">
+    <main className="relative min-h-screen overflow-x-hidden selection:bg-secondary selection:text-foreground">
       <div className="relative z-10 flex flex-col min-h-screen">
         <Navbar />
         
@@ -18,7 +18,7 @@ export default function Home() {
         
         <Features />
         
-        <section className="py-[160px] px-[32px] bg-white/40 backdrop-blur-md text-center border-t border-black/[0.03]">
+        <section className="py-[120px] px-[32px] bg-secondary/30 text-center border-t border-border">
           <div className="mx-auto max-w-[1000px]">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -26,19 +26,19 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <h2 className="font-display text-black mb-8 text-[40px] md:text-[72px] font-light leading-[1.05] tracking-tight">
+              <h2 className="font-display text-foreground mb-6 text-[36px] md:text-[64px] font-light leading-[1.05] tracking-tight">
                 Hire with <br />
-                <span className="text-[#777169] italic">absolute confidence.</span>
+                <span className="text-muted-foreground">absolute confidence.</span>
               </h2>
-              <p className="text-[#4E4E4E] text-[18px] mb-12 max-w-[540px] mx-auto leading-relaxed tracking-[0.14px]">
+              <p className="text-muted-foreground text-[17px] mb-10 max-w-[480px] mx-auto leading-relaxed tracking-[0.1px]">
                 Join modern recruitment teams using Umurava AI to 
-                shortlist the top 1% of talent in minutes, not weeks.
+                shortlist the top 1% of talent in minutes.
               </p>
-              <div className="flex flex-wrap items-center justify-center gap-6">
-                <button className="btn-pill-primary px-10 h-[56px] text-[15px]">
+              <div className="flex flex-wrap items-center justify-center gap-5">
+                <button className="btn-pill-primary px-10 h-[52px] text-[15px]">
                   Get Started for Free
                 </button>
-                <button className="btn-pill-warm px-10 h-[56px] text-[15px]">
+                <button className="border shadow-sm rounded-full h-[52px] px-10 text-[15px]">
                   Schedule a Demo
                 </button>
               </div>
