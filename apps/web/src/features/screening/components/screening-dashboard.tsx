@@ -30,7 +30,7 @@ export function ScreeningDashboard() {
   const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
 
   const screenMutation = useMutation(
-    trpc.screenings.generateMock.mutationOptions(),
+    trpc.screenings.generate.mutationOptions(),
   );
 
   const applicants = applicantsQuery.data ?? [];

@@ -37,50 +37,48 @@ export function ScoreDistributionChart({
   }));
 
   return (
-    
-        <div className="h-48 mt-6">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data} barSize={32}>
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke="var(--color-border)"
-              />
-              <XAxis
-                dataKey="range"
-                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 500, letterSpacing: "0.05em" }}
-                axisLine={false}
-                tickLine={false}
-                dy={10}
-              />
-              <YAxis
-                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 500, letterSpacing: "0.05em" }}
-                axisLine={false}
-                tickLine={false}
-                allowDecimals={false}
-              />
-              <Tooltip
-                contentStyle={{
-                  background: "var(--color-card)",
-                  border: "1px solid var(--color-border)",
-                  borderRadius: "16px",
-                  fontSize: "11px",
-                  fontWeight: 500,
-                  boxShadow: "0 0 0 1px rgba(0,0,0,0.06), 0 4px 4px rgba(0,0,0,0.04), inset 0 0 0 0.5px rgba(0,0,0,0.075)",
-                  padding: "10px 14px"
-                }}
-                cursor={{ fill: "var(--color-secondary)", opacity: 0.4 }}
-              />
-              <Bar
-                dataKey="count"
-                fill="var(--color-info)"
-                fillOpacity={0.4}
-                radius={[6, 6, 0, 0]}
-                name="Experts"
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-    
+    <div className="w-full h-full min-h-[300px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data} barSize={40} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <CartesianGrid
+            strokeDasharray="3 3"
+            vertical={false}
+            stroke="rgba(0,0,0,0.03)"
+          />
+          <XAxis
+            dataKey="range"
+            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 600, letterSpacing: "0.05em", opacity: 0.5 }}
+            axisLine={false}
+            tickLine={false}
+            dy={15}
+          />
+          <YAxis
+            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 600, letterSpacing: "0.05em", opacity: 0.5 }}
+            axisLine={false}
+            tickLine={false}
+            allowDecimals={false}
+          />
+          <Tooltip
+            contentStyle={{
+              background: "white",
+              border: "1px solid rgba(0,0,0,0.05)",
+              borderRadius: "12px",
+              fontSize: "11px",
+              fontWeight: 700,
+              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+              padding: "8px 12px"
+            }}
+            cursor={{ fill: "rgba(0,0,0,0.02)", radius: 6 }}
+          />
+          <Bar
+            dataKey="count"
+            fill="var(--color-info)"
+            fillOpacity={0.5}
+            radius={[4, 4, 0, 0]}
+            name="Candidates"
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

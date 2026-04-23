@@ -34,14 +34,15 @@ export function serializeApplicant(doc: MongoDocument<ApplicantDocument>) {
     ...applicant,
     id: stringifyId(applicant._id),
     jobId: stringifyId(applicant.jobId),
-    screening: applicant.screening
-      ? {
-          ...applicant.screening,
-          strengths: applicant.screening.strengths ?? [],
-          gaps: applicant.screening.gaps ?? [],
-          skillBreakdown: applicant.screening.skillBreakdown ?? [],
-        }
-      : undefined,
+    screening:
+      applicant.screening && typeof applicant.screening.matchScore === "number"
+        ? {
+            ...applicant.screening,
+            strengths: applicant.screening.strengths ?? [],
+            gaps: applicant.screening.gaps ?? [],
+            skillBreakdown: applicant.screening.skillBreakdown ?? [],
+          }
+        : undefined,
   });
 
   if (!result.success) {

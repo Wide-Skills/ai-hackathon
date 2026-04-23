@@ -91,17 +91,20 @@ const applicantSchema = new Schema(
       twitter: String,
     },
     screening: {
-      matchScore: Number,
-      strengths: [String],
-      gaps: [String],
-      recommendation: String,
-      summary: String,
-      skillBreakdown: [
-        {
-          skill: String,
-          score: Number,
-        },
-      ],
+      type: {
+        matchScore: Number,
+        strengths: [String],
+        gaps: [String],
+        recommendation: String,
+        summary: String,
+        skillBreakdown: [
+          {
+            skill: String,
+            score: Number,
+          },
+        ],
+      },
+      default: undefined,
     },
   },
   { timestamps: true },

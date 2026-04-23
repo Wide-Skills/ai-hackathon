@@ -44,10 +44,45 @@ const ScreeningResult = Object.assign(
   },
 );
 
+vi.mock("@ai-hackathon/env/server", () => ({
+  env: {
+    DATABASE_URL: "mongodb://localhost:27017/test",
+    CORS_ORIGIN: "http://localhost:3000",
+    RESEND_API_KEY: "re_test",
+  },
+}));
+
 vi.mock("@ai-hackathon/db", () => ({
   Applicant,
   Job,
   ScreeningResult,
+}));
+
+vi.mock("@ai-hackathon/auth/email", () => ({
+  sendApplicationReceivedEmail: vi.fn().mockResolvedValue({ success: true }),
+  sendScreeningCompletedEmail: vi.fn().mockResolvedValue({ success: true }),
+}));
+
+vi.mock("ai", () => ({
+  generateText: vi.fn().mockResolvedValue({
+    output: {
+      applicantId: "applicant-1",
+      jobId: "job-1",
+      matchScore: 85,
+      strengths: ["Strength 1"],
+      gaps: ["Gap 1"],
+      recommendation: "Strongly Recommend",
+      summary: "Fits well",
+      skillBreakdown: [
+        { skill: "typescript", score: 90 },
+        { skill: "postgresql", score: 80 },
+        { skill: "docker", score: 85 },
+      ],
+    },
+  }),
+  Output: {
+    object: vi.fn(),
+  },
 }));
 
 const { screeningRouter } = await import("../src/routers/screening.router");
@@ -109,19 +144,15 @@ describe("screening flow", () => {
         _id: new Types.ObjectId(),
         applicantId: "applicant-1",
         jobId: "job-1",
-        matchScore: 80,
-        strengths: [
-          "Matched requirement: typescript",
-          "Matched requirement: postgresql",
-        ],
-        gaps: ["Missing signal: docker"],
-        recommendation: "Recommend",
-        summary:
-          "Ada aligns with 2 core requirements for Senior Platform Engineer.",
+        matchScore: 85,
+        strengths: ["Strength 1"],
+        gaps: ["Gap 1"],
+        recommendation: "Strongly Recommend",
+        summary: "Fits well",
         skillBreakdown: [
-          { skill: "typescript", score: 92 },
-          { skill: "postgresql", score: 92 },
-          { skill: "docker", score: 38 },
+          { skill: "typescript", score: 90 },
+          { skill: "postgresql", score: 80 },
+          { skill: "docker", score: 85 },
         ],
         createdAt: new Date("2026-04-15T00:00:00.000Z"),
         updatedAt: new Date("2026-04-15T00:00:00.000Z"),
@@ -134,7 +165,7 @@ describe("screening flow", () => {
   it("creates a screening result and synchronizes applicant and job state", async () => {
     const caller = screeningRouter.createCaller(authedContext);
 
-    const result = await caller.generateMock({
+    const result = await caller.generate({
       applicantId: "applicant-1",
       jobId: "job-1",
     });
@@ -149,7 +180,7 @@ describe("screening flow", () => {
     expect(applicantFindByIdAndUpdateMock).toHaveBeenCalledWith(
       "applicant-1",
       expect.objectContaining({
-        status: "screening",
+        status: "shortlisted",
       }),
     );
     expect(jobFindByIdAndUpdateMock).toHaveBeenCalledWith("job-1", {
@@ -157,7 +188,7 @@ describe("screening flow", () => {
       screenedCount: 2,
       shortlistedCount: 1,
     });
-    expect(result.recommendation).toBe("Recommend");
+    expect(result.recommendation).toBe("Strongly Recommend");
     expect(result.skillBreakdown).toHaveLength(3);
   });
 });

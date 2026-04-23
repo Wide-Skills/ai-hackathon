@@ -5,7 +5,7 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import * as pdf from "pdf-parse";
+import { PDFParse } from "pdf-parse";
 
 @Controller("applicants")
 export class ApplicantsController {
@@ -16,18 +16,30 @@ export class ApplicantsController {
       return { error: "No file uploaded" };
     }
 
+    let parser: PDFParse | null = null;
     try {
-      // @ts-ignore - pdf-parse types are sometimes tricky with esm
-      const data = await pdf.default(file.buffer);
+      // Create a new parser instance with the file buffer
+      // Following pdf-parse v2 documentation
+      parser = new PDFParse({ data: file.buffer });
+      
+      const textResult = await parser.getText();
+      
       return {
-        text: data.text,
-        info: data.info,
-        metadata: data.metadata,
-        numpages: data.numpages,
+        text: textResult.text,
+        numpages: textResult.total,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error("PDF Parsing Error:", error);
-      return { error: "Failed to parse PDF" };
+      return { 
+        error: "Failed to parse PDF", 
+        message: error.message,
+        details: typeof error === 'string' ? error : JSON.stringify(error)
+      };
+    } finally {
+      // Free memory as recommended in documentation
+      if (parser) {
+        await parser.destroy();
+      }
     }
   }
 }

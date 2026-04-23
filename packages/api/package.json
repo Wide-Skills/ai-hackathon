@@ -18,10 +18,10 @@
     "@ai-hackathon/db": "workspace:*",
     "@ai-hackathon/env": "workspace:*",
     "@ai-hackathon/shared": "workspace:^",
-    "@ai-sdk/google": "^1.1.13",
+    "@ai-sdk/google": "^3.0.64",
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
-    "ai": "^6.0.146",
+    "ai": "^6.0.168",
     "dotenv": "catalog:",
     "mongoose": "catalog:",
     "zod": "catalog:"

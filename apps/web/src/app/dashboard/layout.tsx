@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { AppSidebar } from "@/components/layouts/app-sidebar";
 import Header from "@/components/layouts/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { CreateJobDialog } from "@/features/jobs/components/create-job-dialog";
 
 export default async function DashboardLayout({
   children,
@@ -31,7 +30,6 @@ export default async function DashboardLayout({
             </div>
           </main>
         </SidebarInset>
-        <CreateJobDialog trigger={<span className="hidden" />} />
       </div>
     </SidebarProvider>
   );

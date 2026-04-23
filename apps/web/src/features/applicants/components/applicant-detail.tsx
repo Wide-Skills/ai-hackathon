@@ -13,6 +13,7 @@ import { AIAnalysisCard } from "./ai-analysis-card";
 import { EducationCard } from "./education-card";
 import { CertificationsCard } from "./certifications-card";
 import { ProjectsCard } from "./projects-card";
+import { LanguagesCard } from "./languages-card";
 
 interface ApplicantDetailProps {
   id: string;
@@ -93,7 +94,10 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <ExperienceCard experience={applicant.experience} />
-            <SkillsCard skills={applicant.skills} />
+            <div className="space-y-12">
+               <SkillsCard skills={applicant.skills} />
+               <LanguagesCard languages={applicant.languages} />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">

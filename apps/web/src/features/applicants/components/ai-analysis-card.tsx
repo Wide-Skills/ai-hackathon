@@ -16,19 +16,19 @@ interface AIAnalysisCardProps {
 
 const recommendationConfig = {
   "Strongly Recommend": {
-    color: "text-success-foreground bg-success/5 border-success/10",
+    color: "text-success bg-success/10 border-success/20",
     icon: CheckCircle2,
   },
   Recommend: {
-    color: "text-info-foreground bg-info/5 border-info/10",
+    color: "text-info bg-info/10 border-info/20",
     icon: ThumbsUp,
   },
   Consider: {
-    color: "text-warning-foreground bg-warning/5 border-warning/10",
+    color: "text-warning bg-warning/10 border-warning/20",
     icon: ThumbsUp,
   },
   "Not Recommended": {
-    color: "text-destructive-foreground bg-destructive/5 border-destructive/10",
+    color: "text-destructive bg-destructive/10 border-destructive/20",
     icon: XCircle,
   },
 };

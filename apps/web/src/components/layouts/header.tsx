@@ -2,10 +2,8 @@
 
 import { Bell, Plus, Search } from "lucide-react";
 import type { Route } from "next";
-import { usePathname } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { usePathname, useRouter } from "next/navigation";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { setCreateModalOpen } from "@/store/slices/jobsSlice";
 
 const pageInfo: Record<
   string,
@@ -18,12 +16,12 @@ const pageInfo: Record<
   "/dashboard": {
     title: "Overview",
     description: "Your recruitment pipeline at a glance",
-    action: { label: "Post a Job", href: "/dashboard/jobs" },
+    action: { label: "Post a Job", href: "/dashboard/jobs/new" },
   },
   "/dashboard/jobs": {
     title: "Job Postings",
     description: "Manage your open positions",
-    action: { label: "New Job", href: "/dashboard/jobs" },
+    action: { label: "New Job", href: "/dashboard/jobs/new" },
   },
   "/dashboard/applicants": {
     title: "Applicants",
@@ -45,7 +43,7 @@ const pageInfo: Record<
 
 export default function Header() {
   const pathname = usePathname();
-  const dispatch = useDispatch();
+  const router = useRouter();
 
   const currentPage = Object.entries(pageInfo)
     .sort((a, b) => b[0].length - a[0].length)
@@ -87,11 +85,8 @@ export default function Header() {
         {info.action && (
           <button
             onClick={() => {
-              if (
-                info.action?.label === "Post a Job" ||
-                info.action?.label === "New Job"
-              ) {
-                dispatch(setCreateModalOpen(true));
+              if (info.action?.href) {
+                router.push(info.action.href);
               }
             }}
             className="btn-pill-primary h-10 px-6 text-[13px]"

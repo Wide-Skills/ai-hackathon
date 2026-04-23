@@ -1,11 +1,12 @@
 "use client";
 
 import type { ApplicationStatus } from "@ai-hackathon/shared";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
+  BrainCircuit,
   Briefcase,
   ChevronRight,
   Cpu,
@@ -16,10 +17,12 @@ import {
   RefreshCw,
   LayoutGrid,
   List,
+  Loader2,
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { QueryEmptyState, QueryErrorState } from "@/components/data/query-state";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import {
@@ -31,11 +34,18 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { trpc } from "@/utils/trpc";
+import { invalidateHiringData, trpc } from "@/utils/trpc";
 import { ScoreBadge } from "@/features/dashboard/components/score-badge";
 import { UploadCandidatesDialog } from "./upload-candidates-dialog";
 import { ApplicantsTable } from "./applicants-table";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const statusConfig: Record<
   ApplicationStatus,
@@ -61,6 +71,10 @@ const statusConfig: Record<
     label: "Hired",
     color: "text-info-foreground bg-info/5 border-info/10",
   },
+  failed: {
+    label: "Failed",
+    color: "text-destructive bg-destructive/10 border-destructive/20",
+  },
 };
 
 type SortField = "score" | "name" | "applied";
@@ -74,13 +88,17 @@ function isStatusFilter(value: string): value is ApplicationStatus | "all" {
     "shortlisted",
     "rejected",
     "hired",
+    "failed",
   ].includes(value);
 }
 
 export function ApplicantsList() {
+  const searchParams = useSearchParams();
+  const initialJobId = searchParams.get("job") ?? "all";
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [jobFilter, setJobFilter] = useState<string>("all");
+  const [jobFilter, setJobFilter] = useState<string>(initialJobId);
   const [sortField, setSortField] = useState<SortField>("score");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [view, setView] = useState<"grid" | "table">("grid");
@@ -91,6 +109,26 @@ export function ApplicantsList() {
   const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
   const applicantsData = applicantsQuery.data ?? [];
   const jobsData = jobsQuery.data ?? [];
+  const queryClient = useQueryClient();
+
+  const screenMutation = useMutation(
+    trpc.screenings.generate.mutationOptions({
+      onSuccess: () => {
+        toast.success("AI Analysis complete");
+        void invalidateHiringData(queryClient);
+      },
+      onError: (error) => {
+        toast.error(error.message || "AI Analysis failed");
+      },
+    }),
+  );
+
+  useEffect(() => {
+    const jobId = searchParams.get("job");
+    if (jobId) {
+      setJobFilter(jobId);
+    }
+  }, [searchParams]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -294,10 +332,46 @@ export function ApplicantsList() {
                        <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">{applicant.location}</span>
                     </div>
 
-                    <div className="flex flex-col items-center gap-1 w-28">
-                       <ScoreBadge score={applicant.screening?.matchScore ?? 0} />
-                       {!applicant.screening && (
-                         <span className="text-[8px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] animate-pulse mt-1">Analyzing</span>
+                    <div className="flex flex-col items-center gap-2 w-28">
+                       <div className="flex items-center gap-2">
+                          <ScoreBadge score={applicant.screening?.matchScore ?? 0} />
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  screenMutation.mutate({
+                                    applicantId: applicant.id,
+                                    jobId: applicant.jobId,
+                                  });
+                                }}
+                                disabled={screenMutation.isPending}
+                                className="h-7 w-7 flex items-center justify-center rounded-full border border-border/50 bg-background transition-all hover:bg-secondary active:scale-95 disabled:opacity-50"
+                              >
+                                {screenMutation.isPending && screenMutation.variables?.applicantId === applicant.id ? (
+                                  <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                                ) : (
+                                  <BrainCircuit className="h-3 w-3 text-muted-foreground/60" />
+                                )}
+                              </TooltipTrigger>
+                              <TooltipContent className="rounded-pill px-3 py-1 text-[9px] font-bold uppercase tracking-widest">
+                                Run AI Analysis
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                       </div>
+                       {(!applicant.screening || applicant.status === 'failed' || (screenMutation.isPending && screenMutation.variables?.applicantId === applicant.id)) && (
+                         <span className={cn(
+                           "text-[8px] font-bold uppercase tracking-[0.2em] animate-pulse",
+                           applicant.status === 'failed' ? "text-destructive/60 animate-none" : "text-muted-foreground/40"
+                         )}>
+                           {screenMutation.isPending && screenMutation.variables?.applicantId === applicant.id 
+                             ? 'Processing' 
+                             : applicant.status === 'failed' 
+                               ? 'Analysis Failed' 
+                               : 'Analyzing'}
+                         </span>
                        )}
                     </div>
 

@@ -1,5 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 
+vi.mock("@ai-hackathon/env/server", () => ({
+  env: {
+    DATABASE_URL: "mongodb://localhost:27017/test",
+    CORS_ORIGIN: "http://localhost:3000",
+    RESEND_API_KEY: "re_test",
+  },
+}));
+
 vi.mock("@ai-hackathon/db", () => ({
   Applicant: vi.fn(),
   Job: vi.fn(),
@@ -25,7 +33,6 @@ describe("AppRouter", () => {
 
   it("should have screenings router registered", () => {
     expect(appRouter.screenings).toBeDefined();
-    expect(appRouter.screenings.generateMock).toBeDefined();
     expect(appRouter.screenings.getByApplicant).toBeDefined();
   });
 });

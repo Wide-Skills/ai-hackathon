@@ -4,6 +4,7 @@ import {
   Building,
   ChevronRight,
   Globe,
+  Link2,
   MapPin,
   MoreHorizontal,
 } from "lucide-react";
@@ -11,6 +12,13 @@ import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const statusConfig: Record<
   JobStatus,
@@ -37,6 +45,14 @@ interface JobCardProps {
 export function JobCard({ job }: JobCardProps) {
   const router = useRouter();
   const sc = statusConfig[job.status];
+
+  const copyToClipboard = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = `${window.location.origin}/jobs/${job.id}`;
+    navigator.clipboard.writeText(url);
+    toast.success("Public link copied to clipboard!");
+  };
+
   const screenedPct =
     job.applicantsCount > 0
       ? Math.round((job.screenedCount / job.applicantsCount) * 100)
@@ -130,6 +146,20 @@ export function JobCard({ job }: JobCardProps) {
         </div>
 
         <div className="flex items-center gap-4 shrink-0">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger
+                onClick={copyToClipboard}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-border/40 bg-background shadow-ethereal transition-all hover:bg-secondary/20 hover:border-primary/20 text-muted-foreground/60 hover:text-primary active:scale-95 cursor-pointer"
+              >
+                <Link2 className="h-4 w-4" />
+              </TooltipTrigger>
+              <TooltipContent className="rounded-pill px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest">
+                Copy Public Link
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
           <Link
             href={`/dashboard/applicants?job=${job.id}` as Route}
             onClick={(e) => e.stopPropagation()}

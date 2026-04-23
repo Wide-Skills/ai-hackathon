@@ -6,9 +6,17 @@ import {
 } from "@ai-hackathon/shared";
 import { z } from "zod";
 import { serializeJob } from "../serializers";
-import { protectedProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const jobRouter = router({
+  getPublicById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .output(JobSchema.nullable())
+    .query(async ({ input }) => {
+      const job = await Job.findById(input.id);
+      return job ? serializeJob(job) : null;
+    }),
+
   create: protectedProcedure
     .input(CreateJobSchema)
     .output(JobSchema)
@@ -41,6 +49,9 @@ export const jobRouter = router({
     .input(z.void())
     .output(DashboardStatsSchema)
     .query(async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
       const [
         totalCandidates,
         openPositions,
@@ -50,10 +61,11 @@ export const jobRouter = router({
         Applicant.countDocuments(),
         Job.countDocuments({ status: "active" }),
         Applicant.countDocuments({
-          screening: { $exists: true, $ne: null },
+          "screening.matchScore": { $exists: true },
+          updatedAt: { $gte: today },
         }),
         Applicant.find(
-          { screening: { $exists: true, $ne: null } },
+          { "screening.matchScore": { $exists: true } },
           { "screening.matchScore": 1 },
         ).lean(),
       ]);
@@ -62,7 +74,7 @@ export const jobRouter = router({
         ? Math.round(
             screenedApplicants.reduce(
               (total, applicant) =>
-                total + (applicant.screening?.matchScore ?? 0),
+                total + ((applicant.screening as any)?.matchScore ?? 0),
               0,
             ) / screenedApplicants.length,
           )

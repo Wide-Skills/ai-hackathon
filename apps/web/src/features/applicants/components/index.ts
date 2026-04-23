@@ -5,6 +5,7 @@ export { ApplicantsList } from "./applicants-list";
 export { CertificationsCard } from "./certifications-card";
 export { EducationCard } from "./education-card";
 export { ExperienceCard } from "./experience-card";
+export { LanguagesCard } from "./languages-card";
 export { MatchScore } from "./match-score";
 export { ProjectsCard } from "./projects-card";
 export { SkillsCard } from "./skills-card";

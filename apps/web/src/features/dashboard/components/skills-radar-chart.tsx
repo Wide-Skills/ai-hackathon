@@ -36,28 +36,32 @@ export function SkillsRadarChart({ applicants }: SkillsRadarChartProps) {
     .sort((a, b) => b.score - a.score)
     .slice(0, 6);
 
-  if (data.length < 3) return null;
+  if (data.length < 3) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[300px] text-muted-foreground/30 font-bold uppercase tracking-widest text-[10px]">
+        Insufficient Neural Data
+      </div>
+    );
+  }
 
   return (
-  
-        <div className="h-48 mt-6">
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-              <PolarGrid stroke="var(--color-border)" />
-              <PolarAngleAxis
-                dataKey="skill"
-                tick={{ fontSize: 9, fill: "var(--color-muted-foreground)", fontWeight: 500, letterSpacing: "0.05em" }}
-              />
-              <Radar
-                name="Proficiency"
-                dataKey="score"
-                stroke="var(--color-info)"
-                fill="var(--color-info)"
-                fillOpacity={0.2}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
-   
+    <div className="w-full h-full min-h-[300px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
+          <PolarGrid stroke="rgba(0,0,0,0.05)" />
+          <PolarAngleAxis
+            dataKey="skill"
+            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 600, letterSpacing: "0.05em", opacity: 0.5 }}
+          />
+          <Radar
+            name="Proficiency"
+            dataKey="score"
+            stroke="var(--color-info)"
+            fill="var(--color-info)"
+            fillOpacity={0.3}
+          />
+        </RadarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

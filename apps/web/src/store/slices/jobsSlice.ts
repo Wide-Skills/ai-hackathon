@@ -3,13 +3,11 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 export interface JobsState {
   searchKeyword: string;
   selectedJobId: string | null;
-  isCreateModalOpen: boolean;
 }
 
 const initialState: JobsState = {
   searchKeyword: "",
   selectedJobId: null,
-  isCreateModalOpen: false,
 };
 
 const jobsSlice = createSlice({
@@ -22,12 +20,9 @@ const jobsSlice = createSlice({
     setSelectedJobId: (state, action: PayloadAction<string | null>) => {
       state.selectedJobId = action.payload;
     },
-    setCreateModalOpen: (state, action: PayloadAction<boolean>) => {
-      state.isCreateModalOpen = action.payload;
-    },
   },
 });
 
-export const { setSearchKeyword, setSelectedJobId, setCreateModalOpen } =
+export const { setSearchKeyword, setSelectedJobId } =
   jobsSlice.actions;
 export default jobsSlice.reducer;

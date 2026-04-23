@@ -6,334 +6,263 @@ import {
   BrainCircuit,
   Briefcase,
   ChevronRight,
-  Cpu,
   Sparkles,
   Users,
-  Zap,
-  Info,
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
-import { useDispatch } from "react-redux";
 import { QueryErrorState } from "@/components/data/query-state";
-import { setCreateModalOpen } from "@/store/slices/jobsSlice";
 import { trpc } from "@/utils/trpc";
 import { ScoreBadge } from "./score-badge";
 import { StatCard } from "./stat-card";
 import { motion } from "framer-motion";
 import {
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-const activityConfig = {
-  screened: {
-    label: "Screened",
-    color: "bg-secondary text-muted-foreground/60",
-    icon: BrainCircuit,
-  },
-  applied: {
-    label: "Applied",
-    color: "bg-secondary text-muted-foreground/60",
-    icon: Users,
-  },
-  shortlisted: {
-    label: "Shortlisted",
-    color: "bg-success/5 text-success/60",
-    icon: Sparkles,
-  },
-};
+import { cn } from "@/lib/utils";
 
 export function DashboardOverview() {
-  const dispatch = useDispatch();
-  const statsQuery = useQuery(
-    trpc.jobs.stats.queryOptions(),
-  );
-  const applicantsQuery = useQuery(
-    trpc.applicants.list.queryOptions(),
-  );
+  const statsQuery = useQuery(trpc.jobs.stats.queryOptions());
+  const applicantsQuery = useQuery(trpc.applicants.list.queryOptions());
   const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
 
-  if (
-    statsQuery.isLoading ||
-    applicantsQuery.isLoading ||
-    jobsQuery.isLoading
-  ) {
+  if (statsQuery.isLoading || applicantsQuery.isLoading || jobsQuery.isLoading) {
     return (
-      <div className="w-full space-y-12 animate-pulse">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="w-full space-y-16 animate-pulse">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-32 rounded-lg bg-secondary/30" />
+            <div key={i} className="h-40 rounded-section bg-secondary/30" />
           ))}
         </div>
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
-          <div className="h-[600px] rounded-lg bg-secondary/30 lg:col-span-2" />
-          <div className="h-[600px] rounded-lg bg-secondary/30" />
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
+          <div className="h-[600px] rounded-section bg-secondary/30 lg:col-span-2" />
+          <div className="h-[600px] rounded-section bg-secondary/30" />
         </div>
       </div>
     );
   }
 
-  if (statsQuery.isError) {
+  if (statsQuery.isError || applicantsQuery.isError || jobsQuery.isError) {
     return (
       <QueryErrorState
-        error={statsQuery.error}
-        title="Dashboard metrics couldn't be loaded"
-        onRetry={() => statsQuery.refetch()}
-      />
-    );
-  }
-
-  if (applicantsQuery.isError) {
-    return (
-      <QueryErrorState
-        error={applicantsQuery.error}
-        title="Applicants couldn't be loaded"
-        onRetry={() => applicantsQuery.refetch()}
-      />
-    );
-  }
-
-  if (jobsQuery.isError) {
-    return (
-      <QueryErrorState
-        error={jobsQuery.error}
-        title="Jobs couldn't be loaded"
-        onRetry={() => jobsQuery.refetch()}
+        error={statsQuery.error || applicantsQuery.error || jobsQuery.error}
+        title="Dashboard analytics could not be synchronized"
+        onRetry={() => {
+          statsQuery.refetch();
+          applicantsQuery.refetch();
+          jobsQuery.refetch();
+        }}
       />
     );
   }
 
   const stats = statsQuery.data;
-  const applicants = applicantsQuery.data;
-  const jobs = jobsQuery.data;
+  const allApplicants = applicantsQuery.data ?? [];
+  const allJobs = jobsQuery.data ?? [];
 
-  const statCards = [
-    { title: "Total Pool", value: stats?.totalCandidates ?? 0, trend: "+12.5%", desc: "Active candidate profiles" },
-    { title: "Active Pipelines", value: jobs?.filter((j) => j.status === "active").length ?? 0, trend: "+4.2%", desc: "Current open positions" },
-    { title: "Processed Today", value: stats?.screenedToday ?? 0, trend: "+8.1%", desc: "AI screening throughput" },
-    { title: "Average Match", value: `${stats?.avgMatchScore ?? 0}%`, trend: "+2.4%", desc: "Talent quality index" },
-  ];
-
-  const allApplicants = applicants ?? [];
-  const topApplicants = allApplicants
-    .filter((a) => a.screening)
+  const topApplicants = [...allApplicants]
+    .filter((a) => a.status === "shortlisted")
     .sort((a, b) => (b.screening?.matchScore ?? 0) - (a.screening?.matchScore ?? 0))
     .slice(0, 5);
 
-  const activeJobs = (jobs ?? [])
-    .filter((j) => j.status === "active")
-    .slice(0, 3);
+  const activeJobs = allJobs.filter((j) => j.status === "active").slice(0, 3);
 
-  const recentActivity = topApplicants.slice(0, 3).map((a, i) => ({
-    id: a.id,
-    type: "screened",
-    candidate: `${a.firstName} ${a.lastName}`,
-    job: a.headline || "Engineering",
-    score: a.screening?.matchScore,
-    time: i === 0 ? "Just now" : `${i * 2}h ago`,
-  }));
+  const recentActivity = [...allApplicants]
+    .filter((a) => a.screening && a.updatedAt)
+    .sort((a, b) => new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime())
+    .slice(0, 5)
+    .map((a) => ({
+      id: a.id,
+      candidate: `${a.firstName} ${a.lastName}`,
+      job: allJobs.find(j => j.id === a.jobId)?.title || "Pipeline",
+      score: a.screening?.matchScore,
+      time: new Date(a.updatedAt!).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    }));
 
   return (
     <TooltipProvider>
-      <div className="w-full space-y-12 pb-12">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {statCards.map((stat, i) => (
-            <motion.div
-              key={stat.title}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05, duration: 0.5 }}
-            >
-              <StatCard
-                label={stat.title}
-                value={stat.value}
-                sublabel={stat.desc}
-                trend={stat.trend}
-              />
-            </motion.div>
-          ))}
-        </div>
+      <div className="w-full space-y-20 pb-20">
+        {/* Primary Metrics Layer */}
+        <section className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <StatCard label="Total Talent" value={stats?.totalCandidates ?? 0} sublabel="Cumulative experts in pool" trend="Active" />
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <StatCard label="Live Pipelines" value={activeJobs.length} sublabel="Recruitment cycles in motion" trend="Real-time" />
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <StatCard label="Throughput" value={stats?.screenedToday ?? 0} sublabel="AI analyses completed today" trend="Sync" />
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <StatCard label="Quality Index" value={`${stats?.avgMatchScore ?? 0}%`} sublabel="Aggregate candidate resonance" trend="Match" />
+          </motion.div>
+        </section>
 
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3 items-start">
-          <div className="space-y-10 lg:col-span-2">
-            <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium">
-              <div className="flex items-center justify-between px-8 py-6 border-b border-border/20 bg-secondary/[0.02]">
-                <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.12em]">Top Talent Pool</h3>
-                <Link
-                  href="/dashboard/applicants"
-                  className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors"
-                >
-                  View all <ChevronRight className="inline-block h-3 w-3 ml-1 opacity-30" />
+        {/* Intelligence & Strategy Layer */}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 items-start">
+          
+          {/* Main Strategic Column */}
+          <div className="lg:col-span-8 space-y-12">
+            
+            {/* Top Talent: Asymmetric Layout */}
+            <div className="bg-background rounded-section border border-border/50 shadow-premium overflow-hidden">
+              <header className="flex items-center justify-between px-10 py-8 border-b border-border/10 bg-secondary/[0.01]">
+                <div>
+                  <h3 className="font-display text-[18px] font-light text-foreground uppercase tracking-[0.15em]">Strategic Shortlist</h3>
+                  <p className="text-[11px] text-muted-foreground/40 font-bold uppercase tracking-widest mt-1">High-Resonance candidates</p>
+                </div>
+                <Link href="/dashboard/applicants" className="btn-pill-outline h-9 px-5 text-[10px] uppercase tracking-widest">
+                  Market View
                 </Link>
-              </div>
-              <div className="divide-y divide-border/10">
-                {topApplicants.length > 0 ? topApplicants.map((applicant, idx) => (
+              </header>
+              <div className="divide-y divide-border/5">
+                {topApplicants.length > 0 ? topApplicants.map((applicant) => (
                   <Link
                     key={applicant.id}
                     href={`/dashboard/applicants/${applicant.id}` as Route}
-                    className="group flex items-center gap-8 px-8 py-6 transition-all hover:bg-secondary/20"
+                    className="group flex items-center gap-10 px-10 py-7 transition-all hover:bg-secondary/[0.15]"
                   >
-                    <div className="h-11 w-11 flex-shrink-0 rounded-xl bg-secondary/30 border border-border/30 flex items-center justify-center text-[11px] font-bold text-muted-foreground/30 uppercase shadow-ethereal group-hover:scale-[1.05] transition-transform">
+                    <div className="h-14 w-14 flex-shrink-0 rounded-2xl bg-background border border-border/40 flex items-center justify-center text-[13px] font-bold text-muted-foreground/30 uppercase shadow-ethereal group-hover:scale-[1.05] transition-transform">
                        {applicant.firstName[0]}{applicant.lastName[0]}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[15px] font-medium text-foreground tracking-tight group-hover:text-primary transition-colors">
+                      <p className="text-[17px] font-medium text-foreground tracking-tight group-hover:text-primary transition-colors">
                         {applicant.firstName} {applicant.lastName}
                       </p>
-                      <p className="truncate text-muted-foreground/60 text-[12px] tracking-tight mt-0.5">
+                      <p className="truncate text-muted-foreground/50 text-[13px] font-medium tracking-tight mt-1">
                         {applicant.headline}
                       </p>
                     </div>
-                    <div className="flex flex-shrink-0 items-center gap-8">
+                    <div className="flex flex-shrink-0 items-center gap-10">
                       <ScoreBadge score={applicant.screening?.matchScore ?? 0} />
-                      <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      <div className="h-9 w-9 rounded-full border border-border/30 flex items-center justify-center text-muted-foreground/20 group-hover:text-primary group-hover:border-primary/30 transition-all">
+                        <ArrowUpRight className="h-4 w-4" />
+                      </div>
                     </div>
                   </Link>
                 )) : (
-                  <div className="py-20 text-center text-muted-foreground/30">
-                    <Users className="mx-auto h-10 w-10 mb-4 opacity-10" />
-                    <p className="text-[10px] font-bold uppercase tracking-widest">Awaiting First Applications</p>
-                    <p className="text-[12px] font-medium tracking-tight mt-1 opacity-60">Shortlisted experts will appear here after AI screening.</p>
+                  <div className="py-32 text-center">
+                    <Sparkles className="mx-auto h-12 w-12 mb-6 text-muted-foreground/10" />
+                    <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground/30 px-20">Awaiting High-Resolution Signal Analysis</p>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium">
-              <div className="flex items-center justify-between px-8 py-6 border-b border-border/20 bg-secondary/[0.02]">
-                <h3 className="font-display text-[16px] font-light text-foreground uppercase tracking-[0.12em]">Active Pipelines</h3>
-                <Link
-                  href="/dashboard/jobs"
-                  className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors"
-                >
-                  All postings <ChevronRight className="inline-block h-3 w-3 ml-1 opacity-30" />
-                </Link>
-              </div>
-              <div className="divide-y divide-border/10">
+            {/* Active Pipelines: Compact List */}
+            <div className="bg-background rounded-section border border-border/50 shadow-premium overflow-hidden">
+              <header className="px-10 py-8 border-b border-border/10 bg-secondary/[0.01] flex items-center justify-between">
+                <h3 className="font-display text-[18px] font-light text-foreground uppercase tracking-[0.15em]">Neural Pipelines</h3>
+                <Link href="/dashboard/jobs" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 hover:text-foreground">All Channels</Link>
+              </header>
+              <div className="grid grid-cols-1 md:grid-cols-2 divide-x divide-y divide-border/5 border-b border-border/5">
                 {activeJobs.length > 0 ? activeJobs.map((job) => {
                   const pct = job.applicantsCount > 0 ? Math.round((job.screenedCount / job.applicantsCount) * 100) : 0;
                   return (
                     <Link
                       key={job.id}
                       href={`/dashboard/jobs/${job.id}` as Route}
-                      className="group flex items-center gap-8 px-8 py-7 transition-all hover:bg-secondary/20"
+                      className="group p-10 transition-all hover:bg-secondary/[0.15]"
                     >
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[16px] font-medium text-foreground tracking-tight mb-2 group-hover:text-primary transition-colors">
-                          {job.title}
-                        </p>
-                        <div className="flex items-center gap-4">
-                           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30">{job.location}</span>
-                           <div className="h-0.5 w-0.5 rounded-full bg-border/40" />
-                           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30">{job.type}</span>
+                      <p className="text-[16px] font-medium text-foreground tracking-tight mb-4 group-hover:text-primary transition-colors">
+                        {job.title}
+                      </p>
+                      <div className="flex items-end justify-between gap-4">
+                        <div className="space-y-1">
+                           <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/30">{job.location}</p>
+                           <p className="text-[20px] font-display font-light text-foreground/80 leading-none">{job.applicantsCount} <span className="text-[12px] opacity-40">Total</span></p>
                         </div>
-                      </div>
-                      <div className="flex-shrink-0 text-right">
-                        <p className="font-display text-[22px] font-light text-foreground leading-none mb-2">
-                          {job.applicantsCount}
-                        </p>
-                        <div className="h-1 w-20 bg-secondary/50 rounded-pill overflow-hidden shadow-inset">
-                          <div className="h-full bg-info/30" style={{ width: `${pct}%` }} />
+                        <div className="text-right space-y-3">
+                           <p className="text-[10px] font-bold uppercase tracking-widest text-info/50">{pct}% Screened</p>
+                           <div className="h-1 w-24 bg-secondary/50 rounded-pill overflow-hidden shadow-inset">
+                             <div className={cn("h-full transition-all duration-1000", pct > 80 ? "bg-success/40" : "bg-info/30")} style={{ width: `${pct}%` }} />
+                           </div>
                         </div>
                       </div>
                     </Link>
                   );
                 }) : (
-                  <div className="py-20 text-center text-muted-foreground/30">
-                    <Briefcase className="mx-auto h-10 w-10 mb-4 opacity-10" />
-                    <p className="text-[10px] font-bold uppercase tracking-widest">No Open Positions</p>
-                    <p className="text-[12px] font-medium tracking-tight mt-1 opacity-60">Create your first job posting to start building your pipeline.</p>
+                  <div className="col-span-2 py-20 text-center opacity-30">
+                    <Briefcase className="mx-auto h-8 w-8 mb-4" />
+                    <p className="text-[10px] font-bold uppercase tracking-widest">No Active Channels</p>
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="space-y-10">
-            <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium">
-              <div className="px-8 py-6 border-b border-border/20 bg-secondary/[0.02]">
-                <h3 className="font-display text-[16px] font-light text-foreground uppercase tracking-[0.12em]">Activity Stream</h3>
-              </div>
-              <div className="divide-y divide-border/10">
-                {recentActivity.length > 0 ? recentActivity.map((item) => {
-                  const config = activityConfig[item.type as keyof typeof activityConfig];
-                  const Icon = config.icon;
-                  return (
-                    <div
-                      key={item.id}
-                      className="flex items-start gap-5 px-8 py-6"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[13px] leading-relaxed text-foreground/70 font-medium tracking-tight">
-                          <span className="font-bold text-foreground">{item.candidate}</span>{" "}
-                          processed for <span className="text-foreground">{item.job}</span>
-                        </p>
-                        <div className="flex items-center gap-4 mt-2.5 opacity-30">
-                          {item.score && (
-                            <span className="text-[9px] font-bold uppercase tracking-[0.25em]">{item.score}% Match</span>
-                          )}
-                          <span className="text-[9px] font-bold uppercase tracking-[0.25em]">{item.time}</span>
-                        </div>
-                      </div>
+          {/* Activity & Health Column */}
+          <div className="lg:col-span-4 space-y-12">
+            
+            {/* Health Index Card */}
+            <div className="bg-accent/5 rounded-section border border-border/40 p-10 shadow-premium space-y-12">
+               <header>
+                 <h3 className="font-display text-[16px] font-light text-foreground uppercase tracking-[0.12em] mb-1">Intelligence Hub</h3>
+                 <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest">System Health & Coverage</p>
+               </header>
+
+               <div className="space-y-10">
+                  <div className="space-y-4">
+                    <div className="flex items-end justify-between">
+                       <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest pl-1">Talent Quality</p>
+                       <p className="font-display text-[32px] font-light text-foreground leading-none tracking-tighter">{stats?.avgMatchScore ?? 0}%</p>
                     </div>
-                  );
-                }) : (
-                  <div className="py-12 text-center text-muted-foreground/20">
-                     <p className="text-[10px] font-bold uppercase tracking-widest">Nothing to report</p>
+                    <div className="h-1.5 w-full bg-background/50 rounded-pill overflow-hidden border border-border/10">
+                       <div className="h-full bg-info/50 shadow-[0_0_15px_rgba(var(--color-info),0.3)]" style={{ width: `${stats?.avgMatchScore ?? 0}%` }} />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-end justify-between">
+                       <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest pl-1">AI Saturation</p>
+                       <p className="font-display text-[32px] font-light text-foreground leading-none tracking-tighter">
+                         {allApplicants.length > 0 ? Math.round((allApplicants.filter(a => !!a.screening).length / allApplicants.length) * 100) : 0}%
+                       </p>
+                    </div>
+                    <div className="h-1.5 w-full bg-background/50 rounded-pill overflow-hidden border border-border/10">
+                       <div className="h-full bg-success/50 shadow-[0_0_15px_rgba(var(--color-success),0.3)]" style={{ width: `${allApplicants.length > 0 ? Math.round((allApplicants.filter(a => !!a.screening).length / allApplicants.length) * 100) : 0}%` }} />
+                    </div>
+                  </div>
+               </div>
+
+               <Link href="/dashboard/analytics" className="block">
+                  <button className="w-full h-12 rounded-pill bg-foreground text-background text-[11px] font-bold uppercase tracking-[0.2em] transition-all hover:shadow-lift hover:scale-[1.01] active:scale-[0.99]">
+                    Deep Analytics
+                  </button>
+               </Link>
+            </div>
+
+            {/* Log Stream */}
+            <div className="bg-background rounded-section border border-border/50 shadow-premium overflow-hidden">
+              <header className="px-8 py-6 border-b border-border/10 bg-secondary/[0.01]">
+                <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.12em]">Neural Log</h3>
+              </header>
+              <div className="divide-y divide-border/5 px-4">
+                {recentActivity.length > 0 ? recentActivity.map((item) => (
+                  <div key={item.id} className="py-6 px-4 group transition-colors">
+                    <div className="flex items-start gap-4">
+                       <div className="h-2 w-2 rounded-full bg-success/40 mt-1.5 shrink-0 group-hover:animate-pulse" />
+                       <div className="space-y-1 min-w-0">
+                         <p className="text-[13px] leading-tight text-foreground/80 font-medium">
+                           <span className="font-bold text-foreground">{item.candidate}</span> evaluated
+                         </p>
+                         <p className="text-[11px] text-muted-foreground/40 font-medium truncate">Channel: {item.job}</p>
+                       </div>
+                    </div>
+                    <div className="mt-3 flex items-center gap-4 pl-6 opacity-40">
+                      <span className="text-[9px] font-bold uppercase tracking-widest">{item.score}% Match</span>
+                      <div className="h-0.5 w-0.5 rounded-full bg-border" />
+                      <span className="text-[9px] font-bold uppercase tracking-widest">{item.time}</span>
+                    </div>
+                  </div>
+                )) : (
+                  <div className="py-16 text-center opacity-10">
+                     <Users className="mx-auto h-8 w-8" />
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="bg-accent/5 rounded-section border border-border/50 overflow-hidden shadow-warm-lift group transition-all hover:shadow-lift">
-              <div className="px-8 py-6 border-b border-border/20 flex items-center justify-between bg-accent/[0.02]">
-                <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.12em]">Intelligence</h3>
-              </div>
-              <div className="p-10">
-                <div className="space-y-10">
-                  <div>
-                    <div className="flex items-end justify-between mb-3">
-                       <div className="flex items-center gap-2">
-                          <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">Global quality</p>
-                       </div>
-                       <div className="flex items-baseline gap-1">
-                          <p className="font-display text-[28px] font-light text-foreground leading-none">{stats?.avgMatchScore ?? 0}</p>
-                          <span className="text-[12px] text-muted-foreground/30 font-light font-display">%</span>
-                       </div>
-                    </div>
-                    <div className="h-1 w-full bg-background/50 rounded-pill overflow-hidden border border-border/10 shadow-inset">
-                       <div className="h-full bg-info/40 shadow-ethereal" style={{ width: `${stats?.avgMatchScore ?? 0}%` }} />
-                    </div>
-                  </div>
-
-                  <div>
-                     <div className="flex items-end justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">AI Coverage</p>
-                        </div>
-                        <div className="flex items-baseline gap-1">
-                          <p className="font-display text-[28px] font-light text-foreground leading-none">
-                            {allApplicants.length > 0 ? Math.round((topApplicants.length / allApplicants.length) * 100) : 0}
-                          </p>
-                          <span className="text-[12px] text-muted-foreground/30 font-light font-display">%</span>
-                        </div>
-                     </div>
-                     <div className="h-1 w-full bg-background/50 rounded-pill overflow-hidden border border-border/10 shadow-inset">
-                        <div className="h-full bg-success/40 shadow-ethereal" style={{ width: `${allApplicants.length > 0 ? Math.round((topApplicants.length / allApplicants.length) * 100) : 0}%` }} />
-                     </div>
-                  </div>
-                </div>
-
-                <Link href={"/dashboard/analytics" as Route}>
-                  <button className="btn-pill-warm mt-14 w-full h-11 text-[11px] font-bold uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-[0.98]">
-                    Enter Performance Hub
-                  </button>
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
       </div>

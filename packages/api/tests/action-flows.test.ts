@@ -70,6 +70,14 @@ const Applicant = Object.assign(
   },
 );
 
+vi.mock("@ai-hackathon/env/server", () => ({
+  env: {
+    DATABASE_URL: "mongodb://localhost:27017/test",
+    CORS_ORIGIN: "http://localhost:3000",
+    RESEND_API_KEY: "re_test",
+  },
+}));
+
 vi.mock("@ai-hackathon/db", () => ({
   Applicant,
   Job,

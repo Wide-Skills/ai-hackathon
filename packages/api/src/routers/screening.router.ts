@@ -1,9 +1,10 @@
 import { Applicant, ScreeningResult } from "@ai-hackathon/db";
+import { sendScreeningCompletedEmail } from "@ai-hackathon/auth/email";
 import { env } from "@ai-hackathon/env/server";
 import { ScreeningResultSchema } from "@ai-hackathon/shared";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { TRPCError } from "@trpc/server";
-import { generateObject } from "ai";
+import { generateText, Output } from "ai";
 import { z } from "zod";
 import { ensureJobExists, syncJobMetrics } from "../router-helpers/job-metrics";
 import { serializeScreening } from "../serializers";
@@ -13,51 +14,257 @@ const google = createGoogleGenerativeAI({
   apiKey: env.GEMINI_API_KEY,
 });
 
-function clampScore(value: number) {
-  return Math.max(0, Math.min(100, Math.round(value)));
-}
+const SHORTLIST_THRESHOLD = 85;
+export const SYSTEM_USER_ID = "usr_automated_system";
 
-function buildScreeningScore(
-  applicantSkills: string[],
-  jobSkills: string[],
-  requirementsCount: number,
-) {
-  if (jobSkills.length === 0) {
-    return clampScore(60 + requirementsCount * 2);
-  }
-
-  const matchedSkills = applicantSkills.filter((skill) =>
-    jobSkills.includes(skill),
-  );
-
-  return clampScore(
-    48 +
-      (matchedSkills.length / jobSkills.length) * 35 +
-      Math.min(requirementsCount, 5) * 3,
-  );
-}
-
-function buildRecommendation(matchScore: number) {
-  if (matchScore >= 85) {
-    return "Strongly Recommend";
-  }
-
-  if (matchScore >= 70) {
-    return "Recommend";
-  }
-
-  if (matchScore >= 55) {
-    return "Consider";
-  }
-
-  return "Not Recommended";
-}
+// The confirmed working model from curl tests
+const WORKING_MODEL = "gemini-2.5-flash";
 
 function buildApplicantStatus(matchScore: number) {
-  return matchScore >= 85 ? "shortlisted" : "screening";
+  return matchScore >= SHORTLIST_THRESHOLD ? "shortlisted" : "screening";
+}
+
+function buildScreeningPrompt(
+  job: { title: string; description: string; requirements: string[]; skills: string[] },
+  applicant: { firstName: string; lastName: string; bio?: string; skills: { name: string }[]; resumeText?: string }
+): string {
+  return `You are an expert technical recruiter and data extractor. Your task is to perform a deep analysis of an applicant's resume and screen them for a specific job opening.
+
+### JOB CONTEXT
+Title: ${job.title}
+Description: ${job.description}
+Requirements: ${job.requirements.join(", ")}
+Target Skills: ${job.skills.join(", ")}
+
+### APPLICANT DATA
+Current Name: ${applicant.firstName} ${applicant.lastName}
+Provided Bio: ${applicant.bio || "N/A"}
+Resume Source Text:
+${applicant.resumeText || "No resume text provided."}
+
+### YOUR MISSION
+1. **Screening Evaluation**: Provide a match score (0-100), strategic strengths, critical gaps, a formal recommendation, and a concise summary.
+2. **Skill Mapping**: Score the applicant's proficiency in each of the "Target Skills" listed above.
+3. **Profile Extraction**: Extract the following data points FROM THE RESUME TEXT to build a structured profile:
+   - Personal Info: headline, detailed bio, location.
+   - Career History: Extract all work experience (company, role, dates, description, technologies).
+   - Education: Extract all degrees (institution, degree, field, years).
+   - Languages: Extract known languages and proficiency.
+   - Certifications & Projects: Extract relevant entries.
+
+Ensure all extracted dates are in a readable format (e.g. "Jan 2022" or "2022-01"). If a field is missing in the resume, provide an empty array or reasonable default.`;
+}
+
+async function createOrUpdateScreening(
+  applicantId: string,
+  jobId: string,
+  userId: string,
+  screeningData: z.infer<typeof ScreeningResultSchema>
+) {
+  const existing = await ScreeningResult.findOne({ applicantId });
+
+  if (existing) {
+    existing.set({ ...screeningData, applicantId, jobId, createdByUserId: userId });
+    return existing.save();
+  }
+
+  return new ScreeningResult({
+    ...screeningData,
+    applicantId,
+    jobId,
+    createdByUserId: userId,
+  }).save();
+}
+
+const AIScreeningOutputSchema = z.object({
+  matchScore: z.number().min(0).max(100),
+  strengths: z.array(z.string()),
+  gaps: z.array(z.string()),
+  recommendation: z.string(),
+  summary: z.string(),
+  skillBreakdown: z.array(z.object({
+    skill: z.string(),
+    score: z.number(),
+  })),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  headline: z.string().optional(),
+  bio: z.string().optional(),
+  location: z.string().optional(),
+  skills: z.array(z.object({
+    name: z.string(),
+    level: z.string(),
+    yearsOfExperience: z.number(),
+  })).default([]),
+  experience: z.array(z.object({
+    company: z.string(),
+    role: z.string(),
+    startDate: z.string(),
+    endDate: z.string(),
+    description: z.string(),
+    technologies: z.array(z.string()),
+    isCurrent: z.boolean(),
+  })).default([]),
+  education: z.array(z.object({
+    institution: z.string(),
+    degree: z.string(),
+    fieldOfStudy: z.string(),
+    startYear: z.number(),
+    endYear: z.number(),
+  })).default([]),
+  languages: z.array(z.object({
+    name: z.string(),
+    proficiency: z.string(),
+  })).default([]),
+  certifications: z.array(z.object({
+    name: z.string(),
+    issuer: z.string(),
+    issueDate: z.string(),
+  })).default([]),
+  projects: z.array(z.object({
+    name: z.string(),
+    description: z.string(),
+    technologies: z.array(z.string()),
+    role: z.string(),
+    link: z.string().optional(),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
+  })).default([]),
+});
+
+/**
+ * Internal helper to run screening logic with automatic retries.
+ */
+export async function runAIInternal(params: {
+  applicantId: string;
+  jobId: string;
+  triggeredByUserId: string;
+  triggererEmail?: string;
+  triggererName?: string;
+  maxRetries?: number;
+}) {
+  const { applicantId, jobId, triggeredByUserId, triggererEmail, triggererName, maxRetries = 3 } = params;
+  
+  const [applicant, job] = await Promise.all([
+    Applicant.findById(applicantId),
+    ensureJobExists(jobId),
+  ]);
+
+  if (!applicant) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Applicant not found",
+    });
+  }
+
+  let lastError: any;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`[Screening] AI Analysis Attempt ${attempt}/${maxRetries} for Applicant ${applicantId}`);
+      
+      const prompt = buildScreeningPrompt(job, applicant);
+      const systemPrompt = "You are an expert technical recruiter and data extractor. Provide structured, objective evaluations and extract accurate profile data from the provided resume text.";
+
+      const { output: validatedData } = await generateText({
+        model: google(WORKING_MODEL) as any,
+        system: systemPrompt,
+        prompt,
+        output: Output.object({ schema: AIScreeningOutputSchema }),
+        temperature: 0,
+      });
+
+      console.log(`[Screening] AI Analysis Complete for Applicant ${applicantId}. Match Score: ${validatedData.matchScore}`);
+
+      const screeningPayload = { ...validatedData, applicantId, jobId };
+
+      const [savedRecord] = await Promise.all([
+        createOrUpdateScreening(applicantId, jobId, triggeredByUserId, screeningPayload as any),
+        Applicant.findByIdAndUpdate(applicantId, {
+          screening: {
+            ...validatedData,
+            languages: validatedData.languages,
+            experience: validatedData.experience,
+            education: validatedData.education,
+            skills: validatedData.skills,
+            certifications: validatedData.certifications,
+            projects: validatedData.projects,
+          },
+          headline: validatedData.headline || applicant.headline,
+          bio: validatedData.bio || applicant.bio,
+          location: validatedData.location || applicant.location,
+          skills: validatedData.skills.length > 0 ? validatedData.skills : applicant.skills,
+          experience: validatedData.experience.length > 0 ? validatedData.experience : applicant.experience,
+          education: validatedData.education.length > 0 ? validatedData.education : applicant.education,
+          languages: validatedData.languages.length > 0 ? validatedData.languages : applicant.languages,
+          certifications: validatedData.certifications.length > 0 ? validatedData.certifications : applicant.certifications,
+          projects: validatedData.projects.length > 0 ? validatedData.projects : applicant.projects,
+          status: buildApplicantStatus(validatedData.matchScore),
+        }),
+        syncJobMetrics(jobId),
+      ]);
+
+      if (triggererEmail) {
+        sendScreeningCompletedEmail({
+          email: triggererEmail,
+          recruiterName: triggererName || "Recruiter",
+          applicantName: `${applicant.firstName} ${applicant.lastName}`,
+          jobTitle: job.title,
+          matchScore: validatedData.matchScore,
+          applicantId: applicant.id,
+        }).catch((error) => console.error("[Screening] Email failed:", error));
+      }
+
+      return serializeScreening(savedRecord as any);
+    } catch (error: any) {
+      lastError = error;
+      console.error(`[Screening] Attempt ${attempt} failed:`, error.message);
+      
+      // Wait before retrying (exponential backoff)
+      if (attempt < maxRetries) {
+        const delay = attempt * 2000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  // If we reach here, all retries failed
+  console.error(`[Screening] All ${maxRetries} attempts failed for Applicant ${applicantId}`);
+  
+  await Applicant.findByIdAndUpdate(applicantId, {
+    status: "failed",
+  });
+
+  throw new TRPCError({
+    code: "INTERNAL_SERVER_ERROR",
+    message: `AI screening failed after ${maxRetries} attempts: ${lastError?.message || "Unknown error"}`,
+    cause: lastError,
+  });
 }
 
 export const screeningRouter = router({
+  testConnection: protectedProcedure
+    .input(z.void())
+    .output(z.object({ success: z.boolean(), message: z.string(), workingModel: z.string().optional() }))
+    .query(async () => {
+      try {
+        const { text } = await generateText({
+          model: google(WORKING_MODEL),
+          prompt: "Respond with 'pong'",
+        });
+        return { 
+          success: true, 
+          message: `Gemini connected with ${WORKING_MODEL}: ${text}`,
+          workingModel: WORKING_MODEL
+        };
+      } catch (error: any) {
+        console.error("[Screening] Connection Test Failed:", error.message);
+        return { 
+          success: false, 
+          message: `Connection failed: ${error.message}` 
+        };
+      }
+    }),
+
   generate: protectedProcedure
     .input(
       z.object({
@@ -67,213 +274,13 @@ export const screeningRouter = router({
     )
     .output(ScreeningResultSchema)
     .mutation(async ({ input, ctx }) => {
-      const [applicant, job] = await Promise.all([
-        Applicant.findById(input.applicantId),
-        ensureJobExists(input.jobId),
-      ]);
-
-      if (!applicant) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Applicant not found",
-        });
-      }
-
-      const prompt = `
-        You are an expert technical recruiter. Your task is to screen an applicant for a specific job opening.
-        
-        Job Title: ${job.title}
-        Job Description: ${job.description}
-        Key Requirements:
-        ${job.requirements.map((r) => `- ${r}`).join("\n")}
-        Preferred Skills:
-        ${job.skills.map((s) => `- ${s}`).join("\n")}
-        
-        Applicant Name: ${applicant.firstName} ${applicant.lastName}
-        Applicant Bio: ${applicant.bio || "N/A"}
-        Applicant Skills: ${applicant.skills.map((s) => s.name).join(", ")}
-        Resume Text:
-        ${applicant.resumeText || "No resume text provided."}
-        
-        Analyze the applicant's profile against the job requirements. 
-        Provide a structured evaluation including:
-        1. A match score (0-100).
-        2. Key strengths relative to the job.
-        3. Capability gaps or missing signals.
-        4. A recommendation (Strongly Recommend, Recommend, Consider, Not Recommended).
-        5. A concise summary of the fit.
-        6. A skill breakdown with individual scores for the job's preferred skills.
-      `;
-
-      try {
-        const { object } = await generateObject({
-          model: google("gemini-1.5-pro") as any, // Bypass version mismatch if it persists
-          schema: ScreeningResultSchema,
-          prompt,
-        });
-
-        const screeningPayload = {
-          ...object,
-          applicantId: input.applicantId,
-          jobId: input.jobId,
-          createdByUserId: ctx.session.user.id,
-        };
-
-        const existingScreening = await ScreeningResult.findOne({
-          applicantId: input.applicantId,
-        });
-
-        if (existingScreening) {
-          existingScreening.set(screeningPayload);
-          await existingScreening.save();
-        } else {
-          const screening = new ScreeningResult(screeningPayload);
-          await screening.save();
-        }
-
-        await Applicant.findByIdAndUpdate(input.applicantId, {
-          screening: {
-            matchScore: object.matchScore,
-            strengths: object.strengths,
-            gaps: object.gaps,
-            recommendation: object.recommendation,
-            summary: object.summary,
-            skillBreakdown: object.skillBreakdown,
-          },
-          status: buildApplicantStatus(object.matchScore),
-        });
-
-        await syncJobMetrics(input.jobId);
-
-        const savedScreening = await ScreeningResult.findOne({
-          applicantId: input.applicantId,
-        });
-
-        if (!savedScreening) {
-          throw new TRPCError({
-            code: "INTERNAL_SERVER_ERROR",
-            message: "Screening result could not be loaded after saving",
-          });
-        }
-
-        return serializeScreening(savedScreening);
-      } catch (error) {
-        console.error("Gemini Screening Error:", error);
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to generate AI screening result",
-          cause: error,
-        });
-      }
-    }),
-
-  generateMock: protectedProcedure
-    .input(
-      z.object({
-        applicantId: z.string(),
-        jobId: z.string(),
-      }),
-    )
-    .output(ScreeningResultSchema)
-    .mutation(async ({ input, ctx }) => {
-      const [applicant, job] = await Promise.all([
-        Applicant.findById(input.applicantId),
-        ensureJobExists(input.jobId),
-      ]);
-
-      if (!applicant) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Applicant not found",
-        });
-      }
-
-      if (String(applicant.jobId) !== input.jobId) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Applicant does not belong to this job",
-        });
-      }
-
-      const applicantSkills = applicant.skills
-        .map((skill) => skill.name.trim().toLowerCase())
-        .filter(Boolean);
-      const jobSkills = job.skills.map((skill) => skill.trim().toLowerCase());
-      const matchedSkills = jobSkills.filter((skill) =>
-        applicantSkills.includes(skill),
-      );
-      const missingSkills = jobSkills.filter(
-        (skill) => !applicantSkills.includes(skill),
-      );
-      const matchScore = buildScreeningScore(
-        applicantSkills,
-        jobSkills,
-        job.requirements.length,
-      );
-      const recommendation = buildRecommendation(matchScore);
-      const summary = matchedSkills.length
-        ? `${applicant.firstName} aligns with ${matchedSkills.length} core requirement${matchedSkills.length === 1 ? "" : "s"} for ${job.title}.`
-        : `${applicant.firstName} needs further review against the key requirements for ${job.title}.`;
-      const skillBreakdown = jobSkills.map((skill) => ({
-        skill,
-        score: applicantSkills.includes(skill) ? 92 : 38,
-      }));
-      const screeningPayload = {
+      return runAIInternal({
         applicantId: input.applicantId,
         jobId: input.jobId,
-        createdByUserId: ctx.session.user.id,
-        matchScore,
-        strengths:
-          matchedSkills.length > 0
-            ? matchedSkills.map((skill) => `Matched requirement: ${skill}`)
-            : ["Baseline profile completeness supports a manual review"],
-        gaps:
-          missingSkills.length > 0
-            ? missingSkills.slice(0, 3).map((skill) => `Missing signal: ${skill}`)
-            : ["No major capability gaps detected"],
-        recommendation,
-        summary,
-        skillBreakdown,
-      };
-
-      const existingScreening = await ScreeningResult.findOne({
-        applicantId: input.applicantId,
+        triggeredByUserId: ctx.session.user.id,
+        triggererEmail: ctx.session.user.email,
+        triggererName: ctx.session.user.name ?? undefined,
       });
-
-      if (existingScreening) {
-        existingScreening.set(screeningPayload);
-        await existingScreening.save();
-      } else {
-        const screening = new ScreeningResult(screeningPayload);
-        await screening.save();
-      }
-
-      await Applicant.findByIdAndUpdate(input.applicantId, {
-        screening: {
-          matchScore,
-          strengths: screeningPayload.strengths,
-          gaps: screeningPayload.gaps,
-          recommendation,
-          summary,
-          skillBreakdown,
-        },
-        status: buildApplicantStatus(matchScore),
-      });
-
-      await syncJobMetrics(input.jobId);
-
-      const savedScreening = await ScreeningResult.findOne({
-        applicantId: input.applicantId,
-      });
-
-      if (!savedScreening) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Screening result could not be loaded after saving",
-        });
-      }
-
-      return serializeScreening(savedScreening);
     }),
 
   getByApplicant: protectedProcedure

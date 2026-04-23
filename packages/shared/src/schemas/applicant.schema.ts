@@ -52,6 +52,7 @@ export const ApplicationStatusSchema = z.enum([
   "shortlisted",
   "rejected",
   "hired",
+  "failed",
 ]);
 
 export const CreateApplicantSchema = z.object({
@@ -98,6 +99,18 @@ export const ApplicantScreeningSchema = ScreeningResultSchema.omit({
   jobId: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  headline: z.string().optional(),
+  bio: z.string().optional(),
+  location: z.string().optional(),
+  skills: z.array(SkillSchema).default([]),
+  experience: z.array(ExperienceSchema).default([]),
+  education: z.array(EducationSchema).default([]),
+  languages: z.array(LanguageSchema).default([]),
+  certifications: z.array(CertificationSchema).default([]),
+  projects: z.array(ProjectSchema).default([]),
 });
 
 export type ApplicantScreening = z.infer<typeof ApplicantScreeningSchema>;

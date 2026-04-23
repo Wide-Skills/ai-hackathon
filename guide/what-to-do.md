@@ -4,7 +4,7 @@ Currently, the scaffolding phases (DB, API, Store) are completed. The immediate 
 
 1. **AI Prompt Orchestration**
    - Bind the `@ai-sdk/google` library to the `screeningRouter.generate` endpoint.
-   - We need to craft a precise, deterministic system prompt using `zod` schema outputs (using `generateObject`) to ensure Gemini returns structured JSON mapping exactly to the `ScreeningResult` MongoDB model.
+   - We need to craft a precise, deterministic system prompt using `zod` schema outputs (using `generateText` with `Output.object`) to ensure Gemini returns structured JSON mapping exactly to the `ScreeningResult` MongoDB model.
 
 2. **Frontend Wiring**
    - Create the Dashboard shell connecting to Redux Layout.

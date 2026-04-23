@@ -2,15 +2,15 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
-import { useDispatch } from "react-redux";
 import { QueryEmptyState, QueryErrorState } from "@/components/data/query-state";
-import { setCreateModalOpen } from "@/store/slices/jobsSlice";
 import { trpc } from "@/utils/trpc";
 import { JobCard } from "./job-card";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import type { Route } from "next";
 
 export function JobsList() {
-  const dispatch = useDispatch();
+  const router = useRouter();
   const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
   const jobs = jobsQuery.data;
 
@@ -57,7 +57,7 @@ export function JobsList() {
             <p className="text-[12px] text-muted-foreground/30 font-bold mt-1 uppercase tracking-widest">{activeJobs.length} open roles</p>
           </div>
           <button 
-            onClick={() => dispatch(setCreateModalOpen(true))}
+            onClick={() => router.push("/dashboard/jobs/new" as Route)}
             className="btn-pill-primary h-11 px-8 text-[12px] uppercase tracking-[0.2em] shadow-ethereal"
           >
             Create New Job
