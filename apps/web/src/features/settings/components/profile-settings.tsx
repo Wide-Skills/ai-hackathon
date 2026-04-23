@@ -24,9 +24,9 @@ export function ProfileSettings() {
             </button>
           </div>
           <div>
-            <p className="text-[16px] font-bold text-foreground tracking-tight">Umurava Inc.</p>
+            <p className="text-[16px] font-semibold text-foreground tracking-tight">Umurava Inc.</p>
             <p className="text-[13px] text-muted-foreground font-medium">Technology & AI Recruitment Solutions</p>
-            <button className="mt-3 text-[11px] font-bold text-info hover:text-info/80 transition-colors uppercase tracking-[0.1em]">
+            <button className="mt-3 text-[11px] font-semibold text-info hover:text-info/80 transition-colors uppercase tracking-[0.1em]">
               Update branding
             </button>
           </div>
@@ -42,7 +42,7 @@ export function ProfileSettings() {
             { label: "Timezone", val: "Eastern Time (GMT-5)" }
           ].map((field, i) => (
             <div key={i} className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 ml-1">
+              <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 ml-1">
                 {field.label}
               </label>
               <input 
@@ -61,7 +61,7 @@ export function ProfileSettings() {
       <div className="pt-8 border-t border-border/50 flex justify-end">
         <button
           onClick={handleSave}
-          className="h-11 px-8 rounded-full bg-primary text-primary-foreground text-[12px] font-bold uppercase tracking-[0.2em] flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_1px_3px_rgba(0,0,0,0.01)]"
+          className="h-11 px-8 rounded-full bg-primary text-primary-foreground text-[12px] font-semibold uppercase tracking-[0.2em] flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_1px_3px_rgba(0,0,0,0.01)]"
         >
           <Save className="h-4 w-4" />
           Update Profile

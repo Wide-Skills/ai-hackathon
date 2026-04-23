@@ -16,29 +16,31 @@ interface SkillsCardProps {
 
 export function SkillsCard({ skills }: SkillsCardProps) {
   return (
-    <Card className="border-border shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 font-semibold text-foreground text-sm">
-          <Code2 className="h-4 w-4 text-primary" /> Skills
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="pt-0">
-        <div className="flex flex-wrap gap-2">
-          {skills.map((skill) => (
-            <span
-              key={skill.name}
-              className={cn(
-                "flex items-center gap-1.5 rounded-lg border px-3 py-1.5 font-medium text-xs",
-                skillColors[skill.level],
-              )}
-            >
-              {skill.name}
-              <span className="opacity-60">·</span>
-              <span className="opacity-80">{skill.yearsOfExperience}yr</span>
-            </span>
-          ))}
+    <Card className="shadow-premium border-border/50 p-8">
+      <div className="mb-10 flex items-center gap-3 border-b border-border/10 pb-6">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary/30 border border-border/20 text-foreground/30 shadow-ethereal">
+          <Code2 className="h-4.5 w-4.5" />
         </div>
-      </CardContent>
+        <h3 className="font-display text-[14px] font-light text-foreground uppercase tracking-[0.2em] opacity-60">Neural Skills</h3>
+      </div>
+      
+      <div className="flex flex-wrap gap-2.5 pt-2">
+        {skills.map((skill) => (
+          <span
+            key={skill.name}
+            className={cn(
+              "flex items-center gap-2.5 rounded-pill border px-4 py-1.5 font-bold uppercase text-[9px] tracking-[0.1em] shadow-ethereal transition-all hover:scale-[1.03]",
+              skill.level === "Expert" ? "bg-success/5 text-success-foreground border-success/10" :
+              skill.level === "Advanced" ? "bg-info/5 text-info-foreground border-info/10" :
+              "bg-secondary/30 text-muted-foreground/60 border-border/10"
+            )}
+          >
+            {skill.name}
+            <span className="opacity-20 font-light">|</span>
+            <span className="opacity-40">{skill.yearsOfExperience}Y</span>
+          </span>
+        ))}
+      </div>
     </Card>
   );
 }

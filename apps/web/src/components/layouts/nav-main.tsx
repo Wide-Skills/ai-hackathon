@@ -55,26 +55,26 @@ export function NavMain({
                   render={<Link href={item.url} />}
                   isActive={isItemActive}
                   className={cn(
-                    "h-9 px-4 transition-all duration-200 rounded-lg relative group overflow-hidden",
-                    "hover:bg-transparent active:bg-transparent",
+                    "h-10 px-4 transition-all duration-300 rounded-lg relative group overflow-hidden mb-1",
+                    "hover:bg-secondary/30 active:scale-[0.98]",
                     isItemActive 
-                      ? "text-foreground font-semibold" 
-                      : "text-muted-foreground/60 hover:text-foreground/90"
+                      ? "bg-secondary/50 text-foreground font-medium shadow-ethereal" 
+                      : "text-muted-foreground/50 hover:text-foreground/80"
                   )}
                 >
                   <div className={cn(
                     "flex-shrink-0 transition-colors mr-3",
-                    isItemActive ? "text-primary" : "text-muted-foreground/30 group-hover:text-muted-foreground/60"
+                    isItemActive ? "text-primary" : "text-muted-foreground/20 group-hover:text-muted-foreground/40"
                   )}>
                     {React.isValidElement(item.icon) 
-                      ? React.cloneElement(item.icon as React.ReactElement<any>, { className: "size-4.5 stroke-[1.5px]" })
+                      ? React.cloneElement(item.icon as React.ReactElement<any>, { className: "size-4 stroke-[1.5px]" })
                       : item.icon
                     }
                   </div>
                   <span className="text-[14px] tracking-tight">{item.title}</span>
                   
                   {isItemActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-primary rounded-r-full" />
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3 bg-primary/60 rounded-r-full" />
                   )}
                 </SidebarMenuButton>
               </SidebarMenuItem>

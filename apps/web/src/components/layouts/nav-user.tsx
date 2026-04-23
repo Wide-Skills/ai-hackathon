@@ -50,22 +50,23 @@ export function NavUser({
           <DropdownMenuTrigger
             render={
               <SidebarMenuButton
+                className="hover:bg-transparent active:bg-transparent"
               />
             }
           >
-            <Avatar className="h-8 w-8 rounded-lg border border-border/50">
-              <AvatarImage src={user.avatar} alt={user.name} className="grayscale" />
-              <AvatarFallback className="rounded-lg bg-secondary text-muted-foreground text-[10px] font-bold">
+            <Avatar className="h-8 w-8 rounded-pill border border-border/20 shadow-ethereal">
+              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarFallback className="rounded-pill bg-secondary/50 text-muted-foreground/50 text-[10px] font-bold">
                 {user.name?.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left leading-tight ml-2">
-              <span className="truncate text-[13px] font-bold text-foreground tracking-tight">{user.name}</span>
-              <span className="truncate text-muted-foreground text-[11px] font-medium tracking-tight">
+              <span className="truncate text-[13px] font-medium text-foreground tracking-tight">{user.name}</span>
+              <span className="truncate text-muted-foreground/40 text-[11px] font-medium tracking-tight">
                 {user.email}
               </span>
             </div>
-            <ChevronsUpDownIcon className="ml-auto size-3.5 text-muted-foreground/40" />
+            <ChevronsUpDownIcon className="ml-auto size-3 w-3 text-muted-foreground/20" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className=""

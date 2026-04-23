@@ -23,17 +23,19 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
     trpc.applicants.getById.queryOptions({ id }),
   );
   const { data: job, isLoading: jobLoading } = useQuery(
-    trpc.jobs.getById.queryOptions({ id: applicant?.jobId ?? "" }),
-    { enabled: !!applicant?.jobId },
+    trpc.jobs.getById.queryOptions(
+      { id: applicant?.jobId ?? "" },
+      { enabled: !!applicant?.jobId },
+    ),
   );
 
   if (appLoading || jobLoading) {
     return (
       <div className="w-full space-y-12 animate-pulse">
-        <div className="h-8 w-40 bg-secondary/30 rounded-full" />
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
-          <div className="h-[600px] bg-secondary/30 rounded-xl lg:col-span-1" />
-          <div className="h-[600px] bg-secondary/30 rounded-xl lg:col-span-3" />
+        <div className="h-8 w-40 bg-secondary/30 rounded-pill" />
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-4">
+          <div className="h-[700px] bg-secondary/30 rounded-section lg:col-span-1" />
+          <div className="h-[700px] bg-secondary/30 rounded-section lg:col-span-3" />
         </div>
       </div>
     );
@@ -42,36 +44,35 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
   if (!applicant) notFound();
 
   return (
-    <div className="w-full space-y-10 pb-20">
-      <div className="flex items-center justify-between">
+    <div className="w-full space-y-12 pb-20">
+      <div className="flex items-center justify-between px-2">
         <button
           onClick={() => router.back()}
-          className="group flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors"
+          className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-all"
         >
-          <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1" />
           Candidate Pool
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-4 items-start">
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-4 items-start">
         <ApplicantSidebar applicant={applicant} jobTitle={job?.title} />
 
-        <div className="lg:col-span-3 space-y-10">
+        <div className="lg:col-span-3 space-y-16">
           {applicant.screening && (
             <section>
-               <div className="mb-6">
-                  <h3 className="font-display text-[16px] font-light text-foreground uppercase tracking-[0.12em]">Intelligence Analysis</h3>
+               <div className="mb-8 px-2">
+                  <h3 className="font-display text-[16px] font-light text-foreground uppercase tracking-[0.15em] opacity-50">Intelligence Evaluation</h3>
                </div>
                <AIAnalysisCard screening={applicant.screening} />
             </section>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <ExperienceCard experience={applicant.experience} />
             <SkillsCard skills={applicant.skills} />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <EducationCard education={applicant.education} />
             <CertificationsCard certifications={applicant.certifications} />
           </div>

@@ -114,57 +114,54 @@ export function ScreeningDashboard() {
     <div className="w-full space-y-12 pb-20">
       {/* Top Metrics row */}
       <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-        <StatCard label="Total Screened" value={screened.length} sublabel="Overall throughput" icon={Cpu} color="bg-secondary/50 text-foreground/40" />
-        <StatCard label="Avg Match Score" value={`${avgScore}%`} sublabel="Model quality" icon={BarChart3} color="bg-info/10 text-info" />
-        <StatCard label="Strong Matches" value={filtered.filter((a) => (a.screening?.matchScore ?? 0) >= 85).length} sublabel="Top candidates" icon={Star} color="bg-success/10 text-success" />
-        <StatCard label="Pending Queue" value={pending.length} sublabel="Awaiting analysis" icon={Clock} color="bg-warning/10 text-warning" />
+        <StatCard label="Total Screened" value={screened.length} sublabel="Analysis throughput" trend="+15%" />
+        <StatCard label="Avg Match" value={`${avgScore}%`} sublabel="Pool quality" trend="+2%" />
+        <StatCard label="Shortlisted" value={filtered.filter((a) => (a.screening?.matchScore ?? 0) >= 85).length} sublabel="Top tier matches" trend="+8%" />
+        <StatCard label="Queue" value={pending.length} sublabel="Awaiting review" trend="-12%" />
       </div>
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-4 items-start">
         {/* Control Sidebar */}
         <div className="space-y-10 lg:col-span-1">
-          <div className="bg-background rounded-xl border border-border overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.01)] group">
-            <div className="px-8 py-5 border-b border-border/50 bg-secondary/[0.03] flex items-center justify-between">
+          <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium group transition-all hover:shadow-lift">
+            <div className="px-8 py-5 border-b border-border/20 bg-secondary/[0.02] flex items-center justify-between">
               <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Engine</h3>
-              <Sparkles className="h-3.5 w-3.5 text-info opacity-30 group-hover:opacity-100 transition-opacity" />
             </div>
             <div className="p-8">
-              <p className="text-muted-foreground text-[13px] leading-relaxed mb-10 font-medium tracking-tight">
-                Powered by Gemini 1.5 Pro. Analyzes profile expertise with surgical precision.
+              <p className="text-muted-foreground/50 text-[13px] leading-relaxed mb-10 font-medium tracking-tight">
+                Neural architecture analysis powered by Gemini 1.5 Pro.
               </p>
 
               <button
                 onClick={handleRunScreening}
                 disabled={running || pending.length === 0}
-                className="w-full h-11 rounded-full bg-primary text-primary-foreground text-[12px] font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-sm disabled:opacity-40"
+                className="btn-pill-primary w-full h-11 text-[11px] uppercase tracking-[0.2em] gap-2.5 disabled:opacity-40 shadow-ethereal"
               >
                 {running ? (
                   <>
                     <Loader2 className="h-3.5 w-3.5 animate-spin" /> {progress}%
                   </>
                 ) : (
-                  <>
-                    <Play className="h-3.5 w-3.5" /> Screen Pending
-                  </>
+                  "Initiate Analysis"
                 )}
               </button>
               {running && (
-                <div className="mt-6 h-1 w-full bg-secondary rounded-full overflow-hidden">
+                <div className="mt-8 h-1 w-full bg-secondary/50 rounded-pill overflow-hidden shadow-inset">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
-                    className="h-full bg-primary"
+                    className="h-full bg-primary shadow-ethereal"
                   />
                 </div>
               )}
             </div>
           </div>
 
-          <div className="bg-background rounded-xl border border-border overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
-            <div className="px-8 py-5 border-b border-border/50 bg-secondary/[0.03]">
-              <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Split</h3>
+          <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium">
+            <div className="px-8 py-5 border-b border-border/20 bg-secondary/[0.02]">
+              <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Distribution</h3>
             </div>
-            <div className="p-8 space-y-6">
+            <div className="p-8 space-y-7">
               {Object.entries(distribution).map(([rec, count]) => {
                 const colors: Record<string, string> = {
                   "Strongly Recommend": "bg-success/40",
@@ -174,13 +171,13 @@ export function ScreeningDashboard() {
                 };
                 const pct = filtered.length > 0 ? Math.round((count / filtered.length) * 100) : 0;
                 return (
-                  <div key={rec} className="space-y-2">
-                    <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                  <div key={rec} className="space-y-3">
+                    <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
                       <span>{rec.split(' ')[0]}</span>
                       <span className="text-foreground/70">{count}</span>
                     </div>
-                    <div className="h-1 w-full bg-secondary rounded-full overflow-hidden">
-                       <div className={cn("h-full rounded-full", colors[rec])} style={{ width: `${pct}%` }} />
+                    <div className="h-1 w-full bg-secondary/50 rounded-pill overflow-hidden shadow-inset">
+                       <div className={cn("h-full rounded-pill shadow-ethereal", colors[rec])} style={{ width: `${pct}%` }} />
                     </div>
                   </div>
                 );
@@ -188,16 +185,16 @@ export function ScreeningDashboard() {
             </div>
           </div>
 
-          <div className="bg-background rounded-xl border border-border overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
-            <div className="px-8 py-5 border-b border-border/50 bg-secondary/[0.03]">
-              <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Focus</h3>
+          <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium">
+            <div className="px-8 py-5 border-b border-border/20 bg-secondary/[0.02]">
+              <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Pipeline</h3>
             </div>
             <div className="p-8">
               <Select value={selectedJob} onValueChange={(value) => setSelectedJob(value ?? "all")}>
-                <SelectTrigger className="h-10 rounded-lg border-border bg-background shadow-sm text-[13px] font-medium text-foreground/70">
+                <SelectTrigger className="h-11 rounded-pill border-border/50 bg-background shadow-ethereal text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
                   <SelectValue placeholder="All Jobs" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="shadow-premium border-border/50">
                   <SelectItem value="all">All Pipelines</SelectItem>
                   {jobs.map((j) => (
                     <SelectItem key={j.id} value={j.id}>{j.title}</SelectItem>
@@ -208,16 +205,15 @@ export function ScreeningDashboard() {
           </div>
         </div>
 
-        {/* Talent List */}
         <div className="lg:col-span-3">
-          <div className="mb-8 flex items-end justify-between border-b border-border/50 pb-8">
+          <div className="mb-10 flex items-end justify-between border-b border-border/20 pb-10 px-2">
             <div>
-              <h2 className="font-display text-[24px] font-light text-foreground uppercase tracking-[0.1em]">Screened Talent</h2>
-              <p className="text-[13px] text-muted-foreground font-medium mt-1 uppercase tracking-wider">Ranked by match logic • {filtered.length} Results</p>
+              <h2 className="font-display text-[24px] font-light text-foreground uppercase tracking-[0.1em]">Screening Report</h2>
+              <p className="text-[12px] text-muted-foreground/30 font-bold mt-1 uppercase tracking-widest">{filtered.length} experts analyzed</p>
             </div>
             <button
               onClick={() => queryClient.invalidateQueries({ queryKey: [["applicants"]] })}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition-all hover:bg-secondary active:scale-[0.95] shadow-sm text-muted-foreground/60"
+              className="flex h-10 w-10 items-center justify-center rounded-pill border border-border/50 bg-background transition-all hover:bg-secondary active:scale-[0.95] shadow-ethereal text-muted-foreground/20"
             >
               <RefreshCw className="h-4 w-4" />
             </button>
@@ -236,12 +232,12 @@ export function ScreeningDashboard() {
             })}
 
             {filtered.length === 0 && (
-              <div className="py-24 text-center rounded-xl border border-dashed border-border bg-secondary/10">
-                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-secondary mb-4 text-muted-foreground/40">
+              <div className="py-24 text-center rounded-section border border-dashed border-border/50 bg-secondary/5">
+                <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary/50 mb-6 shadow-ethereal text-muted-foreground/20">
                    <BrainCircuit className="h-6 w-6" />
                 </div>
-                <p className="text-[14px] font-bold text-foreground uppercase tracking-widest">No screening results</p>
-                <p className="mt-1 text-[13px] text-muted-foreground font-medium tracking-tight">Initiate the AI engine to evaluate pending candidates</p>
+                <p className="text-[14px] font-light text-foreground uppercase tracking-[0.2em]">No screening results</p>
+                <p className="mt-2 text-[12px] text-muted-foreground/60 font-medium tracking-tight">Initiate the AI engine to evaluate pending candidates</p>
               </div>
             )}
           </div>

@@ -10,44 +10,48 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
   if (projects.length === 0) return null;
 
   return (
-    <Card className="border-border shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 font-semibold text-foreground text-sm">
-          <Code2 className="h-4 w-4 text-primary" /> Projects
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 pt-0">
+    <Card className="shadow-premium border-border/50 p-8">
+      <div className="mb-10 flex items-center gap-3 border-b border-border/10 pb-6">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary/30 border border-border/20 text-foreground/30 shadow-ethereal">
+          <Code2 className="h-4.5 w-4.5" />
+        </div>
+        <h3 className="font-display text-[14px] font-light text-foreground uppercase tracking-[0.2em] opacity-60">Technical Portfolio</h3>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((proj, i) => (
           <div
             key={i}
-            className="rounded-xl border border-border/50 bg-muted/50 p-4"
+            className="rounded-xl border border-border/10 bg-secondary/[0.03] p-6 shadow-ethereal transition-all hover:bg-secondary/[0.05] group"
           >
-            <div className="flex items-start justify-between">
-              <p className="font-semibold text-foreground text-sm">
-                {proj.name}
-              </p>
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                 <p className="font-bold text-foreground/80 text-[15px] tracking-tight group-hover:text-primary transition-colors">
+                    {proj.name}
+                 </p>
+                 <p className="text-[11px] font-bold text-muted-foreground/40 uppercase tracking-widest mt-1">
+                    {proj.role}
+                 </p>
+              </div>
               {proj.link && (
                 <a
                   href={proj.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground/70 transition-colors hover:text-primary"
+                  className="h-8 w-8 flex items-center justify-center rounded-full border border-border/10 text-muted-foreground/30 transition-all hover:text-foreground hover:bg-background hover:shadow-ethereal"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               )}
             </div>
-            <p className="mt-0.5 font-medium text-primary text-xs">
-              {proj.role}
-            </p>
-            <p className="mt-2 text-muted-foreground text-sm leading-relaxed">
+            <p className="mt-4 text-muted-foreground/70 text-[14px] leading-relaxed font-medium tracking-tight">
               {proj.description}
             </p>
-            <div className="mt-3 flex flex-wrap gap-1.5">
+            <div className="mt-6 flex flex-wrap gap-2">
               {proj.technologies.map((t) => (
                 <span
                   key={t}
-                  className="rounded-md border border-primary/20 bg-primary/10 px-2 py-0.5 font-medium text-[11px] text-primary"
+                  className="rounded-lg border border-border/5 bg-background px-2.5 py-1 text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest shadow-ethereal"
                 >
                   {t}
                 </span>
@@ -55,7 +59,7 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
             </div>
           </div>
         ))}
-      </CardContent>
+      </div>
     </Card>
   );
 }

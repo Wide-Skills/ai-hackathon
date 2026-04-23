@@ -47,11 +47,12 @@
   /* Architectural Radius */
   --radius: 12px;
 
-  /* Elevation Utilities - Surgical precision */
-  --shadow-inset: inset 0 0 0 0.5px oklch(0% 0 0 / 0.06);
-  --shadow-outline: 0 0 0 1px oklch(0% 0 0 / 0.04);
-  --shadow-elevation: 0 2px 4px oklch(0% 0 0 / 0.01);
-  --shadow-warm: 0 4px 12px oklch(15% 0.01 60 / 0.02);
+  /* Elevation Utilities - ElevenLabs precise stacks */
+  --shadow-inset: 0 0 0 0.5px oklch(0% 0 0 / 0.075) inset;
+  --shadow-outline: 0 0 0 1px oklch(0% 0 0 / 0.06);
+  --shadow-elevation: 0 4px 4px oklch(0% 0 0 / 0.04);
+  --shadow-warm: 0 6px 16px oklch(25% 0.04 60 / 0.04);
+  --shadow-card: 0 0 1px oklch(0% 0 0 / 0.4), 0 4px 4px oklch(0% 0 0 / 0.04);
 }
 
 .dark {
@@ -74,8 +75,8 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans), "Inter", sans-serif;
-  --font-display: var(--font-geist-sans), "Waldenburg", sans-serif;
+  --font-sans: "Inter", var(--font-geist-sans), sans-serif;
+  --font-display: "Waldenburg", var(--font-geist-sans), sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -100,20 +101,27 @@
   --color-border: var(--border);
   --color-ring: var(--ring);
 
-  /* Elevation mapping */
-  --shadow-premium: var(--shadow-outline), var(--shadow-inset);
-  --shadow-ethereal: var(--shadow-outline), var(--shadow-elevation), var(--shadow-inset);
+  /* Elevation mapping - Multi-layered stacks */
+  --shadow-premium: var(--shadow-outline), var(--shadow-elevation), var(--shadow-inset);
+  --shadow-ethereal: var(--shadow-outline), var(--shadow-inset);
+  --shadow-lift: var(--shadow-card);
+  --shadow-warm-lift: var(--shadow-warm), var(--shadow-inset);
   
-  /* Radius Scale - Consistent 12px base */
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  /* Radius Scale - ElevenLabs generous curves */
+  --radius-pill: 9999px;
+  --radius-warm: 30px;
+  --radius-section: 24px;
+  --radius-card: 16px;
+  --radius-xl: 18px;
+  --radius-lg: 12px;
+  --radius-md: 8px;
+  --radius-sm: 4px;
+  --radius-xs: 2px;
   
   /* Typography Scale */
-  --text-display-hero: 72px;
-  --text-display-section: 44px;
-  --text-display-card: 24px;
+  --text-display-hero: 48px;
+  --text-display-section: 36px;
+  --text-display-card: 32px;
 }
 
 @layer base {
@@ -122,36 +130,45 @@
   }
   body {
     @apply font-sans text-foreground antialiased;
-    letter-spacing: 0.16px;
+    letter-spacing: 0.16px; /* Airy body text */
   }
   h1, h2, h3, h4 {
     @apply font-display font-light;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
   }
+  
+  /* Specific Heading adjustments */
+  h1 { @apply text-display-hero leading-[1.08]; letter-spacing: -0.96px; }
+  h2 { @apply text-display-section leading-[1.17]; }
+  h3 { @apply text-display-card leading-[1.13]; }
 }
 
 @layer components {
   /* Exhibit Containers - Stable & Clinical */
   .surface-exhibit {
-    @apply bg-card text-card-foreground rounded-lg border border-border shadow-premium;
+    @apply bg-card text-card-foreground rounded-card border border-border shadow-premium transition-all;
   }
 
   .bento-card {
-    @apply flex flex-col bg-card rounded-lg border border-border shadow-premium overflow-hidden relative;
+    @apply flex flex-col bg-card rounded-card border border-border shadow-premium overflow-hidden relative transition-all hover:shadow-lift;
   }
 
   /* Button Primitives - Aligned with ElevenLabs signatures */
   .btn-pill-primary {
-    @apply h-[52px] rounded-full bg-primary px-10 text-[15px] text-primary-foreground transition-all active:scale-[0.97] shadow-sm flex items-center justify-center;
+    @apply h-[44px] rounded-pill bg-primary px-6 text-[15px] font-medium text-primary-foreground transition-all active:scale-[0.97] shadow-lift flex items-center justify-center;
   }
 
   .btn-pill-warm {
-    @apply h-[52px] rounded-[30px] bg-accent px-10 text-[15px] text-accent-foreground shadow-ethereal transition-all active:scale-[0.97] flex items-center justify-center;
-    box-shadow: var(--shadow-warm), var(--shadow-inset);
+    @apply h-[52px] rounded-warm bg-accent/80 px-10 text-[15px] font-medium text-accent-foreground shadow-warm-lift transition-all active:scale-[0.97] flex items-center justify-center backdrop-blur-sm;
+    padding: 12px 20px 12px 14px; /* Asymmetric padding from design doc */
   }
 
   .btn-pill-outline {
-    @apply h-[52px] rounded-full bg-background border border-border px-10 text-[15px] text-foreground transition-all active:scale-[0.97] shadow-sm flex items-center justify-center;
+    @apply h-[44px] rounded-pill bg-background border border-border px-6 text-[15px] font-medium text-foreground transition-all active:scale-[0.97] shadow-lift flex items-center justify-center hover:bg-secondary/50;
+  }
+  
+  .btn-uppercase {
+    @apply font-display font-bold uppercase text-[14px] tracking-[0.7px];
   }
 
   .container-tight {

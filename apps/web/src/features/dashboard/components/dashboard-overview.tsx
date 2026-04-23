@@ -74,10 +74,10 @@ export function DashboardOverview() {
   }
 
   const statCards = [
-    { title: "Total Pool", value: stats?.totalCandidates ?? 0, trend: "+12.5%", icon: Users, desc: "Total active candidates" },
-    { title: "Active Pipelines", value: jobs?.filter((j) => j.status === "active").length ?? 0, trend: "+4.2%", icon: Briefcase, desc: "Current open positions" },
-    { title: "Processed Today", value: stats?.screenedToday ?? 0, trend: "+8.1%", icon: Cpu, desc: "AI screening volume" },
-    { title: "Average Match", value: `${stats?.avgMatchScore ?? 0}%`, trend: "+2.4%", icon: Sparkles, desc: "Pool quality index" },
+    { title: "Total Pool", value: stats?.totalCandidates ?? 0, trend: "+12.5%", desc: "Active candidate profiles" },
+    { title: "Active Pipelines", value: jobs?.filter((j) => j.status === "active").length ?? 0, trend: "+4.2%", desc: "Current open positions" },
+    { title: "Processed Today", value: stats?.screenedToday ?? 0, trend: "+8.1%", desc: "AI screening throughput" },
+    { title: "Average Match", value: `${stats?.avgMatchScore ?? 0}%`, trend: "+2.4%", desc: "Talent quality index" },
   ];
 
   const allApplicants = applicants ?? [];
@@ -114,8 +114,6 @@ export function DashboardOverview() {
                 label={stat.title}
                 value={stat.value}
                 sublabel={stat.desc}
-                icon={stat.icon}
-                color="bg-secondary/50 text-foreground/40"
                 trend={stat.trend}
               />
             </motion.div>
@@ -124,110 +122,93 @@ export function DashboardOverview() {
 
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-3 items-start">
           <div className="space-y-10 lg:col-span-2">
-            <div className="bg-background rounded-lg border border-border overflow-hidden shadow-premium">
-              <div className="flex items-center justify-between px-8 py-6 border-b border-border/50 bg-secondary/[0.03]">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-display text-display-card font-light text-foreground uppercase tracking-[0.12em]">Top Talent Pool</h3>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="h-3.5 w-3.5 text-muted-foreground/40 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-[240px] p-3 text-[12px] leading-relaxed">
-                      Candidates automatically ranked by our Gemini engine based on technical expertise and role fit.
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
+            <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium">
+              <div className="flex items-center justify-between px-8 py-6 border-b border-border/20 bg-secondary/[0.02]">
+                <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.12em]">Top Talent Pool</h3>
                 <Link
                   href="/dashboard/applicants"
-                  className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 hover:text-foreground transition-colors"
+                  className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors"
                 >
-                  View full pool <ChevronRight className="inline-block h-3 w-3 ml-1 opacity-40" />
+                  View all <ChevronRight className="inline-block h-3 w-3 ml-1 opacity-30" />
                 </Link>
               </div>
-              <div className="divide-y divide-border/30">
+              <div className="divide-y divide-border/10">
                 {topApplicants.length > 0 ? topApplicants.map((applicant, idx) => (
                   <Link
                     key={applicant.id}
                     href={`/dashboard/applicants/${applicant.id}` as Route}
-                    className="group flex items-center gap-6 px-8 py-5 transition-colors hover:bg-secondary/20"
+                    className="group flex items-center gap-8 px-8 py-6 transition-all hover:bg-secondary/20"
                   >
-                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-secondary text-[11px] font-bold text-muted-foreground/40">
-                      {idx + 1}
-                    </div>
-                    <div className="h-11 w-11 flex-shrink-0 rounded-lg bg-secondary border border-border/50 flex items-center justify-center text-[12px] font-bold text-muted-foreground/60 uppercase">
+                    <div className="h-11 w-11 flex-shrink-0 rounded-xl bg-secondary/30 border border-border/30 flex items-center justify-center text-[11px] font-bold text-muted-foreground/30 uppercase shadow-ethereal group-hover:scale-[1.05] transition-transform">
                        {applicant.firstName[0]}{applicant.lastName[0]}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-[15px] font-medium text-foreground tracking-tight">
+                      <p className="text-[15px] font-medium text-foreground tracking-tight group-hover:text-primary transition-colors">
                         {applicant.firstName} {applicant.lastName}
                       </p>
-                      <p className="truncate text-muted-foreground text-[13px] tracking-tight">
+                      <p className="truncate text-muted-foreground/60 text-[12px] tracking-tight mt-0.5">
                         {applicant.headline}
                       </p>
                     </div>
                     <div className="flex flex-shrink-0 items-center gap-8">
                       <ScoreBadge score={applicant.screening?.matchScore ?? 0} />
-                      <ArrowUpRight className="h-4 w-4 text-muted-foreground/20 group-hover:text-foreground transition-colors" />
+                      <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground/20 group-hover:text-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </div>
                   </Link>
                 )) : (
-                  <div className="py-20 text-center text-muted-foreground/40">
-                    <Users className="mx-auto h-10 w-10 mb-4 opacity-20" />
-                    <p className="text-[11px] font-bold uppercase tracking-widest">Awaiting First Applications</p>
-                    <p className="text-[13px] font-medium tracking-tight mt-1">Shortlisted experts will appear here after AI screening.</p>
+                  <div className="py-20 text-center text-muted-foreground/30">
+                    <Users className="mx-auto h-10 w-10 mb-4 opacity-10" />
+                    <p className="text-[10px] font-bold uppercase tracking-widest">Awaiting First Applications</p>
+                    <p className="text-[12px] font-medium tracking-tight mt-1 opacity-60">Shortlisted experts will appear here after AI screening.</p>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="bg-background rounded-lg border border-border overflow-hidden shadow-premium">
-              <div className="flex items-center justify-between px-8 py-6 border-b border-border/50 bg-secondary/[0.03]">
-                <h3 className="font-display text-display-card font-light text-foreground uppercase tracking-[0.12em]">Active Pipelines</h3>
+            <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium">
+              <div className="flex items-center justify-between px-8 py-6 border-b border-border/20 bg-secondary/[0.02]">
+                <h3 className="font-display text-[16px] font-light text-foreground uppercase tracking-[0.12em]">Active Pipelines</h3>
                 <Link
                   href="/dashboard/jobs"
-                  className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 hover:text-foreground transition-colors"
+                  className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors"
                 >
-                  All postings <ChevronRight className="inline-block h-3 w-3 ml-1 opacity-40" />
+                  All postings <ChevronRight className="inline-block h-3 w-3 ml-1 opacity-30" />
                 </Link>
               </div>
-              <div className="divide-y divide-border/30">
+              <div className="divide-y divide-border/10">
                 {activeJobs.length > 0 ? activeJobs.map((job) => {
                   const pct = job.applicantsCount > 0 ? Math.round((job.screenedCount / job.applicantsCount) * 100) : 0;
                   return (
                     <Link
                       key={job.id}
                       href={`/dashboard/jobs/${job.id}` as Route}
-                      className="group flex items-center gap-6 px-8 py-6 transition-colors hover:bg-secondary/20"
+                      className="group flex items-center gap-8 px-8 py-7 transition-all hover:bg-secondary/20"
                     >
-                      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-secondary/50 border border-border/50 text-muted-foreground/30">
-                        <Briefcase className="h-5 w-5" />
-                      </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-[16px] font-medium text-foreground tracking-tight mb-1.5">
+                        <p className="text-[16px] font-medium text-foreground tracking-tight mb-2 group-hover:text-primary transition-colors">
                           {job.title}
                         </p>
                         <div className="flex items-center gap-4">
-                           <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/50">{job.location}</span>
-                           <div className="h-1.5 w-1.5 rounded-full bg-border/40" />
-                           <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/50">{job.type}</span>
+                           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30">{job.location}</span>
+                           <div className="h-0.5 w-0.5 rounded-full bg-border/40" />
+                           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30">{job.type}</span>
                         </div>
                       </div>
-                      <div className="flex-shrink-0 text-right pr-2">
+                      <div className="flex-shrink-0 text-right">
                         <p className="font-display text-[22px] font-light text-foreground leading-none mb-2">
                           {job.applicantsCount}
                         </p>
-                        <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest mb-2">Applicants</p>
-                        <div className="h-1 w-20 bg-secondary rounded-full overflow-hidden">
-                          <div className="h-full bg-success/30" style={{ width: `${pct}%` }} />
+                        <div className="h-1 w-20 bg-secondary/50 rounded-pill overflow-hidden shadow-inset">
+                          <div className="h-full bg-info/30" style={{ width: `${pct}%` }} />
                         </div>
                       </div>
                     </Link>
                   );
                 }) : (
-                  <div className="py-20 text-center text-muted-foreground/40">
-                    <Briefcase className="mx-auto h-10 w-10 mb-4 opacity-20" />
-                    <p className="text-[11px] font-bold uppercase tracking-widest">No Open Positions</p>
-                    <p className="text-[13px] font-medium tracking-tight mt-1">Create your first job posting to start building your pipeline.</p>
+                  <div className="py-20 text-center text-muted-foreground/30">
+                    <Briefcase className="mx-auto h-10 w-10 mb-4 opacity-10" />
+                    <p className="text-[10px] font-bold uppercase tracking-widest">No Open Positions</p>
+                    <p className="text-[12px] font-medium tracking-tight mt-1 opacity-60">Create your first job posting to start building your pipeline.</p>
                   </div>
                 )}
               </div>
@@ -235,98 +216,82 @@ export function DashboardOverview() {
           </div>
 
           <div className="space-y-10">
-            <div className="bg-background rounded-lg border border-border overflow-hidden shadow-premium">
-              <div className="px-8 py-6 border-b border-border/50 bg-secondary/[0.03]">
-                <h3 className="font-display text-display-card font-light text-foreground uppercase tracking-[0.12em]">Activity Stream</h3>
+            <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium">
+              <div className="px-8 py-6 border-b border-border/20 bg-secondary/[0.02]">
+                <h3 className="font-display text-[16px] font-light text-foreground uppercase tracking-[0.12em]">Activity Stream</h3>
               </div>
-              <div className="divide-y divide-border/30">
+              <div className="divide-y divide-border/10">
                 {recentActivity.length > 0 ? recentActivity.map((item) => {
                   const config = activityConfig[item.type as keyof typeof activityConfig];
                   const Icon = config.icon;
                   return (
                     <div
                       key={item.id}
-                      className="flex items-start gap-5 px-8 py-5"
+                      className="flex items-start gap-5 px-8 py-6"
                     >
-                      <div className={`mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg ${config.color} border border-current/5 shadow-sm`}>
-                        <Icon className="h-3.5 w-3.5" />
-                      </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-[13px] leading-relaxed text-foreground/70 font-medium tracking-tight">
                           <span className="font-bold text-foreground">{item.candidate}</span>{" "}
                           processed for <span className="text-foreground">{item.job}</span>
                         </p>
-                        <div className="flex items-center gap-4 mt-2 opacity-50">
+                        <div className="flex items-center gap-4 mt-2.5 opacity-30">
                           {item.score && (
-                            <span className="text-[10px] font-bold uppercase tracking-wider">{item.score}% Match</span>
+                            <span className="text-[9px] font-bold uppercase tracking-[0.25em]">{item.score}% Match</span>
                           )}
-                          <span className="text-[10px] font-bold uppercase tracking-wider">{item.time}</span>
+                          <span className="text-[9px] font-bold uppercase tracking-[0.25em]">{item.time}</span>
                         </div>
                       </div>
                     </div>
                   );
                 }) : (
-                  <div className="py-12 text-center text-muted-foreground/30">
-                     <p className="text-[11px] font-bold uppercase tracking-widest">Nothing to report</p>
+                  <div className="py-12 text-center text-muted-foreground/20">
+                     <p className="text-[10px] font-bold uppercase tracking-widest">Nothing to report</p>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="bg-secondary/30 rounded-lg border border-border overflow-hidden shadow-premium group">
-              <div className="px-8 py-6 border-b border-border/50 flex items-center justify-between">
-                <h3 className="font-display text-display-card font-light text-foreground uppercase tracking-[0.12em]">Intelligence</h3>
-                <Zap className="h-4 w-4 text-info opacity-30 group-hover:opacity-100 transition-opacity" />
+            <div className="bg-accent/5 rounded-section border border-border/50 overflow-hidden shadow-warm-lift group transition-all hover:shadow-lift">
+              <div className="px-8 py-6 border-b border-border/20 flex items-center justify-between bg-accent/[0.02]">
+                <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.12em]">Intelligence</h3>
               </div>
               <div className="p-10">
                 <div className="space-y-10">
                   <div>
                     <div className="flex items-end justify-between mb-3">
                        <div className="flex items-center gap-2">
-                          <p className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">Global match quality</p>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Info className="h-3 w-3 text-muted-foreground/30 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent className="text-[11px] p-2">Average score across all screened talent.</TooltipContent>
-                          </Tooltip>
+                          <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">Global quality</p>
                        </div>
                        <div className="flex items-baseline gap-1">
                           <p className="font-display text-[28px] font-light text-foreground leading-none">{stats?.avgMatchScore ?? 0}</p>
-                          <span className="text-[14px] text-muted-foreground/40 font-light font-display">%</span>
+                          <span className="text-[12px] text-muted-foreground/30 font-light font-display">%</span>
                        </div>
                     </div>
-                    <div className="h-1.5 w-full bg-background/50 rounded-full overflow-hidden border border-border/20">
-                       <div className="h-full bg-info/40" style={{ width: `${stats?.avgMatchScore ?? 0}%` }} />
+                    <div className="h-1 w-full bg-background/50 rounded-pill overflow-hidden border border-border/10 shadow-inset">
+                       <div className="h-full bg-info/40 shadow-ethereal" style={{ width: `${stats?.avgMatchScore ?? 0}%` }} />
                     </div>
                   </div>
 
                   <div>
                      <div className="flex items-end justify-between mb-3">
                         <div className="flex items-center gap-2">
-                          <p className="text-[11px] font-bold text-muted-foreground/60 uppercase tracking-widest">AI Coverage</p>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Info className="h-3 w-3 text-muted-foreground/30 cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent className="text-[11px] p-2">Percentage of candidates processed by AI.</TooltipContent>
-                          </Tooltip>
+                          <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">AI Coverage</p>
                         </div>
                         <div className="flex items-baseline gap-1">
                           <p className="font-display text-[28px] font-light text-foreground leading-none">
                             {allApplicants.length > 0 ? Math.round((topApplicants.length / allApplicants.length) * 100) : 0}
                           </p>
-                          <span className="text-[14px] text-muted-foreground/40 font-light font-display">%</span>
+                          <span className="text-[12px] text-muted-foreground/30 font-light font-display">%</span>
                         </div>
                      </div>
-                     <div className="h-1.5 w-full bg-background/50 rounded-full overflow-hidden border border-border/20">
-                        <div className="h-full bg-success/40" style={{ width: `${allApplicants.length > 0 ? Math.round((topApplicants.length / allApplicants.length) * 100) : 0}%` }} />
+                     <div className="h-1 w-full bg-background/50 rounded-pill overflow-hidden border border-border/10 shadow-inset">
+                        <div className="h-full bg-success/40 shadow-ethereal" style={{ width: `${allApplicants.length > 0 ? Math.round((topApplicants.length / allApplicants.length) * 100) : 0}%` }} />
                      </div>
                   </div>
                 </div>
 
-                <Link href="/dashboard/analytics">
-                  <button className="mt-14 w-full h-11 rounded-full bg-foreground text-background text-[11px] font-bold uppercase tracking-[0.2em] transition-all active:scale-[0.98] shadow-sm">
+                <Link href={"/dashboard/analytics" as Route}>
+                  <button className="btn-pill-warm mt-14 w-full h-11 text-[11px] font-bold uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-[0.98]">
                     Enter Performance Hub
                   </button>
                 </Link>

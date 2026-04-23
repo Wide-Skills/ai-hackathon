@@ -31,17 +31,17 @@ export function SettingsForm() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-4 py-3 text-left transition-all whitespace-nowrap lg:whitespace-normal group",
+                    "flex items-center gap-4 rounded-xl px-3 py-2.5 text-left transition-all whitespace-nowrap lg:whitespace-normal group mb-1",
                     isActive
-                      ? "bg-secondary/60 text-foreground shadow-[0_1px_3px_rgba(0,0,0,0.02)]"
-                      : "text-muted-foreground/60 hover:text-foreground hover:bg-secondary/30"
+                      ? "bg-secondary/50 text-foreground shadow-ethereal"
+                      : "text-muted-foreground/40 hover:text-foreground/70 hover:bg-secondary/20"
                   )}
                 >
                   <tab.icon className={cn(
                     "h-4 w-4 flex-shrink-0 transition-colors",
-                    isActive ? "text-info" : "text-muted-foreground/40 group-hover:text-muted-foreground"
+                    isActive ? "text-primary" : "text-muted-foreground/20 group-hover:text-muted-foreground/40"
                   )} />
-                  <span className="text-[13px] font-bold uppercase tracking-[0.12em]">{tab.label}</span>
+                  <span className="text-[12px] font-semibold uppercase tracking-[0.15em]">{tab.label}</span>
                 </button>
               );
             })}
@@ -50,7 +50,7 @@ export function SettingsForm() {
 
         {/* Content Area - Expansive exhibit */}
         <div className="flex-1 max-w-[800px]">
-          <div className="bg-background rounded-lg border border-border p-10 shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
+          <div className="bg-background rounded-section border border-border/50 p-12 shadow-premium">
             {activeTab === "profile" && <ProfileSettings />}
             {activeTab === "ai" && <AISettings />}
             {activeTab === "notifications" && <NotificationSettings />}

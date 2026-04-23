@@ -10,7 +10,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ScoreDistributionChartProps {
   applicants: Applicant[];
@@ -38,16 +37,7 @@ export function ScoreDistributionChart({
   }));
 
   return (
-    <Card className="border-border shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
-      <CardHeader className="pb-2">
-        <CardTitle className="font-semibold text-[13px] uppercase tracking-wider text-foreground/70">
-          Match Distribution
-        </CardTitle>
-        <p className="text-muted-foreground text-xs uppercase tracking-widest font-bold opacity-60">
-          Neural match scores across candidate pool
-        </p>
-      </CardHeader>
-      <CardContent>
+    
         <div className="h-48 mt-6">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} barSize={32}>
@@ -58,13 +48,13 @@ export function ScoreDistributionChart({
               />
               <XAxis
                 dataKey="range"
-                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 700 }}
+                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 500, letterSpacing: "0.05em" }}
                 axisLine={false}
                 tickLine={false}
                 dy={10}
               />
               <YAxis
-                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 700 }}
+                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 500, letterSpacing: "0.05em" }}
                 axisLine={false}
                 tickLine={false}
                 allowDecimals={false}
@@ -73,10 +63,10 @@ export function ScoreDistributionChart({
                 contentStyle={{
                   background: "var(--color-card)",
                   border: "1px solid var(--color-border)",
-                  borderRadius: "12px",
+                  borderRadius: "16px",
                   fontSize: "11px",
-                  fontWeight: 700,
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
+                  fontWeight: 500,
+                  boxShadow: "0 0 0 1px rgba(0,0,0,0.06), 0 4px 4px rgba(0,0,0,0.04), inset 0 0 0 0.5px rgba(0,0,0,0.075)",
                   padding: "10px 14px"
                 }}
                 cursor={{ fill: "var(--color-secondary)", opacity: 0.4 }}
@@ -84,14 +74,13 @@ export function ScoreDistributionChart({
               <Bar
                 dataKey="count"
                 fill="var(--color-info)"
-                fillOpacity={0.6}
-                radius={[4, 4, 0, 0]}
+                fillOpacity={0.4}
+                radius={[6, 6, 0, 0]}
                 name="Experts"
               />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </CardContent>
-    </Card>
+    
   );
 }

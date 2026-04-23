@@ -8,7 +8,6 @@ import {
   RadarChart,
   ResponsiveContainer,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface SkillsRadarChartProps {
   applicants: Applicant[];
@@ -40,35 +39,25 @@ export function SkillsRadarChart({ applicants }: SkillsRadarChartProps) {
   if (data.length < 3) return null;
 
   return (
-    <Card className="border-border shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
-      <CardHeader className="pb-2">
-        <CardTitle className="font-semibold text-[13px] uppercase tracking-wider text-foreground/70">
-          Neural Skill Matrix
-        </CardTitle>
-        <p className="text-muted-foreground text-xs uppercase tracking-widest font-bold opacity-60">
-          Aggregated proficiency levels
-        </p>
-      </CardHeader>
-      <CardContent>
+  
         <div className="h-48 mt-6">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
               <PolarGrid stroke="var(--color-border)" />
               <PolarAngleAxis
                 dataKey="skill"
-                tick={{ fontSize: 9, fill: "var(--color-muted-foreground)", fontWeight: 700 }}
+                tick={{ fontSize: 9, fill: "var(--color-muted-foreground)", fontWeight: 500, letterSpacing: "0.05em" }}
               />
               <Radar
                 name="Proficiency"
                 dataKey="score"
                 stroke="var(--color-info)"
                 fill="var(--color-info)"
-                fillOpacity={0.3}
+                fillOpacity={0.2}
               />
             </RadarChart>
           </ResponsiveContainer>
         </div>
-      </CardContent>
-    </Card>
+   
   );
 }

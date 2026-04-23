@@ -39,7 +39,7 @@ export function NotificationSettings() {
           ].map((n, i) => (
             <div key={i} className="flex items-center justify-between group">
               <div className="max-w-[420px]">
-                <p className="text-[14px] font-bold text-foreground tracking-tight mb-0.5">{n.label}</p>
+                <p className="text-[14px] font-semibold text-foreground tracking-tight mb-0.5">{n.label}</p>
                 <p className="text-[13px] text-muted-foreground font-medium">{n.desc}</p>
               </div>
               <Switch defaultChecked={i < 3} className="data-[state=checked]:bg-info" />
@@ -51,7 +51,7 @@ export function NotificationSettings() {
       <div className="pt-8 border-t border-border/50 flex justify-end">
         <button
           onClick={handleSave}
-          className="h-11 px-8 rounded-full bg-primary text-primary-foreground text-[12px] font-bold uppercase tracking-[0.2em] flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_1px_3px_rgba(0,0,0,0.01)]"
+          className="h-11 px-8 rounded-full bg-primary text-primary-foreground text-[12px] font-semibold uppercase tracking-[0.2em] flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_1px_3px_rgba(0,0,0,0.01)]"
         >
           <Save className="h-4 w-4" />
           Update Preferences

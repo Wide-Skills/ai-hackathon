@@ -4,7 +4,6 @@ import { Bell, Plus, Search } from "lucide-react";
 import type { Route } from "next";
 import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { setCreateModalOpen } from "@/store/slices/jobsSlice";
 
@@ -55,13 +54,13 @@ export default function Header() {
   const info = currentPage?.[1] ?? { title: "Dashboard", description: "" };
 
   return (
-    <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-b border-border bg-background/60 px-8 backdrop-blur-md">
+    <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-b border-border/50 bg-background/60 px-8 backdrop-blur-md">
       <div>
-        <h1 className="font-display text-[22px] font-light text-foreground tracking-tight leading-none">
+        <h1 className="font-display text-[20px] font-light text-foreground tracking-tight leading-none">
           {info.title}
         </h1>
         {info.description && (
-          <p className="mt-1.5 text-muted-foreground text-[11px] font-bold uppercase tracking-[0.15em]">
+          <p className="mt-1.5 text-muted-foreground text-[10px] font-bold uppercase tracking-[0.15em]">
             {info.description}
           </p>
         )}
@@ -69,20 +68,20 @@ export default function Header() {
 
       <div className="flex items-center gap-6">
         <div className="relative hidden md:block w-72">
-          <InputGroup className="h-10 rounded-full border-border bg-foreground/[0.01] focus-within:ring-info/20 px-1 overflow-hidden shadow-sm">
+          <InputGroup className="h-10 rounded-pill border-border/50 bg-foreground/[0.02] focus-within:ring-info/20 px-1 overflow-hidden shadow-ethereal">
             <InputGroupAddon align="inline-start" className="pl-4">
               <Search className="h-3.5 w-3.5 text-muted-foreground/40" />
             </InputGroupAddon>
             <InputGroupInput
               placeholder="Search talent pool..."
-              className="text-[14px]"
+              className="text-[13px] font-medium"
             />
           </InputGroup>
         </div>
 
-        <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition-all hover:bg-secondary active:scale-[0.95] shadow-sm">
+        <button className="relative flex h-10 w-10 items-center justify-center rounded-pill border border-border/50 bg-background transition-all hover:bg-secondary active:scale-[0.95] shadow-ethereal">
           <Bell className="h-4 w-4 text-muted-foreground" />
-          <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-info" />
+          <span className="absolute top-2.5 right-2.5 h-1.5 w-1.5 rounded-full bg-info" />
         </button>
 
         {info.action && (
@@ -95,9 +94,9 @@ export default function Header() {
                 dispatch(setCreateModalOpen(true));
               }
             }}
-            className="flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-[13px] text-primary-foreground shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="btn-pill-primary h-10 px-6 text-[13px]"
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Plus className="h-3.5 w-3.5 mr-2" />
             {info.action.label}
           </button>
         )}

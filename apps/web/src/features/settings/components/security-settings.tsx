@@ -24,7 +24,7 @@ export function SecuritySettings() {
             { label: "Confirm New Password", placeholder: "••••••••" }
           ].map((field, i) => (
             <div key={i} className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 ml-1">
+              <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 ml-1">
                 {field.label}
               </label>
               <div className="relative">
@@ -49,7 +49,7 @@ export function SecuritySettings() {
       <div className="pt-8 border-t border-border/50 flex justify-end">
         <button
           onClick={handleSave}
-          className="h-11 px-8 rounded-full bg-primary text-primary-foreground text-[12px] font-bold uppercase tracking-[0.2em] flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_1px_3px_rgba(0,0,0,0.01)]"
+          className="h-11 px-8 rounded-full bg-primary text-primary-foreground text-[12px] font-semibold uppercase tracking-[0.2em] flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_1px_3px_rgba(0,0,0,0.01)]"
         >
           <Save className="h-4 w-4" />
           Update Credentials

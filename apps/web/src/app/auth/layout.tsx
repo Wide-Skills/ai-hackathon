@@ -2,14 +2,14 @@
 
 import React from "react";
 import Link from "next/link";
-import { ChevronLeftIcon, Sparkles } from "lucide-react";
+import { ChevronLeftIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 const Logo = ({ className }: { className?: string }) => (
   <Link href="/" className={`flex items-center gap-2 ${className}`}>
-    <span className="font-display text-[18px] font-light tracking-tight text-foreground uppercase">
-      Umurava <span className="text-muted-foreground italic normal-case">AI</span>
+    <span className="truncate font-display text-[16px] font-light tracking-[0.2em] text-foreground uppercase">
+      Umurava <span className="text-muted-foreground/40 italic normal-case tracking-tight">AI</span>
     </span>
   </Link>
 );

@@ -80,11 +80,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="hover:bg-transparent active:bg-transparent"
             >
            
-              <div className="grid flex-1 text-left leading-tight ml-1">
-                <span className="truncate font-display text-[16px] font-light tracking-tight text-foreground uppercase">
-                  Umurava <span className="text-muted-foreground italic normal-case">AI</span>
+              <div className="grid flex-1 text-left leading-tight ml-2">
+                <span className="truncate font-display text-[15px] font-light tracking-[0.2em] text-foreground uppercase">
+                  Umurava <span className="text-muted-foreground/40 italic normal-case tracking-tight">AI</span>
                 </span>
-              
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
