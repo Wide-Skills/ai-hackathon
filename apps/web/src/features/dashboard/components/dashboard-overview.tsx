@@ -120,22 +120,22 @@ export function DashboardOverview() {
                   <Link
                     key={applicant.id}
                     href={`/dashboard/applicants/${applicant.id}` as Route}
-                    className="group flex items-center gap-10 px-10 py-7 transition-all hover:bg-secondary/[0.15]"
+                    className="group flex h-[100px] items-center gap-10 px-10 transition-all hover:bg-secondary/[0.15]"
                   >
                     <div className="h-14 w-14 flex-shrink-0 rounded-2xl bg-background border border-border/40 flex items-center justify-center text-[13px] font-bold text-muted-foreground/30 uppercase shadow-ethereal group-hover:scale-[1.05] transition-transform">
-                       {applicant.firstName[0]}{applicant.lastName[0]}
+                       <span className="translate-y-[0.5px]">{applicant.firstName[0]}{applicant.lastName[0]}</span>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[17px] font-medium text-foreground tracking-tight group-hover:text-primary transition-colors">
+                    <div className="min-w-0 flex-1 flex flex-col justify-center">
+                      <p className="text-[17px] font-medium text-foreground tracking-tight group-hover:text-primary transition-colors leading-tight">
                         {applicant.firstName} {applicant.lastName}
                       </p>
-                      <p className="truncate text-muted-foreground/50 text-[13px] font-medium tracking-tight mt-1">
+                      <p className="truncate text-muted-foreground/50 text-[13px] font-medium tracking-tight mt-1 leading-none">
                         {applicant.headline}
                       </p>
                     </div>
                     <div className="flex flex-shrink-0 items-center gap-10">
                       <ScoreBadge score={applicant.screening?.matchScore ?? 0} />
-                      <div className="h-9 w-9 rounded-full border border-border/30 flex items-center justify-center text-muted-foreground/20 group-hover:text-primary group-hover:border-primary/30 transition-all">
+                      <div className="h-9 w-9 rounded-full border border-border/30 flex items-center justify-center text-muted-foreground/20 group-hover:text-primary group-hover:border-primary/30 transition-all shrink-0">
                         <ArrowUpRight className="h-4 w-4" />
                       </div>
                     </div>
@@ -239,20 +239,20 @@ export function DashboardOverview() {
               </header>
               <div className="divide-y divide-border/5 px-4">
                 {recentActivity.length > 0 ? recentActivity.map((item) => (
-                  <div key={item.id} className="py-6 px-4 group transition-colors">
-                    <div className="flex items-start gap-4">
-                       <div className="h-2 w-2 rounded-full bg-success/40 mt-1.5 shrink-0 group-hover:animate-pulse" />
-                       <div className="space-y-1 min-w-0">
+                  <div key={item.id} className="py-7 px-4 group transition-colors flex flex-col justify-center min-h-[95px]">
+                    <div className="flex items-center gap-4">
+                       <div className="h-2 w-2 rounded-full bg-success/40 shrink-0 group-hover:animate-pulse" />
+                       <div className="space-y-1 min-w-0 flex-1">
                          <p className="text-[13px] leading-tight text-foreground/80 font-medium">
                            <span className="font-bold text-foreground">{item.candidate}</span> evaluated
                          </p>
-                         <p className="text-[11px] text-muted-foreground/40 font-medium truncate">Channel: {item.job}</p>
+                         <p className="text-[11px] text-muted-foreground/40 font-medium truncate leading-none mt-1">Channel: {item.job}</p>
                        </div>
                     </div>
                     <div className="mt-3 flex items-center gap-4 pl-6 opacity-40">
-                      <span className="text-[9px] font-bold uppercase tracking-widest">{item.score}% Match</span>
-                      <div className="h-0.5 w-0.5 rounded-full bg-border" />
-                      <span className="text-[9px] font-bold uppercase tracking-widest">{item.time}</span>
+                      <span className="text-[9px] font-bold uppercase tracking-widest leading-none">{item.score}% Match</span>
+                      <div className="h-0.5 w-0.5 rounded-full bg-border shrink-0" />
+                      <span className="text-[9px] font-bold uppercase tracking-widest leading-none">{item.time}</span>
                     </div>
                   </div>
                 )) : (

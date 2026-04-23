@@ -15,10 +15,10 @@ export function ScoreBadge({ score }: ScoreBadgeProps) {
           : "text-destructive-foreground bg-destructive/5 border-destructive/10";
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-pill border px-3 py-1 text-[11px] font-medium uppercase tracking-[0.08em] shadow-ethereal ${color}`}
+      className={`inline-flex items-center gap-2 rounded-pill border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] shadow-ethereal leading-none ${color}`}
     >
-      <div className="h-1.5 w-1.5 rounded-full bg-current opacity-50" />
-      {score}% Match
+      <div className="h-1.5 w-1.5 rounded-full bg-current opacity-40 shrink-0" />
+      <span className="translate-y-[0.5px]">{score}% Match</span>
     </span>
   );
 }

@@ -25,11 +25,11 @@ export function StatCard({
       </div>
       
       {trend && (
-        <div className="mt-8 flex items-center gap-2 pt-6 border-t border-border/10">
+        <div className="mt-8 flex items-center gap-2.5 pt-6 border-t border-border/10">
           <div className="flex items-center gap-1 text-[11px] font-bold text-success/80 tracking-widest uppercase">
             {trend}
           </div>
-          <span className="text-[10px] text-muted-foreground/30 font-medium uppercase tracking-wider">Index</span>
+          <span className="text-[10px] text-muted-foreground/30 font-medium uppercase tracking-wider translate-y-[0.5px]">Index</span>
         </div>
       )}
     </Card>

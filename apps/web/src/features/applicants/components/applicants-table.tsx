@@ -60,24 +60,24 @@ export const columns: ColumnDef<Applicant>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Candidate
-          <ArrowUpDown className="h-4 w-4" />
+          <ArrowUpDown className="h-3 w-3" />
         </button>
       );
     },
     cell: ({ row }) => {
       const applicant = row.original;
       return (
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-lg bg-secondary flex items-center justify-center text-[10px] font-bold">
-            {applicant.firstName[0]}{applicant.lastName[0]}
+        <div className="flex items-center gap-4 py-1">
+          <div className="h-9 w-9 rounded-xl bg-secondary/50 border border-border/10 flex items-center justify-center text-[11px] font-bold text-muted-foreground/60 shrink-0 shadow-ethereal">
+            <span className="translate-y-[0.5px]">{applicant.firstName[0]}{applicant.lastName[0]}</span>
           </div>
-          <div>
-            <div className="font-medium">{applicant.firstName} {applicant.lastName}</div>
-            <div className="text-[11px] text-muted-foreground">{applicant.email}</div>
+          <div className="flex flex-col justify-center min-w-0">
+            <div className="font-semibold text-foreground tracking-tight leading-tight">{applicant.firstName} {applicant.lastName}</div>
+            <div className="text-[11px] text-muted-foreground/50 font-medium truncate mt-0.5 leading-none">{applicant.email}</div>
           </div>
         </div>
       );
@@ -88,40 +88,50 @@ export const columns: ColumnDef<Applicant>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           AI Score
-          <ArrowUpDown className="h-4 w-4" />
+          <ArrowUpDown className="h-3 w-3" />
         </button>
       );
     },
     cell: ({ row }) => {
       const score = row.original.screening?.matchScore ?? 0;
-      return <ScoreBadge score={score} />;
+      return (
+        <div className="flex items-center h-full py-1">
+          <ScoreBadge score={score} />
+        </div>
+      );
     },
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: () => <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Status</span>,
     cell: ({ row }) => {
       const status = row.getValue("status") as ApplicationStatus;
-      const config = statusConfig[status];
+      const config = statusConfig[status] || statusConfig.pending;
       return (
-        <span className={cn(
-          "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider",
-          config.color
-        )}>
-          {config.label}
-        </span>
+        <div className="flex items-center h-full py-1">
+          <span className={cn(
+            "inline-flex items-center px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-[0.12em] border shadow-ethereal leading-none",
+            config.color
+          )}>
+            <span className="translate-y-[0.5px]">{config.label}</span>
+          </span>
+        </div>
       );
     },
   },
   {
     accessorKey: "appliedAt",
-    header: "Applied",
+    header: () => <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Applied</span>,
     cell: ({ row }) => {
-      return new Date(row.getValue("appliedAt")).toLocaleDateString();
+      return (
+        <div className="text-[12px] font-medium text-muted-foreground/60 py-1 flex items-center h-full">
+          {new Date(row.getValue("appliedAt")).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+        </div>
+      );
     },
   },
   {
@@ -129,9 +139,11 @@ export const columns: ColumnDef<Applicant>[] = [
     cell: ({ row }) => {
       const applicant = row.original;
       return (
-        <Link href={`/dashboard/applicants/${applicant.id}` as Route}>
-          <ChevronRight className="h-4 w-4 text-muted-foreground/30 hover:text-foreground transition-colors" />
-        </Link>
+        <div className="flex items-center justify-end py-1 h-full">
+          <Link href={`/dashboard/applicants/${applicant.id}` as Route} className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-secondary transition-all group">
+            <ChevronRight className="h-4 w-4 text-muted-foreground/20 group-hover:text-foreground transition-all" />
+          </Link>
+        </div>
       );
     },
   },
