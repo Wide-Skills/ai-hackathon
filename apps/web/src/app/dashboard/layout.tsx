@@ -16,7 +16,7 @@ export default async function DashboardLayout({
   });
 
   if (!session?.user) {
-    redirect("/auth/sign-in");
+    redirect("/auth");
   }
 
   return (

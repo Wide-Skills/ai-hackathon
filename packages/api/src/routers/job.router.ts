@@ -41,14 +41,32 @@ export const jobRouter = router({
     .input(z.void())
     .output(DashboardStatsSchema)
     .query(async () => {
-      const totalCandidates = await Applicant.countDocuments();
-      const openPositions = await Job.countDocuments({ status: "active" });
-      const screenedToday = await Applicant.countDocuments({
-        status: { $in: ["screening", "shortlisted", "rejected", "hired"] },
-      });
+      const [
+        totalCandidates,
+        openPositions,
+        screenedToday,
+        screenedApplicants,
+      ] = await Promise.all([
+        Applicant.countDocuments(),
+        Job.countDocuments({ status: "active" }),
+        Applicant.countDocuments({
+          screening: { $exists: true, $ne: null },
+        }),
+        Applicant.find(
+          { screening: { $exists: true, $ne: null } },
+          { "screening.matchScore": 1 },
+        ).lean(),
+      ]);
 
-      // TODO: calculate avg match score
-      const avgMatchScore = 80;
+      const avgMatchScore = screenedApplicants.length
+        ? Math.round(
+            screenedApplicants.reduce(
+              (total, applicant) =>
+                total + (applicant.screening?.matchScore ?? 0),
+              0,
+            ) / screenedApplicants.length,
+          )
+        : 0;
 
       return {
         totalCandidates,

@@ -1,5 +1,6 @@
 import { randomBytes, randomUUID, scryptSync } from "node:crypto";
 import { env } from "@ai-hackathon/env/server";
+import { DEMO_RECRUITER } from "@ai-hackathon/shared";
 import mongoose from "mongoose";
 import { Applicant } from "./models/applicant.model";
 import { Account, Session, User, Verification } from "./models/auth.model";
@@ -14,6 +15,14 @@ const recruiterSeedUsers = [
     image:
       "https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?w=100",
     password: "SystemSeed123!",
+  },
+  {
+    id: DEMO_RECRUITER.id,
+    name: DEMO_RECRUITER.name,
+    email: DEMO_RECRUITER.email,
+    image:
+      "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?w=100",
+    password: DEMO_RECRUITER.password,
   },
   {
     id: "usr-recruiter-a",
@@ -868,9 +877,8 @@ async function seed() {
     console.log(`Inserted ${mockApplicants.length} applicants.`);
     console.log("Created linked screening records and refreshed job counters.");
     console.log("Seeded login credentials:");
-    console.log("  Recruiters: password = Recruiter123!");
-    console.log("  Candidates: password = Candidate123!");
-    console.log("  System user: password = SystemSeed123!");
+    console.log(`  Demo recruiter: ${DEMO_RECRUITER.email}`);
+    console.log("  Auth method: magic link, Google, or GitHub");
     console.log("Seeding completed successfully!");
   } catch (error) {
     console.error("Error seeding database:", error);

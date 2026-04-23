@@ -13,6 +13,7 @@ import {
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
+import { QueryErrorState } from "@/components/data/query-state";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 import { ScoreBadge } from "../../dashboard/components/score-badge";
@@ -42,14 +43,14 @@ interface JobDetailProps {
 
 export function JobDetail({ id }: JobDetailProps) {
   const router = useRouter();
-  const { data: job, isLoading: jobLoading } = useQuery(
+  const jobQuery = useQuery(
     trpc.jobs.getById.queryOptions({ id }),
   );
-  const { data: applicants, isLoading: appsLoading } = useQuery(
+  const applicantsQuery = useQuery(
     trpc.applicants.list.queryOptions(),
   );
 
-  if (jobLoading || appsLoading) {
+  if (jobQuery.isLoading || applicantsQuery.isLoading) {
     return (
       <div className="w-full space-y-12 animate-pulse">
         <div className="h-8 w-40 bg-secondary/30 rounded-pill" />
@@ -61,6 +62,29 @@ export function JobDetail({ id }: JobDetailProps) {
       </div>
     );
   }
+
+  if (jobQuery.isError) {
+    return (
+      <QueryErrorState
+        error={jobQuery.error}
+        title="Job details couldn't be loaded"
+        onRetry={() => jobQuery.refetch()}
+      />
+    );
+  }
+
+  if (applicantsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={applicantsQuery.error}
+        title="Applicants for this job couldn't be loaded"
+        onRetry={() => applicantsQuery.refetch()}
+      />
+    );
+  }
+
+  const job = jobQuery.data;
+  const applicants = applicantsQuery.data;
 
   if (!job) notFound();
 

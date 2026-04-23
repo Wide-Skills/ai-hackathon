@@ -11,15 +11,17 @@
   },
   "scripts": {
     "check-types": "tsc -b",
-    "test": "vitest run tests --exclude dist/**"
+    "test": "vitest run"
   },
   "dependencies": {
     "@ai-hackathon/auth": "workspace:*",
     "@ai-hackathon/db": "workspace:*",
     "@ai-hackathon/env": "workspace:*",
     "@ai-hackathon/shared": "workspace:^",
+    "@ai-sdk/google": "^1.1.13",
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
+    "ai": "^6.0.146",
     "dotenv": "catalog:",
     "mongoose": "catalog:",
     "zod": "catalog:"

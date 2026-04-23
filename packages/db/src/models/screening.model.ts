@@ -16,6 +16,13 @@ const screeningSchema = new Schema(
     strengths: { type: [String], default: [] },
     gaps: { type: [String], default: [] },
     recommendation: { type: String, required: true },
+    summary: { type: String },
+    skillBreakdown: [
+      {
+        skill: { type: String, required: true },
+        score: { type: Number, min: 0, max: 100, required: true },
+      },
+    ],
   },
   { timestamps: true },
 );

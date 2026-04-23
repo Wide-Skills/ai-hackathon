@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import "reflect-metadata";
 import { createContext as createTrpcContext } from "@ai-hackathon/api/context";
 import { appRouter } from "@ai-hackathon/api/routers/index";
@@ -6,8 +7,10 @@ import { env } from "@ai-hackathon/env/server";
 import { NestFactory } from "@nestjs/core";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { toNodeHandler } from "better-auth/node";
+import pinoHttp from "pino-http";
 
 import { AppModule } from "./app.module";
+import logger from "./lib/logger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,18 +26,53 @@ async function bootstrap() {
   const authHandler = toNodeHandler(auth);
 
   expressApp.use(
+    pinoHttp({
+      logger,
+      genReqId(req, res) {
+        const requestId =
+          (req.headers["x-request-id"] as string | undefined) ?? randomUUID();
+
+        res.setHeader("x-request-id", requestId);
+        return requestId;
+      },
+      customProps(req) {
+        return {
+          route: req.url,
+        };
+      },
+      customLogLevel(_req, res, error) {
+        if (error || res.statusCode >= 500) {
+          return "error";
+        }
+        if (res.statusCode >= 400) {
+          return "warn";
+        }
+        return "info";
+      },
+      customSuccessMessage(req, res) {
+        return `${req.method} ${req.url} completed with ${res.statusCode}`;
+      },
+      customErrorMessage(req, res, error) {
+        return `${req.method} ${req.url} failed with ${res.statusCode}: ${error.message}`;
+      },
+    }),
+  );
+
+  expressApp.use("/api/auth", (req: any, res: any) => {
+    logger.info(`Auth request: ${req.method} ${req.url}`);
+    return authHandler(req, res);
+  });
+
+  expressApp.use(
     "/trpc",
     createExpressMiddleware({
       router: appRouter,
       createContext: ({ req }) => createTrpcContext({ req }),
     }),
   );
-  expressApp.all("/api/auth/*path", async (req: any, res: any) => {
-    return authHandler(req, res);
-  });
 
   await app.listen(3000);
-  console.log("Server is running on http://localhost:3000");
+  logger.info("Server is running on http://localhost:3000");
 }
 
 bootstrap();

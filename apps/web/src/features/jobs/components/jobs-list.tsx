@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { useDispatch } from "react-redux";
+import { QueryEmptyState, QueryErrorState } from "@/components/data/query-state";
 import { setCreateModalOpen } from "@/store/slices/jobsSlice";
 import { trpc } from "@/utils/trpc";
 import { JobCard } from "./job-card";
@@ -10,9 +11,10 @@ import { motion } from "framer-motion";
 
 export function JobsList() {
   const dispatch = useDispatch();
-  const { data: jobs, isLoading } = useQuery(trpc.jobs.list.queryOptions());
+  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
+  const jobs = jobsQuery.data;
 
-  if (isLoading) {
+  if (jobsQuery.isLoading) {
     return (
       <div className="w-full space-y-16 pb-20">
         <div className="space-y-6">
@@ -30,6 +32,16 @@ export function JobsList() {
           </div>
         </div>
       </div>
+    );
+  }
+
+  if (jobsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={jobsQuery.error}
+        title="Jobs couldn't be loaded"
+        onRetry={() => jobsQuery.refetch()}
+      />
     );
   }
 
@@ -65,9 +77,10 @@ export function JobsList() {
               </motion.div>
             ))
           ) : (
-            <div className="flex py-24 items-center justify-center rounded-section border border-dashed border-border/50 bg-secondary/5">
-               <p className="text-[11px] font-bold text-muted-foreground/30 uppercase tracking-[0.2em]">No active pipelines found</p>
-            </div>
+            <QueryEmptyState
+              title="No active pipelines found"
+              description="Create a job to start receiving applicants and screening results."
+            />
           )}
         </div>
       </section>

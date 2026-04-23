@@ -15,6 +15,7 @@ import {
 import type { Route } from "next";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
+import { QueryErrorState } from "@/components/data/query-state";
 import { setCreateModalOpen } from "@/store/slices/jobsSlice";
 import { trpc } from "@/utils/trpc";
 import { ScoreBadge } from "./score-badge";
@@ -47,17 +48,19 @@ const activityConfig = {
 
 export function DashboardOverview() {
   const dispatch = useDispatch();
-  const { data: stats, isLoading: statsLoading } = useQuery(
+  const statsQuery = useQuery(
     trpc.jobs.stats.queryOptions(),
   );
-  const { data: applicants, isLoading: appsLoading } = useQuery(
+  const applicantsQuery = useQuery(
     trpc.applicants.list.queryOptions(),
   );
-  const { data: jobs, isLoading: jobsLoading } = useQuery(
-    trpc.jobs.list.queryOptions(),
-  );
+  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
 
-  if (statsLoading || appsLoading || jobsLoading) {
+  if (
+    statsQuery.isLoading ||
+    applicantsQuery.isLoading ||
+    jobsQuery.isLoading
+  ) {
     return (
       <div className="w-full space-y-12 animate-pulse">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -72,6 +75,40 @@ export function DashboardOverview() {
       </div>
     );
   }
+
+  if (statsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={statsQuery.error}
+        title="Dashboard metrics couldn't be loaded"
+        onRetry={() => statsQuery.refetch()}
+      />
+    );
+  }
+
+  if (applicantsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={applicantsQuery.error}
+        title="Applicants couldn't be loaded"
+        onRetry={() => applicantsQuery.refetch()}
+      />
+    );
+  }
+
+  if (jobsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={jobsQuery.error}
+        title="Jobs couldn't be loaded"
+        onRetry={() => jobsQuery.refetch()}
+      />
+    );
+  }
+
+  const stats = statsQuery.data;
+  const applicants = applicantsQuery.data;
+  const jobs = jobsQuery.data;
 
   const statCards = [
     { title: "Total Pool", value: stats?.totalCandidates ?? 0, trend: "+12.5%", desc: "Active candidate profiles" },

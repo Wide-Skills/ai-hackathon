@@ -3,58 +3,72 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const jobSaveMock = vi.fn();
 const applicantSaveMock = vi.fn();
+const jobFindByIdMock = vi.fn();
+const jobFindByIdAndUpdateMock = vi.fn();
+const applicantCountDocumentsMock = vi.fn();
 
-const Job = vi.fn(function Job(
-  this: Record<string, unknown>,
-  input: Record<string, unknown>,
-) {
-  const now = new Date("2026-04-15T00:00:00.000Z");
-  Object.assign(this, {
-    _id: new Types.ObjectId(),
-    type: "Full-time",
-    skills: [],
-    currency: "USD",
-    status: "active",
-    applicantsCount: 0,
-    screenedCount: 0,
-    shortlistedCount: 0,
-    createdAt: now,
-    updatedAt: now,
-  });
-  Object.assign(this, input);
-  this.save = jobSaveMock.mockResolvedValue(this);
-  this.toObject = () => {
-    const { save, toObject, ...job } = this;
-    return job;
-  };
-});
+const Job = Object.assign(
+  vi.fn(function Job(
+    this: Record<string, unknown>,
+    input: Record<string, unknown>,
+  ) {
+    const now = new Date("2026-04-15T00:00:00.000Z");
+    Object.assign(this, {
+      _id: new Types.ObjectId(),
+      type: "Full-time",
+      skills: [],
+      currency: "USD",
+      status: "active",
+      applicantsCount: 0,
+      screenedCount: 0,
+      shortlistedCount: 0,
+      createdAt: now,
+      updatedAt: now,
+    });
+    Object.assign(this, input);
+    this.save = jobSaveMock.mockResolvedValue(this);
+    this.toObject = () => {
+      const { save, toObject, ...job } = this;
+      return job;
+    };
+  }),
+  {
+    findById: jobFindByIdMock,
+    findByIdAndUpdate: jobFindByIdAndUpdateMock,
+  },
+);
 
-const Applicant = vi.fn(function Applicant(
-  this: Record<string, unknown>,
-  input: Record<string, unknown>,
-) {
-  const now = new Date("2026-04-15T00:00:00.000Z");
-  Object.assign(this, {
-    _id: new Types.ObjectId(),
-    status: "pending",
-    skills: [],
-    languages: [],
-    experience: [],
-    education: [],
-    certifications: [],
-    projects: [],
-    availability: {},
-    socialLinks: {},
-    createdAt: now,
-    updatedAt: now,
-  });
-  Object.assign(this, input);
-  this.save = applicantSaveMock.mockResolvedValue(this);
-  this.toObject = () => {
-    const { save, toObject, ...applicant } = this;
-    return applicant;
-  };
-});
+const Applicant = Object.assign(
+  vi.fn(function Applicant(
+    this: Record<string, unknown>,
+    input: Record<string, unknown>,
+  ) {
+    const now = new Date("2026-04-15T00:00:00.000Z");
+    Object.assign(this, {
+      _id: new Types.ObjectId(),
+      status: "pending",
+      skills: [],
+      languages: [],
+      experience: [],
+      education: [],
+      certifications: [],
+      projects: [],
+      availability: {},
+      socialLinks: {},
+      createdAt: now,
+      updatedAt: now,
+    });
+    Object.assign(this, input);
+    this.save = applicantSaveMock.mockResolvedValue(this);
+    this.toObject = () => {
+      const { save, toObject, ...applicant } = this;
+      return applicant;
+    };
+  }),
+  {
+    countDocuments: applicantCountDocumentsMock,
+  },
+);
 
 vi.mock("@ai-hackathon/db", () => ({
   Applicant,
@@ -89,6 +103,17 @@ const authedContext = {
 describe("action flows", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    jobFindByIdMock.mockResolvedValue({
+      _id: new Types.ObjectId(),
+      title: "Senior Platform Engineer",
+      skills: ["TypeScript", "PostgreSQL"],
+      requirements: ["7+ years backend engineering"],
+    });
+    jobFindByIdAndUpdateMock.mockResolvedValue(null);
+    applicantCountDocumentsMock
+      .mockResolvedValueOnce(1)
+      .mockResolvedValueOnce(0)
+      .mockResolvedValueOnce(0);
   });
 
   it("rejects protected job listing without a session", async () => {

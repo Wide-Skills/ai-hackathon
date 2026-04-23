@@ -1,7 +1,5 @@
-"use client";
-
-import { AuthView } from "@/features/auth/components/auth-view";
+import { redirect } from "next/navigation";
 
 export default function SignInPage() {
-  return <AuthView />;
+  redirect("/auth");
 }

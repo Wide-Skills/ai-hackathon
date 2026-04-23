@@ -1,6 +1,7 @@
 import { Applicant } from "@ai-hackathon/db";
 import { ApplicantSchema, CreateApplicantSchema } from "@ai-hackathon/shared";
 import { z } from "zod";
+import { ensureJobExists, syncJobMetrics } from "../router-helpers/job-metrics";
 import { serializeApplicant } from "../serializers";
 import { protectedProcedure, router } from "../trpc";
 
@@ -9,6 +10,8 @@ export const applicantRouter = router({
     .input(CreateApplicantSchema)
     .output(ApplicantSchema)
     .mutation(async ({ input, ctx }) => {
+      await ensureJobExists(input.jobId);
+
       const applicant = new Applicant({
         ...input,
         userId: ctx.session.user.id,
@@ -16,6 +19,7 @@ export const applicantRouter = router({
         appliedAt: new Date().toISOString(),
       });
       await applicant.save();
+      await syncJobMetrics(input.jobId);
       return serializeApplicant(applicant);
     }),
 

@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
+import { QueryErrorState } from "@/components/data/query-state";
 import { trpc } from "@/utils/trpc";
 import { ApplicantSidebar } from "./applicant-sidebar";
 import { ExperienceCard } from "./experience-card";
@@ -19,17 +20,17 @@ interface ApplicantDetailProps {
 
 export function ApplicantDetail({ id }: ApplicantDetailProps) {
   const router = useRouter();
-  const { data: applicant, isLoading: appLoading } = useQuery(
+  const applicantQuery = useQuery(
     trpc.applicants.getById.queryOptions({ id }),
   );
-  const { data: job, isLoading: jobLoading } = useQuery(
+  const jobQuery = useQuery(
     trpc.jobs.getById.queryOptions(
-      { id: applicant?.jobId ?? "" },
-      { enabled: !!applicant?.jobId },
+      { id: applicantQuery.data?.jobId ?? "" },
+      { enabled: !!applicantQuery.data?.jobId },
     ),
   );
 
-  if (appLoading || jobLoading) {
+  if (applicantQuery.isLoading || jobQuery.isLoading) {
     return (
       <div className="w-full space-y-12 animate-pulse">
         <div className="h-8 w-40 bg-secondary/30 rounded-pill" />
@@ -40,6 +41,29 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
       </div>
     );
   }
+
+  if (applicantQuery.isError) {
+    return (
+      <QueryErrorState
+        error={applicantQuery.error}
+        title="Applicant details couldn't be loaded"
+        onRetry={() => applicantQuery.refetch()}
+      />
+    );
+  }
+
+  if (jobQuery.isError) {
+    return (
+      <QueryErrorState
+        error={jobQuery.error}
+        title="Related job details couldn't be loaded"
+        onRetry={() => jobQuery.refetch()}
+      />
+    );
+  }
+
+  const applicant = applicantQuery.data;
+  const job = jobQuery.data;
 
   if (!applicant) notFound();
 

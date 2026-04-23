@@ -14,10 +14,13 @@ import {
   SlidersHorizontal,
   Users,
   RefreshCw,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useState } from "react";
+import { QueryEmptyState, QueryErrorState } from "@/components/data/query-state";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import {
   Select,
@@ -26,10 +29,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 import { ScoreBadge } from "@/features/dashboard/components/score-badge";
 import { UploadCandidatesDialog } from "./upload-candidates-dialog";
+import { ApplicantsTable } from "./applicants-table";
 import { motion } from "framer-motion";
 
 const statusConfig: Record<
@@ -78,11 +83,14 @@ export function ApplicantsList() {
   const [jobFilter, setJobFilter] = useState<string>("all");
   const [sortField, setSortField] = useState<SortField>("score");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [view, setView] = useState<"grid" | "table">("grid");
   
-  const { data: applicantsData = [], isLoading: appsLoading } = useQuery(
+  const applicantsQuery = useQuery(
     trpc.applicants.list.queryOptions(),
   );
-  const { data: jobsData = [] } = useQuery(trpc.jobs.list.queryOptions());
+  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
+  const applicantsData = applicantsQuery.data ?? [];
+  const jobsData = jobsQuery.data ?? [];
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -115,7 +123,7 @@ export function ApplicantsList() {
       return sortDir === "asc" ? cmp : -cmp;
     });
 
-  if (appsLoading) {
+  if (applicantsQuery.isLoading || jobsQuery.isLoading) {
     return (
       <div className="w-full space-y-12 animate-pulse">
         <div className="h-10 w-full bg-secondary/30 rounded-full" />
@@ -123,6 +131,26 @@ export function ApplicantsList() {
           {[1, 2, 3, 4].map(i => <div key={i} className="h-20 bg-secondary/30 rounded-xl" />)}
         </div>
       </div>
+    );
+  }
+
+  if (applicantsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={applicantsQuery.error}
+        title="Applicants couldn't be loaded"
+        onRetry={() => applicantsQuery.refetch()}
+      />
+    );
+  }
+
+  if (jobsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={jobsQuery.error}
+        title="Jobs couldn't be loaded"
+        onRetry={() => jobsQuery.refetch()}
+      />
     );
   }
 
@@ -145,6 +173,21 @@ export function ApplicantsList() {
         </div>
 
         <div className="flex items-center gap-4">
+          <Tabs
+            value={view}
+            onValueChange={(v) => setView(v as "grid" | "table")}
+            className="hidden sm:block"
+          >
+            <TabsList className="h-11 rounded-pill border-border/50 bg-background shadow-ethereal px-1">
+              <TabsTrigger value="grid" className="rounded-pill h-9 w-9 p-0">
+                <LayoutGrid className="h-4 w-4" />
+              </TabsTrigger>
+              <TabsTrigger value="table" className="rounded-pill h-9 w-9 p-0">
+                <List className="h-4 w-4" />
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+
           <Select
             value={jobFilter}
             onValueChange={(value) => setJobFilter(value ?? "all")}
@@ -185,106 +228,109 @@ export function ApplicantsList() {
       </div>
 
       {/* Grid Headers & Sorting */}
-      <div className="flex items-center justify-between px-8 mb-4">
-        <div className="flex items-center gap-12">
-          <button 
-            onClick={() => handleSort("name")}
-            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors"
-          >
-            Candidate <ArrowUpDown className="h-3 w-3 opacity-20" />
-          </button>
-          <button 
-            onClick={() => handleSort("score")}
-            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors"
-          >
-            AI Rank <ArrowUpDown className="h-3 w-3 opacity-20" />
-          </button>
-        </div>
-        <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30">
-          Showing {filtered.length} experts
-        </div>
-      </div>
-
-      {/* Candidate Grid */}
-      <div className="grid grid-cols-1 gap-4">
-        {filtered.map((applicant, i) => {
-          const sc = statusConfig[applicant.status];
-          const job = jobsData.find((j) => j.id === applicant.jobId);
-          
-          return (
-            <motion.div
-              key={applicant.id}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.02 }}
+      {view === "grid" && (
+        <div className="flex items-center justify-between px-8 mb-4">
+          <div className="flex items-center gap-12">
+            <button 
+              onClick={() => handleSort("name")}
+              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors"
             >
-              <Link
-                href={`/dashboard/applicants/${applicant.id}` as Route}
-                className="group flex items-center justify-between bg-background rounded-xl border border-border/50 p-6 transition-all hover:border-primary/20 hover:shadow-premium shadow-ethereal"
+              Candidate <ArrowUpDown className="h-3 w-3 opacity-20" />
+            </button>
+            <button 
+              onClick={() => handleSort("score")}
+              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors"
+            >
+              AI Rank <ArrowUpDown className="h-3 w-3 opacity-20" />
+            </button>
+          </div>
+          <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30">
+            Showing {filtered.length} experts
+          </div>
+        </div>
+      )}
+
+      {/* Candidate View */}
+      {view === "grid" ? (
+        <div className="grid grid-cols-1 gap-4">
+          {filtered.map((applicant, i) => {
+            const sc = statusConfig[applicant.status];
+            const job = jobsData.find((j) => j.id === applicant.jobId);
+            
+            return (
+              <motion.div
+                key={applicant.id}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.02 }}
               >
-                <div className="flex items-center gap-6 flex-1 min-w-0">
-                  <div className="h-12 w-12 flex-shrink-0 rounded-xl bg-secondary/30 border border-border/20 flex items-center justify-center text-[13px] font-bold text-muted-foreground/40 uppercase shadow-ethereal group-hover:scale-[1.05] transition-transform">
-                    {applicant.firstName[0]}{applicant.lastName[0]}
-                  </div>
-                  
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[16px] font-medium text-foreground tracking-tight mb-1 group-hover:text-primary transition-colors">
-                      {applicant.firstName} {applicant.lastName}
-                    </p>
-                    <div className="flex items-center gap-4">
-                       <p className="truncate text-[12px] text-muted-foreground/50 font-medium tracking-tight mt-1">
-                         {applicant.headline}
-                       </p>
-                       <div className="h-0.5 w-0.5 rounded-full bg-border/40 flex-shrink-0" />
-                       <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-info/40 truncate">
-                         {job?.title}
-                       </div>
+                <Link
+                  href={`/dashboard/applicants/${applicant.id}` as Route}
+                  className="group flex items-center justify-between bg-background rounded-xl border border-border/50 p-6 transition-all hover:border-primary/20 hover:shadow-premium shadow-ethereal"
+                >
+                  <div className="flex items-center gap-6 flex-1 min-w-0">
+                    <div className="h-12 w-12 flex-shrink-0 rounded-xl bg-secondary/30 border border-border/20 flex items-center justify-center text-[13px] font-bold text-muted-foreground/40 uppercase shadow-ethereal group-hover:scale-[1.05] transition-transform">
+                      {applicant.firstName[0]}{applicant.lastName[0]}
+                    </div>
+                    
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[16px] font-medium text-foreground tracking-tight mb-1 group-hover:text-primary transition-colors">
+                        {applicant.firstName} {applicant.lastName}
+                      </p>
+                      <div className="flex items-center gap-4">
+                         <p className="truncate text-[12px] text-muted-foreground/50 font-medium tracking-tight mt-1">
+                           {applicant.headline}
+                         </p>
+                         <div className="h-0.5 w-0.5 rounded-full bg-border/40 flex-shrink-0" />
+                         <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-info/40 truncate">
+                           {job?.title}
+                         </div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-12 ml-8">
-                  <div className="hidden lg:flex items-center gap-2 opacity-30">
-                     <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">{applicant.location}</span>
+                  <div className="flex items-center gap-12 ml-8">
+                    <div className="hidden lg:flex items-center gap-2 opacity-30">
+                       <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">{applicant.location}</span>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1 w-28">
+                       <ScoreBadge score={applicant.screening?.matchScore ?? 0} />
+                       {!applicant.screening && (
+                         <span className="text-[8px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] animate-pulse mt-1">Analyzing</span>
+                       )}
+                    </div>
+
+                    <div className="w-32 flex justify-end">
+                      <span className={cn(
+                        "px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-[0.15em] border shadow-ethereal",
+                        sc.color
+                      )}>
+                        {sc.label}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-6 pl-6 border-l border-border/5">
+                      <span className="text-[10px] font-bold text-muted-foreground/20 uppercase tracking-widest min-w-[70px] text-right">
+                        {new Date(applicant.appliedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </span>
+                    </div>
                   </div>
+                </Link>
+              </motion.div>
+            );
+          })}
 
-                  <div className="flex flex-col items-center gap-1 w-28">
-                     <ScoreBadge score={applicant.screening?.matchScore ?? 0} />
-                     {!applicant.screening && (
-                       <span className="text-[8px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] animate-pulse mt-1">Analyzing</span>
-                     )}
-                  </div>
-
-                  <div className="w-32 flex justify-end">
-                    <span className={cn(
-                      "px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-[0.15em] border shadow-ethereal",
-                      sc.color
-                    )}>
-                      {sc.label}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-6 pl-6 border-l border-border/5">
-                    <span className="text-[10px] font-bold text-muted-foreground/20 uppercase tracking-widest min-w-[70px] text-right">
-                      {new Date(applicant.appliedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          );
-        })}
-
-        {filtered.length === 0 && (
-          <div className="py-24 text-center rounded-section border border-dashed border-border/50 bg-secondary/5">
-            <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary/50 mb-6 shadow-ethereal">
-               <Users className="h-6 w-6 text-muted-foreground/20" />
-            </div>
-            <p className="text-[14px] font-light text-foreground uppercase tracking-[0.2em]">Talent Pool Empty</p>
-            <p className="mt-2 text-[12px] text-muted-foreground/60 font-medium tracking-tight">Adjust your search parameters to find the perfect match</p>
-          </div>
-        )}
-      </div>
+          {filtered.length === 0 ? (
+            <QueryEmptyState
+              title="No applicants match the current filters"
+              description="Adjust the search or import candidates into one of your active pipelines."
+            />
+          ) : null}
+        </div>
+      ) : (
+        <ApplicantsTable data={filtered} />
+      )}
     </div>
   );
 }

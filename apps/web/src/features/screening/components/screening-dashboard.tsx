@@ -1,19 +1,10 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  BarChart3,
-  BrainCircuit,
-  Clock,
-  Cpu,
-  Loader2,
-  Play,
-  RefreshCw,
-  Sparkles,
-  Star,
-} from "lucide-react";
+import { BrainCircuit, Loader2, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { QueryEmptyState, QueryErrorState } from "@/components/data/query-state";
 import {
   Select,
   SelectContent,
@@ -22,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { trpc } from "@/utils/trpc";
+import { invalidateHiringData, trpc } from "@/utils/trpc";
 import { ScreeningCard } from "./screening-card";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { motion } from "framer-motion";
@@ -33,19 +24,17 @@ export function ScreeningDashboard() {
   const [progress, setProgress] = useState(0);
   const queryClient = useQueryClient();
 
-  const { data: applicantsData, isLoading: appsLoading } = useQuery(
+  const applicantsQuery = useQuery(
     trpc.applicants.list.queryOptions(),
   );
-  const { data: jobsData, isLoading: jobsLoading } = useQuery(
-    trpc.jobs.list.queryOptions(),
-  );
+  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
 
   const screenMutation = useMutation(
     trpc.screenings.generateMock.mutationOptions(),
   );
 
-  const applicants = applicantsData || [];
-  const jobs = jobsData || [];
+  const applicants = applicantsQuery.data ?? [];
+  const jobs = jobsQuery.data ?? [];
 
   const screened = applicants.filter((a) => a.screening);
   const pending = applicants.filter((a) => !a.screening);
@@ -87,9 +76,7 @@ export function ScreeningDashboard() {
         errors.push(`${applicant.firstName} ${applicant.lastName}`);
       }
     }
-    await queryClient.invalidateQueries({ queryKey: [["applicants"]] });
-    await queryClient.invalidateQueries({ queryKey: [["jobs"]] });
-    await queryClient.invalidateQueries({ queryKey: [["screenings"]] });
+    await invalidateHiringData(queryClient);
     setRunning(false);
     setProgress(0);
     if (errors.length > 0) {
@@ -99,7 +86,7 @@ export function ScreeningDashboard() {
     }
   };
 
-  if (appsLoading || jobsLoading) {
+  if (applicantsQuery.isLoading || jobsQuery.isLoading) {
     return (
       <div className="w-full space-y-12 animate-pulse">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -107,6 +94,26 @@ export function ScreeningDashboard() {
         </div>
         <div className="h-[600px] w-full bg-secondary/30 rounded-xl" />
       </div>
+    );
+  }
+
+  if (applicantsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={applicantsQuery.error}
+        title="Screening data couldn't be loaded"
+        onRetry={() => applicantsQuery.refetch()}
+      />
+    );
+  }
+
+  if (jobsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={jobsQuery.error}
+        title="Jobs couldn't be loaded"
+        onRetry={() => jobsQuery.refetch()}
+      />
     );
   }
 
@@ -206,7 +213,7 @@ export function ScreeningDashboard() {
         </div>
 
         <div className="lg:col-span-3">
-          <div className="mb-10 flex items-end justify-between border-b border-border/20 pb-10 px-2">
+          <div className="mb-5 flex items-end justify-between border-b border-border/20 pb-10 px-2">
             <div>
               <h2 className="font-display text-[24px] font-light text-foreground uppercase tracking-[0.1em]">Screening Report</h2>
               <p className="text-[12px] text-muted-foreground/30 font-bold mt-1 uppercase tracking-widest">{filtered.length} experts analyzed</p>
@@ -219,8 +226,9 @@ export function ScreeningDashboard() {
             </button>
           </div>
 
-          <div className="space-y-4">
-            {filtered.map((applicant) => {
+          <div>
+            <div className="flex flex-col gap-4">
+              {filtered.map((applicant) => {
               const job = jobs.find((j) => j.id === applicant.jobId);
               return (
                 <ScreeningCard
@@ -230,16 +238,14 @@ export function ScreeningDashboard() {
                 />
               );
             })}
+            </div>
 
-            {filtered.length === 0 && (
-              <div className="py-24 text-center rounded-section border border-dashed border-border/50 bg-secondary/5">
-                <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-secondary/50 mb-6 shadow-ethereal text-muted-foreground/20">
-                   <BrainCircuit className="h-6 w-6" />
-                </div>
-                <p className="text-[14px] font-light text-foreground uppercase tracking-[0.2em]">No screening results</p>
-                <p className="mt-2 text-[12px] text-muted-foreground/60 font-medium tracking-tight">Initiate the AI engine to evaluate pending candidates</p>
-              </div>
-            )}
+            {filtered.length === 0 ? (
+              <QueryEmptyState
+                title="No screening results"
+                description="Run the screening engine to evaluate pending candidates."
+              />
+            ) : null}
           </div>
         </div>
       </div>

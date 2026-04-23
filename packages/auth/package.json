@@ -17,13 +17,17 @@
   "dependencies": {
     "@ai-hackathon/db": "workspace:*",
     "@ai-hackathon/env": "workspace:*",
+    "@react-email/components": "^1.0.11",
     "@better-auth/mongo-adapter": "^1.5.6",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
+    "react": "catalog:",
+    "resend": "^6.10.0",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@ai-hackathon/config": "workspace:*",
+    "@types/react": "catalog:",
     "typescript": "^6.0.2"
   }
 }

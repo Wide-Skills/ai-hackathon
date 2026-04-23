@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { AuthView } from "@/features/auth/components/auth-view";
 
 export default function AuthPage() {
-  redirect("/auth/sign-in");
+  return <AuthView />;
 }

@@ -1,8 +1,6 @@
 "use client";
 
 import { ChevronRightIcon } from "lucide-react";
-import type { Route } from "next";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Collapsible,
@@ -22,17 +20,25 @@ import {
 import { cn } from "@/lib/utils";
 import React from "react";
 
+type AppRoute =
+  | "/dashboard"
+  | "/dashboard/jobs"
+  | "/dashboard/applicants"
+  | "/dashboard/screening"
+  | "/dashboard/analytics"
+  | "/dashboard/settings";
+
 export function NavMain({
   items,
 }: {
   items: {
     title: string;
-    url: Route;
+    url: AppRoute;
     icon?: React.ReactNode;
     isActive?: boolean;
     items?: {
       title: string;
-      url: Route;
+      url: AppRoute;
     }[];
   }[];
 }) {
@@ -52,7 +58,9 @@ export function NavMain({
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton
                   tooltip={item.title}
-                  render={<Link href={item.url} />}
+                  onClick={() => {
+                    window.location.href = item.url;
+                  }}
                   isActive={isItemActive}
                   className={cn(
                     "h-10 px-4 transition-all duration-300 rounded-lg relative group overflow-hidden mb-1",
@@ -110,7 +118,9 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton
-                        render={<Link href={subItem.url} />}
+                        onClick={() => {
+                          window.location.href = subItem.url;
+                        }}
                         className="h-8 text-[13px] text-muted-foreground/50 hover:text-foreground transition-colors"
                       >
                         <span>{subItem.title}</span>

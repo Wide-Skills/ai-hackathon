@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import type { Route } from "next";
 
 export const Navbar: React.FC = () => {
   return (
@@ -14,7 +15,13 @@ export const Navbar: React.FC = () => {
         </Link>
 
         <div className="hidden items-center gap-[28px] md:flex">
-          {["How it Works", "Rankings", "Enterprise", "Pricing"].map((item) => (
+          <Link
+            href={"/docs" as Route}
+            className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground tracking-[0.1px]"
+          >
+            Docs
+          </Link>
+          {["Rankings", "Enterprise", "Pricing"].map((item) => (
             <Link
               key={item}
               href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
@@ -26,10 +33,10 @@ export const Navbar: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-5">
-          <Link href="/auth/sign-in" className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground tracking-[0.1px]">
+          <Link href="/auth" className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground tracking-[0.1px]">
             Sign in
           </Link>
-          <Link href="/auth/sign-up">
+          <Link href="/auth">
             <button className="h-[36px] rounded-full bg-primary px-5 text-[13px] text-primary-foreground shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]">
               Get Started
             </button>

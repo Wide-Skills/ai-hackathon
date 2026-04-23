@@ -8,7 +8,6 @@ import {
   UsersIcon,
   BarChart3Icon,
 } from "lucide-react";
-import type { Route } from "next";
 import type * as React from "react";
 import { NavMain } from "@/components/layouts/nav-main";
 import { NavUser } from "@/components/layouts/nav-user";
@@ -24,9 +23,17 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 
+type AppRoute =
+  | "/dashboard"
+  | "/dashboard/jobs"
+  | "/dashboard/applicants"
+  | "/dashboard/screening"
+  | "/dashboard/analytics"
+  | "/dashboard/settings";
+
 const navItems: Array<{
   title: string;
-  url: Route;
+  url: AppRoute;
   icon: React.ReactNode;
 }> = [
   {

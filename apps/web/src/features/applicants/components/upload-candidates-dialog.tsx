@@ -28,7 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { trpc } from "@/utils/trpc";
+import { QueryErrorState } from "@/components/data/query-state";
+import { invalidateHiringData, trpc } from "@/utils/trpc";
 
 interface ParsedCandidate {
   firstName: string;
@@ -135,7 +136,8 @@ export function UploadCandidatesDialog({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
-  const { data: jobs = [] } = useQuery(trpc.jobs.list.queryOptions());
+  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
+  const jobs = jobsQuery.data ?? [];
 
   const createApplicant = useMutation(trpc.applicants.create.mutationOptions());
 
@@ -209,8 +211,7 @@ export function UploadCandidatesDialog({
       }
     }
 
-    await queryClient.invalidateQueries({ queryKey: [["applicants"]] });
-    await queryClient.invalidateQueries({ queryKey: [["jobs"]] });
+    await invalidateHiringData(queryClient);
 
     setUploading(false);
 
@@ -269,21 +270,29 @@ export function UploadCandidatesDialog({
             <label className="font-medium text-sm">
               Target Position <span className="text-destructive">*</span>
             </label>
-            <Select
-              value={selectedJobId}
-              onValueChange={(val) => setSelectedJobId(val ?? "")}
-            >
-              <SelectTrigger className="h-9 border-border text-sm">
-                <SelectValue placeholder="Select a job position..." />
-              </SelectTrigger>
-              <SelectContent>
-                {jobs.map((j) => (
-                  <SelectItem key={j.id} value={j.id}>
-                    {j.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {jobsQuery.isError ? (
+              <QueryErrorState
+                error={jobsQuery.error}
+                title="Jobs couldn't be loaded"
+                onRetry={() => jobsQuery.refetch()}
+              />
+            ) : (
+              <Select
+                value={selectedJobId}
+                onValueChange={(val) => setSelectedJobId(val ?? "")}
+              >
+                <SelectTrigger className="h-9 border-border text-sm">
+                  <SelectValue placeholder="Select a job position..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {jobs.map((j) => (
+                    <SelectItem key={j.id} value={j.id}>
+                      {j.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           {candidates.length === 0 ? (

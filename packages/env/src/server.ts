@@ -12,8 +12,10 @@ export const env = createEnv({
       .enum(["development", "production", "test"])
       .default("development"),
     GEMINI_API_KEY: z.string().min(1),
-    GOOGLE_CLIENT_ID: z.string().min(1),
-    GOOGLE_CLIENT_SECRET: z.string().min(1),
+    GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+    GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
+    GITHUB_CLIENT_ID: z.string().min(1).optional(),
+    GITHUB_CLIENT_SECRET: z.string().min(1).optional(),
     RESEND_API_KEY: z.string().min(1),
     RESEND_FROM_EMAIL: z.string().email().default("onboarding@resend.dev"),
     R2_ACCOUNT_ID: z.string().min(1),

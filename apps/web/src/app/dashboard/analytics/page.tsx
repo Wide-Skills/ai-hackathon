@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { QueryErrorState } from "@/components/data/query-state";
 import { trpc } from "@/utils/trpc";
 import { ScoreDistributionChart } from "@/features/dashboard/components/score-distribution-chart";
 import { SkillsRadarChart } from "@/features/dashboard/components/skills-radar-chart";
@@ -8,14 +9,12 @@ import { StatCard, InteractivePerformanceChart } from "@/features/dashboard/comp
 import { motion } from "framer-motion";
 
 export default function AnalyticsPage() {
-  const { data: applicants = [], isLoading: appsLoading } = useQuery(
+  const applicantsQuery = useQuery(
     trpc.applicants.list.queryOptions(),
   );
-  const { data: stats, isLoading: statsLoading } = useQuery(
-    trpc.jobs.stats.queryOptions(),
-  );
+  const statsQuery = useQuery(trpc.jobs.stats.queryOptions());
 
-  const isLoading = appsLoading || statsLoading;
+  const isLoading = applicantsQuery.isLoading || statsQuery.isLoading;
 
   if (isLoading) {
     return (
@@ -31,6 +30,29 @@ export default function AnalyticsPage() {
       </div>
     );
   }
+
+  if (applicantsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={applicantsQuery.error}
+        title="Analytics data couldn't be loaded"
+        onRetry={() => applicantsQuery.refetch()}
+      />
+    );
+  }
+
+  if (statsQuery.isError) {
+    return (
+      <QueryErrorState
+        error={statsQuery.error}
+        title="Analytics metrics couldn't be loaded"
+        onRetry={() => statsQuery.refetch()}
+      />
+    );
+  }
+
+  const applicants = applicantsQuery.data ?? [];
+  const stats = statsQuery.data;
 
   const shortlistedCount = applicants.filter(a => a.status === 'shortlisted').length;
   const aiCoverage = applicants.length > 0 

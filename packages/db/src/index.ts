@@ -14,6 +14,7 @@ if (!database) {
 const client = database;
 
 export * from "./models/applicant.model";
+export * from "./models/audit-log.model";
 export * from "./models/auth.model";
 export * from "./models/job.model";
 export * from "./models/screening.model";

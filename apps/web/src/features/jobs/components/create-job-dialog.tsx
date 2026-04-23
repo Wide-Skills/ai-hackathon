@@ -27,7 +27,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import type { RootState } from "@/store";
 import { setCreateModalOpen } from "@/store/slices/jobsSlice";
-import { trpc } from "@/utils/trpc";
+import { invalidateHiringData, trpc } from "@/utils/trpc";
 
 interface CreateJobDialogProps {
   trigger?: React.ReactElement;
@@ -62,7 +62,7 @@ export function CreateJobDialog({ trigger }: CreateJobDialogProps) {
     trpc.jobs.create.mutationOptions({
       onSuccess: () => {
         toast.success("Job created successfully!");
-        queryClient.invalidateQueries({ queryKey: trpc.jobs.list.queryKey() });
+        void invalidateHiringData(queryClient);
         setOpen(false);
         setForm(initialFormState);
       },
