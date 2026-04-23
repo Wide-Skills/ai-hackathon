@@ -3,75 +3,75 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { notFound, useRouter } from "next/navigation";
 import { trpc } from "@/utils/trpc";
-import { AIAnalysisCard } from "./ai-analysis-card";
 import { ApplicantSidebar } from "./applicant-sidebar";
-import { CertificationsCard } from "./certifications-card";
-import { EducationCard } from "./education-card";
 import { ExperienceCard } from "./experience-card";
-import { ProjectsCard } from "./projects-card";
 import { SkillsCard } from "./skills-card";
+import { AIAnalysisCard } from "./ai-analysis-card";
+import { EducationCard } from "./education-card";
+import { CertificationsCard } from "./certifications-card";
+import { ProjectsCard } from "./projects-card";
 
 interface ApplicantDetailProps {
   id: string;
 }
 
 export function ApplicantDetail({ id }: ApplicantDetailProps) {
-  const { data: applicants, isLoading: appsLoading } = useQuery(
-    trpc.applicants.list.queryOptions(),
+  const router = useRouter();
+  const { data: applicant, isLoading: appLoading } = useQuery(
+    trpc.applicants.getById.queryOptions({ id }),
   );
-  const { data: jobs, isLoading: jobsLoading } = useQuery(
-    trpc.jobs.list.queryOptions(),
+  const { data: job, isLoading: jobLoading } = useQuery(
+    trpc.jobs.getById.queryOptions({ id: applicant?.jobId ?? "" }),
+    { enabled: !!applicant?.jobId },
   );
 
-  if (appsLoading || jobsLoading) {
+  if (appLoading || jobLoading) {
     return (
-      <div className="mx-auto max-w-6xl space-y-6">
-        <Skeleton className="h-10 w-32" />
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <Skeleton className="h-96 w-full lg:col-span-1" />
-          <Skeleton className="h-96 w-full lg:col-span-2" />
+      <div className="w-full space-y-12 animate-pulse">
+        <div className="h-8 w-40 bg-secondary/30 rounded-full" />
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
+          <div className="h-[600px] bg-secondary/30 rounded-xl lg:col-span-1" />
+          <div className="h-[600px] bg-secondary/30 rounded-xl lg:col-span-3" />
         </div>
       </div>
     );
   }
 
-  const applicant = (applicants || []).find((a) => a.id === id);
   if (!applicant) notFound();
 
-  const job = (jobs || []).find((j) => j.id === applicant.jobId);
-
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <div className="flex items-center gap-3">
-        <Link href="/dashboard/applicants">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="-ml-2 gap-1.5 text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Applicants
-          </Button>
-        </Link>
+    <div className="w-full space-y-10 pb-20">
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => router.back()}
+          className="group flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1" />
+          Candidate Pool
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-4 items-start">
         <ApplicantSidebar applicant={applicant} jobTitle={job?.title} />
 
-        <div className="space-y-5 lg:col-span-2">
+        <div className="lg:col-span-3 space-y-10">
           {applicant.screening && (
-            <AIAnalysisCard screening={applicant.screening} />
+            <section>
+               <div className="mb-6">
+                  <h3 className="font-display text-[16px] font-light text-foreground uppercase tracking-[0.12em]">Intelligence Analysis</h3>
+               </div>
+               <AIAnalysisCard screening={applicant.screening} />
+            </section>
           )}
 
-          <SkillsCard skills={applicant.skills} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <ExperienceCard experience={applicant.experience} />
+            <SkillsCard skills={applicant.skills} />
+          </div>
 
-          <ExperienceCard experience={applicant.experience} />
-
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             <EducationCard education={applicant.education} />
             <CertificationsCard certifications={applicant.certifications} />
           </div>

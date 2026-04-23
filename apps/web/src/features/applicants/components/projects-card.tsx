@@ -10,7 +10,7 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
   if (projects.length === 0) return null;
 
   return (
-    <Card className="border-border shadow-sm">
+    <Card className="border-border shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 font-semibold text-foreground text-sm">
           <Code2 className="h-4 w-4 text-primary" /> Projects

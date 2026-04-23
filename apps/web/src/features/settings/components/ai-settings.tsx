@@ -1,11 +1,8 @@
+"use client";
+
 import { BrainCircuit, Save, Zap } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 
 export function AISettings() {
@@ -13,101 +10,97 @@ export function AISettings() {
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [highScoreAlert, setHighScoreAlert] = useState(true);
 
-  const handleSave = () => toast.success("Settings saved successfully");
+  const handleSave = () => toast.success("AI configuration updated");
 
   return (
-    <Card className="border-border shadow-sm">
-      <CardHeader className="pb-4">
-        <div className="flex items-center gap-2">
-          <BrainCircuit className="h-5 w-5 text-primary" />
-          <CardTitle className="text-base">
-            AI Screening Configuration
-          </CardTitle>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-5">
-        <div className="rounded-xl border border-primary/20 bg-primary/10 p-4">
-          <div className="mb-1 flex items-center gap-2">
-            <Zap className="h-4 w-4 text-primary" />
-            <p className="font-semibold text-primary/90 text-sm">
-              Model: Gemini 2.5 Pro
-            </p>
+    <div className="space-y-12">
+      <section>
+        <div className="mb-8 border-b border-border/50 pb-6 flex items-end justify-between">
+          <div>
+            <h3 className="font-display text-[20px] font-light text-foreground uppercase tracking-[0.1em]">Intelligence Core</h3>
+            <p className="text-[12px] text-muted-foreground font-medium mt-1 uppercase tracking-wider">Configure model behavior and thresholds</p>
           </div>
-          <p className="text-primary text-xs">
-            847 / 1,000 screening credits used this month
-          </p>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-primary/20">
-            <div className="h-full w-[84.7%] rounded-full bg-primary" />
+          <div className="px-3 py-1 rounded-full bg-info/5 border border-info/10 flex items-center gap-2">
+             <div className="h-1.5 w-1.5 rounded-full bg-info animate-pulse" />
+             <span className="text-[10px] font-bold text-info uppercase tracking-widest">Gemini 1.5 Pro</span>
           </div>
         </div>
 
-        <Separator />
+        <div className="bg-secondary/40 rounded-xl border border-border p-6 mb-10 relative overflow-hidden group">
+          <div className="relative z-10">
+             <div className="flex items-center justify-between mb-6">
+                <div>
+                   <p className="text-[11px] font-bold text-foreground/40 uppercase tracking-widest mb-1.5">Processing Credits</p>
+                   <p className="font-display text-[24px] font-light text-foreground leading-none tracking-tighter">847 <span className="text-[14px] text-muted-foreground/40">/ 1,000</span></p>
+                </div>
+                <Zap className="h-5 w-5 text-info opacity-40" />
+             </div>
+             <div className="h-1.5 w-full bg-background rounded-full overflow-hidden border border-border/10">
+                <div className="h-full bg-info/40 rounded-full transition-all duration-1000" style={{ width: '84.7%' }} />
+             </div>
+             <p className="mt-4 text-[11px] font-bold text-muted-foreground/60 uppercase tracking-wider">Monthly quota resets in 12 days</p>
+          </div>
+        </div>
 
-        <div className="space-y-4">
+        <div className="space-y-8">
           {[
             {
-              id: "auto",
-              label: "Auto-screen new applicants",
-              desc: "Automatically run AI screening when a new application is submitted",
+              label: "Autonomous Screening",
+              desc: "Automatically evaluate candidates upon submission",
               state: autoScreen,
               set: setAutoScreen,
             },
             {
-              id: "email",
-              label: "Email screening reports",
-              desc: "Send detailed AI analysis to your email after batch screening",
+              label: "Reasoning Reports",
+              desc: "Generate detailed natural-language justifications",
               state: emailAlerts,
               set: setEmailAlerts,
             },
             {
-              id: "high",
-              label: "High-score notifications",
-              desc: "Get notified when a candidate scores above 85%",
+              label: "High-Confidence Alerts",
+              desc: "Notify when a match score exceeds 85%",
               state: highScoreAlert,
               set: setHighScoreAlert,
             },
-          ].map((item) => (
-            <div
-              key={item.id}
-              className="flex items-start justify-between gap-4"
-            >
-              <div>
-                <p className="font-medium text-foreground text-sm">
-                  {item.label}
-                </p>
-                <p className="mt-0.5 text-muted-foreground text-xs">
-                  {item.desc}
-                </p>
+          ].map((item, i) => (
+            <div key={i} className="flex items-center justify-between group">
+              <div className="max-w-[420px]">
+                <p className="text-[14px] font-bold text-foreground tracking-tight mb-0.5">{item.label}</p>
+                <p className="text-[13px] text-muted-foreground font-medium">{item.desc}</p>
               </div>
-              <Switch checked={item.state} onCheckedChange={item.set} />
+              <Switch checked={item.state} onCheckedChange={item.set} className="data-[state=checked]:bg-info" />
             </div>
           ))}
         </div>
 
-        <Separator />
-        <div className="space-y-1.5">
-          <Label className="font-medium text-foreground/80 text-sm">
-            Minimum score threshold for shortlisting
-          </Label>
-          <Input
-            type="number"
-            defaultValue="75"
-            className="h-9 w-28 border-border text-sm"
-            min={0}
-            max={100}
-          />
-          <p className="text-muted-foreground/70 text-xs">
-            Candidates above this score are flagged for review
-          </p>
+        <div className="mt-12 pt-8 border-t border-border/50">
+           <div className="flex items-center justify-between gap-10">
+              <div className="max-w-[360px]">
+                 <p className="text-[14px] font-bold text-foreground tracking-tight mb-1">Match Threshold</p>
+                 <p className="text-[12px] text-muted-foreground font-medium leading-relaxed">Candidates scoring above this value will be marked for immediate review.</p>
+              </div>
+              <div className="flex items-center gap-3 bg-secondary/30 p-1.5 rounded-lg border border-border">
+                 <input 
+                   type="number" 
+                   defaultValue="75" 
+                   className="w-16 h-8 bg-transparent text-center font-display text-[18px] font-light text-foreground focus:outline-none"
+                   min="0" max="100"
+                 />
+                 <span className="text-[14px] text-muted-foreground/40 font-light font-display pr-2">%</span>
+              </div>
+           </div>
         </div>
-        <Button
+      </section>
+
+      <div className="pt-8 border-t border-border/50 flex justify-end">
+        <button
           onClick={handleSave}
-          className="h-9 gap-2 bg-primary text-foreground text-sm hover:bg-primary/90"
+          className="h-11 px-8 rounded-full bg-primary text-primary-foreground text-[12px] font-bold uppercase tracking-[0.2em] flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_1px_3px_rgba(0,0,0,0.01)]"
         >
           <Save className="h-4 w-4" />
-          Save AI Settings
-        </Button>
-      </CardContent>
-    </Card>
+          Save Core Settings
+        </button>
+      </div>
+    </div>
   );
 }

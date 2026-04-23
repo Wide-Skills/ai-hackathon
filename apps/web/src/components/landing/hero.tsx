@@ -129,7 +129,7 @@ export const Hero: React.FC = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="mb-8"
           >
-            <h1 className="font-display text-foreground text-[48px] md:text-[72px] font-light leading-[1.02] tracking-[-0.03em]">
+            <h1 className="font-display text-foreground text-[48px] md:text-display-hero font-light leading-[1.02] tracking-[-0.03em]">
               Screening with <br />
               <span className="text-muted-foreground">Explainable Intent.</span>
             </h1>

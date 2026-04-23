@@ -1,122 +1,115 @@
 "use client";
 
-import { BrainCircuit, TrendingUp, Users } from "lucide-react";
+import React from "react";
+import Link from "next/link";
+import { ChevronLeftIcon, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
-const features = [
-  {
-    icon: BrainCircuit,
-    title: "AI-Powered Screening",
-    desc: "Gemini 2.5 Pro analyzes every candidate instantly",
-  },
-  {
-    icon: TrendingUp,
-    title: "Match Score Ranking",
-    desc: "Objective scores replace subjective gut feelings",
-  },
-  {
-    icon: Users,
-    title: "Talent Pipeline",
-    desc: "Track candidates from apply to hire in one place",
-  },
-];
+const Logo = ({ className }: { className?: string }) => (
+  <Link href="/" className={`flex items-center gap-2 ${className}`}>
+    <span className="font-display text-[18px] font-light tracking-tight text-foreground uppercase">
+      Umurava <span className="text-muted-foreground italic normal-case">AI</span>
+    </span>
+  </Link>
+);
 
-export default function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const FloatingPaths = ({ position }: { position: number }) => {
+  const paths = [
+    { id: 1, d: "M0,100 Q50,50 100,100 T200,100 T300,100 T400,100", width: 0.5, opacity: 0.1, duration: 20 },
+    { id: 2, d: "M0,150 Q100,100 200,150 T400,150", width: 1, opacity: 0.05, duration: 25 },
+  ];
+
   return (
-    <div className="flex min-h-screen">
-      <div className="relative hidden flex-col justify-between overflow-hidden bg-foreground p-12 lg:flex lg:w-1/2">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-foreground" />
-        <div className="absolute top-0 right-0 h-96 w-96 translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute bottom-0 left-0 h-64 w-64 -translate-x-1/2 translate-y-1/2 rounded-full bg-primary/10 blur-3xl" />
-
-        <div className="relative z-10">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <BrainCircuit className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-primary-foreground text-xl tracking-tight">
-              TalentAI
-            </span>
-          </div>
-        </div>
-
-        <div className="relative z-10 space-y-8">
-          <div>
-            <h1 className="font-bold text-4xl text-primary-foreground leading-tight">
-              Hire smarter.
-              <br />
-              <span className="text-primary">Screen faster.</span>
-            </h1>
-            <p className="mt-4 max-w-sm text-lg text-primary-foreground/60 leading-relaxed">
-              AI-powered recruitment that surfaces the best candidates in
-              seconds, not days.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {features.map((f) => (
-              <div key={f.title} className="flex items-start gap-3">
-                <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary/20">
-                  <f.icon className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p className="font-medium text-primary-foreground text-sm">
-                    {f.title}
-                  </p>
-                  <p className="text-primary-foreground/50 text-sm">{f.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-4 pt-4">
-            <div className="flex -space-x-2">
-              {[
-                "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?w=40",
-                "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?w=40",
-                "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=40",
-              ].map((src, i) => (
-                <img
-                  key={i}
-                  src={src}
-                  alt=""
-                  className="h-8 w-8 rounded-full border-2 border-foreground object-cover"
-                />
-              ))}
-            </div>
-            <p className="text-primary-foreground/60 text-sm">
-              <span className="font-semibold text-primary-foreground">
-                2,400+
-              </span>{" "}
-              candidates screened this week
-            </p>
-          </div>
-        </div>
-
-        <div className="relative z-10">
-          <p className="text-primary-foreground/40 text-sm">
-            Powered by Red Team Pro
-          </p>
-        </div>
-      </div>
-
-      <div className="flex flex-1 items-center justify-center bg-muted p-8">
-        <div className="w-full max-w-md">
-          <div className="mb-8 flex items-center gap-2 lg:hidden">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <BrainCircuit className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-foreground text-lg">TalentAI</span>
-          </div>
-
-          <div className="rounded-2xl border border-border bg-background shadow-sm">
-            {children}
-          </div>
-        </div>
-      </div>
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      <svg viewBox="0 0 400 400" className="w-full h-full" preserveAspectRatio="none">
+        <title>Floating Paths</title>
+        {paths.map((path) => (
+          <motion.path
+            key={path.id}
+            d={path.d}
+            stroke="currentColor"
+            strokeWidth={path.width}
+            fill="transparent"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ 
+              pathLength: 1, 
+              opacity: path.opacity,
+              y: [0, position * 20, 0]
+            }}
+            transition={{ duration: path.duration, repeat: Infinity, ease: "linear" }}
+          />
+        ))}
+      </svg>
     </div>
+  );
+};
+
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <main className="relative min-h-screen lg:grid lg:grid-cols-[440px_1fr] bg-background selection:bg-secondary selection:text-foreground">
+      <div className="relative hidden h-full flex-col border-r border-border bg-secondary/20 p-12 lg:flex overflow-hidden">
+        <Logo className="mb-12 relative z-10" />
+        
+        <div className="relative z-10 flex-1 flex flex-col justify-center py-20">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+        
+            <h2 className="font-display text-[36px] font-light leading-[1.1] tracking-tight text-foreground mb-6">
+              Hire the top 1% <br />
+              with absolute clarity.
+            </h2>
+            <p className="text-[15px] text-muted-foreground leading-relaxed max-w-[300px]">
+              The first explainable talent screening platform powered by Gemini 1.5 Pro.
+            </p>
+          </motion.div>
+        </div>
+
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 1 }}
+          className="relative z-10 mt-auto pt-10 border-t border-border"
+        >
+          <blockquote className="space-y-4">
+            <p className="text-[15px] font-light leading-relaxed text-foreground italic">
+              &ldquo;Umurava has transformed our hiring process, allowing us to shortlist 
+              experts with surgical precision.&rdquo;
+            </p>
+            <footer className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest">
+              — Head of Talent, Neural Labs
+            </footer>
+          </blockquote>
+        </motion.div>
+
+        <div className="absolute inset-0 z-0 text-foreground/5 opacity-50">
+          <FloatingPaths position={1} />
+          <FloatingPaths position={-1} />
+        </div>
+      </div>
+
+      {/* Main Form Content */}
+      <div className="relative flex min-h-screen flex-col justify-center px-8 lg:px-24 xl:px-32 bg-[#fafafa]/30">
+        <Button render={<Link href="/" />} className="absolute top-8 left-8 h-9 px-4 text-[13px] font-normal hover:bg-background/80" variant="ghost">
+          
+            <ChevronLeftIcon className="h-3.5 w-3.5 mr-2" />
+            Back to Home
+          
+        </Button>
+
+        <div className="mx-auto w-full max-w-[400px]">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.99 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          >
+            {children}
+          </motion.div>
+        </div>
+      </div>
+    </main>
   );
 }

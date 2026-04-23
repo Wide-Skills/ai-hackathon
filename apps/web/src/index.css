@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Core Foundation */
+  /* Core Foundation - Pure clinical white */
   --background: oklch(100% 0 0);
   --foreground: oklch(15% 0 0);
   
@@ -19,7 +19,7 @@
   --primary: oklch(15% 0 0);
   --primary-foreground: oklch(100% 0 0);
   
-  --secondary: oklch(98% 0.002 40); /* Subtle warm tint */
+  --secondary: oklch(98% 0.002 40);
   --secondary-foreground: oklch(25% 0 0);
   
   --muted: oklch(97% 0 0);
@@ -28,7 +28,7 @@
   --accent: oklch(96% 0.01 60); /* Signature Stone */
   --accent-foreground: oklch(15% 0.01 60);
   
-  /* Precision Palette */
+  /* Precision Palette - Low Chroma */
   --success: oklch(65% 0.08 150);
   --success-foreground: oklch(25% 0.04 150);
   --info: oklch(65% 0.08 250);
@@ -44,39 +44,33 @@
   --input: oklch(0% 0 0 / 0.04);
   --ring: oklch(0% 0 0 / 0.08);
   
+  /* Architectural Radius */
   --radius: 12px;
 
-  /* Elevation Utilities */
-  --shadow-inset: inset 0 0 0 0.5px oklch(0% 0 0 / 0.075);
-  --shadow-outline: 0 0 0 1px oklch(0% 0 0 / 0.06);
-  --shadow-elevation: 0 4px 12px oklch(0% 0 0 / 0.03);
-  --shadow-warm: 0 8px 24px oklch(15% 0.01 60 / 0.04);
+  /* Elevation Utilities - Surgical precision */
+  --shadow-inset: inset 0 0 0 0.5px oklch(0% 0 0 / 0.06);
+  --shadow-outline: 0 0 0 1px oklch(0% 0 0 / 0.04);
+  --shadow-elevation: 0 2px 4px oklch(0% 0 0 / 0.01);
+  --shadow-warm: 0 4px 12px oklch(15% 0.01 60 / 0.02);
 }
 
 .dark {
-  --background: #000000;
-  --foreground: #FFFFFF;
+  /* Dark mode also uses OKLCH for consistency */
+  --background: oklch(15% 0 0);
+  --foreground: oklch(98% 0 0);
   
-  --card: #0A0A0A;
-  --card-foreground: #FFFFFF;
-  --popover: #0A0A0A;
-  --popover-foreground: #FFFFFF;
+  --card: oklch(12% 0 0);
+  --card-foreground: oklch(98% 0 0);
   
-  --primary: #FFFFFF;
-  --primary-foreground: #000000;
+  --primary: oklch(98% 0 0);
+  --primary-foreground: oklch(15% 0 0);
   
-  --secondary: #1C1C1E;
-  --secondary-foreground: #FFFFFF;
+  --secondary: oklch(20% 0 0);
+  --muted: oklch(20% 0 0);
+  --muted-foreground: oklch(70% 0 0);
   
-  --muted: #1C1C1E;
-  --muted-foreground: #A1A1AA;
-  
-  --accent: rgba(28, 28, 30, 0.8);
-  --accent-foreground: #FFFFFF;
-  
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.1);
-  --ring: rgba(255, 255, 255, 0.2);
+  --accent: oklch(22% 0.005 60);
+  --border: oklch(100% 0 0 / 0.08);
 }
 
 @theme inline {
@@ -87,8 +81,6 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -106,16 +98,22 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
-  --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --shadow-premium: var(--shadow-outline), var(--shadow-elevation), var(--shadow-inset);
-  --shadow-ethereal: var(--shadow-outline), var(--shadow-warm), var(--shadow-inset);
+  /* Elevation mapping */
+  --shadow-premium: var(--shadow-outline), var(--shadow-inset);
+  --shadow-ethereal: var(--shadow-outline), var(--shadow-elevation), var(--shadow-inset);
   
+  /* Radius Scale - Consistent 12px base */
   --radius-xl: calc(var(--radius) + 4px);
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+  
+  /* Typography Scale */
+  --text-display-hero: 72px;
+  --text-display-section: 44px;
+  --text-display-card: 24px;
 }
 
 @layer base {
@@ -128,59 +126,35 @@
   }
   h1, h2, h3, h4 {
     @apply font-display font-light;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.03em;
   }
 }
 
 @layer components {
+  /* Exhibit Containers - Stable & Clinical */
   .surface-exhibit {
-    @apply bg-card text-card-foreground rounded-[24px] shadow-premium border border-transparent;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    @apply bg-card text-card-foreground rounded-lg border border-border shadow-premium;
   }
 
-  .surface-exhibit:hover {
-    @apply shadow-ethereal -translate-y-1;
+  .bento-card {
+    @apply flex flex-col bg-card rounded-lg border border-border shadow-premium overflow-hidden relative;
   }
 
-  .btn-primary {
-    @apply h-[52px] rounded-full bg-primary px-10 text-[15px] font-medium text-primary-foreground transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm;
+  /* Button Primitives - Aligned with ElevenLabs signatures */
+  .btn-pill-primary {
+    @apply h-[52px] rounded-full bg-primary px-10 text-[15px] text-primary-foreground transition-all active:scale-[0.97] shadow-sm flex items-center justify-center;
   }
 
-  .btn-warm {
-    @apply h-[52px] rounded-[30px] bg-accent px-10 text-[15px] font-medium text-accent-foreground shadow-ethereal transition-all hover:bg-[#f5f2ef] active:scale-[0.98];
-    box-shadow: 0 6px 16px rgba(78, 50, 23, 0.04), inset 0 0 0 0.5px rgba(0,0,0,0.075);
+  .btn-pill-warm {
+    @apply h-[52px] rounded-[30px] bg-accent px-10 text-[15px] text-accent-foreground shadow-ethereal transition-all active:scale-[0.97] flex items-center justify-center;
+    box-shadow: var(--shadow-warm), var(--shadow-inset);
   }
 
-  .btn-outline {
-    @apply h-[52px] rounded-full bg-background border border-border px-8 text-[15px] font-medium text-foreground transition-all hover:bg-muted active:scale-[0.98];
-  }
-
-  .content-center {
-    @apply mx-auto max-w-[1200px] w-full px-8;
+  .btn-pill-outline {
+    @apply h-[52px] rounded-full bg-background border border-border px-10 text-[15px] text-foreground transition-all active:scale-[0.97] shadow-sm flex items-center justify-center;
   }
 
   .container-tight {
     @apply mx-auto max-w-[1440px] w-full px-6 md:px-16;
-  }
-
-  .surface-stone {
-    @apply bg-[#f5f2ef]/40 backdrop-blur-xl border border-black/[0.02] shadow-[0_4px_12px_rgba(0,0,0,0.02)];
-  }
-
-  .bento-card {
-    @apply flex flex-col bg-white rounded-[32px] border border-black/[0.03] shadow-[0_2px_8px_rgba(0,0,0,0.02)] transition-all duration-700 hover:shadow-[0_20px_40px_rgba(0,0,0,0.04)] hover:-translate-y-1 overflow-hidden relative;
-  }
-
-  .btn-pill-primary {
-    @apply h-[56px] rounded-full bg-primary px-10 text-[15px] text-primary-foreground transition-transform duration-200 ease-out active:scale-[0.97] shadow-sm flex items-center justify-center;
-  }
-
-  .btn-pill-warm {
-    @apply h-[52px] rounded-[30px] bg-accent px-10 text-[15px] text-accent-foreground shadow-ethereal transition-transform duration-200 ease-out active:scale-[0.97] flex items-center justify-center;
-    box-shadow: 0 6px 16px rgba(78, 50, 23, 0.04), inset 0 0 0 0.5px rgba(0,0,0,0.075);
-  }
-
-  .btn-pill-outline {
-    @apply h-[52px] rounded-full bg-white border border-border px-10 text-[15px] text-foreground transition-transform duration-200 ease-out active:scale-[0.97] shadow-sm flex items-center justify-center;
   }
 }

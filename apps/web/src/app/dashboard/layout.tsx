@@ -17,13 +17,20 @@ export default async function DashboardLayout({
   if (!session?.user) {
     redirect("/auth/sign-in");
   }
+
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset className="flex-col">
-        <Header />
-        <main className="flex-1 p-6">{children}</main>
-      </SidebarInset>
+      <div className="flex min-h-screen w-full bg-secondary/10">
+        <AppSidebar />
+        <SidebarInset className="flex flex-col bg-transparent">
+          <Header />
+          <main className="flex-1 px-8 py-10 lg:px-12">
+            <div className="mx-auto w-full">
+              {children}
+            </div>
+          </main>
+        </SidebarInset>
+      </div>
     </SidebarProvider>
   );
 }

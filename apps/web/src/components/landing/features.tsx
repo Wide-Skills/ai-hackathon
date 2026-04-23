@@ -113,7 +113,7 @@ export const Features: React.FC = () => {
     <section className="py-[100px] bg-background border-y border-border">
       <div className="container-tight">
         <div className="mb-16 max-w-[800px]">
-          <h2 className="text-foreground font-display mb-5 text-[32px] md:text-[44px] font-light leading-[1.1] tracking-[-0.03em]">
+          <h2 className="text-foreground font-display mb-5 text-[32px] md:text-display-section font-light leading-[1.1] tracking-[-0.03em]">
             Precision Screening for <br />
             <span className="text-muted-foreground">modern recruiters.</span>
           </h2>
@@ -133,7 +133,7 @@ export const Features: React.FC = () => {
           >
             <RankingPreview />
             <div className="relative z-10 max-w-[400px]">
-              <h3 className="text-foreground text-[24px] font-light font-display tracking-tight mb-4">Explainable AI Ranking</h3>
+              <h3 className="text-foreground text-display-card font-light font-display tracking-tight mb-4">Explainable AI Ranking</h3>
               <p className="text-muted-foreground text-[15px] leading-relaxed tracking-[0.1px]">
                 Our platform provides natural-language justifications for every ranking. 
                 Understand the "why" behind every shortlist with reasoning.
@@ -150,7 +150,7 @@ export const Features: React.FC = () => {
           >
             <ModelPreview />
             <div className="relative z-10 pt-6">
-              <h3 className="text-foreground text-[18px] font-light font-display tracking-tight mb-2.5">Multi-Model Analysis</h3>
+              <h3 className="text-foreground text-display-card font-light font-display tracking-tight mb-2.5">Multi-Model Analysis</h3>
               <p className="text-muted-foreground text-[14px] leading-relaxed tracking-[0.05px]">
                 Leveraging Gemini 1.5 Pro to analyze candidate profiles against job requirements.
               </p>
@@ -166,7 +166,7 @@ export const Features: React.FC = () => {
           >
             <ParsingPreview />
             <div className="relative z-10 pt-6">
-              <h3 className="text-foreground text-[18px] font-light font-display tracking-tight mb-2.5">Unstructured Parsing</h3>
+              <h3 className="text-foreground text-display-card font-light font-display tracking-tight mb-2.5">Unstructured Parsing</h3>
               <p className="text-muted-foreground text-[14px] leading-relaxed tracking-[0.05px]">
                 Extract and normalize skills from messy PDFs, spreadsheets, and external resumes.
               </p>
@@ -182,7 +182,7 @@ export const Features: React.FC = () => {
           >
             <IngestionPreview />
             <div className="relative z-10 pt-6">
-              <h3 className="text-foreground text-[18px] font-light font-display tracking-tight mb-2.5">Unified Ingestion</h3>
+              <h3 className="text-foreground text-display-card font-light font-display tracking-tight mb-2.5">Unified Ingestion</h3>
               <p className="text-muted-foreground text-[14px] leading-relaxed tracking-[0.05px]">
                 Sync data from your internal platform or upload external job board data in one click.
               </p>
@@ -198,7 +198,7 @@ export const Features: React.FC = () => {
           >
              <DashboardPreview />
              <div className="flex-1 relative z-10">
-                <h3 className="text-foreground text-[24px] font-light font-display tracking-tight mb-4">Recruiter Dashboard</h3>
+                <h3 className="text-foreground text-display-card font-light font-display tracking-tight mb-4">Recruiter Dashboard</h3>
                 <p className="text-muted-foreground text-[15px] leading-relaxed tracking-[0.1px] max-w-[320px]">
                   A high-fidelity interface designed for decision-makers. Manage postings and visualize shortlists.
                 </p>

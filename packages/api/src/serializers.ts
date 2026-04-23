@@ -30,7 +30,7 @@ function stringifyId(value: unknown) {
 export function serializeApplicant(doc: MongoDocument<ApplicantDocument>) {
   const applicant = doc.toObject();
 
-  return ApplicantSchema.parse({
+  const result = ApplicantSchema.safeParse({
     ...applicant,
     id: stringifyId(applicant._id),
     jobId: stringifyId(applicant.jobId),
@@ -43,6 +43,14 @@ export function serializeApplicant(doc: MongoDocument<ApplicantDocument>) {
         }
       : undefined,
   });
+
+  if (!result.success) {
+    console.error("Failed to parse applicant:", result.error.format());
+    console.error("Applicant data:", JSON.stringify(applicant, null, 2));
+    throw result.error;
+  }
+
+  return result.data;
 }
 
 export function serializeJob(doc: MongoDocument<JobDocument>) {

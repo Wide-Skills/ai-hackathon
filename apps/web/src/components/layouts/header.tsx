@@ -5,7 +5,7 @@ import type { Route } from "next";
 import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { setCreateModalOpen } from "@/store/slices/jobsSlice";
 
 const pageInfo: Record<
@@ -34,6 +34,10 @@ const pageInfo: Record<
     title: "AI Screening",
     description: "Automated AI-powered candidate analysis",
   },
+  "/dashboard/analytics": {
+    title: "Talent Analytics",
+    description: "Deep insights into your recruitment performance",
+  },
   "/dashboard/settings": {
     title: "Settings",
     description: "Configure your workspace",
@@ -51,35 +55,38 @@ export default function Header() {
   const info = currentPage?.[1] ?? { title: "Dashboard", description: "" };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-border border-b bg-background/80 px-6 backdrop-blur-sm">
+    <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-b border-border bg-background/60 px-8 backdrop-blur-md">
       <div>
-        <h1 className="font-bold text-foreground text-lg leading-none">
+        <h1 className="font-display text-[22px] font-light text-foreground tracking-tight leading-none">
           {info.title}
         </h1>
         {info.description && (
-          <p className="mt-0.5 text-muted-foreground text-xs">
+          <p className="mt-1.5 text-muted-foreground text-[11px] font-bold uppercase tracking-[0.15em]">
             {info.description}
           </p>
         )}
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="relative hidden md:block">
-          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search candidates, jobs..."
-            className="h-9 w-64 rounded-lg border-border bg-muted pl-9 text-sm focus-visible:ring-ring"
-          />
+      <div className="flex items-center gap-6">
+        <div className="relative hidden md:block w-72">
+          <InputGroup className="h-10 rounded-full border-border bg-foreground/[0.01] focus-within:ring-info/20 px-1 overflow-hidden shadow-sm">
+            <InputGroupAddon align="inline-start" className="pl-4">
+              <Search className="h-3.5 w-3.5 text-muted-foreground/40" />
+            </InputGroupAddon>
+            <InputGroupInput
+              placeholder="Search talent pool..."
+              className="text-[14px]"
+            />
+          </InputGroup>
         </div>
 
-        <button className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background transition-colors hover:bg-muted">
+        <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition-all hover:bg-secondary active:scale-[0.95] shadow-sm">
           <Bell className="h-4 w-4 text-muted-foreground" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary ring-2 ring-background" />
+          <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-info" />
         </button>
 
         {info.action && (
-          <Button
-            size="sm"
+          <button
             onClick={() => {
               if (
                 info.action?.label === "Post a Job" ||
@@ -88,11 +95,11 @@ export default function Header() {
                 dispatch(setCreateModalOpen(true));
               }
             }}
-            className="fade-in slide-in-from-right-4 h-9 animate-in gap-1.5 rounded-lg bg-primary font-semibold text-primary-foreground text-sm duration-500 hover:bg-primary/90"
+            className="flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-[13px] text-primary-foreground shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <Plus className="h-3.5 w-3.5" />
             {info.action.label}
-          </Button>
+          </button>
         )}
       </div>
     </header>

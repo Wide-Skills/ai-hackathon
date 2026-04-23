@@ -3,13 +3,13 @@ import { ScreeningResultSchema } from "./screening.schema";
 
 export const SkillSchema = z.object({
   name: z.string(),
-  level: z.enum(["Expert", "Advanced", "Intermediate", "Beginner"]),
+  level: z.string(), // Relaxed from enum
   yearsOfExperience: z.number(),
 });
 
 export const LanguageSchema = z.object({
   name: z.string(),
-  proficiency: z.enum(["Native", "Fluent", "Intermediate", "Basic"]),
+  proficiency: z.string(), // Relaxed from enum
 });
 
 export const ExperienceSchema = z.object({
@@ -73,7 +73,7 @@ export const CreateApplicantSchema = z.object({
   projects: z.array(ProjectSchema).default([]),
   availability: z
     .object({
-      status: z.enum(["Available", "Unavailable"]).optional(),
+      status: z.string().optional(),
       type: z.string().optional(),
       startDate: z.string().optional(),
     })
@@ -120,5 +120,5 @@ export type Certification = z.infer<typeof CertificationSchema>;
 export type Project = z.infer<typeof ProjectSchema>;
 
 export type Applicant = z.infer<typeof ApplicantSchema>;
-export type SkillLevel = z.infer<typeof SkillSchema>["level"];
+export type SkillLevel = string; // Updated
 export type ApplicationStatus = z.infer<typeof ApplicationStatusSchema>;

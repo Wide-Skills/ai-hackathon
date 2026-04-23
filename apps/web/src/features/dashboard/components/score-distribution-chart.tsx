@@ -38,17 +38,17 @@ export function ScoreDistributionChart({
   }));
 
   return (
-    <Card className="border-border shadow-sm">
+    <Card className="border-border shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
       <CardHeader className="pb-2">
-        <CardTitle className="font-semibold text-sm">
-          Score Distribution
+        <CardTitle className="font-semibold text-[13px] uppercase tracking-wider text-foreground/70">
+          Match Distribution
         </CardTitle>
-        <p className="text-muted-foreground text-xs">
-          Match scores across all screened candidates
+        <p className="text-muted-foreground text-xs uppercase tracking-widest font-bold opacity-60">
+          Neural match scores across candidate pool
         </p>
       </CardHeader>
       <CardContent>
-        <div className="h-48">
+        <div className="h-48 mt-6">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} barSize={32}>
               <CartesianGrid
@@ -58,12 +58,13 @@ export function ScoreDistributionChart({
               />
               <XAxis
                 dataKey="range"
-                tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 700 }}
                 axisLine={false}
                 tickLine={false}
+                dy={10}
               />
               <YAxis
-                tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 700 }}
                 axisLine={false}
                 tickLine={false}
                 allowDecimals={false}
@@ -72,17 +73,20 @@ export function ScoreDistributionChart({
                 contentStyle={{
                   background: "var(--color-card)",
                   border: "1px solid var(--color-border)",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  borderRadius: "12px",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
+                  padding: "10px 14px"
                 }}
-                cursor={{ fill: "var(--color-muted)", opacity: 0.3 }}
+                cursor={{ fill: "var(--color-secondary)", opacity: 0.4 }}
               />
               <Bar
                 dataKey="count"
-                fill="var(--color-primary)"
-                radius={[6, 6, 0, 0]}
-                name="Candidates"
+                fill="var(--color-info)"
+                fillOpacity={0.6}
+                radius={[4, 4, 0, 0]}
+                name="Experts"
               />
             </BarChart>
           </ResponsiveContainer>

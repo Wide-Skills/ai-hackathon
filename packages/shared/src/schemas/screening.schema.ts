@@ -1,11 +1,6 @@
 import { z } from "zod";
 
-export const ScreeningRecommendationSchema = z.enum([
-  "Strongly Recommend",
-  "Recommend",
-  "Consider",
-  "Not Recommended",
-]);
+export const ScreeningRecommendationSchema = z.string();
 
 export const ScreeningSkillBreakdownSchema = z.object({
   skill: z.string(),
@@ -27,6 +22,4 @@ export const ScreeningResultSchema = z.object({
 });
 
 export type ScreeningResult = z.infer<typeof ScreeningResultSchema>;
-export type ScreeningRecommendation = z.infer<
-  typeof ScreeningRecommendationSchema
->;
+export type ScreeningRecommendation = string;

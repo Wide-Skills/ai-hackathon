@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  BrainCircuit,
   BriefcaseIcon,
   LayoutDashboardIcon,
   Settings2Icon,
   SparklesIcon,
   UsersIcon,
+  BarChart3Icon,
 } from "lucide-react";
 import type { Route } from "next";
 import type * as React from "react";
@@ -50,6 +50,11 @@ const navItems: Array<{
     icon: <SparklesIcon />,
   },
   {
+    title: "Analytics",
+    url: "/dashboard/analytics",
+    icon: <BarChart3Icon />,
+  },
+  {
     title: "Settings",
     url: "/dashboard/settings",
     icon: <Settings2Icon />,
@@ -66,33 +71,31 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+    <Sidebar collapsible="icon" className="border-r border-border bg-background" {...props}>
+      <SidebarHeader className="pt-6 px-4 pb-8">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="hover:bg-transparent active:bg-transparent"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-sidebar-primary-foreground">
-                <BrainCircuit className="size-5 text-white" />
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate bg-gradient-to-r from-primary to-primary/80 bg-clip-text font-semibold text-transparent">
-                  TalentAI
+           
+              <div className="grid flex-1 text-left leading-tight ml-1">
+                <span className="truncate font-display text-[16px] font-light tracking-tight text-foreground uppercase">
+                  Umurava <span className="text-muted-foreground italic normal-case">AI</span>
                 </span>
-                <span className="truncate text-muted-foreground text-xs">
-                  Pro Workspace
-                </span>
+              
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="px-2">
         <NavMain items={navItems} />
       </SidebarContent>
-      <SidebarFooter>{session?.user && <NavUser user={user} />}</SidebarFooter>
+      <SidebarFooter className="p-4 mt-auto border-t border-border/50">
+        {session?.user && <NavUser user={user} />}
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

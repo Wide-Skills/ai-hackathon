@@ -1,6 +1,6 @@
 "use client";
 
-import { BadgeCheckIcon, ChevronsUpDownIcon, LogOutIcon } from "lucide-react";
+import { BadgeCheckIcon, ChevronsUpDownIcon, LogOutIcon, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -50,67 +50,69 @@ export function NavUser({
           <DropdownMenuTrigger
             render={
               <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               />
             }
-            className="w-full"
           >
-            <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="rounded-lg">
+            <Avatar className="h-8 w-8 rounded-lg border border-border/50">
+              <AvatarImage src={user.avatar} alt={user.name} className="grayscale" />
+              <AvatarFallback className="rounded-lg bg-secondary text-muted-foreground text-[10px] font-bold">
                 {user.name?.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">{user.name}</span>
-              <span className="truncate text-muted-foreground text-xs">
+            <div className="grid flex-1 text-left leading-tight ml-2">
+              <span className="truncate text-[13px] font-bold text-foreground tracking-tight">{user.name}</span>
+              <span className="truncate text-muted-foreground text-[11px] font-medium tracking-tight">
                 {user.email}
               </span>
             </div>
-            <ChevronsUpDownIcon className="ml-auto size-4" />
+            <ChevronsUpDownIcon className="ml-auto size-3.5 text-muted-foreground/40" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className=""
             side={isMobile ? "bottom" : "right"}
             align="end"
-            sideOffset={4}
+            sideOffset={12}
           >
-            <DropdownMenuGroup>
-              <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className="rounded-lg">
-                      {user.name?.charAt(0) || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{user.name}</span>
-                    <span className="truncate text-muted-foreground text-xs">
-                      {user.email}
-                    </span>
-                  </div>
+           <DropdownMenuGroup>
+             <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center gap-3 px-3 py-4 text-left border-b border-border/40 mb-2">
+                <Avatar className="h-10 w-10 rounded-xl border border-border/50 shadow-sm">
+                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarFallback className="rounded-xl bg-secondary text-muted-foreground text-[12px] font-bold">
+                    {user.name?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left leading-tight">
+                  <span className="truncate text-[14px] font-bold text-foreground tracking-tight">{user.name}</span>
+                  <span className="truncate text-muted-foreground text-[12px] font-medium tracking-tight">
+                    {user.email}
+                  </span>
                 </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <Link href="/dashboard/settings" passHref legacyBehavior>
-                  <DropdownMenuItem render={<a className="cursor-pointer" />}>
-                    <BadgeCheckIcon className="mr-2 size-4" />
-                    Account
-                  </DropdownMenuItem>
-                </Link>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="cursor-pointer text-destructive focus:text-destructive"
-              >
-                <LogOutIcon className="mr-2 size-4" />
-                Log out
+              </div>
+            </DropdownMenuLabel>
+            
+            <DropdownMenuGroup>
+              <Link href="/dashboard/settings" passHref>
+                <DropdownMenuItem>
+                  <BadgeCheckIcon />
+                  Account Settings
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem>
+                <Sparkles  />
+                Plan Details
               </DropdownMenuItem>
             </DropdownMenuGroup>
+            
+            <DropdownMenuSeparator className="my-0.5 bg-border/40" />
+            
+            <DropdownMenuItem
+              onClick={handleLogout}
+            >
+              <LogOutIcon />
+              Sign out
+            </DropdownMenuItem>
+           </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

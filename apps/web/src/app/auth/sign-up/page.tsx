@@ -1,7 +1,7 @@
 "use client";
 
-import SignUpForm from "@/features/auth/components/sign-up-form";
+import { AuthView } from "@/features/auth/components/auth-view";
 
 export default function SignUpPage() {
-  return <SignUpForm />;
+  return <AuthView />;
 }

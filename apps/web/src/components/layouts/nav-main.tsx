@@ -1,6 +1,9 @@
+"use client";
+
 import { ChevronRightIcon } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Collapsible,
   CollapsibleContent,
@@ -16,6 +19,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
+import React from "react";
 
 export function NavMain({
   items,
@@ -31,20 +36,46 @@ export function NavMain({
     }[];
   }[];
 }) {
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarGroupLabel className="px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 mb-4">
+        Platform
+      </SidebarGroupLabel>
+      <SidebarMenu className="space-y-1">
         {items.map((item) => {
+          const isItemActive = pathname === item.url || (item.url !== '/dashboard' && pathname.startsWith(item.url)) || item.isActive;
+          
           if (!item.items || item.items.length === 0) {
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton
                   tooltip={item.title}
                   render={<Link href={item.url} />}
+                  isActive={isItemActive}
+                  className={cn(
+                    "h-9 px-4 transition-all duration-200 rounded-lg relative group overflow-hidden",
+                    "hover:bg-transparent active:bg-transparent",
+                    isItemActive 
+                      ? "text-foreground font-semibold" 
+                      : "text-muted-foreground/60 hover:text-foreground/90"
+                  )}
                 >
-                  {item.icon}
-                  <span>{item.title}</span>
+                  <div className={cn(
+                    "flex-shrink-0 transition-colors mr-3",
+                    isItemActive ? "text-primary" : "text-muted-foreground/30 group-hover:text-muted-foreground/60"
+                  )}>
+                    {React.isValidElement(item.icon) 
+                      ? React.cloneElement(item.icon as React.ReactElement<any>, { className: "size-4.5 stroke-[1.5px]" })
+                      : item.icon
+                    }
+                  </div>
+                  <span className="text-[14px] tracking-tight">{item.title}</span>
+                  
+                  {isItemActive && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-primary rounded-r-full" />
+                  )}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             );
@@ -58,18 +89,29 @@ export function NavMain({
               render={<SidebarMenuItem />}
             >
               <CollapsibleTrigger
-                render={<SidebarMenuButton tooltip={item.title} />}
+                render={
+                  <SidebarMenuButton 
+                    tooltip={item.title} 
+                    className="h-9 px-4 text-muted-foreground/60 hover:text-foreground/90 hover:bg-transparent"
+                  />
+                }
               >
-                {item.icon}
-                <span>{item.title}</span>
-                <ChevronRightIcon className="ml-auto transition-transform duration-200 group-data-open/collapsible:rotate-90" />
+                <div className="text-muted-foreground/30 group-hover:text-muted-foreground/60 mr-3">
+                  {React.isValidElement(item.icon)
+                    ? React.cloneElement(item.icon as React.ReactElement<any>, { className: "size-4.5 stroke-[1.5px]" })
+                    : item.icon
+                  }
+                </div>
+                <span className="text-[14px] tracking-tight">{item.title}</span>
+                <ChevronRightIcon className="ml-auto size-3.5 transition-transform duration-200 group-data-open/collapsible:rotate-90 opacity-30" />
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <SidebarMenuSub>
+                <SidebarMenuSub className="ml-4 border-l border-border/40 py-1.5 space-y-1">
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton
                         render={<Link href={subItem.url} />}
+                        className="h-8 text-[13px] text-muted-foreground/50 hover:text-foreground transition-colors"
                       >
                         <span>{subItem.title}</span>
                       </SidebarMenuSubButton>

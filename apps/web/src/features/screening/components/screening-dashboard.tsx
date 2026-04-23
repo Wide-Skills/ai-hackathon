@@ -14,8 +14,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -23,10 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 import { ScreeningCard } from "./screening-card";
+import { StatCard } from "@/features/dashboard/components/stat-card";
+import { motion } from "framer-motion";
 
 export function ScreeningDashboard() {
   const [selectedJob, setSelectedJob] = useState<string>("all");
@@ -63,60 +62,38 @@ export function ScreeningDashboard() {
   );
 
   const distribution = {
-    "Strongly Recommend": filtered.filter(
-      (a) => a.screening?.recommendation === "Strongly Recommend",
-    ).length,
-    Recommend: filtered.filter(
-      (a) => a.screening?.recommendation === "Recommend",
-    ).length,
-    Consider: filtered.filter((a) => a.screening?.recommendation === "Consider")
-      .length,
-    "Not Recommended": filtered.filter(
-      (a) => a.screening?.recommendation === "Not Recommended",
-    ).length,
+    "Strongly Recommend": filtered.filter((a) => a.screening?.recommendation === "Strongly Recommend").length,
+    Recommend: filtered.filter((a) => a.screening?.recommendation === "Recommend").length,
+    Consider: filtered.filter((a) => a.screening?.recommendation === "Consider").length,
+    "Not Recommended": filtered.filter((a) => a.screening?.recommendation === "Not Recommended").length,
   };
 
   const handleRunScreening = async () => {
-    const pendingToScreen =
-      selectedJob === "all"
-        ? pending
-        : pending.filter((a) => a.jobId === selectedJob);
-
+    const pendingToScreen = selectedJob === "all" ? pending : pending.filter((a) => a.jobId === selectedJob);
     if (pendingToScreen.length === 0) {
       toast.info("No pending candidates to screen.");
       return;
     }
-
     setRunning(true);
     setProgress(0);
-
     let completed = 0;
     const errors: string[] = [];
-
     for (const applicant of pendingToScreen) {
       try {
-        await screenMutation.mutateAsync({
-          applicantId: applicant.id,
-          jobId: applicant.jobId,
-        });
+        await screenMutation.mutateAsync({ applicantId: applicant.id, jobId: applicant.jobId });
         completed++;
         setProgress(Math.round((completed / pendingToScreen.length) * 100));
       } catch {
         errors.push(`${applicant.firstName} ${applicant.lastName}`);
       }
     }
-
     await queryClient.invalidateQueries({ queryKey: [["applicants"]] });
     await queryClient.invalidateQueries({ queryKey: [["jobs"]] });
     await queryClient.invalidateQueries({ queryKey: [["screenings"]] });
-
     setRunning(false);
     setProgress(0);
-
     if (errors.length > 0) {
-      toast.warning(
-        `Screened ${completed} candidates. ${errors.length} failed.`,
-      );
+      toast.warning(`Screened ${completed} candidates. ${errors.length} failed.`);
     } else {
       toast.success(`AI screening complete! Analyzed ${completed} candidates.`);
     }
@@ -124,236 +101,129 @@ export function ScreeningDashboard() {
 
   if (appsLoading || jobsLoading) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6">
-        <Skeleton className="h-32 w-full rounded-xl" />
-        <Skeleton className="h-96 w-full rounded-xl" />
+      <div className="w-full space-y-12 animate-pulse">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+           {[1,2,3,4].map(i => <div key={i} className="h-32 bg-secondary/30 rounded-xl" />)}
+        </div>
+        <div className="h-[600px] w-full bg-secondary/30 rounded-xl" />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Card className="border-border shadow-sm">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-muted-foreground text-xs">
-                  Total Screened
-                </p>
-                <p className="mt-0.5 font-black text-2xl text-foreground">
-                  {screened.length}
-                </p>
-              </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
-                <Cpu className="h-4.5 w-4.5 text-primary" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border shadow-sm">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-muted-foreground text-xs">
-                  Avg Match Score
-                </p>
-                <p className="mt-0.5 font-black text-2xl text-primary">
-                  {avgScore}%
-                </p>
-              </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
-                <BarChart3 className="h-4.5 w-4.5 text-primary" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border shadow-sm">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-muted-foreground text-xs">
-                  Strong Matches
-                </p>
-                <p className="mt-0.5 font-black text-2xl text-success">
-                  {
-                    filtered.filter((a) => (a.screening?.matchScore ?? 0) >= 85)
-                      .length
-                  }
-                </p>
-              </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-success/10">
-                <Star className="h-4.5 w-4.5 text-success" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border shadow-sm">
-          <CardContent className="p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-muted-foreground text-xs">
-                  Pending Queue
-                </p>
-                <p className="mt-0.5 font-black text-2xl text-warning">
-                  {pending.length}
-                </p>
-              </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-warning/10">
-                <Clock className="h-4.5 w-4.5 text-warning" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+    <div className="w-full space-y-12 pb-20">
+      {/* Top Metrics row */}
+      <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
+        <StatCard label="Total Screened" value={screened.length} sublabel="Overall throughput" icon={Cpu} color="bg-secondary/50 text-foreground/40" />
+        <StatCard label="Avg Match Score" value={`${avgScore}%`} sublabel="Model quality" icon={BarChart3} color="bg-info/10 text-info" />
+        <StatCard label="Strong Matches" value={filtered.filter((a) => (a.screening?.matchScore ?? 0) >= 85).length} sublabel="Top candidates" icon={Star} color="bg-success/10 text-success" />
+        <StatCard label="Pending Queue" value={pending.length} sublabel="Awaiting analysis" icon={Clock} color="bg-warning/10 text-warning" />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-        <div className="space-y-5 lg:col-span-1">
-          <Card className="overflow-hidden border-border shadow-sm">
-            <div className="bg-gradient-to-br from-foreground to-foreground/90 p-5">
-              <div className="mb-3 flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-primary/70" />
-                <p className="font-semibold text-sm text-white">AI Engine</p>
-                <span className="ml-auto rounded-full border border-success/20 bg-success/10 px-2 py-0.5 font-semibold text-[10px] text-success/80">
-                  Live
-                </span>
-              </div>
-              <p className="mb-4 text-muted-foreground/70 text-xs leading-relaxed">
-                Powered by{" "}
-                <span className="font-semibold text-primary/70">
-                  Gemini 2.5 Pro
-                </span>
-                . Analyzes skills, experience, projects, and cultural fit
-                against job requirements.
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-4 items-start">
+        {/* Control Sidebar */}
+        <div className="space-y-10 lg:col-span-1">
+          <div className="bg-background rounded-xl border border-border overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.01)] group">
+            <div className="px-8 py-5 border-b border-border/50 bg-secondary/[0.03] flex items-center justify-between">
+              <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Engine</h3>
+              <Sparkles className="h-3.5 w-3.5 text-info opacity-30 group-hover:opacity-100 transition-opacity" />
+            </div>
+            <div className="p-8">
+              <p className="text-muted-foreground text-[13px] leading-relaxed mb-10 font-medium tracking-tight">
+                Powered by Gemini 1.5 Pro. Analyzes profile expertise with surgical precision.
               </p>
-              <Button
+
+              <button
                 onClick={handleRunScreening}
                 disabled={running || pending.length === 0}
-                className="h-9 w-full gap-2 rounded-lg bg-primary font-semibold text-sm text-white hover:bg-primary/90"
+                className="w-full h-11 rounded-full bg-primary text-primary-foreground text-[12px] font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-sm disabled:opacity-40"
               >
                 {running ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Screening...{" "}
-                    {progress}%
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" /> {progress}%
                   </>
                 ) : (
                   <>
-                    <Play className="h-4 w-4" /> Screen {pending.length} Pending
+                    <Play className="h-3.5 w-3.5" /> Screen Pending
                   </>
                 )}
-              </Button>
+              </button>
               {running && (
-                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10">
-                  <div
-                    className="h-full rounded-full bg-primary transition-all duration-500"
-                    style={{ width: `${progress}%` }}
+                <div className="mt-6 h-1 w-full bg-secondary rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    className="h-full bg-primary"
                   />
                 </div>
               )}
             </div>
-          </Card>
+          </div>
 
-          <Card className="border-border shadow-sm">
-            <CardHeader className="pb-2">
-              <CardTitle className="font-semibold text-foreground text-sm">
-                Recommendation Split
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 pt-1">
+          <div className="bg-background rounded-xl border border-border overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
+            <div className="px-8 py-5 border-b border-border/50 bg-secondary/[0.03]">
+              <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Split</h3>
+            </div>
+            <div className="p-8 space-y-6">
               {Object.entries(distribution).map(([rec, count]) => {
                 const colors: Record<string, string> = {
-                  "Strongly Recommend": "bg-success",
-                  Recommend: "bg-primary",
-                  Consider: "bg-warning",
-                  "Not Recommended": "bg-destructive",
+                  "Strongly Recommend": "bg-success/40",
+                  Recommend: "bg-info/40",
+                  Consider: "bg-warning/40",
+                  "Not Recommended": "bg-destructive/40",
                 };
-                const dotColor = colors[rec] || "bg-muted-foreground";
-                const pct =
-                  filtered.length > 0
-                    ? Math.round((count / filtered.length) * 100)
-                    : 0;
+                const pct = filtered.length > 0 ? Math.round((count / filtered.length) * 100) : 0;
                 return (
-                  <div key={rec}>
-                    <div className="mb-1 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={cn("h-2 w-2 rounded-full", dotColor)}
-                        />
-                        <span className="font-medium text-muted-foreground text-xs">
-                          {rec === "Strongly Recommend"
-                            ? "Strong"
-                            : rec === "Not Recommended"
-                              ? "Not Rec."
-                              : rec}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-foreground text-xs tabular-nums">
-                          {count}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground/70">
-                          ({pct}%)
-                        </span>
-                      </div>
+                  <div key={rec} className="space-y-2">
+                    <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                      <span>{rec.split(' ')[0]}</span>
+                      <span className="text-foreground/70">{count}</span>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className={cn("h-full rounded-full", dotColor)}
-                        style={{ width: `${pct}%` }}
-                      />
+                    <div className="h-1 w-full bg-secondary rounded-full overflow-hidden">
+                       <div className={cn("h-full rounded-full", colors[rec])} style={{ width: `${pct}%` }} />
                     </div>
                   </div>
                 );
               })}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card className="border-border shadow-sm">
-            <CardContent className="p-5">
-              <h3 className="mb-3 font-semibold text-foreground text-sm">
-                Filter by Job
-              </h3>
-              <Select
-                value={selectedJob}
-                onValueChange={(value) => setSelectedJob(value ?? "all")}
-              >
-                <SelectTrigger className="h-9 rounded-lg border-border text-sm">
+          <div className="bg-background rounded-xl border border-border overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
+            <div className="px-8 py-5 border-b border-border/50 bg-secondary/[0.03]">
+              <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Focus</h3>
+            </div>
+            <div className="p-8">
+              <Select value={selectedJob} onValueChange={(value) => setSelectedJob(value ?? "all")}>
+                <SelectTrigger className="h-10 rounded-lg border-border bg-background shadow-sm text-[13px] font-medium text-foreground/70">
                   <SelectValue placeholder="All Jobs" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Jobs</SelectItem>
+                  <SelectItem value="all">All Pipelines</SelectItem>
                   {jobs.map((j) => (
-                    <SelectItem key={j.id} value={j.id}>
-                      {j.title}
-                    </SelectItem>
+                    <SelectItem key={j.id} value={j.id}>{j.title}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
+        {/* Talent List */}
         <div className="lg:col-span-3">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-8 flex items-end justify-between border-b border-border/50 pb-8">
             <div>
-              <h2 className="font-bold text-base text-foreground">
-                Screened Candidates
-              </h2>
-              <p className="mt-0.5 text-muted-foreground text-xs">
-                Ranked by AI match score, highest first
-              </p>
+              <h2 className="font-display text-[24px] font-light text-foreground uppercase tracking-[0.1em]">Screened Talent</h2>
+              <p className="text-[13px] text-muted-foreground font-medium mt-1 uppercase tracking-wider">Ranked by match logic • {filtered.length} Results</p>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 gap-1.5 border-border text-muted-foreground text-xs"
+            <button
+              onClick={() => queryClient.invalidateQueries({ queryKey: [["applicants"]] })}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background transition-all hover:bg-secondary active:scale-[0.95] shadow-sm text-muted-foreground/60"
             >
-              <RefreshCw className="h-3.5 w-3.5" />
-              Refresh
-            </Button>
+              <RefreshCw className="h-4 w-4" />
+            </button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {filtered.map((applicant) => {
               const job = jobs.find((j) => j.id === applicant.jobId);
               return (
@@ -364,17 +234,17 @@ export function ScreeningDashboard() {
                 />
               );
             })}
-          </div>
 
-          {filtered.length === 0 && (
-            <div className="py-16 text-center text-muted-foreground/70">
-              <BrainCircuit className="mx-auto mb-3 h-10 w-10 opacity-40" />
-              <p className="font-medium">No screened candidates</p>
-              <p className="mt-1 text-sm">
-                Run the AI screening engine to get started
-              </p>
-            </div>
-          )}
+            {filtered.length === 0 && (
+              <div className="py-24 text-center rounded-xl border border-dashed border-border bg-secondary/10">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-secondary mb-4 text-muted-foreground/40">
+                   <BrainCircuit className="h-6 w-6" />
+                </div>
+                <p className="text-[14px] font-bold text-foreground uppercase tracking-widest">No screening results</p>
+                <p className="mt-1 text-[13px] text-muted-foreground font-medium tracking-tight">Initiate the AI engine to evaluate pending candidates</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

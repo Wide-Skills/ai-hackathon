@@ -19,7 +19,6 @@ interface ScreeningTrendChartProps {
 export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
   const screened = applicants.filter((a) => a.screening);
 
-  // Group by date
   const grouped = screened.reduce(
     (acc, a) => {
       const date = new Date(a.appliedAt).toLocaleDateString("en-US", {
@@ -35,20 +34,20 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
   const data = Object.entries(grouped)
     .map(([date, count]) => ({ date, count }))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .slice(-7); // Last 7 days with data
+    .slice(-7);
 
   return (
-    <Card className="border-border shadow-sm">
+    <Card className="border-border shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
       <CardHeader className="pb-2">
-        <CardTitle className="font-semibold text-sm">
-          Screening Activity
+        <CardTitle className="font-semibold text-[13px] uppercase tracking-wider text-foreground/70">
+          Neural Velocity
         </CardTitle>
-        <p className="text-muted-foreground text-xs">
-          Candidates screened over the last 7 active days
+        <p className="text-muted-foreground text-xs uppercase tracking-widest font-bold opacity-60">
+          Throughput over last 7 active cycles
         </p>
       </CardHeader>
       <CardContent>
-        <div className="h-48">
+        <div className="h-48 mt-6">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <defs>
@@ -56,7 +55,7 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
                   <stop
                     offset="5%"
                     stopColor="var(--color-primary)"
-                    stopOpacity={0.3}
+                    stopOpacity={0.1}
                   />
                   <stop
                     offset="95%"
@@ -72,12 +71,13 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
               />
               <XAxis
                 dataKey="date"
-                tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 700 }}
                 axisLine={false}
                 tickLine={false}
+                dy={10}
               />
               <YAxis
-                tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
+                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 700 }}
                 axisLine={false}
                 tickLine={false}
                 allowDecimals={false}
@@ -86,9 +86,11 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
                 contentStyle={{
                   background: "var(--color-card)",
                   border: "1px solid var(--color-border)",
-                  borderRadius: "8px",
-                  fontSize: "12px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  borderRadius: "12px",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
+                  padding: "10px 14px"
                 }}
               />
               <Area
@@ -97,8 +99,8 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
                 stroke="var(--color-primary)"
                 fillOpacity={1}
                 fill="url(#colorCount)"
-                strokeWidth={2}
-                name="Candidates"
+                strokeWidth={1.5}
+                name="Experts"
               />
             </AreaChart>
           </ResponsiveContainer>

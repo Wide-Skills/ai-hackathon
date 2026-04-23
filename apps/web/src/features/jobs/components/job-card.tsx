@@ -2,38 +2,31 @@ import type { Job, JobStatus } from "@ai-hackathon/shared";
 import {
   Briefcase,
   Building,
-  Calendar,
   ChevronRight,
-  DollarSign,
   Globe,
   MapPin,
-  MoveVertical as MoreVertical,
+  MoreHorizontal,
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const statusConfig: Record<
   JobStatus,
-  { label: string; color: string; dot: string }
+  { label: string; color: string }
 > = {
   active: {
     label: "Active",
-    color: "bg-success/10 text-success border-success/20",
-    dot: "bg-success",
+    color: "text-success-foreground bg-success/5 border-success/10",
   },
   draft: {
     label: "Draft",
-    color: "bg-warning/10 text-warning border-warning/20",
-    dot: "bg-warning",
+    color: "text-warning-foreground bg-warning/5 border-warning/10",
   },
   closed: {
     label: "Closed",
-    color: "bg-muted text-muted-foreground border-border",
-    dot: "bg-muted-foreground/40",
+    color: "text-muted-foreground bg-secondary border-border/50",
   },
 };
 
@@ -52,143 +45,112 @@ export function JobCard({ job }: JobCardProps) {
   return (
     <div
       onClick={() => router.push(`/dashboard/jobs/${job.id}` as Route)}
-      className="group block cursor-pointer"
+      className="group bg-background rounded-lg border border-border p-8 cursor-pointer transition-all hover:border-foreground/10 shadow-[0_1px_3px_rgba(0,0,0,0.01)] relative overflow-hidden"
     >
-      <Card className="border-border shadow-sm transition-all duration-200 hover:border-primary/20 hover:shadow-md">
-        <CardContent className="p-6">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex min-w-0 flex-1 items-start gap-3">
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary/10">
-                <Briefcase className="h-5 w-5 text-primary" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-bold text-base text-foreground transition-colors group-hover:text-primary">
+      <div className="flex items-start justify-between gap-6">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-secondary/50 border border-border/50 text-foreground/40">
+              <Briefcase className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+               <div className="flex items-center gap-3 flex-wrap">
+                  <h3 className="font-display text-[22px] font-light text-foreground tracking-tight leading-none">
                     {job.title}
                   </h3>
-                  <span
-                    className={cn(
-                      "flex items-center gap-1 rounded-full border px-2 py-0.5 font-semibold text-[10px]",
-                      sc.color,
-                    )}
-                  >
-                    <span className={cn("h-1.5 w-1.5 rounded-full", sc.dot)} />
+                  <span className={cn(
+                    "px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest border",
+                    sc.color
+                  )}>
                     {sc.label}
                   </span>
-                </div>
-                <div className="mt-1 flex flex-wrap items-center gap-4">
-                  <span className="flex items-center gap-1 text-muted-foreground text-xs">
-                    <Building className="h-3 w-3" />
+               </div>
+               <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 opacity-60">
+                  <span className="flex items-center gap-1.5 text-[12px] font-medium text-foreground tracking-tight">
+                    <Building className="h-3.5 w-3.5" />
                     {job.department}
                   </span>
-                  <span className="flex items-center gap-1 text-muted-foreground text-xs">
-                    <MapPin className="h-3 w-3" />
+                  <span className="flex items-center gap-1.5 text-[12px] font-medium text-foreground tracking-tight">
+                    <MapPin className="h-3.5 w-3.5" />
                     {job.location}
                   </span>
-                  <span className="flex items-center gap-1 text-muted-foreground text-xs">
-                    <Globe className="h-3 w-3" />
+                  <span className="flex items-center gap-1.5 text-[12px] font-medium text-foreground tracking-tight">
+                    <Globe className="h-3.5 w-3.5" />
                     {job.type}
                   </span>
-                  {job.salaryMin && (
-                    <span className="flex items-center gap-1 text-muted-foreground text-xs">
-                      <DollarSign className="h-3 w-3" />
-                      {job.salaryMin.toLocaleString()} –{" "}
-                      {job.salaryMax?.toLocaleString()} {job.currency}/mo
-                    </span>
-                  )}
-                </div>
-              </div>
+               </div>
             </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              className="flex-shrink-0 rounded-lg p-1.5 text-muted-foreground/70 transition-colors hover:bg-muted hover:text-muted-foreground"
-            >
-              <MoreVertical className="h-4 w-4" />
-            </button>
           </div>
 
-          <p className="mt-4 line-clamp-2 text-muted-foreground text-sm leading-relaxed">
+          <p className="mt-6 line-clamp-2 text-muted-foreground text-[14px] leading-relaxed max-w-[800px] font-medium tracking-tight">
             {job.description}
           </p>
 
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {job.skills.map((skill) => (
+          <div className="mt-6 flex flex-wrap gap-2">
+            {job.skills.slice(0, 4).map((skill) => (
               <span
                 key={skill}
-                className="rounded-md bg-muted px-2 py-0.5 font-medium text-muted-foreground text-xs"
+                className="rounded-lg bg-secondary/60 border border-border/50 px-3 py-1 text-[11px] font-bold text-foreground/60 uppercase tracking-wider"
               >
                 {skill}
               </span>
             ))}
+            {job.skills.length > 4 && (
+              <span className="text-[11px] font-bold text-muted-foreground/40 self-center uppercase tracking-widest ml-1">
+                + {job.skills.length - 4} more
+              </span>
+            )}
           </div>
+        </div>
 
-          <div className="mt-5 flex items-center justify-between gap-4 border-border/50 border-t pt-4">
-            <div className="flex items-center gap-5">
-              <div className="text-center">
-                <p className="font-bold text-foreground text-lg">
-                  {job.applicantsCount}
-                </p>
-                <p className="text-[10px] text-muted-foreground/70">Applied</p>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-lg text-primary">
-                  {job.screenedCount}
-                </p>
-                <p className="text-[10px] text-muted-foreground/70">Screened</p>
-              </div>
-              <div className="text-center">
-                <p className="font-bold text-lg text-success">
-                  {job.shortlistedCount}
-                </p>
-                <p className="text-[10px] text-muted-foreground/70">
-                  Shortlisted
-                </p>
-              </div>
-            </div>
-
-            <div className="max-w-32 flex-1">
-              <div className="mb-1 flex items-center justify-between text-[10px] text-muted-foreground">
-                <span>Screened</span>
-                <span>{screenedPct}%</span>
-              </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${screenedPct}%` }}
-                />
-              </div>
-            </div>
-
-            <Link
-              href={`/dashboard/applicants?job=${job.id}` as Route}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Button
-                size="sm"
-                variant="outline"
-                className="h-8 gap-1.5 border-border font-medium text-xs hover:border-primary/30 hover:bg-primary/10 hover:text-primary"
-              >
-                View Applicants
-                <ChevronRight className="h-3.5 w-3.5" />
-              </Button>
-            </Link>
+        <div className="flex flex-col items-end gap-12">
+          <button
+            onClick={(e) => e.stopPropagation()}
+            className="h-9 w-9 rounded-full hover:bg-secondary flex items-center justify-center transition-colors"
+          >
+            <MoreHorizontal className="h-4 w-4 text-muted-foreground/40" />
+          </button>
+          
+          <div className="text-right">
+             <p className="font-display text-[28px] font-light text-foreground leading-none mb-1.5">{job.applicantsCount}</p>
+             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Candidates</p>
           </div>
+        </div>
+      </div>
 
-          {job.closingDate && (
-            <div className="mt-3 flex items-center gap-1.5 text-muted-foreground/70 text-xs">
-              <Calendar className="h-3.5 w-3.5" />
-              Closes{" "}
-              {new Date(job.closingDate).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
+      <div className="mt-10 pt-8 border-t border-border/40 flex items-center justify-between">
+        <div className="flex items-center gap-10">
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-1.5">Processed</span>
+            <div className="flex items-center gap-2.5">
+               <div className="h-1 w-16 bg-secondary rounded-full overflow-hidden">
+                  <div className="h-full bg-success/40" style={{ width: `${screenedPct}%` }} />
+               </div>
+               <span className="text-[12px] font-bold text-foreground/70">{screenedPct}%</span>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          </div>
+          
+          <div className="flex items-center gap-8 pl-8 border-l border-border/40">
+             <div className="flex flex-col">
+                <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-1">Shortlisted</span>
+                <span className="text-[15px] font-bold text-success-foreground">{job.shortlistedCount}</span>
+             </div>
+             <div className="flex flex-col">
+                <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-1">Pending</span>
+                <span className="text-[15px] font-bold text-foreground/40">{job.applicantsCount - job.screenedCount}</span>
+             </div>
+          </div>
+        </div>
+
+        <Link
+          href={`/dashboard/applicants?job=${job.id}` as Route}
+          onClick={(e) => e.stopPropagation()}
+          className="flex h-10 items-center gap-2 rounded-full bg-secondary/80 border border-border px-5 text-[12px] font-bold uppercase tracking-[0.15em] text-foreground/70 hover:bg-secondary transition-all shadow-[0_1px_3px_rgba(0,0,0,0.01)]"
+        >
+          Manage Pipeline
+          <ChevronRight className="h-3.5 w-3.5 opacity-40" />
+        </Link>
+      </div>
     </div>
   );
 }

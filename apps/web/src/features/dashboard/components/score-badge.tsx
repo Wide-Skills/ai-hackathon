@@ -7,17 +7,17 @@ interface ScoreBadgeProps {
 export function ScoreBadge({ score }: ScoreBadgeProps) {
   const color =
     score >= 85
-      ? "text-success bg-success/10 border-success/20"
+      ? "text-success-foreground bg-success/5 border-success/10"
       : score >= 70
-        ? "text-primary bg-primary/10 border-primary/20"
+        ? "text-info-foreground bg-info/5 border-info/10"
         : score >= 55
-          ? "text-warning bg-warning/10 border-warning/20"
-          : "text-destructive bg-destructive/10 border-destructive/20";
+          ? "text-warning-foreground bg-warning/5 border-warning/10"
+          : "text-destructive-foreground bg-destructive/5 border-destructive/10";
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 font-bold text-xs ${color}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider ${color}`}
     >
-      <Star className="h-3 w-3" />
+      <Star className="h-3 w-3 fill-current opacity-80" />
       {score}%
     </span>
   );

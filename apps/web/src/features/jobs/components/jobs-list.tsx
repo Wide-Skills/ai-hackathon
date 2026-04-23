@@ -1,112 +1,81 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Plus, Search } from "lucide-react";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
-import type { RootState } from "@/store";
-import { setSearchKeyword } from "@/store/slices/jobsSlice";
+import { Plus } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setCreateModalOpen } from "@/store/slices/jobsSlice";
 import { trpc } from "@/utils/trpc";
-import { CreateJobDialog } from "./create-job-dialog";
 import { JobCard } from "./job-card";
-
-const tabs = ["All", "Active", "Draft", "Closed"] as const;
+import { motion } from "framer-motion";
 
 export function JobsList() {
   const dispatch = useDispatch();
-  const search = useSelector((state: RootState) => state.jobs.searchKeyword);
-  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("All");
   const { data: jobs, isLoading } = useQuery(trpc.jobs.list.queryOptions());
-
-  const jobsList = jobs || [];
-
-  const filtered = jobsList.filter((j) => {
-    const matchesTab =
-      activeTab === "All" || j.status === activeTab.toLowerCase();
-    const matchesSearch =
-      j.title.toLowerCase().includes(search.toLowerCase()) ||
-      (j.department ?? "").toLowerCase().includes(search.toLowerCase());
-    return matchesTab && matchesSearch;
-  });
-
-  const counts = {
-    All: jobsList.length,
-    Active: jobsList.filter((j) => j.status === "active").length,
-    Draft: jobsList.filter((j) => j.status === "draft").length,
-    Closed: jobsList.filter((j) => j.status === "closed").length,
-  };
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-7xl space-y-6">
-        <Skeleton className="h-16 w-full rounded-xl" />
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Skeleton className="h-64 w-full rounded-xl" />
-          <Skeleton className="h-64 w-full rounded-xl" />
+      <div className="w-full space-y-12 animate-pulse">
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-48 rounded-lg bg-secondary/30" />
+          ))}
         </div>
       </div>
     );
   }
 
+  const activeJobs = jobs?.filter((j) => j.status === "active") ?? [];
+  const otherJobs = jobs?.filter((j) => j.status !== "active") ?? [];
+
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-1 rounded-xl border border-border bg-foreground p-1 shadow-sm">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={cn(
-                "flex items-center gap-1.5 rounded-lg px-4 py-2 font-medium text-sm transition-all",
-                activeTab === tab
-                  ? "bg-foreground text-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground/80",
-              )}
-            >
-              {tab}
-              <span
-                className={cn(
-                  "rounded-full px-1.5 py-0.5 font-bold text-[10px]",
-                  activeTab === tab
-                    ? "bg-foreground/20 text-foreground"
-                    : "bg-muted text-muted-foreground",
-                )}
-              >
-                {counts[tab]}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground/70" />
-            <Input
-              placeholder="Search jobs..."
-              value={search}
-              onChange={(e) => dispatch(setSearchKeyword(e.target.value))}
-              className="h-9 w-52 rounded-lg border-border bg-foreground pl-9 text-sm focus-visible:ring-primary"
-            />
+    <div className="w-full space-y-16 pb-20">
+      <section>
+        <div className="mb-8 flex items-end justify-between border-b border-border/50 pb-8 px-2">
+          <div>
+            <h2 className="font-display text-display-section font-light text-foreground uppercase tracking-[0.1em]">Active Pipelines</h2>
+            <p className="text-[13px] text-muted-foreground font-medium mt-1 uppercase tracking-wider">Managing {activeJobs.length} open roles</p>
           </div>
-          <CreateJobDialog />
+          <button 
+            onClick={() => dispatch(setCreateModalOpen(true))}
+            className="flex h-11 px-8 rounded-full bg-primary text-primary-foreground text-[12px] font-bold uppercase tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-sm"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Create New Job
+          </button>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {filtered.map((job) => (
-          <JobCard key={job.id} job={job} />
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
-        <div className="py-16 text-center text-muted-foreground/70">
-          <Plus className="mx-auto mb-3 h-10 w-10 opacity-40" />
-          <p className="font-medium">No jobs found</p>
-          <p className="mt-1 text-sm">Try adjusting your search or filters</p>
+        <div className="grid grid-cols-1 gap-4">
+          {activeJobs.length > 0 ? (
+            activeJobs.map((job, i) => (
+              <motion.div
+                key={job.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+              >
+                <JobCard job={job} />
+              </motion.div>
+            ))
+          ) : (
+            <div className="flex py-24 items-center justify-center rounded-lg border border-dashed border-border bg-secondary/5">
+               <p className="text-[13px] text-muted-foreground font-medium uppercase tracking-widest">No active pipelines found</p>
+            </div>
+          )}
         </div>
+      </section>
+
+      {otherJobs.length > 0 && (
+        <section>
+          <div className="mb-8 border-b border-border/50 pb-8 px-2">
+            <h2 className="font-display text-[20px] font-light text-foreground uppercase tracking-[0.1em] opacity-60">Archive</h2>
+            <p className="text-[12px] text-muted-foreground font-medium mt-1 uppercase tracking-wider opacity-60">Completed and draft positions</p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 opacity-50 grayscale-[50%] hover:grayscale-0 transition-all">
+            {otherJobs.map((job) => (
+              <JobCard key={job.id} job={job} />
+            ))}
+          </div>
+        </section>
       )}
     </div>
   );

@@ -16,58 +16,54 @@ interface SkillsRadarChartProps {
 
 export function SkillsRadarChart({ applicants }: SkillsRadarChartProps) {
   const screened = applicants.filter((a) => a.screening);
-  if (screened.length === 0) return null;
 
-  // Aggregate skill scores from the best candidates
-  const topCandidates = screened
-    .sort(
-      (a, b) => (b.screening?.matchScore ?? 0) - (a.screening?.matchScore ?? 0),
-    )
-    .slice(0, 5);
-
-  const skillsMap: Record<string, number[]> = {};
-
-  topCandidates.forEach((cand) => {
-    cand.screening?.skillBreakdown.forEach((s) => {
-      if (!skillsMap[s.skill]) skillsMap[s.skill] = [];
-      skillsMap[s.skill].push(s.score);
-    });
-  });
+  const skillsMap = screened.reduce(
+    (acc, a) => {
+      for (const sb of a.screening?.skillBreakdown || []) {
+        if (!acc[sb.skill]) acc[sb.skill] = { total: 0, count: 0 };
+        acc[sb.skill].total += sb.score;
+        acc[sb.skill].count += 1;
+      }
+      return acc;
+    },
+    {} as Record<string, { total: number; count: number }>,
+  );
 
   const data = Object.entries(skillsMap)
-    .map(([skill, scores]) => ({
+    .map(([skill, { total, count }]) => ({
       skill,
-      score: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length),
+      score: Math.round(total / count),
     }))
-    .slice(0, 6); // Top 6 skills for radar clarity
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6);
 
   if (data.length < 3) return null;
 
   return (
-    <Card className="border-border shadow-sm">
+    <Card className="border-border shadow-[0_1px_3px_rgba(0,0,0,0.01)]">
       <CardHeader className="pb-2">
-        <CardTitle className="font-semibold text-sm">
-          Talent Skill Matrix
+        <CardTitle className="font-semibold text-[13px] uppercase tracking-wider text-foreground/70">
+          Neural Skill Matrix
         </CardTitle>
-        <p className="text-muted-foreground text-xs">
-          Average skill breakdown of top 5 match candidates
+        <p className="text-muted-foreground text-xs uppercase tracking-widest font-bold opacity-60">
+          Aggregated proficiency levels
         </p>
       </CardHeader>
       <CardContent>
-        <div className="h-64">
+        <div className="h-48 mt-6">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
               <PolarGrid stroke="var(--color-border)" />
               <PolarAngleAxis
                 dataKey="skill"
-                tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                tick={{ fontSize: 9, fill: "var(--color-muted-foreground)", fontWeight: 700 }}
               />
               <Radar
-                name="Top Talent"
+                name="Proficiency"
                 dataKey="score"
-                stroke="var(--color-primary)"
-                fill="var(--color-primary)"
-                fillOpacity={0.6}
+                stroke="var(--color-info)"
+                fill="var(--color-info)"
+                fillOpacity={0.3}
               />
             </RadarChart>
           </ResponsiveContainer>
