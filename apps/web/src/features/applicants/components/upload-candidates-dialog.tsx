@@ -16,8 +16,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -249,9 +251,7 @@ export function UploadCandidatesDialog({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 shadow-md">
-              <RiFileExcel2Line className="h-6 w-6 text-primary" />
-            </div>
+       
             <div>
               <DialogTitle className="font-display font-light text-xl uppercase tracking-widest">
                 Ingestion Node
@@ -280,7 +280,10 @@ export function UploadCandidatesDialog({
                 onValueChange={(val) => setSelectedJobId(val ?? "")}
               >
                 <SelectTrigger className="h-11 rounded-xl border-border/50 bg-secondary/30 font-medium text-[14px]">
-                  <SelectValue placeholder="Select position architecture..." />
+                  <SelectValue placeholder="Select position architecture...">
+                    {selectedJobId &&
+                      jobs.find((j) => j.id === selectedJobId)?.title}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {jobs.map((j) => (
@@ -411,18 +414,23 @@ export function UploadCandidatesDialog({
             </div>
           )}
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button
-              variant="outline"
-              onClick={() => setOpen(false)}
-              className="rounded-full border-border/50 font-bold text-[11px] uppercase tracking-widest"
+          <DialogFooter className="mt-8 gap-3 border-border/10 border-t pt-8">
+            <DialogClose
+              render={
+                <Button
+                  variant="outline"
+                  className="rounded-full"
+                   size={"lg"}
+                />
+              }
             >
-              Cancel
-            </Button>
+              Cancel Protocol
+            </DialogClose>
             <Button
               onClick={handleUpload}
               disabled={uploading || candidates.length === 0 || !selectedJobId}
-              className="h-11 gap-2.5 rounded-full bg-primary font-bold text-[11px] text-white uppercase tracking-[0.2em] shadow-lg transition-all hover:bg-primary/90 active:scale-[0.98]"
+              className="rounded-full"
+              size={"lg"}
             >
               {uploading ? (
                 <>
@@ -436,9 +444,9 @@ export function UploadCandidatesDialog({
                 </>
               )}
             </Button>
-          </div>
+          </DialogFooter>
 
-          <div className="flex items-start gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2">
+          <div className="flex items-start gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2 mt-4">
             <RiAlertLine className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground/50" />
             <p className="text-muted-foreground text-xs leading-relaxed">
               Your CSV should have headers like{" "}

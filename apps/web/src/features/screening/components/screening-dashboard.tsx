@@ -261,7 +261,11 @@ export function ScreeningDashboard() {
                 onValueChange={(value) => setSelectedJob(value ?? "all")}
               >
                 <SelectTrigger className="h-11 rounded-full border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-md">
-                  <SelectValue placeholder="All Jobs" />
+                  <SelectValue placeholder="All Jobs">
+                    {selectedJob === "all"
+                      ? "All Pipelines"
+                      : jobs.find((j) => j.id === selectedJob)?.title}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="border-border/50 shadow-lg">
                   <SelectItem value="all">All Pipelines</SelectItem>

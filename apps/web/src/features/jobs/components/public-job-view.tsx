@@ -10,7 +10,7 @@ import {
 } from "@remixicon/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { Footer } from "@/components/landing/footer";
 import { Navbar } from "@/components/landing/navbar";
@@ -27,8 +27,10 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
+  const [resumeText, setResumeText] = useState("");
+  const [fileName, setFileName] = useState("");
+  const [parsingPdf, setParsingPdf] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const jobQuery = useQuery(
@@ -40,40 +42,68 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
 
   const job = jobQuery.data;
 
+  const extractTextFromPdf = useCallback(async (file: File) => {
+    try {
+      setParsingPdf(true);
+
+      // Dynamically import pdfjs-dist only on the client
+      const pdfjsLib = await import("pdfjs-dist");
+
+      // Configure worker
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const pdf = await loadingTask.promise;
+      let fullText = "";
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items
+          .map((item: any) => item.str)
+          .join(" ");
+        fullText += `${pageText}\n`;
+      }
+
+      setResumeText(fullText);
+      setFileName(file.name);
+      toast.success("Resume parsed successfully!");
+    } catch (e) {
+      console.error("PDF Parsing error:", e);
+      toast.error("Failed to parse PDF. Please try a different file.");
+    } finally {
+      setParsingPdf(false);
+    }
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.type !== "application/pdf") {
+        toast.error("Please upload a PDF file");
+        return;
+      }
+      extractTextFromPdf(file);
+    }
+  };
+
   const handleApply = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!job) return;
-    if (!file) {
+    if (!resumeText) {
       toast.error("Please upload your resume");
       return;
     }
 
-    setUploading(true);
+    setSubmitting(true);
     try {
-      // 1. Upload and parse resume
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const uploadResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000"}/applicants/upload-resume`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
-
-      const uploadData = await uploadResponse.json();
-      if (uploadData.error) {
-        throw new Error(uploadData.message || uploadData.error);
-      }
-
-      // 2. Submit application with extracted text
       await applyMutation.mutateAsync({
         jobId,
         firstName,
         lastName,
         email,
-        resumeText: uploadData.text,
+        resumeText,
       });
 
       setSubmitted(true);
@@ -82,7 +112,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
       console.error(error);
       toast.error(error.message || "Failed to submit application");
     } finally {
-      setUploading(false);
+      setSubmitting(false);
     }
   };
 
@@ -264,7 +294,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                       document.getElementById("file-upload")?.click()
                     }
                     className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 transition-all ${
-                      file
+                      resumeText
                         ? "border-primary/40 bg-primary/5"
                         : "border-border/50 hover:border-primary/20 hover:bg-secondary/20"
                     }`}
@@ -274,13 +304,20 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                       type="file"
                       accept=".pdf"
                       className="hidden"
-                      onChange={(e) => setFile(e.target.files?.[0] || null)}
+                      onChange={handleFileChange}
                     />
-                    {file ? (
+                    {parsingPdf ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <RiLoader2Line className="h-6 w-6 animate-spin text-primary" />
+                        <span className="font-medium text-sm">
+                          Parsing PDF...
+                        </span>
+                      </div>
+                    ) : resumeText ? (
                       <div className="flex items-center gap-3">
                         <RiFileTextLine className="h-6 w-6 text-primary" />
                         <span className="max-w-[150px] truncate font-medium text-sm">
-                          {file.name}
+                          {fileName || "Resume uploaded"}
                         </span>
                       </div>
                     ) : (
@@ -299,13 +336,13 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
 
                 <Button
                   type="submit"
-                  disabled={uploading}
+                  disabled={submitting || parsingPdf}
                   className="mt-4 h-12 w-full rounded-full bg-primary font-semibold text-[15px] text-white shadow-lg transition-all hover:shadow-xl"
                 >
-                  {uploading ? (
+                  {submitting ? (
                     <>
                       <RiLoader2Line className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
+                      Applying...
                     </>
                   ) : (
                     "Submit Application"

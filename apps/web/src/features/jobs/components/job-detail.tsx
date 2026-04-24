@@ -84,7 +84,11 @@ export function JobDetail({ id }: JobDetailProps) {
 
   if (!job) notFound();
 
-  const jobApplicants = (applicants || []).filter((a) => a.jobId === id);
+  const jobApplicants = (applicants || [])
+    .filter((a) => a.jobId === id)
+    .sort(
+      (a, b) => (b.screening?.matchScore ?? 0) - (a.screening?.matchScore ?? 0),
+    );
   const screenedApplicants = jobApplicants.filter((a) => a.screening);
   const avgScore = screenedApplicants.length
     ? Math.round(
@@ -215,7 +219,10 @@ export function JobDetail({ id }: JobDetailProps) {
                       className="group flex items-center justify-between rounded-xl border border-border/50 bg-background p-6 shadow-md transition-all hover:border-primary/20 hover:shadow-lg"
                     >
                       <div className="flex items-center gap-6">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border/30 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-md transition-transform group-hover:scale-[1.05]">
+                        <div className="relative flex h-12 w-12 items-center justify-center rounded-xl border border-border/30 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-md transition-transform group-hover:scale-[1.05]">
+                          <span className="absolute -top-2 -left-2 flex h-5 w-5 items-center justify-center rounded-full bg-foreground font-bold text-[9px] text-background shadow-lg">
+                            {i + 1}
+                          </span>
                           {applicant.firstName[0]}
                           {applicant.lastName[0]}
                         </div>

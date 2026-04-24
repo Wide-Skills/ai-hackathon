@@ -12,6 +12,8 @@
 - [x] Set up Husky Git hooks enforcing Biome checking and TS types prior to staging commits to drastically minimize errors.
 - [x] Created `features/` directory map on the frontend to decouple dumb generic components from smart business-logic pieces.
 
-## Data Layer Definition
-- [x] Finished Mongoose schema implementation (`Job`, `Applicant`, `ScreeningResult`). Note: `Job` requires `department`, `Applicant` anticipates `resumeUrl`.
-- [x] Added generic tRPC test logic using Vitest inside `packages/api`.
+## AI & Data Integration
+- [x] Bound `@ai-sdk/google` with `gemini-2.0-flash` for structured screening results.
+- [x] Integrated client-side PDF parsing using `pdf.js` for the public applicant view.
+- [x] Fixed server-side `pdf-parse` implementation for candidate ingest.
+- [x] Resolved workspace-wide TypeScript errors in UI components and API tests.

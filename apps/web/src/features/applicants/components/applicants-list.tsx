@@ -232,7 +232,11 @@ export function ApplicantsList() {
           >
             <SelectTrigger className="h-11 w-52 rounded-full border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-md">
               <div className="flex items-center">
-                <SelectValue placeholder="Pipeline" />
+                <SelectValue placeholder="Pipeline">
+                  {jobFilter === "all"
+                    ? "All Pipelines"
+                    : jobsData.find((j) => j.id === jobFilter)?.title}
+                </SelectValue>
               </div>
             </SelectTrigger>
             <SelectContent className="border-border/50 shadow-lg">
@@ -253,7 +257,11 @@ export function ApplicantsList() {
           >
             <SelectTrigger className="h-11 w-44 rounded-full border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-md">
               <div className="flex items-center">
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder="Status">
+                  {statusFilter === "all"
+                    ? "All States"
+                    : statusConfig[statusFilter as ApplicationStatus]?.label}
+                </SelectValue>
               </div>
             </SelectTrigger>
             <SelectContent className="border-border/50 shadow-lg">

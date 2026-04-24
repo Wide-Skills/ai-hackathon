@@ -18,7 +18,7 @@ const SHORTLIST_THRESHOLD = 85;
 export const SYSTEM_USER_ID = "usr_automated_system";
 
 // The confirmed working model from curl tests
-const WORKING_MODEL = "gemini-2.5-flash";
+const WORKING_MODEL = "gemini-2.0-flash";
 
 export function buildApplicantStatus(matchScore: number) {
   return matchScore >= SHORTLIST_THRESHOLD ? "shortlisted" : "screening";

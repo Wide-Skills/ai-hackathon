@@ -117,7 +117,6 @@ describe("public flows", () => {
       lastName: "Doe",
       email: "john@example.com",
       resumeText: "My resume content",
-      skills: [],
     });
 
     expect(Applicant).toHaveBeenCalledWith(

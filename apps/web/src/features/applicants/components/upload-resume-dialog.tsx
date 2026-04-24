@@ -8,7 +8,6 @@ import {
   RiUploadCloud2Line,
 } from "@remixicon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as pdfjsLib from "pdfjs-dist";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import { QueryErrorState } from "@/components/data/query-state";
@@ -34,9 +33,6 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
-
-// Initialize PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface UploadResumeDialogProps {
   trigger?: React.ReactElement;
@@ -68,6 +64,11 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
   const extractTextFromPdf = useCallback(async (file: File) => {
     try {
       setParsingPdf(true);
+
+      const pdfjsLib = await import("pdfjs-dist");
+
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
+
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       let fullText = "";
@@ -205,7 +206,10 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                   onValueChange={(val) => setSelectedJobId(val ?? "")}
                 >
                   <SelectTrigger className="h-11 rounded-xl border-border/50 bg-secondary/30 font-medium text-[14px]">
-                    <SelectValue placeholder="Select position architecture..." />
+                    <SelectValue placeholder="Select position architecture...">
+                      {selectedJobId &&
+                        jobs.find((j) => j.id === selectedJobId)?.title}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {jobs.map((j) => (
@@ -349,14 +353,19 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
             )}
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="mt-8 gap-3 border-border/10 border-t pt-8">
             <DialogClose
-              onClick={() => setOpen(false)}
-              className="rounded-full border-border/50 font-bold text-[11px] uppercase tracking-widest"
+              render={
+                <Button
+                  variant="outline"
+                          className="rounded-full"
+                   size={"lg"}
+                />
+              }
             >
-              Cancel
+              Cancel Protocol
             </DialogClose>
-            <DialogClose
+            <Button
               onClick={handleUpload}
               disabled={
                 uploading ||
@@ -366,7 +375,8 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                 !firstName ||
                 !email
               }
-              className="h-11 gap-2.5 rounded-full bg-primary font-bold text-[11px] text-white uppercase tracking-[0.2em] shadow-lg transition-all hover:bg-primary/90 active:scale-[0.98]"
+                      className="rounded-full"
+                   size={"lg"}
             >
               {uploading ? (
                 <>
@@ -379,7 +389,7 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                   Initialize Import
                 </>
               )}
-            </DialogClose>
+            </Button>
           </DialogFooter>
         </div>
       </DialogContent>

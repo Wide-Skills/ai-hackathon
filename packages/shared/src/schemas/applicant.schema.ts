@@ -86,21 +86,26 @@ export const CreateApplicantSchema = z.object({
   email: z.string().email(),
   resumeText: z.string().optional(),
   resumeUrl: z.string().url().optional(),
-  headline: z.string(),
+  headline: z.string().default("Applicant"),
   bio: z.string().optional(),
-  location: z.string(),
+  location: z.string().default("Remote"),
   avatarUrl: z.string().url().optional(),
-  skills: z.array(SkillSchema).min(1),
+  skills: z.array(SkillSchema).default([]),
   languages: z.array(LanguageSchema).default([]),
-  experience: z.array(ExperienceSchema).min(1),
-  education: z.array(EducationSchema).min(1),
+  experience: z.array(ExperienceSchema).default([]),
+  education: z.array(EducationSchema).default([]),
   certifications: z.array(CertificationSchema).default([]),
-  projects: z.array(ProjectSchema).min(1),
-  availability: z.object({
-    status: z.enum(AVAILABILITY_STATUSES),
-    type: z.enum(AVAILABILITY_TYPES),
-    startDate: z.string().optional(),
-  }),
+  projects: z.array(ProjectSchema).default([]),
+  availability: z
+    .object({
+      status: z.enum(AVAILABILITY_STATUSES),
+      type: z.enum(AVAILABILITY_TYPES),
+      startDate: z.string().optional(),
+    })
+    .default({
+      status: "Available",
+      type: "Full-time",
+    }),
   socialLinks: z
     .object({
       linkedin: z.string().optional(),
@@ -116,9 +121,9 @@ export const PublicApplySchema = z.object({
   jobId: z.string(),
   firstName: z.string(),
   lastName: z.string(),
-  email: z.email(),
+  email: z.string().email(),
   resumeText: z.string().optional(),
-  resumeUrl: z.url().optional(),
+  resumeUrl: z.string().url().optional(),
 });
 
 export type PublicApplyInput = z.infer<typeof PublicApplySchema>;

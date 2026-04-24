@@ -1,72 +1,10 @@
 import { RiArrowLeftSLine } from "@remixicon/react";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type React from "react";
 import { Button } from "@/components/ui/button";
+import { AuthContentWrapper, AuthVisuals } from "@/features/auth/components/auth-visuals";
 import { getSession } from "@/lib/auth";
-
-const Logo = ({ className }: { className?: string }) => (
-  <Link href="/" className={`flex items-center gap-2 ${className}`}>
-    <span className="truncate font-display font-light text-[16px] text-foreground uppercase tracking-[0.2em]">
-      Umurava{" "}
-      <span className="text-muted-foreground/40 normal-case italic tracking-tight">
-        AI
-      </span>
-    </span>
-  </Link>
-);
-
-const FloatingPaths = ({ position }: { position: number }) => {
-  const paths = [
-    {
-      id: 1,
-      d: "M0,100 Q50,50 100,100 T200,100 T300,100 T400,100",
-      width: 0.5,
-      opacity: 0.1,
-      duration: 20,
-    },
-    {
-      id: 2,
-      d: "M0,150 Q100,100 200,150 T400,150",
-      width: 1,
-      opacity: 0.05,
-      duration: 25,
-    },
-  ];
-
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <svg
-        viewBox="0 0 400 400"
-        className="h-full w-full"
-        preserveAspectRatio="none"
-      >
-        <title>Floating Paths</title>
-        {paths.map((path) => (
-          <motion.path
-            key={path.id}
-            d={path.d}
-            stroke="currentColor"
-            strokeWidth={path.width}
-            fill="transparent"
-            initial={{ pathLength: 0, opacity: 0 }}
-            animate={{
-              pathLength: 1,
-              opacity: path.opacity,
-              y: [0, position * 20, 0],
-            }}
-            transition={{
-              duration: path.duration,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: "linear",
-            }}
-          />
-        ))}
-      </svg>
-    </div>
-  );
-};
 
 export default async function AuthLayout({
   children,
@@ -81,48 +19,7 @@ export default async function AuthLayout({
 
   return (
     <main className="relative min-h-screen bg-background selection:bg-secondary selection:text-foreground lg:grid lg:grid-cols-[440px_1fr]">
-      <div className="relative hidden h-full flex-col overflow-hidden border-border border-r bg-secondary/20 p-12 lg:flex">
-        <Logo className="relative z-10 mb-12" />
-
-        <div className="relative z-10 flex flex-1 flex-col justify-center py-20">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <h2 className="mb-6 font-display font-light text-[36px] text-foreground leading-[1.1] tracking-tight">
-              Hire the top 1% <br />
-              with absolute clarity.
-            </h2>
-            <p className="max-w-[300px] text-[15px] text-muted-foreground leading-relaxed">
-              The first explainable talent screening platform powered by Gemini
-              1.5 Pro.
-            </p>
-          </motion.div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 1 }}
-          className="relative z-10 mt-auto border-border border-t pt-10"
-        >
-          <blockquote className="space-y-4">
-            <p className="font-light text-[15px] text-foreground italic leading-relaxed">
-              &ldquo;Umurava has transformed our hiring process, allowing us to
-              shortlist experts with surgical precision.&rdquo;
-            </p>
-            <footer className="font-bold text-[11px] text-muted-foreground uppercase tracking-widest">
-              — Head of Talent, Neural Labs
-            </footer>
-          </blockquote>
-        </motion.div>
-
-        <div className="absolute inset-0 z-0 text-foreground/5 opacity-50">
-          <FloatingPaths position={1} />
-          <FloatingPaths position={-1} />
-        </div>
-      </div>
+      <AuthVisuals />
 
       {/* Main Form Content */}
       <div className="relative flex min-h-screen flex-col justify-center bg-[#fafafa]/30 px-8 lg:px-24 xl:px-32">
@@ -136,13 +33,9 @@ export default async function AuthLayout({
         </Button>
 
         <div className="mx-auto w-full max-w-[400px]">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.99 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
-          >
+          <AuthContentWrapper>
             {children}
-          </motion.div>
+          </AuthContentWrapper>
         </div>
       </div>
     </main>

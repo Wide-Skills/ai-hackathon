@@ -179,7 +179,7 @@ describe("End-to-End Recruitment Workflow", () => {
     expect(result.headline).toBe("Senior Software Architect");
     expect(result.location).toBe("Kigali, Rwanda");
     expect(result.skills).toHaveLength(2);
-    expect(result.experience[0].company).toBe("Tech Corp");
+    expect(result.experience?.[0]?.company).toBe("Tech Corp");
 
     // Verify Persistence
     expect(applicantSaveMock).toHaveBeenCalled();
