@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
 import { Hero } from "@/components/landing/hero";
@@ -37,12 +39,22 @@ export default function Home() {
                 top 1% of talent in minutes.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-5">
-                <button className="btn-pill-primary h-[52px] px-10 text-[15px]">
+                <Button
+                  render={<Link href="/auth" />}
+                  variant="default"
+                  size="2xl"
+                  className="shadow-xl"
+                >
                   Get Started for Free
-                </button>
-                <button className="h-[52px] rounded-full border px-10 text-[15px] shadow-sm">
+                </Button>
+                <Button
+                  render={<Link href="/auth" />}
+                  variant="outline"
+                  size="2xl"
+                  className="shadow-sm"
+                >
                   Schedule a Demo
-                </button>
+                </Button>
               </div>
             </motion.div>
           </div>

@@ -30,10 +30,10 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
   if (applicantQuery.isLoading || jobQuery.isLoading) {
     return (
       <div className="w-full animate-pulse space-y-12">
-        <div className="h-8 w-40 rounded-pill bg-secondary/30" />
+        <div className="h-8 w-40 rounded-full bg-secondary/30" />
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-4">
-          <div className="h-[700px] rounded-section bg-secondary/30 lg:col-span-1" />
-          <div className="h-[700px] rounded-section bg-secondary/30 lg:col-span-3" />
+          <div className="h-[700px] rounded-3xl bg-secondary/30 lg:col-span-1" />
+          <div className="h-[700px] rounded-3xl bg-secondary/30 lg:col-span-3" />
         </div>
       </div>
     );

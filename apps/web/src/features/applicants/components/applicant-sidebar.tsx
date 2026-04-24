@@ -40,7 +40,7 @@ export function ApplicantSidebar({
 
   return (
     <div className="space-y-10 lg:col-span-1">
-      <Card className="group relative overflow-hidden border-border/50 p-10 text-center shadow-premium">
+      <Card className="group relative overflow-hidden border-border/50 p-10 text-center shadow-lg">
         <div className="absolute inset-x-0 top-0 -z-10 h-32 bg-secondary/30" />
 
         <div className="relative pt-4">
@@ -48,10 +48,10 @@ export function ApplicantSidebar({
             <img
               src={applicant.avatarUrl}
               alt={`${applicant.firstName} ${applicant.lastName}`}
-              className="mx-auto h-32 w-32 rounded-2xl border-4 border-background object-cover shadow-premium grayscale transition-all hover:grayscale-0"
+              className="mx-auto h-32 w-32 rounded-2xl border-4 border-background object-cover shadow-lg grayscale transition-all hover:grayscale-0"
             />
           ) : (
-            <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-2xl border-4 border-background bg-secondary/30 font-display font-light text-[32px] text-muted-foreground/30 uppercase shadow-ethereal">
+            <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-2xl border-4 border-background bg-secondary/30 font-display font-light text-[32px] text-muted-foreground/30 uppercase shadow-md">
               {applicant.firstName[0]}
               {applicant.lastName[0]}
             </div>
@@ -80,7 +80,7 @@ export function ApplicantSidebar({
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-lg border border-border/40 bg-background px-3 py-2 font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest shadow-ethereal transition-all hover:border-primary/20 hover:text-foreground active:scale-[0.95]"
+                    className="rounded-lg border border-border/40 bg-background px-3 py-2 font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest shadow-md transition-all hover:border-primary/20 hover:text-foreground active:scale-[0.95]"
                   >
                     {link.label}
                   </a>
@@ -89,10 +89,11 @@ export function ApplicantSidebar({
           </div>
 
           <div className="mt-14 space-y-3.5 border-border/10 border-t pt-12">
-            <button
+            <Button
               onClick={handleRunAnalysis}
               disabled={screenMutation.isPending}
-              className="btn-pill-primary flex h-11 w-full items-center justify-center gap-2 font-bold text-[11px] uppercase tracking-[0.2em] shadow-ethereal disabled:opacity-50"
+              variant="default"
+              className="flex h-11 w-full items-center justify-center gap-2 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] shadow-lg disabled:opacity-50"
             >
               {screenMutation.isPending ? (
                 <>
@@ -105,7 +106,7 @@ export function ApplicantSidebar({
                   {applicant.screening ? "Re-Run Analysis" : "Process Analysis"}
                 </>
               )}
-            </button>
+            </Button>
             <Button
               render={<Link href="/dashboard/applicants">Decline Profile</Link>}
               variant="outline"
@@ -116,7 +117,7 @@ export function ApplicantSidebar({
         </div>
       </Card>
 
-      <Card className="border-border/50 p-8 shadow-premium">
+      <Card className="border-border/50 p-8 shadow-lg">
         <h3 className="mb-10 border-border/5 border-b pb-6 font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.25em]">
           System Metadata
         </h3>
@@ -159,7 +160,7 @@ export function ApplicantSidebar({
                       ? "destructive"
                       : "secondary"
               }
-              className="shadow-ethereal"
+              className="shadow-md"
             >
               {applicant.status}
             </Badge>
@@ -167,7 +168,7 @@ export function ApplicantSidebar({
         </div>
       </Card>
 
-      <Card className="border-border/50 p-8 shadow-premium">
+      <Card className="border-border/50 p-8 shadow-lg">
         <h3 className="mb-8 border-border/5 border-b pb-6 font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.25em]">
           Linguistic Mapping
         </h3>
@@ -180,9 +181,14 @@ export function ApplicantSidebar({
               <span className="font-bold text-[13px] text-foreground/60 tracking-tight">
                 {lang.name}
               </span>
-              <span className="rounded-lg border border-border/5 bg-secondary/20 px-2.5 py-1 font-bold text-[9px] text-muted-foreground/30 uppercase tracking-[0.2em]">
+              <Badge
+                variant="secondary"
+                size="xs"
+                uppercase
+                className="border-border/5 bg-secondary/20 px-2.5 py-1 text-muted-foreground/30 shadow-sm"
+              >
                 {lang.proficiency}
-              </span>
+              </Badge>
             </div>
           ))}
         </div>

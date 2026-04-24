@@ -22,13 +22,13 @@ export default function AnalyticsPage() {
       <div className="w-full animate-pulse space-y-16">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-40 rounded-section bg-secondary/30" />
+            <div key={i} className="h-40 rounded-3xl bg-secondary/30" />
           ))}
         </div>
-        <div className="h-[500px] rounded-section bg-secondary/30" />
+        <div className="h-[500px] rounded-3xl bg-secondary/30" />
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
-          <div className="h-[450px] rounded-section bg-secondary/30" />
-          <div className="h-[450px] rounded-section bg-secondary/30" />
+          <div className="h-[450px] rounded-3xl bg-secondary/30" />
+          <div className="h-[450px] rounded-3xl bg-secondary/30" />
         </div>
       </div>
     );
@@ -124,7 +124,7 @@ export default function AnalyticsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="overflow-hidden rounded-section border border-border/50 bg-background shadow-premium">
+          <div className="overflow-hidden rounded-3xl border border-border/50 bg-background shadow-lg">
             <InteractivePerformanceChart applicants={applicants} />
           </div>
         </motion.div>
@@ -139,7 +139,7 @@ export default function AnalyticsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <div className="h-full rounded-section border border-border/50 bg-background p-12 shadow-premium">
+          <div className="h-full rounded-3xl border border-border/50 bg-background p-12 shadow-lg">
             <header className="mb-12">
               <h3 className="font-display font-light text-[18px] text-foreground uppercase tracking-[0.15em]">
                 Resonance Distribution
@@ -161,7 +161,7 @@ export default function AnalyticsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <div className="h-full rounded-section border border-border/50 bg-background p-12 shadow-premium">
+          <div className="h-full rounded-3xl border border-border/50 bg-background p-12 shadow-lg">
             <header className="mb-12">
               <h3 className="font-display font-light text-[18px] text-foreground uppercase tracking-[0.15em]">
                 Expertise Topology

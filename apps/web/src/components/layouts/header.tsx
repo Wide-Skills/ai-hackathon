@@ -8,6 +8,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { Button } from "@/components/ui/button";
 
 const pageInfo: Record<
   string,
@@ -70,7 +71,7 @@ export default function Header() {
 
       <div className="flex items-center gap-6">
         <div className="relative hidden w-72 md:block">
-          <InputGroup className="flex h-10 items-center overflow-hidden rounded-pill border-border/50 bg-foreground/[0.02] px-1 shadow-ethereal focus-within:ring-info/20">
+          <InputGroup className="flex h-10 items-center overflow-hidden rounded-full border-border/50 bg-foreground/[0.02] px-1 shadow-sm focus-within:ring-info/20">
             <InputGroupAddon
               align="inline-start"
               className="flex items-center justify-center pl-4"
@@ -84,23 +85,29 @@ export default function Header() {
           </InputGroup>
         </div>
 
-        <button className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-pill border border-border/50 bg-background shadow-ethereal transition-all hover:bg-secondary active:scale-[0.95]">
+        <Button
+          variant="outline"
+          size="icon"
+          className="relative rounded-full shadow-sm"
+        >
           <Bell className="h-4 w-4 text-muted-foreground" />
           <span className="absolute top-2.5 right-2.5 h-1.5 w-1.5 rounded-full bg-info" />
-        </button>
+        </Button>
 
         {info.action && (
-          <button
+          <Button
             onClick={() => {
               if (info.action?.href) {
                 router.push(info.action.href);
               }
             }}
-            className="btn-pill-primary flex h-10 shrink-0 items-center justify-center px-6 text-[13px]"
+            variant="default"
+            size="xl"
+            className="h-10 px-6 shadow-sm"
           >
             <Plus className="mr-2 h-3.5 w-3.5" />
             {info.action.label}
-          </button>
+          </Button>
         )}
       </div>
     </header>

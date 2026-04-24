@@ -57,9 +57,9 @@ export function NavUser({
               <SidebarMenuButton className="hover:bg-transparent active:bg-transparent" />
             }
           >
-            <Avatar className="h-8 w-8 rounded-pill border border-border/20 shadow-ethereal">
+            <Avatar className="h-8 w-8 rounded-full border border-border/20 shadow-md">
               <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="rounded-pill bg-secondary/50 font-bold text-[10px] text-muted-foreground/50">
+              <AvatarFallback className="rounded-full bg-secondary/50 font-bold text-[10px] text-muted-foreground/50">
                 {user.name?.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>

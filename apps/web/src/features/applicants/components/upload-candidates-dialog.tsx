@@ -238,9 +238,9 @@ export function UploadCandidatesDialog({
             <Button
               variant="outline"
               size="sm"
-              className="h-9 gap-1.5 border-border font-medium text-sm"
+              className="h-10 gap-2 border-border/50 rounded-full font-bold text-[11px] uppercase tracking-widest shadow-md hover:bg-secondary"
             >
-              <Upload className="h-3.5 w-3.5" />
+              <Upload className="h-4 w-4" />
               Upload CSV
             </Button>
           )
@@ -248,16 +248,16 @@ export function UploadCandidatesDialog({
       />
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-              <FileSpreadsheet className="h-5 w-5 text-primary" />
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 shadow-md">
+              <FileSpreadsheet className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <DialogTitle className="font-bold text-lg">
-                Upload Candidates
+              <DialogTitle className="font-display font-light text-xl uppercase tracking-widest">
+                Ingestion Node
               </DialogTitle>
-              <DialogDescription className="text-sm">
-                Import candidates from a CSV file to screen with AI.
+              <DialogDescription className="font-medium text-[13px] text-muted-foreground/60 leading-tight">
+                Import talent architectures from structured CSV data.
               </DialogDescription>
             </div>
           </div>
@@ -279,8 +279,8 @@ export function UploadCandidatesDialog({
                 value={selectedJobId}
                 onValueChange={(val) => setSelectedJobId(val ?? "")}
               >
-                <SelectTrigger className="h-9 border-border text-sm">
-                  <SelectValue placeholder="Select a job position..." />
+                <SelectTrigger className="h-11 rounded-xl border-border/50 bg-secondary/30 font-medium text-[14px]">
+                  <SelectValue placeholder="Select position architecture..." />
                 </SelectTrigger>
                 <SelectContent>
                   {jobs.map((j) => (
@@ -415,24 +415,24 @@ export function UploadCandidatesDialog({
             <Button
               variant="outline"
               onClick={() => setOpen(false)}
-              className="border-border"
+              className="rounded-full border-border/50 font-bold text-[11px] uppercase tracking-widest"
             >
               Cancel
             </Button>
             <Button
               onClick={handleUpload}
               disabled={uploading || candidates.length === 0 || !selectedJobId}
-              className="gap-2 bg-primary font-semibold text-white hover:bg-primary/90"
+              className="h-11 gap-2.5 rounded-full bg-primary font-bold text-[11px] text-white uppercase tracking-[0.2em] shadow-lg transition-all hover:bg-primary/90 active:scale-[0.98]"
             >
               {uploading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Uploading...
+                  Processing...
                 </>
               ) : (
                 <>
                   <Upload className="h-4 w-4" />
-                  Import {candidates.length} Candidates
+                  Initialize Batch Import
                 </>
               )}
             </Button>

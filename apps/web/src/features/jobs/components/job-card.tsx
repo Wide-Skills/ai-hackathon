@@ -61,14 +61,18 @@ export function JobCard({ job }: JobCardProps) {
   return (
     <Card
       onClick={() => router.push(`/dashboard/jobs/${job.id}` as Route)}
-      variant="ethereal"
+      className="cursor-pointer group rounded-3xl border border-border/40 bg-background shadow-md hover:border-primary/20 hover:shadow-lg transition-all"
       size="none"
-      className="cursor-pointer group"
     >
       {/* SECTION 1: Identity & Primary Info */}
       <div className="p-10 pb-8">
         <div className="flex items-center gap-4 mb-6">
-          <Badge variant={sc.variant} size="technical">
+          <Badge
+            variant={sc.variant}
+            size="xs"
+            uppercase
+            className="shadow-sm"
+          >
             <div className="h-1 w-1 rounded-full bg-current opacity-60" />
             <span className="translate-y-[0.5px]">{sc.label}</span>
           </Badge>
@@ -102,7 +106,9 @@ export function JobCard({ job }: JobCardProps) {
             <Badge
               key={skill}
               variant="secondary"
-              className="bg-secondary/20 border-border/5 px-3 py-1.5 text-[9px] font-bold text-muted-foreground/50 uppercase tracking-widest"
+              size="xs"
+              uppercase
+              className="px-3 py-1.5 shadow-md"
             >
               {skill}
             </Badge>
@@ -137,7 +143,7 @@ export function JobCard({ job }: JobCardProps) {
                <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40">AI Analysis</span>
                <span className="text-[10px] font-bold text-info/50 tracking-widest">{screenedPct}%</span>
             </div>
-            <div className="h-1 w-full bg-secondary/50 rounded-pill overflow-hidden shadow-inset">
+            <div className="h-1 w-full bg-secondary/50 rounded-full overflow-hidden shadow-inset">
                <div className={cn("h-full transition-all duration-1000", screenedPct > 80 ? "bg-success/40" : "bg-info/30")} style={{ width: `${screenedPct}%` }} />
             </div>
           </div>
@@ -147,37 +153,39 @@ export function JobCard({ job }: JobCardProps) {
         <div className="flex items-center gap-4 shrink-0 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 border-border/5 pt-6 lg:pt-0">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger render={<Button
-                  onClick={copyToClipboard}
-                  variant="outline"
-                  size="icon-lg"
-                  className="rounded-full shadow-ethereal hover:border-primary/20 text-muted-foreground/60 hover:text-primary"
-                />}>
-                
-                  <Link2 className="h-4 w-4" />
+              <TooltipTrigger
+                render={
+                  <Button
+                    onClick={copyToClipboard}
+                    variant="outline"
+                    size="icon-lg"
+                    className="rounded-full shadow-md hover:border-primary/20 text-muted-foreground/60 hover:text-primary"
+                  />
+                }
+              >
+                <Link2 className="h-4 w-4" />
               </TooltipTrigger>
-              <TooltipContent className="rounded-pill px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest">
+              <TooltipContent className="rounded-full px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest">
                 Copy Link
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
           <Button
-            render={<Link
-              href={`/dashboard/applicants?job=${job.id}` as Route}
-              onClick={(e) => e.stopPropagation()}
-            />}
-            variant="pill-primary"
-            size="pill"
-            className="uppercase tracking-[0.2em] font-bold text-[11px] flex-1 lg:flex-none"
+            render={
+              <Link
+                href={`/dashboard/applicants?job=${job.id}` as Route}
+                onClick={(e) => e.stopPropagation()}
+              />
+            }
+            variant="default"
+            size="xl"
+            className="shadow-lg"
           >
-            
-              Manage Pipeline
-          
+            Manage Pipeline
           </Button>
         </div>
       </div>
     </Card>
   );
 }
-

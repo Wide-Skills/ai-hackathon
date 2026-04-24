@@ -148,7 +148,7 @@ export function InteractivePerformanceChart({
             <ChartTooltip
               content={
                 <ChartTooltipContent
-                  className="w-[150px] border-border/50 shadow-premium"
+                  className="w-[150px] border-border/50 shadow-lg"
                   nameKey="applicants"
                   labelFormatter={(value) => {
                     return new Date(value).toLocaleDateString("en-US", {

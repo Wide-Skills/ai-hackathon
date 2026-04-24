@@ -1,5 +1,6 @@
 import type { Language } from "@ai-hackathon/shared";
 import { Languages } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -11,9 +12,9 @@ export function LanguagesCard({ languages }: LanguagesCardProps) {
   if (!languages || languages.length === 0) return null;
 
   return (
-    <Card className="border-border/50 p-8 shadow-premium">
+    <Card className="border-border/50 p-8 shadow-lg">
       <div className="mb-10 flex items-center gap-3 border-border/10 border-b pb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-ethereal">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-md">
           <Languages className="h-4.5 w-4.5" />
         </div>
         <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
@@ -27,9 +28,12 @@ export function LanguagesCard({ languages }: LanguagesCardProps) {
             <span className="font-bold text-[13px] text-foreground/60 tracking-tight">
               {lang.name}
             </span>
-            <span
+            <Badge
+              variant="outline"
+              size="xs"
+              uppercase
               className={cn(
-                "rounded-pill border px-3 py-1 font-bold text-[9px] uppercase tracking-widest",
+                "px-3 py-1 font-bold",
                 lang.proficiency.includes("Native") ||
                   lang.proficiency.includes("Fluent")
                   ? "border-success/10 bg-success/5 text-success"
@@ -37,7 +41,7 @@ export function LanguagesCard({ languages }: LanguagesCardProps) {
               )}
             >
               {lang.proficiency}
-            </span>
+            </Badge>
           </div>
         ))}
       </div>

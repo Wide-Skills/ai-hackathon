@@ -24,12 +24,10 @@ const badgeVariants = cva(
         warning: "border-warning/20 bg-warning/10 text-warning-foreground",
       },
       size: {
-        default: "h-5 rounded-4xl px-2 py-0.5 text-xs",
-        sm: "h-4 rounded-lg px-1.5 text-[10px]",
-        lg: "h-6 rounded-4xl px-3 py-1 text-sm",
-        pill: "h-7 rounded-pill border px-4 font-bold text-[11px] uppercase tracking-[0.15em] shadow-ethereal",
-        technical:
-          "rounded-lg border px-2.5 py-0.5 font-bold text-[9px] uppercase leading-none tracking-[0.15em] shadow-sm",
+        default: "h-5 px-2 py-0.5 text-xs rounded-full",
+        sm: "h-4 px-1.5 text-[10px] rounded-md",
+        lg: "h-6 px-3 py-1 text-sm rounded-full",
+        xs: "h-3.5 px-1 text-[9px] rounded-sm",
       },
       uppercase: {
         true: "uppercase tracking-widest",

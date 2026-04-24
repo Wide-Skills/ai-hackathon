@@ -8,6 +8,8 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const features = [
   {
@@ -76,7 +78,7 @@ export function PlatformDocs() {
     <main className="min-h-screen bg-background px-6 py-20 text-foreground md:px-10 lg:py-32">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-24">
         {/* Hero Section */}
-        <section className="relative overflow-hidden rounded-[48px] border border-border/60 bg-secondary/10 p-10 shadow-ethereal md:p-20 lg:p-24">
+        <section className="relative overflow-hidden rounded-[48px] border border-border/60 bg-secondary/10 p-10 shadow-md md:p-20 lg:p-24">
           <div className="relative z-10 max-w-3xl">
             <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
               <Cpu className="h-6 w-6 text-primary" />
@@ -96,18 +98,21 @@ export function PlatformDocs() {
               through deep AI analysis and standardized data schemas.
             </p>
             <div className="mt-12 flex flex-wrap gap-6">
-              <Link
-                href="/auth"
-                className="flex h-14 items-center rounded-full bg-primary px-10 font-bold text-[11px] text-white uppercase tracking-[0.2em] shadow-lift transition-all hover:scale-[1.02] hover:shadow-premium active:scale-[0.98]"
+              <Button
+                render={<Link href="/auth" />}
+                variant="default"
+                size="2xl"
+                className="shadow-xl"
               >
                 Launch Platform
-              </Link>
-              <Link
-                href="/dashboard"
-                className="flex h-14 items-center rounded-full border border-border/50 bg-background px-10 font-bold text-[11px] text-muted-foreground uppercase tracking-[0.2em] transition-all hover:border-primary/20 hover:text-foreground"
+              </Button>
+              <Button
+                render={<Link href="/dashboard" />}
+                variant="outline"
+                size="2xl"
               >
                 Explore Dashboard
-              </Link>
+              </Button>
             </div>
           </div>
 
@@ -121,7 +126,7 @@ export function PlatformDocs() {
           {features.map((feature) => (
             <article
               key={feature.title}
-              className="group relative rounded-[40px] border border-border/40 bg-background p-10 shadow-ethereal transition-all hover:border-primary/20 hover:shadow-premium"
+              className="group relative rounded-[40px] border border-border/40 bg-background p-10 shadow-md transition-all hover:border-primary/20 hover:shadow-lg"
             >
               <div
                 className={cn(
@@ -142,7 +147,7 @@ export function PlatformDocs() {
         </section>
 
         {/* Product Workflow */}
-        <section className="rounded-[48px] border border-border/40 bg-background p-10 shadow-ethereal md:p-20">
+        <section className="rounded-[48px] border border-border/40 bg-background p-10 shadow-md md:p-20">
           <div className="mb-16 text-center">
             <h2 className="mb-4 font-display font-light text-[32px] tracking-tight md:text-[42px]">
               The Strategic Workflow
@@ -158,7 +163,7 @@ export function PlatformDocs() {
 
             {workflow.map((w) => (
               <div key={w.step} className="space-y-6">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-border/60 bg-background font-display font-light text-[24px] text-primary/40 shadow-ethereal ring-8 ring-secondary/5">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-border/60 bg-background font-display font-light text-[24px] text-primary/40 shadow-md ring-8 ring-secondary/5">
                   {w.step}
                 </div>
                 <div>
@@ -176,7 +181,7 @@ export function PlatformDocs() {
 
         {/* Access Layer */}
         <section className="grid gap-8 lg:grid-cols-12">
-          <div className="flex flex-col justify-between rounded-[40px] border border-border/40 bg-secondary/5 p-10 shadow-ethereal lg:col-span-4">
+          <div className="flex flex-col justify-between rounded-[40px] border border-border/40 bg-secondary/5 p-10 shadow-md lg:col-span-4">
             <div>
               <p className="mb-2 font-bold text-[11px] text-muted-foreground/40 uppercase tracking-[0.2em]">
                 Live Demo
@@ -203,18 +208,20 @@ export function PlatformDocs() {
                 </div>
               </div>
             </div>
-            <Link
-              href="/auth"
-              className="group mt-10 flex h-14 items-center justify-between rounded-pill border border-primary/20 bg-primary/5 px-6 text-primary shadow-lift transition-all hover:bg-primary hover:text-white"
+            <Button
+              render={<Link href="/auth" />}
+              variant="outline"
+              size="2xl"
+              className="mt-10 w-full border-primary/20 bg-primary/5 text-primary shadow-xl hover:bg-primary hover:text-white"
             >
-              <span className="font-bold text-[11px] uppercase tracking-widest">
+              <span className="flex w-full items-center justify-between">
                 Sign In Now
+                <Zap className="h-4 w-4" />
               </span>
-              <Zap className="h-4 w-4" />
-            </Link>
+            </Button>
           </div>
 
-          <div className="rounded-[40px] border border-border/40 bg-background p-10 shadow-ethereal lg:col-span-8">
+          <div className="rounded-[40px] border border-border/40 bg-background p-10 shadow-md lg:col-span-8">
             <h3 className="mb-8 font-display font-light text-[24px]">
               Platform Architecture
             </h3>
@@ -263,6 +270,3 @@ export function PlatformDocs() {
   );
 }
 
-function cn(...inputs: any[]) {
-  return inputs.filter(Boolean).join(" ");
-}

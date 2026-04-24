@@ -24,13 +24,13 @@ export function JobsList() {
               <div className="h-8 w-64 animate-pulse rounded-lg bg-secondary/30" />
               <div className="h-4 w-32 animate-pulse rounded-md bg-secondary/20" />
             </div>
-            <div className="h-11 w-40 animate-pulse rounded-pill bg-secondary/30" />
+            <div className="h-11 w-40 animate-pulse rounded-full bg-secondary/30" />
           </div>
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="h-[300px] animate-pulse rounded-section border border-border/10 bg-secondary/5"
+                className="h-[300px] animate-pulse rounded-3xl border border-border/10 bg-secondary/5"
               />
             ))}
           </div>

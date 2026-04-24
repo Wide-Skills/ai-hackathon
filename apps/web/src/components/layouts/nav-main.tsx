@@ -69,7 +69,7 @@ export function NavMain({
                     "group relative mb-1 h-10 overflow-hidden rounded-lg px-4 transition-all duration-300",
                     "hover:bg-secondary/30 active:scale-[0.98]",
                     isItemActive
-                      ? "bg-secondary/50 font-medium text-foreground shadow-ethereal"
+                      ? "bg-secondary/50 font-medium text-foreground shadow-sm"
                       : "text-muted-foreground/50 hover:text-foreground/80",
                   )}
                 >

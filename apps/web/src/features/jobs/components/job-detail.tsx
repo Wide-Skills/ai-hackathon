@@ -19,18 +19,18 @@ import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 import { ScoreBadge } from "../../dashboard/components/score-badge";
 
-const statusConfig: Record<string, { label: string; color: string }> = {
+const statusConfig: Record<string, { label: string; variant: "success" | "warning" | "secondary" }> = {
   active: {
     label: "Active Posting",
-    color: "text-success-foreground bg-success/5 border-success/10",
+    variant: "success",
   },
   draft: {
     label: "Draft Mode",
-    color: "text-warning-foreground bg-warning/5 border-warning/10",
+    variant: "warning",
   },
   closed: {
     label: "Closed Posting",
-    color: "text-muted-foreground bg-secondary border-border/50",
+    variant: "secondary",
   },
 };
 
@@ -46,11 +46,11 @@ export function JobDetail({ id }: JobDetailProps) {
   if (jobQuery.isLoading || applicantsQuery.isLoading) {
     return (
       <div className="w-full animate-pulse space-y-12">
-        <div className="h-8 w-40 rounded-pill bg-secondary/30" />
-        <div className="h-24 w-full rounded-section bg-secondary/30" />
+        <div className="h-8 w-40 rounded-full bg-secondary/30" />
+        <div className="h-24 w-full rounded-3xl bg-secondary/30" />
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
-          <div className="h-[600px] rounded-section bg-secondary/30 lg:col-span-2" />
-          <div className="h-[600px] rounded-section bg-secondary/30" />
+          <div className="h-[600px] rounded-3xl bg-secondary/30 lg:col-span-2" />
+          <div className="h-[600px] rounded-3xl bg-secondary/30" />
         </div>
       </div>
     );
@@ -107,8 +107,10 @@ export function JobDetail({ id }: JobDetailProps) {
 
         <div className="flex items-center gap-4">
           <Badge
-            variant={(job.status as any) || "info"}
-            className="shadow-ethereal"
+            variant={sc.variant}
+            size="default"
+            uppercase
+            className="shadow-md"
           >
             {sc.label}
           </Badge>
@@ -157,7 +159,7 @@ export function JobDetail({ id }: JobDetailProps) {
             <h3 className="mb-8 px-2 font-display font-light text-[16px] text-foreground uppercase tracking-[0.15em] opacity-50">
               Position Overview
             </h3>
-            <Card className="border-border/50 p-10 shadow-premium">
+            <Card className="border-border/50 p-10 shadow-lg">
               <p className="whitespace-pre-wrap font-medium text-[16px] text-foreground/70 leading-relaxed tracking-tight">
                 {job.description}
               </p>
@@ -168,14 +170,14 @@ export function JobDetail({ id }: JobDetailProps) {
             <h3 className="mb-8 px-2 font-display font-light text-[16px] text-foreground uppercase tracking-[0.15em] opacity-50">
               Strategic Requirements
             </h3>
-            <Card className="border-border/50 p-10 shadow-premium">
+            <Card className="border-border/50 p-10 shadow-lg">
               <ul className="grid grid-cols-1 gap-x-16 gap-y-8 md:grid-cols-2">
                 {job.requirements.map((req, i) => (
                   <li
                     key={i}
                     className="flex items-start gap-4 font-medium text-[15px] text-foreground/60 leading-relaxed tracking-tight"
                   >
-                    <div className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-info/30 shadow-ethereal" />
+                    <div className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-info/30 shadow-md" />
                     {req}
                   </li>
                 ))}
@@ -207,10 +209,10 @@ export function JobDetail({ id }: JobDetailProps) {
                   >
                     <Link
                       href={`/dashboard/applicants/${applicant.id}` as Route}
-                      className="group flex items-center justify-between rounded-xl border border-border/50 bg-background p-6 shadow-ethereal transition-all hover:border-primary/20 hover:shadow-premium"
+                      className="group flex items-center justify-between rounded-xl border border-border/50 bg-background p-6 shadow-md transition-all hover:border-primary/20 hover:shadow-lg"
                     >
                       <div className="flex items-center gap-6">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border/30 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-ethereal transition-transform group-hover:scale-[1.05]">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border/30 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-md transition-transform group-hover:scale-[1.05]">
                           {applicant.firstName[0]}
                           {applicant.lastName[0]}
                         </div>
@@ -233,7 +235,7 @@ export function JobDetail({ id }: JobDetailProps) {
                   </motion.div>
                 ))
               ) : (
-                <div className="rounded-section border border-border/50 border-dashed bg-secondary/5 py-24 text-center">
+                <div className="rounded-3xl border border-border/50 border-dashed bg-secondary/5 py-24 text-center">
                   <p className="font-bold text-[11px] text-muted-foreground/30 uppercase tracking-[0.2em]">
                     No applications recorded
                   </p>
@@ -244,7 +246,7 @@ export function JobDetail({ id }: JobDetailProps) {
         </div>
 
         <div className="space-y-12">
-          <Card className="border-border/50 p-10 shadow-premium">
+          <Card className="border-border/50 p-10 shadow-lg">
             <h3 className="mb-10 border-border/10 border-b pb-6 font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
               Neural Vitals
             </h3>
@@ -285,7 +287,7 @@ export function JobDetail({ id }: JobDetailProps) {
           </Card>
 
           {(job.salaryMin || job.salaryMax) && (
-            <Card className="border-border/50 bg-accent/[0.03] p-10 shadow-premium">
+            <Card className="border-border/50 bg-accent/[0.03] p-10 shadow-lg">
               <h3 className="mb-8 border-border/10 border-b pb-6 font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
                 Compensation
               </h3>
@@ -302,7 +304,7 @@ export function JobDetail({ id }: JobDetailProps) {
           )}
 
           {screenedApplicants.length > 0 && (
-            <div className="group relative overflow-hidden rounded-section border border-border/50 bg-accent/10 p-10 shadow-warm-lift transition-all hover:shadow-lift">
+            <div className="group relative overflow-hidden rounded-3xl border border-border/50 bg-accent/10 p-10 shadow-md transition-all hover:shadow-lg">
               <div className="relative z-10">
                 <div className="mb-10 flex items-center justify-between border-border/10 border-b pb-6">
                   <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
@@ -317,9 +319,9 @@ export function JobDetail({ id }: JobDetailProps) {
                     {screenedApplicants.length} experts analyzed with Gemini 1.5
                     Pro.
                   </p>
-                  <div className="mt-10 h-1 w-full overflow-hidden rounded-pill border border-border/10 bg-background/50 shadow-inset">
+                  <div className="mt-10 h-1 w-full overflow-hidden rounded-full border border-border/10 bg-background/50 shadow-inset">
                     <div
-                      className="h-full rounded-pill bg-info/40 shadow-ethereal"
+                      className="h-full rounded-full bg-info/40 shadow-md"
                       style={{ width: `${avgScore}%` }}
                     />
                   </div>

@@ -47,31 +47,31 @@ import { IngestCandidatesDialog } from "./ingest-candidates-dialog";
 
 const statusConfig: Record<
   ApplicationStatus,
-  { label: string; color: string }
+  { label: string; variant: "secondary" | "info" | "success" | "destructive" }
 > = {
   pending: {
     label: "Pending",
-    color: "text-muted-foreground bg-secondary border-border/50",
+    variant: "secondary",
   },
   screening: {
     label: "Screening",
-    color: "text-info-foreground bg-info/5 border-info/10",
+    variant: "info",
   },
   shortlisted: {
     label: "Shortlisted",
-    color: "text-success-foreground bg-success/5 border-success/10",
+    variant: "success",
   },
   rejected: {
     label: "Rejected",
-    color: "text-destructive-foreground bg-destructive/5 border-destructive/10",
+    variant: "destructive",
   },
   hired: {
     label: "Hired",
-    color: "text-info-foreground bg-info/5 border-info/10",
+    variant: "info",
   },
   failed: {
     label: "Failed",
-    color: "text-destructive bg-destructive/10 border-destructive/20",
+    variant: "destructive",
   },
 };
 
@@ -195,7 +195,7 @@ export function ApplicantsList() {
       {/* Search & Filters */}
       <div className="flex flex-wrap items-center gap-6 border-border/20 border-b pb-10">
         <div className="relative min-w-[320px] flex-1">
-          <InputGroup className="h-11 overflow-hidden rounded-pill border-border/50 bg-foreground/[0.01] px-1 shadow-ethereal focus-within:ring-info/20">
+          <InputGroup className="h-11 overflow-hidden rounded-full border-border/50 bg-foreground/[0.01] px-1 shadow-md focus-within:ring-info/20">
             <InputGroupAddon align="inline-start" className="pl-5">
               <Search className="h-4 w-4 text-muted-foreground/20" />
             </InputGroupAddon>
@@ -214,11 +214,11 @@ export function ApplicantsList() {
             onValueChange={(v) => setView(v as "grid" | "table")}
             className="hidden sm:block"
           >
-            <TabsList className="h-11 rounded-pill border-border/50 bg-background px-1 shadow-ethereal">
-              <TabsTrigger value="grid" className="h-9 w-9 rounded-pill p-0">
+            <TabsList className="h-11 rounded-full border-border/50 bg-background px-1 shadow-md">
+              <TabsTrigger value="grid" className="h-9 w-9 rounded-full p-0">
                 <LayoutGrid className="h-4 w-4" />
               </TabsTrigger>
-              <TabsTrigger value="table" className="h-9 w-9 rounded-pill p-0">
+              <TabsTrigger value="table" className="h-9 w-9 rounded-full p-0">
                 <List className="h-4 w-4" />
               </TabsTrigger>
             </TabsList>
@@ -228,12 +228,12 @@ export function ApplicantsList() {
             value={jobFilter}
             onValueChange={(value) => setJobFilter(value ?? "all")}
           >
-            <SelectTrigger className="h-11 w-52 rounded-pill border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-ethereal">
+            <SelectTrigger className="h-11 w-52 rounded-full border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-md">
               <div className="flex items-center">
                 <SelectValue placeholder="Pipeline" />
               </div>
             </SelectTrigger>
-            <SelectContent className="border-border/50 shadow-premium">
+            <SelectContent className="border-border/50 shadow-lg">
               <SelectItem value="all">All Pipelines</SelectItem>
               {jobsData.map((j) => (
                 <SelectItem key={j.id} value={j.id}>
@@ -249,12 +249,12 @@ export function ApplicantsList() {
               isStatusFilter(value ?? "all") && setStatusFilter(value ?? "all")
             }
           >
-            <SelectTrigger className="h-11 w-44 rounded-pill border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-ethereal">
+            <SelectTrigger className="h-11 w-44 rounded-full border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-md">
               <div className="flex items-center">
                 <SelectValue placeholder="Status" />
               </div>
             </SelectTrigger>
-            <SelectContent className="border-border/50 shadow-premium">
+            <SelectContent className="border-border/50 shadow-lg">
               <SelectItem value="all">All States</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="screening">Screening</SelectItem>
@@ -304,12 +304,16 @@ export function ApplicantsList() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.02 }}
               >
-                <Link
-                  href={`/dashboard/applicants/${applicant.id}` as Route}
-                  className="group flex items-center justify-between rounded-xl border border-border/50 bg-background p-6 shadow-ethereal transition-all hover:border-primary/20 hover:shadow-premium"
+                <Card
+                  variant="default"
+                  className="group flex flex-row items-center justify-between p-6 hover:border-primary/20 hover:shadow-lg"
                 >
+                  <Link
+                    href={`/dashboard/applicants/${applicant.id}` as Route}
+                    className="flex w-full items-center justify-between"
+                  >
                   <div className="flex min-w-0 flex-1 items-center gap-6">
-                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border/20 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-ethereal transition-transform group-hover:scale-[1.05]">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border/20 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-md transition-transform group-hover:scale-[1.05]">
                       {applicant.firstName[0]}
                       {applicant.lastName[0]}
                     </div>
@@ -364,7 +368,7 @@ export function ApplicantsList() {
                                 <BrainCircuit className="h-3 w-3 text-muted-foreground/60" />
                               )}
                             </TooltipTrigger>
-                            <TooltipContent className="rounded-pill px-3 py-1 font-bold text-[9px] uppercase tracking-widest">
+                            <TooltipContent className="rounded-full px-3 py-1 font-bold text-[9px] uppercase tracking-widest">
                               Run AI Analysis
                             </TooltipContent>
                           </Tooltip>
@@ -394,14 +398,14 @@ export function ApplicantsList() {
                     </div>
 
                     <div className="flex w-32 justify-end">
-                      <span
-                        className={cn(
-                          "rounded-lg border px-3 py-1 font-bold text-[9px] uppercase tracking-[0.15em] shadow-ethereal",
-                          sc.color,
-                        )}
+                      <Badge
+                        variant={sc.variant}
+                        size="sm"
+                        uppercase
+                        className="shadow-md"
                       >
                         {sc.label}
-                      </span>
+                      </Badge>
                     </div>
 
                     <div className="flex items-center gap-6 border-border/5 border-l pl-6">
@@ -413,7 +417,9 @@ export function ApplicantsList() {
                       </span>
                     </div>
                   </div>
-                </Link>
+                    </div>
+                  </Link>
+                </Card>
               </motion.div>
             );
           })}

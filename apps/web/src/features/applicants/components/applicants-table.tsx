@@ -77,7 +77,7 @@ export const columns: ColumnDef<Applicant>[] = [
       const applicant = row.original;
       return (
         <div className="flex items-center gap-4 py-1">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border/10 bg-secondary/50 font-bold text-[11px] text-muted-foreground/60 shadow-ethereal">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border/10 bg-secondary/50 font-bold text-[11px] text-muted-foreground/60 shadow-md">
             <span className="translate-y-[0.5px]">
               {applicant.firstName[0]}
               {applicant.lastName[0]}
@@ -133,7 +133,7 @@ export const columns: ColumnDef<Applicant>[] = [
             variant={config.variant}
             size="sm"
             uppercase
-            className="border leading-none tracking-[0.12em] shadow-ethereal"
+            className="border leading-none tracking-[0.12em] shadow-md"
           >
             <span className="translate-y-[0.5px]">{config.label}</span>
           </Badge>
@@ -195,7 +195,7 @@ export function ApplicantsTable({ data }: ApplicantsTableProps) {
   });
 
   return (
-    <Card variant="default" className="rounded-lg border bg-card">
+    <Card variant="premium">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

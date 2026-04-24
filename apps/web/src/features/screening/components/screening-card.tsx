@@ -7,23 +7,31 @@ import {
   Circle as XCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-const recommendationConfig = {
+const recommendationConfig: Record<
+  string,
+  { label: string; variant: "success" | "info" | "warning" | "destructive"; icon: any }
+> = {
   "Strongly Recommend": {
-    color: "text-success-foreground bg-success/5 border-success/10",
+    label: "Strongly Recommend",
+    variant: "success",
     icon: CheckCircle2,
   },
   Recommend: {
-    color: "text-info-foreground bg-info/5 border-info/10",
+    label: "Recommend",
+    variant: "info",
     icon: ThumbsUp,
   },
   Consider: {
-    color: "text-warning-foreground bg-warning/5 border-warning/10",
+    label: "Consider",
+    variant: "warning",
     icon: AlertCircle,
   },
   "Not Recommended": {
-    color: "text-destructive-foreground bg-destructive/5 border-destructive/10",
+    label: "Not Recommended",
+    variant: "destructive",
     icon: XCircle,
   },
 };
@@ -54,7 +62,10 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
 
   return (
     <Link href={`/dashboard/applicants/${applicant.id}`}>
-      <div className="group relative overflow-hidden rounded-section border border-border/50 bg-background p-6 shadow-ethereal transition-all hover:border-primary/20 hover:shadow-premium">
+      <Card
+        variant="premium"
+        className="group relative flex flex-col p-6"
+      >
         <div className="flex items-start gap-8">
           {/* Score Side */}
           <div className="flex w-20 shrink-0 flex-col items-center gap-2 border-border/10 border-r pr-6">
@@ -89,15 +100,15 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
               </div>
 
               {rec && (
-                <span
-                  className={cn(
-                    "inline-flex flex-shrink-0 items-center gap-2 rounded-pill border px-3 py-1 font-bold text-[9px] uppercase tracking-[0.1em] shadow-ethereal",
-                    rec.color,
-                  )}
+                <Badge
+                  variant={rec.variant}
+                  size="default"
+                  uppercase
+                  className="shadow-md"
                 >
                   <RecIcon className="h-3 w-3 opacity-60" />
-                  {screening.recommendation}
-                </span>
+                  {rec.label}
+                </Badge>
               )}
             </div>
 
@@ -108,12 +119,15 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex flex-wrap gap-2">
                 {screening.strengths.slice(0, 3).map((s) => (
-                  <span
+                  <Badge
                     key={s}
-                    className="rounded-lg border border-border/20 bg-secondary/30 px-2.5 py-1 font-bold text-[9px] text-muted-foreground uppercase tracking-widest shadow-ethereal"
+                    variant="secondary"
+                    size="xs"
+                    uppercase
+                    className="bg-secondary/30 text-muted-foreground/60 shadow-md"
                   >
                     {s}
-                  </span>
+                  </Badge>
                 ))}
               </div>
               <div className="hidden h-4 w-px bg-border/10 sm:block" />
@@ -132,7 +146,8 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </Card>
     </Link>
   );
 }

@@ -16,7 +16,7 @@ export function MatchScore({ score }: MatchScoreProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1.5 w-16 flex-shrink-0 overflow-hidden rounded-full bg-muted">
+      <div className="h-1.5 w-16 shrink-0 overflow-hidden rounded-full bg-muted">
         <div
           className={cn("h-full rounded-full", bar)}
           style={{ width: `${score}%` }}

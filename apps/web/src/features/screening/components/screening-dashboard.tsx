@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { cn } from "@/lib/utils";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
@@ -170,7 +171,7 @@ export function ScreeningDashboard() {
       <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-4">
         {/* Control Sidebar */}
         <div className="space-y-10 lg:col-span-1">
-          <div className="group overflow-hidden rounded-section border border-border/50 bg-background shadow-premium transition-all hover:shadow-lift">
+          <div className="group overflow-hidden rounded-3xl border border-border/50 bg-background shadow-lg transition-all hover:shadow-xl">
             <div className="flex items-center justify-between border-border/20 border-b bg-secondary/[0.02] px-8 py-5">
               <h3 className="font-display font-light text-[15px] text-foreground uppercase tracking-[0.1em]">
                 Engine
@@ -181,10 +182,12 @@ export function ScreeningDashboard() {
                 Neural architecture analysis powered by Gemini 1.5 Pro.
               </p>
 
-              <button
+              <Button
                 onClick={handleRunScreening}
                 disabled={running || pending.length === 0}
-                className="btn-pill-primary h-11 w-full gap-2.5 text-[11px] uppercase tracking-[0.2em] shadow-ethereal disabled:opacity-40"
+                variant="default"
+                size="xl"
+                className="w-full shadow-lg"
               >
                 {running ? (
                   <>
@@ -193,20 +196,20 @@ export function ScreeningDashboard() {
                 ) : (
                   "Initiate Analysis"
                 )}
-              </button>
+              </Button>
               {running && (
-                <div className="mt-8 h-1 w-full overflow-hidden rounded-pill bg-secondary/50 shadow-inset">
+                <div className="mt-8 h-1 w-full overflow-hidden rounded-full bg-secondary/50 shadow-inset">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
-                    className="h-full bg-primary shadow-ethereal"
+                    className="h-full bg-primary shadow-md"
                   />
                 </div>
               )}
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-section border border-border/50 bg-background shadow-premium">
+          <div className="overflow-hidden rounded-3xl border border-border/50 bg-background shadow-lg">
             <div className="border-border/20 border-b bg-secondary/[0.02] px-8 py-5">
               <h3 className="font-display font-light text-[15px] text-foreground uppercase tracking-[0.1em]">
                 Distribution
@@ -230,10 +233,10 @@ export function ScreeningDashboard() {
                       <span>{rec.split(" ")[0]}</span>
                       <span className="text-foreground/70">{count}</span>
                     </div>
-                    <div className="h-1 w-full overflow-hidden rounded-pill bg-secondary/50 shadow-inset">
+                    <div className="h-1 w-full overflow-hidden rounded-full bg-secondary/50 shadow-inset">
                       <div
                         className={cn(
-                          "h-full rounded-pill shadow-ethereal",
+                          "h-full rounded-full shadow-md",
                           colors[rec],
                         )}
                         style={{ width: `${pct}%` }}
@@ -245,7 +248,7 @@ export function ScreeningDashboard() {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-section border border-border/50 bg-background shadow-premium">
+          <div className="overflow-hidden rounded-3xl border border-border/50 bg-background shadow-lg">
             <div className="border-border/20 border-b bg-secondary/[0.02] px-8 py-5">
               <h3 className="font-display font-light text-[15px] text-foreground uppercase tracking-[0.1em]">
                 Pipeline
@@ -256,10 +259,10 @@ export function ScreeningDashboard() {
                 value={selectedJob}
                 onValueChange={(value) => setSelectedJob(value ?? "all")}
               >
-                <SelectTrigger className="h-11 rounded-pill border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-ethereal">
+                <SelectTrigger className="h-11 rounded-full border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-md">
                   <SelectValue placeholder="All Jobs" />
                 </SelectTrigger>
-                <SelectContent className="border-border/50 shadow-premium">
+                <SelectContent className="border-border/50 shadow-lg">
                   <SelectItem value="all">All Pipelines</SelectItem>
                   {jobs.map((j) => (
                     <SelectItem key={j.id} value={j.id}>
@@ -286,7 +289,7 @@ export function ScreeningDashboard() {
               onClick={() =>
                 queryClient.invalidateQueries({ queryKey: [["applicants"]] })
               }
-              className="flex h-10 w-10 items-center justify-center rounded-pill border border-border/50 bg-background text-muted-foreground/20 shadow-ethereal transition-all hover:bg-secondary active:scale-[0.95]"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-border/50 bg-background text-muted-foreground/20 shadow-md transition-all hover:bg-secondary active:scale-[0.95]"
             >
               <RefreshCw className="h-4 w-4" />
             </button>

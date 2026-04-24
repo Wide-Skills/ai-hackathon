@@ -10,9 +10,9 @@ interface StatCardProps {
 export function StatCard({ label, value, sublabel, trend }: StatCardProps) {
   return (
     <Card
-      variant="ethereal"
-      size="none"
+      variant="premium"
       className="flex h-full flex-col justify-between p-8"
+      size="none"
     >
       <div className="space-y-4">
         <p className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em]">

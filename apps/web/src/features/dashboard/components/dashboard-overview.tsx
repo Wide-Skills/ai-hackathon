@@ -28,12 +28,12 @@ export function DashboardOverview() {
       <div className="w-full animate-pulse space-y-16">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-40 rounded-section bg-secondary/30" />
+            <div key={i} className="h-40 rounded-3xl bg-secondary/30" />
           ))}
         </div>
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
-          <div className="h-[600px] rounded-section bg-secondary/30 lg:col-span-2" />
-          <div className="h-[600px] rounded-section bg-secondary/30" />
+          <div className="h-[600px] rounded-3xl bg-secondary/30 lg:col-span-2" />
+          <div className="h-[600px] rounded-3xl bg-secondary/30" />
         </div>
       </div>
     );
@@ -143,7 +143,7 @@ export function DashboardOverview() {
           {/* Main Strategic Column */}
           <div className="space-y-12 lg:col-span-8">
             {/* Top Talent: Asymmetric Layout */}
-            <Card variant="exhibit" size="none">
+            <Card variant="premium" size="none" className="overflow-hidden">
               <header className="flex items-center justify-between border-border/10 border-b bg-secondary/[0.01] px-10 py-8">
                 <div>
                   <h3 className="font-display font-light text-[18px] text-foreground uppercase tracking-[0.15em]">
@@ -156,8 +156,7 @@ export function DashboardOverview() {
                 <Button
                   render={<Link href="/dashboard/applicants">Market View</Link>}
                   variant="outline"
-                  className="rounded-full"
-                  size="lg"
+                  size="xl"
                 />
               </header>
               <div className="divide-y divide-border/5">
@@ -168,7 +167,7 @@ export function DashboardOverview() {
                       href={`/dashboard/applicants/${applicant.id}` as Route}
                       className="group flex h-[100px] items-center gap-10 px-10 transition-all hover:bg-secondary/[0.15]"
                     >
-                      <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-border/40 bg-background font-bold text-[13px] text-muted-foreground/30 uppercase shadow-ethereal transition-transform group-hover:scale-[1.05]">
+                      <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl border border-border/40 bg-background font-bold text-[13px] text-muted-foreground/30 uppercase shadow-md transition-transform group-hover:scale-[1.05]">
                         <span className="translate-y-[0.5px]">
                           {applicant.firstName[0]}
                           {applicant.lastName[0]}
@@ -204,7 +203,7 @@ export function DashboardOverview() {
             </Card>
 
             {/* Active Pipelines: Compact List */}
-            <div className="overflow-hidden rounded-section border border-border/50 bg-background shadow-premium">
+            <Card variant="premium" size="none" className="overflow-hidden">
               <header className="flex items-center justify-between border-border/10 border-b bg-secondary/[0.01] px-10 py-8">
                 <h3 className="font-display font-light text-[18px] text-foreground uppercase tracking-[0.15em]">
                   Neural Pipelines
@@ -250,7 +249,7 @@ export function DashboardOverview() {
                             <p className="font-bold text-[10px] text-info/50 uppercase tracking-widest">
                               {pct}% Screened
                             </p>
-                            <div className="h-1 w-24 overflow-hidden rounded-pill bg-secondary/50 shadow-inset">
+                            <div className="h-1 w-24 overflow-hidden rounded-full bg-secondary/50 shadow-inset">
                               <div
                                 className={cn(
                                   "h-full transition-all duration-1000",
@@ -273,13 +272,13 @@ export function DashboardOverview() {
                   </div>
                 )}
               </div>
-            </div>
+            </Card>
           </div>
 
           {/* Activity & Health Column */}
           <div className="space-y-12 lg:col-span-4">
             {/* Health Index Card */}
-            <div className="space-y-12 rounded-section border border-border/40 bg-accent/5 p-10 shadow-premium">
+            <Card variant="premium" className="space-y-12 bg-accent/5 p-10 transition-all hover:border-primary/20" size="none">
               <header>
                 <h3 className="mb-1 font-display font-light text-[16px] text-foreground uppercase tracking-[0.12em]">
                   Intelligence Hub
@@ -288,7 +287,7 @@ export function DashboardOverview() {
                   System Health & Coverage
                 </p>
               </header>
-
+ 
               <div className="space-y-10">
                 <div className="space-y-4">
                   <div className="flex items-end justify-between">
@@ -299,14 +298,14 @@ export function DashboardOverview() {
                       {stats?.avgMatchScore ?? 0}%
                     </p>
                   </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-pill border border-border/10 bg-background/50">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full border border-border/10 bg-background/50">
                     <div
                       className="h-full bg-info/50 shadow-[0_0_15px_rgba(var(--color-info),0.3)]"
                       style={{ width: `${stats?.avgMatchScore ?? 0}%` }}
                     />
                   </div>
                 </div>
-
+ 
                 <div className="space-y-4">
                   <div className="flex items-end justify-between">
                     <p className="pl-1 font-bold text-[10px] text-muted-foreground/50 uppercase tracking-widest">
@@ -323,7 +322,7 @@ export function DashboardOverview() {
                       %
                     </p>
                   </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-pill border border-border/10 bg-background/50">
+                  <div className="h-1.5 w-full overflow-hidden rounded-full border border-border/10 bg-background/50">
                     <div
                       className="h-full bg-success/50 shadow-[0_0_15px_rgba(var(--color-success),0.3)]"
                       style={{
@@ -333,19 +332,19 @@ export function DashboardOverview() {
                   </div>
                 </div>
               </div>
-
+ 
               <Button
                 render={<Link href="/dashboard/analytics" className="block" />}
-                className="w-full rounded-full"
                 variant="outline"
-                size="lg"
+                size="xl"
+                className="w-full"
               >
                 Deep Analytics
               </Button>
-            </div>
+            </Card>
 
             {/* Log Stream */}
-            <div className="overflow-hidden rounded-section border border-border/50 bg-background shadow-premium">
+            <Card variant="premium" size="none" className="overflow-hidden">
               <header className="border-border/10 border-b bg-secondary/[0.01] px-8 py-6">
                 <h3 className="font-display font-light text-[15px] text-foreground uppercase tracking-[0.12em]">
                   Neural Log
@@ -389,7 +388,7 @@ export function DashboardOverview() {
                   </div>
                 )}
               </div>
-            </div>
+            </Card>
           </div>
         </div>
       </div>

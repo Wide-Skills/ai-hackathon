@@ -8,15 +8,21 @@ const cardVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "rounded-xl bg-card text-card-foreground ring-1 ring-foreground/10",
-        exhibit:
-          "rounded-card border border-border bg-card text-card-foreground shadow-premium",
-        bento:
-          "relative rounded-card border border-border bg-card shadow-premium hover:shadow-lift",
-        ethereal:
-          "rounded-section border border-border/40 bg-background shadow-ethereal hover:border-primary/20 hover:shadow-premium active:scale-[0.99]",
-      },
+        default: "rounded-xl border border-border bg-card text-card-foreground shadow-sm",
+        outline: "rounded-xl border border-border bg-transparent text-foreground",
+        secondary: "rounded-xl border border-border bg-secondary/50 text-secondary-foreground",
+premium: `
+  rounded-2xl bg-card text-card-foreground
+
+  border border-border/60
+  ring-1 ring-black/[0.04]
+
+  shadow-[0_1px_2px_rgba(0,0,0,0.04),0_6px_16px_rgba(0,0,0,0.05)]
+
+  transition-all duration-300
+  hover:shadow-[0_2px_6px_rgba(0,0,0,0.06),0_10px_24px_rgba(0,0,0,0.06)]
+`, 
+},
       size: {
         default: "gap-4 py-4 data-[size=sm]:gap-3 data-[size=sm]:py-3",
         sm: "gap-3 py-3",

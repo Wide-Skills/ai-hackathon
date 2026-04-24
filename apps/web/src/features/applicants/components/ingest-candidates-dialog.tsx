@@ -8,6 +8,7 @@ import {
   Plus,
 } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { UploadCandidatesDialog } from "./upload-candidates-dialog";
@@ -54,17 +55,19 @@ export function IngestCandidatesDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="h-11 gap-2 bg-primary font-bold text-[11px] text-white uppercase tracking-[0.2em] shadow-premium transition-all hover:bg-primary/90 active:scale-[0.98]">
-          <Plus className="h-4 w-4" />
-          Ingest Talent
-        </Button>
+      <DialogTrigger
+        render={
+          <Button className="h-11 gap-2 bg-primary font-bold text-[11px] text-white uppercase tracking-[0.2em] shadow-lg transition-all hover:bg-primary/90 active:scale-[0.98]" />
+        }
+      >
+        <Plus className="h-4 w-4" />
+        Ingest Talent
       </DialogTrigger>
-      <DialogContent className="max-w-2xl overflow-hidden border-border/40 bg-background p-0 shadow-premium">
+      <DialogContent className="max-w-4xl! overflow-hidden border-border/40 bg-background p-0 shadow-lg">
         <div className="grid grid-cols-1 md:grid-cols-5">
           <div className="flex flex-col justify-between border-border/10 border-r bg-secondary/30 p-8 md:col-span-2">
             <div>
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 shadow-ethereal">
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 shadow-md">
                 <BrainCircuit className="h-6 w-6 text-primary" />
               </div>
               <h2 className="mb-4 font-display font-light text-foreground text-xl uppercase tracking-widest">
@@ -118,9 +121,14 @@ export function IngestCandidatesDialog() {
                             <span className="font-bold text-[14px] text-foreground tracking-tight transition-colors group-hover:text-primary">
                               {method.title}
                             </span>
-                            <span className="rounded-pill bg-secondary/50 px-2 py-0.5 font-bold text-[9px] text-muted-foreground/60 uppercase tracking-widest">
+                            <Badge
+                              variant="secondary"
+                              size="xs"
+                              uppercase
+                              className="bg-secondary/50 text-muted-foreground/60 shadow-sm"
+                            >
                               {method.badge}
-                            </span>
+                            </Badge>
                           </div>
                           <p className="font-medium text-[12px] text-muted-foreground/50 leading-snug">
                             {method.description}
@@ -148,9 +156,14 @@ export function IngestCandidatesDialog() {
                       <span className="font-bold text-[14px] text-foreground tracking-tight">
                         {method.title}
                       </span>
-                      <span className="rounded-pill bg-secondary/50 px-2 py-0.5 font-bold text-[9px] text-muted-foreground/60 uppercase tracking-widest">
+                      <Badge
+                        variant="secondary"
+                        size="xs"
+                        uppercase
+                        className="bg-secondary/50 text-muted-foreground/60 shadow-sm"
+                      >
                         {method.badge}
-                      </span>
+                      </Badge>
                     </div>
                     <p className="font-medium text-[12px] text-muted-foreground/50 leading-snug">
                       {method.description}

@@ -6,6 +6,7 @@ import {
   ThumbsUp,
   Circle as XCircle,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface AIAnalysisCardProps {
@@ -48,7 +49,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
           : "text-destructive";
 
   return (
-    <div className="overflow-hidden rounded-section border border-border/50 bg-background shadow-premium">
+    <Card variant="premium" className="overflow-hidden">
       <div className="border-border/10 border-b p-10">
         <div className="flex items-start justify-between gap-10">
           <div className="flex-1">
@@ -78,14 +79,17 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
                   AI Recommendation
                 </p>
                 {recConfig && (
-                  <span
+                  <Badge
+                    variant="outline"
+                    size="sm"
+                    uppercase
                     className={cn(
-                      "inline-flex items-center gap-2 rounded-pill border px-4 py-1.5 font-bold text-[10px] uppercase tracking-[0.1em] shadow-ethereal",
+                      "px-4 py-1.5 font-bold shadow-md",
                       recConfig.color,
                     )}
                   >
                     {screening.recommendation}
-                  </span>
+                  </Badge>
                 )}
               </div>
             </div>
@@ -119,7 +123,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
                   animate={{ strokeDashoffset: 100 - screening.matchScore }}
                   transition={{ duration: 1.5, ease: "circOut" }}
                   strokeLinecap="round"
-                  className={cn("shadow-premium", scoreColor)}
+                  className={cn("shadow-lg", scoreColor)}
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
@@ -183,13 +187,13 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
                   {sb.score}%
                 </span>
               </div>
-              <div className="h-1 w-full overflow-hidden rounded-pill bg-secondary/50 shadow-inset">
+              <div className="h-1 w-full overflow-hidden rounded-full bg-secondary/50 shadow-inset">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${sb.score}%` }}
                   transition={{ duration: 1.2, ease: "circOut" }}
                   className={cn(
-                    "h-full rounded-pill shadow-ethereal",
+                    "h-full rounded-full shadow-md",
                     sb.score >= 85
                       ? "bg-success/40"
                       : sb.score >= 70
@@ -202,6 +206,6 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
           ))}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

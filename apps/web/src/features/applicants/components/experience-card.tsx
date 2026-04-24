@@ -9,9 +9,9 @@ interface ExperienceCardProps {
 
 export function ExperienceCard({ experience }: ExperienceCardProps) {
   return (
-    <Card variant="exhibit" size="none" className="p-8">
+    <Card variant="premium" className="p-8" size="none">
       <div className="mb-10 flex items-center gap-3 border-border/10 border-b pb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-ethereal">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-md">
           <Briefcase className="h-4.5 w-4.5" />
         </div>
         <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
@@ -23,7 +23,7 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
         {experience.map((exp, i) => (
           <div key={i} className="group flex gap-6">
             <div className="flex flex-col items-center">
-              <div className="mt-2 flex h-1.5 w-1.5 flex-shrink-0 items-center justify-center rounded-full bg-primary/40 shadow-ethereal" />
+              <div className="mt-2 flex h-1.5 w-1.5 flex-shrink-0 items-center justify-center rounded-full bg-primary/40 shadow-md" />
               {i < experience.length - 1 && (
                 <div className="mt-4 w-px flex-1 bg-border/10" />
               )}
@@ -43,7 +43,7 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
                     {exp.startDate} – {exp.endDate}
                   </p>
                   {exp.isCurrent && (
-                    <Badge variant="success" size="technical" className="mt-1">
+                    <Badge variant="success" size="xs" uppercase className="shadow-sm">
                       Active
                     </Badge>
                   )}
@@ -57,8 +57,9 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
                   <Badge
                     key={t}
                     variant="secondary"
-                    size="technical"
-                    className="border-border/10 bg-secondary/30 px-2.5 py-1 font-bold text-[10px] text-muted-foreground/60 uppercase tracking-widest shadow-ethereal"
+                    size="xs"
+                    uppercase
+                    className="shadow-md"
                   >
                     {t}
                   </Badge>

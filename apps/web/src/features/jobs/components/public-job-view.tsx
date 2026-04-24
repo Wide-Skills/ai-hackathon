@@ -112,7 +112,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md space-y-6 rounded-3xl border border-border/50 bg-background p-10 text-center shadow-premium"
+          className="w-full max-w-md space-y-6 rounded-3xl border border-border/50 bg-background p-10 text-center shadow-lg"
         >
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
             <CheckCircle2 className="h-8 w-8 text-success" />
@@ -210,7 +210,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
 
           {/* Application Form */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 space-y-6 rounded-3xl border border-border/50 bg-background p-8 shadow-premium">
+            <div className="sticky top-24 space-y-6 rounded-3xl border border-border/50 bg-background p-8 shadow-lg">
               <h3 className="font-display font-light text-xl">Apply Now</h3>
 
               <form onSubmit={handleApply} className="space-y-4">
@@ -300,7 +300,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                 <Button
                   type="submit"
                   disabled={uploading}
-                  className="mt-4 h-12 w-full rounded-full bg-primary font-semibold text-[15px] text-white shadow-premium transition-all hover:shadow-lift"
+                  className="mt-4 h-12 w-full rounded-full bg-primary font-semibold text-[15px] text-white shadow-lg transition-all hover:shadow-xl"
                 >
                   {uploading ? (
                     <>

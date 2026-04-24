@@ -8,9 +8,9 @@ interface EducationCardProps {
 
 export function EducationCard({ education }: EducationCardProps) {
   return (
-    <Card className="border-border/50 p-8 shadow-premium">
+    <Card variant="premium" className="p-8">
       <div className="mb-10 flex items-center gap-3 border-border/10 border-b pb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-ethereal">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-md">
           <GraduationCap className="h-4.5 w-4.5" />
         </div>
         <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
@@ -21,7 +21,7 @@ export function EducationCard({ education }: EducationCardProps) {
       <div className="space-y-8">
         {education.map((edu, i) => (
           <div key={i} className="group flex gap-5">
-            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-border/5 bg-secondary/30 text-muted-foreground/30 shadow-ethereal transition-all group-hover:scale-[1.05]">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-border/5 bg-secondary/30 text-muted-foreground/30 shadow-md transition-all group-hover:scale-[1.05]">
               <GraduationCap className="h-4.5 w-4.5" />
             </div>
             <div>

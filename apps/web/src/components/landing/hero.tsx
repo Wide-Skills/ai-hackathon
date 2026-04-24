@@ -3,6 +3,9 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, MoreHorizontal, Search, User2 } from "lucide-react";
 import type React from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const AppPreview = () => {
   const { scrollYProgress } = useScroll();
@@ -84,23 +87,21 @@ const AppPreview = () => {
                     role: "AI & Neural Networks",
                     score: "98.4",
                     match: "Matched",
-                    color:
-                      "text-success-foreground bg-success/5 border-success/10",
+                    variant: "success",
                   },
                   {
                     name: "Michael Chen",
                     role: "Distributed Systems Lead",
                     score: "94.1",
                     match: "Matched",
-                    color: "text-info-foreground bg-info/5 border-info/10",
+                    variant: "info",
                   },
                   {
                     name: "Elena Rodriguez",
                     role: "Product Engineering",
                     score: "89.8",
                     match: "Matched",
-                    color:
-                      "text-warning-foreground bg-warning/5 border-warning/10",
+                    variant: "warning",
                   },
                 ].map((c, i) => (
                   <div
@@ -122,11 +123,14 @@ const AppPreview = () => {
                     </div>
                     <div className="flex items-center gap-10">
                       <div className="hidden text-right sm:block">
-                        <div
-                          className={`mb-1.5 rounded border px-2 py-0.5 text-[9px] uppercase tracking-[0.15em] ${c.color}`}
+                        <Badge
+                          variant={c.variant as any}
+                          size="xs"
+                          uppercase
+                          className="mb-1.5 px-2 py-0.5 border-border/10 shadow-sm"
                         >
                           {c.match}
-                        </div>
+                        </Badge>
                         <div className="h-1 w-16 overflow-hidden rounded-full bg-foreground/[0.02]">
                           <motion.div
                             initial={{ width: 0 }}
@@ -190,15 +194,24 @@ export const Hero: React.FC = () => {
             transition={{ delay: 0.25, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-wrap items-center justify-center gap-5"
           >
-            <button className="btn-pill-primary h-[52px] px-10 text-[15px]">
+            <Button
+              render={<Link href="/auth" />}
+              variant="default"
+              size="2xl"
+              className="shadow-xl"
+            >
               <span>Start Screening Now</span>
               <ArrowRight className="ml-2 h-4 w-4 opacity-40 transition-transform group-hover:translate-x-1" />
-            </button>
+            </Button>
 
-            <button className="h-[52px] rounded-full border px-10 text-[15px] shadow-sm">
+            <Button
+              render={<Link href="/dashboard" />}
+              variant="outline"
+              size="2xl"
+              className="shadow-sm"
+            >
               <span>View Product Showcase</span>
-              {/* <div className="ml-4 h-1.5 w-1.5 rounded-full bg-foreground/10" /> */}
-            </button>
+            </Button>
           </motion.div>
         </div>
 

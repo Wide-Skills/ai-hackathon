@@ -1,5 +1,6 @@
 import type { Project } from "@ai-hackathon/shared";
 import { Code2, ExternalLink } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
 interface ProjectsCardProps {
@@ -10,9 +11,9 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
   if (projects.length === 0) return null;
 
   return (
-    <Card className="border-border/50 p-8 shadow-premium">
+    <Card className="border-border/50 p-8 shadow-lg">
       <div className="mb-10 flex items-center gap-3 border-border/10 border-b pb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-ethereal">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-md">
           <Code2 className="h-4.5 w-4.5" />
         </div>
         <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
@@ -24,7 +25,7 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
         {projects.map((proj, i) => (
           <div
             key={i}
-            className="group rounded-xl border border-border/10 bg-secondary/[0.03] p-6 shadow-ethereal transition-all hover:bg-secondary/[0.05]"
+            className="group rounded-xl border border-border/10 bg-secondary/[0.03] p-6 shadow-md transition-all hover:bg-secondary/[0.05]"
           >
             <div className="mb-4 flex items-start justify-between">
               <div>
@@ -40,7 +41,7 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
                   href={proj.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-border/10 text-muted-foreground/30 transition-all hover:bg-background hover:text-foreground hover:shadow-ethereal"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-border/10 text-muted-foreground/30 transition-all hover:bg-background hover:text-foreground hover:shadow-md"
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
@@ -51,12 +52,15 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {proj.technologies.map((t) => (
-                <span
+                <Badge
                   key={t}
-                  className="rounded-lg border border-border/5 bg-background px-2.5 py-1 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-widest shadow-ethereal"
+                  variant="outline"
+                  size="xs"
+                  uppercase
+                  className="border-border/5 bg-background text-muted-foreground/40 shadow-sm"
                 >
                   {t}
-                </span>
+                </Badge>
               ))}
             </div>
           </div>

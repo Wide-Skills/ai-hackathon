@@ -33,7 +33,7 @@ export function SettingsForm() {
                   className={cn(
                     "group mb-1 flex items-center gap-4 whitespace-nowrap rounded-xl px-3 py-2.5 text-left transition-all lg:whitespace-normal",
                     isActive
-                      ? "bg-secondary/50 text-foreground shadow-ethereal"
+                      ? "bg-secondary/50 text-foreground shadow-md"
                       : "text-muted-foreground/40 hover:bg-secondary/20 hover:text-foreground/70",
                   )}
                 >
@@ -56,7 +56,7 @@ export function SettingsForm() {
 
         {/* Content Area - Expansive exhibit */}
         <div className="max-w-[800px] flex-1">
-          <div className="rounded-section border border-border/50 bg-background p-12 shadow-premium">
+          <div className="rounded-3xl border border-border/50 bg-background p-12 shadow-lg">
             {activeTab === "profile" && <ProfileSettings />}
             {activeTab === "ai" && <AISettings />}
             {activeTab === "notifications" && <NotificationSettings />}

@@ -98,7 +98,7 @@ export function CreateJobForm() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-section border border-border/50 bg-background shadow-premium">
+      <div className="overflow-hidden rounded-3xl border border-border/50 bg-background shadow-lg">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -121,8 +121,8 @@ export function CreateJobForm() {
                   onChange: CreateJobSchema.shape.title,
                 }}
                 children={(field) => (
-                  <div className="space-y-2">
-                    <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                  <div className="space-y-2.5">
+                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                       Job Title <span className="text-destructive">*</span>
                     </Label>
                     <Input
@@ -130,7 +130,7 @@ export function CreateJobForm() {
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      className={`h-12 rounded-xl border-border/50 bg-secondary/10 font-medium text-[15px] tracking-tight ${field.state.meta.errors.length ? "border-destructive/50" : ""}`}
+                      className={`h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md ${field.state.meta.errors.length ? "border-destructive/50" : ""}`}
                     />
                     {field.state.meta.errors.length > 0 && (
                       <p className="pl-1 font-bold text-[10px] text-destructive uppercase tracking-wider">
@@ -144,8 +144,8 @@ export function CreateJobForm() {
               <form.Field
                 name="department"
                 children={(field) => (
-                  <div className="space-y-2">
-                    <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                  <div className="space-y-2.5">
+                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                       Department
                     </Label>
                     <Input
@@ -153,7 +153,7 @@ export function CreateJobForm() {
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      className="h-12 rounded-xl border-border/50 bg-secondary/10 font-medium text-[15px] tracking-tight"
+                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
                     />
                   </div>
                 )}
@@ -166,8 +166,8 @@ export function CreateJobForm() {
                 onChange: CreateJobSchema.shape.description,
               }}
               children={(field) => (
-                <div className="space-y-2">
-                  <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                <div className="space-y-2.5">
+                  <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                     Description <span className="text-destructive">*</span>
                   </Label>
                   <Textarea
@@ -175,7 +175,7 @@ export function CreateJobForm() {
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className={`min-h-32 resize-none rounded-2xl border-border/50 bg-secondary/10 p-4 font-medium text-[15px] leading-relaxed tracking-tight ${field.state.meta.errors.length ? "border-destructive/50" : ""}`}
+                    className={`min-h-40 resize-none rounded-2xl border-border/50 bg-secondary/30 p-5 font-medium text-[15px] leading-relaxed tracking-tight transition-all focus:bg-background focus:shadow-md ${field.state.meta.errors.length ? "border-destructive/50" : ""}`}
                   />
                   {field.state.meta.errors.length > 0 && (
                     <p className="pl-1 font-bold text-[10px] text-destructive uppercase tracking-wider">
@@ -190,8 +190,8 @@ export function CreateJobForm() {
               <form.Field
                 name="location"
                 children={(field) => (
-                  <div className="space-y-2">
-                    <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                  <div className="space-y-2.5">
+                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                       Location
                     </Label>
                     <Input
@@ -199,7 +199,7 @@ export function CreateJobForm() {
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      className="h-12 rounded-xl border-border/50 bg-secondary/10 font-medium text-[15px] tracking-tight"
+                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
                     />
                   </div>
                 )}
@@ -208,8 +208,8 @@ export function CreateJobForm() {
               <form.Field
                 name="type"
                 children={(field) => (
-                  <div className="space-y-2">
-                    <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                  <div className="space-y-2.5">
+                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                       Job Type
                     </Label>
                     <Select
@@ -218,10 +218,10 @@ export function CreateJobForm() {
                         field.handleChange(value as any)
                       }
                     >
-                      <SelectTrigger className="h-12 rounded-xl border-border/50 bg-secondary/10 font-medium text-[15px] tracking-tight">
+                      <SelectTrigger className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border-border/50 shadow-premium">
+                      <SelectContent className="rounded-xl border-border/50 shadow-lg">
                         <SelectItem value="Full-time">Full-time</SelectItem>
                         <SelectItem value="Part-time">Part-time</SelectItem>
                         <SelectItem value="Contract">Contract</SelectItem>
@@ -235,8 +235,8 @@ export function CreateJobForm() {
               <form.Field
                 name="status"
                 children={(field) => (
-                  <div className="space-y-2">
-                    <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                  <div className="space-y-2.5">
+                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                       Status
                     </Label>
                     <Select
@@ -245,10 +245,10 @@ export function CreateJobForm() {
                         field.handleChange(value as any)
                       }
                     >
-                      <SelectTrigger className="h-12 rounded-xl border-border/50 bg-secondary/10 font-medium text-[15px] tracking-tight">
+                      <SelectTrigger className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border-border/50 shadow-premium">
+                      <SelectContent className="rounded-xl border-border/50 shadow-lg">
                         <SelectItem value="active">Active</SelectItem>
                         <SelectItem value="draft">Draft</SelectItem>
                         <SelectItem value="closed">Closed</SelectItem>
@@ -274,7 +274,7 @@ export function CreateJobForm() {
               }}
               children={(field) => (
                 <div className="space-y-4">
-                  <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                  <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                     Requirements <span className="text-destructive">*</span>
                   </Label>
                   <div className="flex gap-4">
@@ -293,7 +293,7 @@ export function CreateJobForm() {
                           }
                         })
                       }
-                      className={`h-12 rounded-xl border-border/50 bg-secondary/10 font-medium text-[15px] tracking-tight ${field.state.meta.errors.length ? "border-destructive/50" : ""}`}
+                      className={`h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md ${field.state.meta.errors.length ? "border-destructive/50" : ""}`}
                     />
                     <Button
                       type="button"
@@ -307,7 +307,7 @@ export function CreateJobForm() {
                           setRequirementInput("");
                         }
                       }}
-                      className="h-12 rounded-xl border-border/50 px-6 hover:bg-secondary"
+                      className="h-12 rounded-xl border-border/50 px-6 shadow-md transition-all hover:bg-secondary active:scale-[0.98]"
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
@@ -349,7 +349,7 @@ export function CreateJobForm() {
               name="skills"
               children={(field) => (
                 <div className="space-y-4">
-                  <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                  <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                     Skills (tags)
                   </Label>
                   <div className="flex gap-4">
@@ -368,7 +368,7 @@ export function CreateJobForm() {
                           }
                         })
                       }
-                      className="h-12 rounded-xl border-border/50 bg-secondary/10 font-medium text-[15px] tracking-tight"
+                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
                     />
                     <Button
                       type="button"
@@ -382,7 +382,7 @@ export function CreateJobForm() {
                           setSkillInput("");
                         }
                       }}
-                      className="h-12 rounded-xl border-border/50 px-6 hover:bg-secondary"
+                      className="h-12 rounded-xl border-border/50 px-6 shadow-md transition-all hover:bg-secondary active:scale-[0.98]"
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
@@ -419,8 +419,8 @@ export function CreateJobForm() {
               <form.Field
                 name="salaryMin"
                 children={(field) => (
-                  <div className="space-y-2">
-                    <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                  <div className="space-y-2.5">
+                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                       Min Salary
                     </Label>
                     <Input
@@ -432,7 +432,7 @@ export function CreateJobForm() {
                           e.target.value ? Number(e.target.value) : undefined,
                         )
                       }
-                      className="h-12 rounded-xl border-border/50 bg-secondary/10 font-medium text-[15px] tracking-tight"
+                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
                     />
                   </div>
                 )}
@@ -441,8 +441,8 @@ export function CreateJobForm() {
               <form.Field
                 name="salaryMax"
                 children={(field) => (
-                  <div className="space-y-2">
-                    <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                  <div className="space-y-2.5">
+                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                       Max Salary
                     </Label>
                     <Input
@@ -454,7 +454,7 @@ export function CreateJobForm() {
                           e.target.value ? Number(e.target.value) : undefined,
                         )
                       }
-                      className="h-12 rounded-xl border-border/50 bg-secondary/10 font-medium text-[15px] tracking-tight"
+                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
                     />
                   </div>
                 )}
@@ -463,15 +463,15 @@ export function CreateJobForm() {
               <form.Field
                 name="closingDate"
                 children={(field) => (
-                  <div className="space-y-2">
-                    <Label className="font-bold text-[11px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+                  <div className="space-y-2.5">
+                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
                       Closing Date
                     </Label>
                     <Input
                       type="date"
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      className="h-12 rounded-xl border-border/50 bg-secondary/10 font-medium text-[15px] tracking-tight"
+                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
                     />
                   </div>
                 )}
@@ -495,7 +495,7 @@ export function CreateJobForm() {
                 <Button
                   type="submit"
                   disabled={!canSubmit || isSubmitting || createJob.isPending}
-                  className="h-12 rounded-full bg-primary px-12 font-bold text-[13px] text-white uppercase tracking-[0.15em] shadow-premium transition-all hover:shadow-lift"
+                  className="h-12 rounded-full bg-primary px-12 font-bold text-[13px] text-white uppercase tracking-[0.15em] shadow-lg transition-all hover:shadow-xl"
                 >
                   {isSubmitting || createJob.isPending ? (
                     <>
