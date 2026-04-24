@@ -15,7 +15,7 @@ const features = [
   {
     title: "AI-First Intelligence",
     description:
-      "Powered by Gemini 2.5 Flash, our platform performs deep semantic analysis of resumes beyond simple keyword matching. It understands context, nuances in experience, and potential resonance with specific role requirements.",
+      "Powered by Gemini AI, our platform performs deep semantic analysis of resumes beyond simple keyword matching. It understands context, nuances in experience, and potential resonance with specific role requirements.",
     icon: RiBrainLine,
     color: "text-primary",
     bg: "bg-primary/5",
@@ -240,7 +240,7 @@ export function PlatformDocs() {
                   Intelligence Layer
                 </h5>
                 <p className="text-[14px] text-muted-foreground/70 leading-relaxed">
-                  Integrated with Gemini 2.5 Flash for deep semantic screening
+                  Integrated with Gemini AI for deep semantic screening
                   and automated profile extraction.
                 </p>
               </div>

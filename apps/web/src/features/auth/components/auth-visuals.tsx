@@ -82,8 +82,7 @@ export function AuthVisuals() {
             with absolute clarity.
           </h2>
           <p className="max-w-[300px] text-[15px] text-muted-foreground leading-relaxed">
-            The first explainable talent screening platform powered by Gemini
-            2.0 Flash.
+            The first explainable talent screening platform powered by Gemini AI.
           </p>
         </motion.div>
       </div>

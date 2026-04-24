@@ -179,7 +179,7 @@ export function ScreeningDashboard() {
             </div>
             <div className="p-8">
               <p className="mb-10 font-medium text-[13px] text-muted-foreground/50 leading-relaxed tracking-tight">
-                Neural architecture analysis powered by Gemini 1.5 Pro.
+                Neural architecture analysis powered by Gemini AI.
               </p>
 
               <Button

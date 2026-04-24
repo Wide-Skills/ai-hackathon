@@ -20,6 +20,10 @@
       "cache": false,
       "persistent": true
     },
+    "start": {
+      "dependsOn": ["^build"],
+      "persistent": true
+    },
     "db:push": {
       "cache": false
     },

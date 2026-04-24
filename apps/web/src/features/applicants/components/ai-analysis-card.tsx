@@ -56,7 +56,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
           <div className="flex-1">
             <div className="mb-8 flex items-center gap-2.5 opacity-40">
               <span className="font-bold text-[10px] text-foreground uppercase tracking-[0.2em]">
-                Neural Architecture Evaluation
+                AI Assessment Summary
               </span>
             </div>
 
@@ -77,7 +77,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
 
               <div className="pb-3">
                 <p className="mb-2.5 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                  AI Recommendation
+                  Overall Recommendation
                 </p>
                 {recConfig && (
                   <Badge
@@ -138,7 +138,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
       <div className="grid grid-cols-1 gap-16 bg-secondary/[0.03] p-10 md:grid-cols-2">
         <div>
           <h4 className="mb-8 font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.25em]">
-            Strategic Strengths
+            Key Strengths
           </h4>
           <ul className="space-y-4">
             {screening.strengths.map((s) => (
@@ -155,7 +155,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
 
         <div>
           <h4 className="mb-8 font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.25em]">
-            Critical Gaps
+            Missing Requirements
           </h4>
           <ul className="space-y-4">
             {screening.gaps.map((g) => (
@@ -173,7 +173,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
 
       <div className="border-border/10 border-t p-10">
         <h4 className="mb-10 font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.25em]">
-          Neural Skill Mapping
+          Technical Skill Analysis
         </h4>
         <div className="grid grid-cols-1 gap-x-16 gap-y-8 sm:grid-cols-2">
           {screening.skillBreakdown.map((sb) => (

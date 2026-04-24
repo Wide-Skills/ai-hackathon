@@ -1,7 +1,12 @@
+import { createHash } from "node:crypto";
 import { sendScreeningCompletedEmail } from "@ai-hackathon/auth/email";
-import { Applicant, ScreeningResult } from "@ai-hackathon/db";
+import { Applicant, ScreeningCache, ScreeningResult } from "@ai-hackathon/db";
 import { env } from "@ai-hackathon/env/server";
-import { ScreeningResultSchema } from "@ai-hackathon/shared";
+import {
+  LANGUAGE_PROFICIENCIES,
+  SKILL_LEVELS,
+  ScreeningResultSchema,
+} from "@ai-hackathon/shared";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { TRPCError } from "@trpc/server";
 import { generateText, Output } from "ai";
@@ -15,10 +20,10 @@ const google = createGoogleGenerativeAI({
 });
 
 const SHORTLIST_THRESHOLD = 85;
+const CACHE_TTL_DAYS = 7;
 export const SYSTEM_USER_ID = "usr_automated_system";
 
-// The confirmed working model from curl tests
-const WORKING_MODEL = "gemini-2.0-flash";
+const WORKING_MODEL = "gemini-2.5-flash";
 
 export function buildApplicantStatus(matchScore: number) {
   return matchScore >= SHORTLIST_THRESHOLD ? "shortlisted" : "screening";
@@ -60,8 +65,9 @@ ${applicant.resumeText || "No resume text provided."}
    - Personal Info: headline, detailed bio, location.
    - Career History: Extract all work experience (company, role, dates, description, technologies).
    - Education: Extract all degrees (institution, degree, field, years).
-   - Languages: Extract known languages and proficiency.
+   - Languages: Extract known languages and proficiency. Use ONLY: Basic, Intermediate, Conversational, Fluent, Native.
    - Certifications & Projects: Extract relevant entries.
+- For Skill levels, use ONLY: Basic, Beginner, Intermediate, Advanced, Expert.
 
 Ensure all extracted dates are in a readable format (e.g. "Jan 2022" or "2022-01"). If a field is missing in the resume, provide an empty array or reasonable default.`;
 }
@@ -113,7 +119,7 @@ export const AIScreeningOutputSchema = z.object({
     .array(
       z.object({
         name: z.string(),
-        level: z.string(),
+        level: z.enum(SKILL_LEVELS),
         yearsOfExperience: z.number(),
       }),
     )
@@ -146,7 +152,7 @@ export const AIScreeningOutputSchema = z.object({
     .array(
       z.object({
         name: z.string(),
-        proficiency: z.string(),
+        proficiency: z.enum(LANGUAGE_PROFICIENCIES),
       }),
     )
     .default([]),
@@ -195,6 +201,19 @@ export async function evaluateAndExtractProfile(
     ...applicant,
     skills: applicant.skills || [],
   });
+
+  // Calculate hash of the prompt to use as cache key
+  const promptHash = createHash("md5").update(prompt).digest("hex");
+
+  // Check cache first
+  const cachedResult = await ScreeningCache.findOne({ promptHash });
+  if (cachedResult) {
+    console.log("[Screening] Cache HIT for promptHash:", promptHash);
+    return cachedResult.output as AIScreeningOutput;
+  }
+
+  console.log("[Screening] Cache MISS for promptHash:", promptHash);
+
   const systemPrompt =
     "You are an expert technical recruiter and data extractor. Provide structured, objective evaluations and extract accurate profile data from the provided resume text.";
 
@@ -205,6 +224,16 @@ export async function evaluateAndExtractProfile(
     output: Output.object({ schema: AIScreeningOutputSchema }),
     temperature: 0,
   });
+
+  // Store in cache for future use
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + CACHE_TTL_DAYS);
+
+  await ScreeningCache.create({
+    promptHash,
+    output,
+    expiresAt,
+  }).catch((err) => console.error("[Screening] Cache write failed:", err));
 
   return output;
 }

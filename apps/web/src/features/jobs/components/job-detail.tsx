@@ -326,8 +326,7 @@ export function JobDetail({ id }: JobDetailProps) {
                   <p className="font-medium text-[14px] text-foreground/70 leading-relaxed tracking-tight">
                     Pool architecture is{" "}
                     <span className="font-bold text-info">Optimal</span>.{" "}
-                    {screenedApplicants.length} experts analyzed with Gemini 1.5
-                    Pro.
+                    {screenedApplicants.length} experts analyzed with Gemini AI.
                   </p>
                   <div className="mt-10 h-1 w-full overflow-hidden rounded-full border border-border/10 bg-background/50 shadow-inset">
                     <div

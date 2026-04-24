@@ -18,5 +18,6 @@ export * from "./models/audit-log.model";
 export * from "./models/auth.model";
 export * from "./models/job.model";
 export * from "./models/screening.model";
+export * from "./models/screening-cache.model";
 
 export { client };

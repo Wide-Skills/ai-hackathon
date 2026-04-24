@@ -28,7 +28,6 @@ import { ScoreBadge } from "@/features/dashboard/components/score-badge";
 interface ApplicantsTableProps {
   data: Applicant[];
 }
-
 const statusConfig: Record<
   ApplicationStatus,
   { label: string; variant: "secondary" | "info" | "success" | "destructive" }
@@ -38,7 +37,7 @@ const statusConfig: Record<
     variant: "secondary",
   },
   screening: {
-    label: "Screening",
+    label: "Analyzing",
     variant: "info",
   },
   shortlisted: {
@@ -61,14 +60,14 @@ const statusConfig: Record<
 
 export const columns: ColumnDef<Applicant>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "screening.matchScore",
     header: ({ column }) => {
       return (
         <button
           className="flex items-center gap-2 font-bold text-[10px] text-muted-foreground/50 uppercase tracking-widest"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Candidate
+          AI Match
           <RiArrowUpDownLine className="h-4 w-4" />
         </button>
       );

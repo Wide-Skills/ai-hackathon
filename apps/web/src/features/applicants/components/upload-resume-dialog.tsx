@@ -179,10 +179,10 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
           <div className="flex items-center gap-4">
             <div>
               <DialogTitle className="font-display font-light text-xl uppercase tracking-widest">
-                Profile Ingestion
+                Import Profile
               </DialogTitle>
               <DialogDescription className="font-medium text-[13px] text-muted-foreground/60 leading-tight">
-                Extract talent architecture from resume documentation.
+                Upload or paste a resume to create a candidate profile.
               </DialogDescription>
             </div>
           </div>
@@ -206,7 +206,7 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                   onValueChange={(val) => setSelectedJobId(val ?? "")}
                 >
                   <SelectTrigger className="h-11 rounded-xl border-border/50 bg-secondary/30 font-medium text-[14px]">
-                    <SelectValue placeholder="Select position architecture...">
+                    <SelectValue placeholder="Select a position...">
                       {selectedJobId &&
                         jobs.find((j) => j.id === selectedJobId)?.title}
                     </SelectValue>
@@ -363,7 +363,7 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                 />
               }
             >
-              Cancel Protocol
+              Cancel
             </DialogClose>
             <Button
               onClick={handleUpload}
@@ -381,12 +381,12 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
               {uploading ? (
                 <>
                   <RiLoader2Line className="h-4 w-4 animate-spin" />
-                  Neural Processing...
+                  Processing...
                 </>
               ) : (
                 <>
                   <RiUploadCloud2Line className="h-4 w-4" />
-                  Initialize Import
+                  Import Candidate
                 </>
               )}
             </Button>

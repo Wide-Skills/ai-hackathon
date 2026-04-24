@@ -13,6 +13,11 @@ import { AppModule } from "./app.module";
 import logger from "./lib/logger";
 
 async function bootstrap() {
+  logger.info(`Starting server in ${env.NODE_ENV} mode`);
+  logger.info(`BETTER_AUTH_URL: ${env.BETTER_AUTH_URL}`);
+  logger.info(`CORS_ORIGIN: ${env.CORS_ORIGIN}`);
+  logger.info(`Google Client ID present: ${!!env.GOOGLE_CLIENT_ID}`);
+
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
@@ -58,9 +63,21 @@ async function bootstrap() {
     }),
   );
 
-  expressApp.use("/api/auth", (req: any, res: any) => {
+  expressApp.all(/\/api\/auth\/.*/, async (req: any, res: any) => {
     logger.info(`Auth request: ${req.method} ${req.url}`);
-    return authHandler(req, res);
+    try {
+      return await authHandler(req, res);
+    } catch (error: any) {
+      logger.error(`Auth handler error: ${error.message}`, {
+        stack: error.stack,
+        url: req.url,
+        method: req.method,
+      });
+      res.status(500).json({
+        error: "Internal Server Error",
+        message: error.message,
+      });
+    }
   });
 
   expressApp.use(

@@ -26,7 +26,7 @@ export function AISettings() {
           </div>
           <div className="flex items-center gap-2 rounded-md border border-info/10 bg-info/5 px-3 py-1">
             <span className="font-semibold text-[10px] text-info uppercase tracking-widest">
-              Gemini 1.5 Pro
+              Gemini AI
             </span>
           </div>
         </div>

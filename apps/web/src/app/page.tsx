@@ -4,6 +4,8 @@ import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
 import { Hero } from "@/components/landing/hero";
 import { Navbar } from "@/components/landing/navbar";
+import { Testimonials } from "@/components/landing/testimonials";
+import { TrustStats } from "@/components/landing/trust-stats";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth";
 
@@ -19,7 +21,11 @@ export default async function Home() {
           <Hero />
         </div>
 
+        <TrustStats />
+
         <Features />
+
+        <Testimonials />
 
         <section className="border-border border-t bg-secondary/30 px-[32px] py-[120px] text-center">
           <div className="mx-auto max-w-[1000px]">

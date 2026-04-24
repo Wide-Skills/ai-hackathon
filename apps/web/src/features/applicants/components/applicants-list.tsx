@@ -56,7 +56,7 @@ const statusConfig: Record<
     variant: "secondary",
   },
   screening: {
-    label: "Screening",
+    label: "Analyzing",
     variant: "info",
   },
   shortlisted: {
@@ -202,7 +202,7 @@ export function ApplicantsList() {
               <RiSearch2Line className="h-4 w-4 text-muted-foreground/20" />
             </InputGroupAddon>
             <InputGroupInput
-              placeholder="Search talent pool..."
+              placeholder="Search candidates..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="font-medium text-[14px]"
@@ -267,7 +267,7 @@ export function ApplicantsList() {
             <SelectContent className="border-border/50 shadow-lg">
               <SelectItem value="all">All States</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="screening">Screening</SelectItem>
+              <SelectItem value="screening">Analyzing</SelectItem>
               <SelectItem value="shortlisted">Shortlisted</SelectItem>
               <SelectItem value="rejected">Rejected</SelectItem>
             </SelectContent>
@@ -291,11 +291,11 @@ export function ApplicantsList() {
               onClick={() => handleSort("score")}
               className="flex items-center gap-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] transition-colors hover:text-foreground"
             >
-              AI Rank <RiArrowUpDownLine className="h-3 w-3 opacity-20" />
+              AI Match <RiArrowUpDownLine className="h-3 w-3 opacity-20" />
             </button>
           </div>
           <div className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.2em]">
-            Showing {filtered.length} experts
+            Showing {filtered.length} candidates
           </div>
         </div>
       )}

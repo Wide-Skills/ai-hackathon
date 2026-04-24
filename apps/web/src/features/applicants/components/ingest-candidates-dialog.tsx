@@ -19,31 +19,31 @@ export function IngestCandidatesDialog() {
   const methods = [
     {
       id: "resume" as const,
-      title: "Neural Resume Import",
+      title: "AI Resume Import",
       description:
-        "Extract full talent profiles from PDF/Text using deep semantic analysis.",
+        "Automatically extract candidate profiles from PDF or text using AI analysis.",
       icon: RiFileTextLine,
       color: "text-primary",
       bg: "bg-primary/5",
-      badge: "Deep Analysis",
+      badge: "AI Powered",
       component: UploadResumeDialog,
     },
     {
       id: "csv" as const,
-      title: "Batch CSV Protocol",
+      title: "Batch CSV Import",
       description:
-        "Import massive talent pools from structured data files for high-volume screening.",
+        "Upload multiple candidates at once from structured data files for rapid screening.",
       icon: RiFileExcel2Line,
       color: "text-info",
       bg: "bg-info/5",
-      badge: "Scale",
+      badge: "Bulk",
       component: UploadCandidatesDialog,
     },
     {
       id: "api" as const,
-      title: "External API Node",
+      title: "External ATS Sync",
       description:
-        "Connect Greenhouse, Lever, or custom endpoints for automated ingestion.",
+        "Connect Greenhouse, Lever, or custom endpoints for automated candidate syncing.",
       icon: RiGlobeLine,
       color: "text-muted-foreground",
       bg: "bg-muted/5",
@@ -60,19 +60,19 @@ export function IngestCandidatesDialog() {
         }
       >
         <RiAddLine className="h-4 w-4" />
-        Ingest Talent
+        Add Candidates
       </DialogTrigger>
       <DialogContent className="max-w-4xl! overflow-hidden border-border/40 bg-background p-0">
         <div className="grid grid-cols-1 md:grid-cols-5">
           <div className="flex flex-col justify-between border-border/10 border-r bg-secondary/30 p-8 md:col-span-2">
             <div>
               <h2 className="mb-4 font-display font-light text-foreground text-xl uppercase tracking-widest">
-                Ingestion Core
+                Import Center
               </h2>
               <p className="font-medium text-[13px] text-muted-foreground/60 leading-relaxed tracking-tight">
-                Select your data intake protocol. Our neural engine will
-                automatically extract, map, and score every candidate against
-                your active job architectures.
+                Choose how you want to add candidates. Our AI engine will
+                automatically extract details and match them against your
+                job requirements.
               </p>
             </div>
 
@@ -94,7 +94,7 @@ export function IngestCandidatesDialog() {
           <div className="space-y-4 p-8 md:col-span-3">
             <div className="mb-6">
               <h3 className="mb-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                Select Protocol
+                Select Import Method
               </h3>
               <div className="h-1 w-12 rounded-full bg-primary/20" />
             </div>
@@ -171,8 +171,7 @@ export function IngestCandidatesDialog() {
 
             <div className="pt-4">
               <p className="text-center font-medium text-[10px] text-muted-foreground/40 italic">
-                All processed data is encrypted and optimized for neural
-                retrieval.
+                Candidate data is processed securely and matched using AI.
               </p>
             </div>
           </div>

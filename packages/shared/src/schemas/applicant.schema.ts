@@ -2,6 +2,7 @@ import { z } from "zod";
 import { ScreeningResultSchema } from "./screening.schema";
 
 export const SKILL_LEVELS = [
+  "Basic",
   "Beginner",
   "Intermediate",
   "Advanced",
@@ -9,6 +10,7 @@ export const SKILL_LEVELS = [
 ] as const;
 export const LANGUAGE_PROFICIENCIES = [
   "Basic",
+  "Intermediate",
   "Conversational",
   "Fluent",
   "Native",

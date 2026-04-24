@@ -8,7 +8,8 @@ import { sendMagicLinkEmail, sendWelcomeEmail } from "./email";
 
 export const auth = betterAuth({
   database: mongodbAdapter(client),
-  trustedOrigins: [env.CORS_ORIGIN],
+  baseURL: env.BETTER_AUTH_URL,
+  trustedOrigins: [env.CORS_ORIGIN, env.BETTER_AUTH_URL],
   emailAndPassword: {
     enabled: false,
   },
@@ -45,16 +46,20 @@ export const auth = betterAuth({
     user: {
       create: {
         async after(user, context) {
-          await writeAuditLog({
-            level: "info",
-            action: "auth.user.create",
-            source: "auth",
-            status: "success",
-            message: "User account created",
-            actorUserId: user.id,
-            actorEmail: user.email,
-            requestId: context?.headers?.get("x-request-id") ?? undefined,
-          });
+          try {
+            await writeAuditLog({
+              level: "info",
+              action: "auth.user.create",
+              source: "auth",
+              status: "success",
+              message: "User account created",
+              actorUserId: user.id,
+              actorEmail: user.email,
+              requestId: context?.headers?.get("x-request-id") ?? undefined,
+            });
+          } catch (error) {
+            console.error("Failed to write audit log for user creation", error);
+          }
 
           try {
             await sendWelcomeEmail({
@@ -71,32 +76,29 @@ export const auth = betterAuth({
     session: {
       create: {
         async after(session, context) {
-          await writeAuditLog({
-            level: "info",
-            action: "auth.session.create",
-            source: "auth",
-            status: "success",
-            message: "User signed in",
-            actorUserId: session.userId,
-            requestId: context?.headers?.get("x-request-id") ?? undefined,
-            ipAddress:
-              context?.headers?.get("x-forwarded-for") ??
-              context?.headers?.get("x-real-ip") ??
-              undefined,
-            userAgent: context?.headers?.get("user-agent") ?? undefined,
-            metadata: {
-              path: context?.path,
-            },
-          });
+          try {
+            await writeAuditLog({
+              level: "info",
+              action: "auth.session.create",
+              source: "auth",
+              status: "success",
+              message: "User signed in",
+              actorUserId: session.userId,
+              requestId: context?.headers?.get("x-request-id") ?? undefined,
+              ipAddress:
+                context?.headers?.get("x-forwarded-for") ??
+                context?.headers?.get("x-real-ip") ??
+                undefined,
+              userAgent: context?.headers?.get("user-agent") ?? undefined,
+              metadata: {
+                path: context?.path,
+              },
+            });
+          } catch (error) {
+            console.error("Failed to write audit log for session creation", error);
+          }
         },
       },
-    },
-  },
-  advanced: {
-    defaultCookieAttributes: {
-      sameSite: "none",
-      secure: true,
-      httpOnly: true,
     },
   },
 });
