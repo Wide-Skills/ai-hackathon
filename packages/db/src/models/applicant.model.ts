@@ -1,12 +1,18 @@
-import type { Applicant as ApplicantRecord } from "@ai-hackathon/shared";
+import {
+  type Applicant as ApplicantRecord,
+  AVAILABILITY_STATUSES,
+  AVAILABILITY_TYPES,
+  LANGUAGE_PROFICIENCIES,
+  SKILL_LEVELS,
+} from "@ai-hackathon/shared";
 import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
 const availabilitySchema = new Schema(
   {
-    status: String,
-    type: String,
+    status: { type: String, enum: AVAILABILITY_STATUSES, required: true },
+    type: { type: String, enum: AVAILABILITY_TYPES, required: true },
     startDate: String,
   },
   { _id: false },
@@ -20,9 +26,9 @@ const applicantSchema = new Schema(
     lastName: { type: String, required: true },
     name: { type: String }, // For convenience, though we have first/last
     email: { type: String, required: true },
-    headline: { type: String },
+    headline: { type: String, required: true },
     bio: { type: String },
-    location: { type: String },
+    location: { type: String, required: true },
     avatarUrl: { type: String },
     resumeText: { type: String },
     resumeUrl: { type: String },
@@ -35,14 +41,14 @@ const applicantSchema = new Schema(
     skills: [
       {
         name: String,
-        level: String,
+        level: { type: String, enum: SKILL_LEVELS },
         yearsOfExperience: Number,
       },
     ],
     languages: [
       {
         name: String,
-        proficiency: String,
+        proficiency: { type: String, enum: LANGUAGE_PROFICIENCIES },
       },
     ],
     experience: [
@@ -83,7 +89,7 @@ const applicantSchema = new Schema(
         endDate: String,
       },
     ],
-    availability: availabilitySchema,
+    availability: { type: availabilitySchema, required: true },
     socialLinks: {
       linkedin: String,
       github: String,

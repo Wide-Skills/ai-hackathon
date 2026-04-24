@@ -23,6 +23,8 @@ import { cn } from "@/lib/utils";
 import { ArrowUpDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import type { Route } from "next";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 
 interface ApplicantsTableProps {
   data: Applicant[];
@@ -30,27 +32,31 @@ interface ApplicantsTableProps {
 
 const statusConfig: Record<
   ApplicationStatus,
-  { label: string; color: string }
+  { label: string; variant: "secondary" | "info" | "success" | "destructive" }
 > = {
   pending: {
     label: "Pending",
-    color: "text-muted-foreground bg-secondary",
+    variant: "secondary",
   },
   screening: {
     label: "Screening",
-    color: "text-info-foreground bg-info/10",
+    variant: "info",
   },
   shortlisted: {
     label: "Shortlisted",
-    color: "text-success-foreground bg-success/10",
+    variant: "success",
   },
   rejected: {
     label: "Rejected",
-    color: "text-destructive-foreground bg-destructive/10",
+    variant: "destructive",
   },
   hired: {
     label: "Hired",
-    color: "text-info-foreground bg-info/10",
+    variant: "info",
+  },
+  failed: {
+    label: "Failed",
+    variant: "destructive",
   },
 };
 
@@ -113,12 +119,14 @@ export const columns: ColumnDef<Applicant>[] = [
       const config = statusConfig[status] || statusConfig.pending;
       return (
         <div className="flex items-center h-full py-1">
-          <span className={cn(
-            "inline-flex items-center px-2.5 py-1 rounded-lg text-[9px] font-bold uppercase tracking-[0.12em] border shadow-ethereal leading-none",
-            config.color
-          )}>
+          <Badge
+            variant={config.variant}
+            size="sm"
+            uppercase
+            className="tracking-[0.12em] border shadow-ethereal leading-none"
+          >
             <span className="translate-y-[0.5px]">{config.label}</span>
-          </span>
+          </Badge>
         </div>
       );
     },
@@ -166,7 +174,7 @@ export function ApplicantsTable({ data }: ApplicantsTableProps) {
   });
 
   return (
-    <div className="rounded-lg border bg-card">
+    <Card variant="default" className="rounded-lg border bg-card">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -207,6 +215,6 @@ export function ApplicantsTable({ data }: ApplicantsTableProps) {
           )}
         </TableBody>
       </Table>
-    </div>
+    </Card>
   );
 }

@@ -18,26 +18,41 @@ export class ApplicantsController {
 
     let parser: PDFParse | null = null;
     try {
+      console.log("Starting PDF extraction for file:", {
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+        size: file.size,
+        bufferExists: !!file.buffer,
+        bufferLength: file.buffer?.length
+      });
+
       // Create a new parser instance with the file buffer
-      // Following pdf-parse v2 documentation
       parser = new PDFParse({ data: file.buffer });
       
+      console.log("PDFParse instance created, extracting text...");
       const textResult = await parser.getText();
       
+      console.log("Extraction complete. Pages:", textResult.pages?.length, "Text length:", textResult.text?.length);
+      
+      if (!textResult.text || textResult.text.trim().length === 0) {
+        console.warn("Extracted text is empty!");
+      }
+
       return {
         text: textResult.text,
-        numpages: textResult.total,
+        numpages: textResult.pages?.length || 0,
       };
     } catch (error: any) {
       console.error("PDF Parsing Error:", error);
       return { 
         error: "Failed to parse PDF", 
         message: error.message,
+        stack: error.stack,
         details: typeof error === 'string' ? error : JSON.stringify(error)
       };
     } finally {
-      // Free memory as recommended in documentation
       if (parser) {
+        console.log("Destroying parser...");
         await parser.destroy();
       }
     }

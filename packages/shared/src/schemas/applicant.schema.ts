@@ -1,15 +1,28 @@
 import { z } from "zod";
 import { ScreeningResultSchema } from "./screening.schema";
 
+export const SKILL_LEVELS = [
+  "Beginner",
+  "Intermediate",
+  "Advanced",
+  "Expert",
+] as const;
+export const LANGUAGE_PROFICIENCIES = [
+  "Basic",
+  "Conversational",
+  "Fluent",
+  "Native",
+] as const;
+
 export const SkillSchema = z.object({
   name: z.string(),
-  level: z.string(), // Relaxed from enum
+  level: z.enum(SKILL_LEVELS),
   yearsOfExperience: z.number(),
 });
 
 export const LanguageSchema = z.object({
   name: z.string(),
-  proficiency: z.string(), // Relaxed from enum
+  proficiency: z.enum(LANGUAGE_PROFICIENCIES),
 });
 
 export const ExperienceSchema = z.object({
@@ -55,6 +68,17 @@ export const ApplicationStatusSchema = z.enum([
   "failed",
 ]);
 
+export const AVAILABILITY_STATUSES = [
+  "Available",
+  "Open to Opportunities",
+  "Not Available",
+] as const;
+export const AVAILABILITY_TYPES = [
+  "Full-time",
+  "Part-time",
+  "Contract",
+] as const;
+
 export const CreateApplicantSchema = z.object({
   jobId: z.string(),
   firstName: z.string(),
@@ -62,24 +86,21 @@ export const CreateApplicantSchema = z.object({
   email: z.string().email(),
   resumeText: z.string().optional(),
   resumeUrl: z.string().url().optional(),
-  headline: z.string().optional(),
+  headline: z.string(),
   bio: z.string().optional(),
-  location: z.string().optional(),
+  location: z.string(),
   avatarUrl: z.string().url().optional(),
-  skills: z.array(SkillSchema).default([]),
+  skills: z.array(SkillSchema).min(1),
   languages: z.array(LanguageSchema).default([]),
-  experience: z.array(ExperienceSchema).default([]),
-  education: z.array(EducationSchema).default([]),
+  experience: z.array(ExperienceSchema).min(1),
+  education: z.array(EducationSchema).min(1),
   certifications: z.array(CertificationSchema).default([]),
-  projects: z.array(ProjectSchema).default([]),
-  availability: z
-    .object({
-      status: z.string().optional(),
-      type: z.string().optional(),
-      startDate: z.string().optional(),
-    })
-    .optional()
-    .default({}),
+  projects: z.array(ProjectSchema).min(1),
+  availability: z.object({
+    status: z.enum(AVAILABILITY_STATUSES),
+    type: z.enum(AVAILABILITY_TYPES),
+    startDate: z.string().optional(),
+  }),
   socialLinks: z
     .object({
       linkedin: z.string().optional(),
@@ -90,6 +111,17 @@ export const CreateApplicantSchema = z.object({
     .optional()
     .default({}),
 });
+
+export const PublicApplySchema = z.object({
+  jobId: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.email(),
+  resumeText: z.string().optional(),
+  resumeUrl: z.url().optional(),
+});
+
+export type PublicApplyInput = z.infer<typeof PublicApplySchema>;
 
 export type CreateApplicantInput = z.infer<typeof CreateApplicantSchema>;
 
@@ -133,5 +165,8 @@ export type Certification = z.infer<typeof CertificationSchema>;
 export type Project = z.infer<typeof ProjectSchema>;
 
 export type Applicant = z.infer<typeof ApplicantSchema>;
-export type SkillLevel = string; // Updated
+export type SkillLevel = (typeof SKILL_LEVELS)[number];
+export type LanguageProficiency = (typeof LANGUAGE_PROFICIENCIES)[number];
+export type AvailabilityStatus = (typeof AVAILABILITY_STATUSES)[number];
+export type AvailabilityType = (typeof AVAILABILITY_TYPES)[number];
 export type ApplicationStatus = z.infer<typeof ApplicationStatusSchema>;

@@ -376,7 +376,16 @@ const mockApplicants = [
       },
     ],
     certifications: [],
-    projects: [],
+    projects: [
+      {
+        name: "Merchant Dashboard",
+        description:
+          "Built merchant dashboard and payment APIs for 200k+ businesses.",
+        technologies: ["React", "Node.js", "PostgreSQL"],
+        role: "Full-Stack Engineer",
+        link: "https://github.com/kwame/merchant-dash",
+      },
+    ],
     availability: { status: "Open to Opportunities", type: "Full-time" },
     socialLinks: { github: "https://github.com/kwamemensah" },
     screening: {
@@ -454,7 +463,15 @@ const mockApplicants = [
         issueDate: "2023-01",
       },
     ],
-    projects: [],
+    projects: [
+      {
+        name: "Vertex AI Search",
+        description:
+          "Built and deployed LLM-based applications for enterprise search.",
+        technologies: ["Python", "TensorFlow", "Vertex AI"],
+        role: "ML Engineer",
+      },
+    ],
     availability: {
       status: "Open to Opportunities",
       type: "Full-time",
@@ -525,7 +542,15 @@ const mockApplicants = [
       },
     ],
     certifications: [],
-    projects: [],
+    projects: [
+      {
+        name: "Cowrywise Design System",
+        description:
+          "Led frontend team building investment platform design system.",
+        technologies: ["Next.js", "TypeScript", "Tailwind CSS"],
+        role: "Senior Frontend Engineer",
+      },
+    ],
     availability: { status: "Available", type: "Full-time" },
     socialLinks: {
       github: "https://github.com/chidinwosu",
@@ -590,7 +615,14 @@ const mockApplicants = [
       },
     ],
     certifications: [],
-    projects: [],
+    projects: [
+      {
+        name: "CI/CD Pipeline Automation",
+        description: "Managed CI/CD pipelines and containerized deployments.",
+        technologies: ["Docker", "GitHub Actions", "AWS EC2"],
+        role: "Junior DevOps Engineer",
+      },
+    ],
     availability: { status: "Available", type: "Full-time" },
     socialLinks: {},
     screening: {
@@ -657,7 +689,15 @@ const mockApplicants = [
       },
     ],
     certifications: [],
-    projects: [],
+    projects: [
+      {
+        name: "Mobile Money Microservices",
+        description:
+          "Built microservices for mobile money platform serving West Africa.",
+        technologies: ["Python", "FastAPI", "PostgreSQL"],
+        role: "Backend Engineer",
+      },
+    ],
     availability: { status: "Open to Opportunities", type: "Full-time" },
     socialLinks: { linkedin: "https://linkedin.com/in/emmanueldiallo" },
     screening: {

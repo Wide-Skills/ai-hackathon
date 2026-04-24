@@ -3,9 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowUpRight,
-  BrainCircuit,
   Briefcase,
-  ChevronRight,
   Sparkles,
   Users,
 } from "lucide-react";
@@ -20,6 +18,8 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export function DashboardOverview() {
   const statsQuery = useQuery(trpc.jobs.stats.queryOptions());
@@ -105,15 +105,13 @@ export function DashboardOverview() {
           <div className="lg:col-span-8 space-y-12">
             
             {/* Top Talent: Asymmetric Layout */}
-            <div className="bg-background rounded-section border border-border/50 shadow-premium overflow-hidden">
+            <Card variant="exhibit" size="none">
               <header className="flex items-center justify-between px-10 py-8 border-b border-border/10 bg-secondary/[0.01]">
                 <div>
                   <h3 className="font-display text-[18px] font-light text-foreground uppercase tracking-[0.15em]">Strategic Shortlist</h3>
                   <p className="text-[11px] text-muted-foreground/40 font-bold uppercase tracking-widest mt-1">High-Resonance candidates</p>
                 </div>
-                <Link href="/dashboard/applicants" className="btn-pill-outline h-9 px-5 text-[10px] uppercase tracking-widest">
-                  Market View
-                </Link>
+                <Button render={<Link href="/dashboard/applicants">Market View</Link>} variant="outline" className="rounded-full" size="lg" />
               </header>
               <div className="divide-y divide-border/5">
                 {topApplicants.length > 0 ? topApplicants.map((applicant) => (
@@ -147,7 +145,7 @@ export function DashboardOverview() {
                   </div>
                 )}
               </div>
-            </div>
+            </Card>
 
             {/* Active Pipelines: Compact List */}
             <div className="bg-background rounded-section border border-border/50 shadow-premium overflow-hidden">
@@ -225,11 +223,10 @@ export function DashboardOverview() {
                   </div>
                </div>
 
-               <Link href="/dashboard/analytics" className="block">
-                  <button className="w-full h-12 rounded-pill bg-foreground text-background text-[11px] font-bold uppercase tracking-[0.2em] transition-all hover:shadow-lift hover:scale-[1.01] active:scale-[0.99]">
+               
+                  <Button render={<Link href="/dashboard/analytics" className="block" />  } className="w-full rounded-full" variant="outline" size="lg">
                     Deep Analytics
-                  </button>
-               </Link>
+                  </Button>
             </div>
 
             {/* Log Stream */}

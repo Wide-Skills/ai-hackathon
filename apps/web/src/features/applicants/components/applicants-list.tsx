@@ -2,6 +2,7 @@
 
 import type { ApplicationStatus } from "@ai-hackathon/shared";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import {
   ArrowDown,
   ArrowUp,
@@ -10,21 +11,29 @@ import {
   Briefcase,
   ChevronRight,
   Cpu,
-  MapPin,
-  Search,
-  SlidersHorizontal,
-  Users,
-  RefreshCw,
   LayoutGrid,
   List,
   Loader2,
+  MapPin,
+  RefreshCw,
+  Search,
+  SlidersHorizontal,
+  Users,
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { QueryEmptyState, QueryErrorState } from "@/components/data/query-state";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { toast } from "sonner";
+import {
+  QueryEmptyState,
+  QueryErrorState,
+} from "@/components/data/query-state";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Select,
   SelectContent,
@@ -33,19 +42,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
-import { invalidateHiringData, trpc } from "@/utils/trpc";
-import { ScoreBadge } from "@/features/dashboard/components/score-badge";
-import { UploadCandidatesDialog } from "./upload-candidates-dialog";
-import { ApplicantsTable } from "./applicants-table";
-import { motion } from "framer-motion";
-import { toast } from "sonner";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ScoreBadge } from "@/features/dashboard/components/score-badge";
+import { cn } from "@/lib/utils";
+import { invalidateHiringData, trpc } from "@/utils/trpc";
+import { ApplicantsTable } from "./applicants-table";
+import { IngestCandidatesDialog } from "./ingest-candidates-dialog";
 
 const statusConfig: Record<
   ApplicationStatus,
@@ -102,10 +109,8 @@ export function ApplicantsList() {
   const [sortField, setSortField] = useState<SortField>("score");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [view, setView] = useState<"grid" | "table">("grid");
-  
-  const applicantsQuery = useQuery(
-    trpc.applicants.list.queryOptions(),
-  );
+
+  const applicantsQuery = useQuery(trpc.applicants.list.queryOptions());
   const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
   const applicantsData = applicantsQuery.data ?? [];
   const jobsData = jobsQuery.data ?? [];
@@ -163,10 +168,12 @@ export function ApplicantsList() {
 
   if (applicantsQuery.isLoading || jobsQuery.isLoading) {
     return (
-      <div className="w-full space-y-12 animate-pulse">
-        <div className="h-10 w-full bg-secondary/30 rounded-full" />
+      <div className="w-full animate-pulse space-y-12">
+        <div className="h-10 w-full rounded-full bg-secondary/30" />
         <div className="space-y-4">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-20 bg-secondary/30 rounded-xl" />)}
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-20 rounded-xl bg-secondary/30" />
+          ))}
         </div>
       </div>
     );
@@ -195,9 +202,9 @@ export function ApplicantsList() {
   return (
     <div className="w-full space-y-12 pb-20">
       {/* Search & Filters */}
-      <div className="flex flex-wrap items-center gap-6 border-b border-border/20 pb-10">
+      <div className="flex flex-wrap items-center gap-6 border-border/20 border-b pb-10">
         <div className="relative min-w-[320px] flex-1">
-          <InputGroup className="h-11 rounded-pill border-border/50 bg-foreground/[0.01] focus-within:ring-info/20 px-1 overflow-hidden shadow-ethereal">
+          <InputGroup className="h-11 overflow-hidden rounded-pill border-border/50 bg-foreground/[0.01] px-1 shadow-ethereal focus-within:ring-info/20">
             <InputGroupAddon align="inline-start" className="pl-5">
               <Search className="h-4 w-4 text-muted-foreground/20" />
             </InputGroupAddon>
@@ -205,7 +212,7 @@ export function ApplicantsList() {
               placeholder="Search talent pool..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="text-[14px] font-medium"
+              className="font-medium text-[14px]"
             />
           </InputGroup>
         </div>
@@ -216,11 +223,11 @@ export function ApplicantsList() {
             onValueChange={(v) => setView(v as "grid" | "table")}
             className="hidden sm:block"
           >
-            <TabsList className="h-11 rounded-pill border-border/50 bg-background shadow-ethereal px-1">
-              <TabsTrigger value="grid" className="rounded-pill h-9 w-9 p-0">
+            <TabsList className="h-11 rounded-pill border-border/50 bg-background px-1 shadow-ethereal">
+              <TabsTrigger value="grid" className="h-9 w-9 rounded-pill p-0">
                 <LayoutGrid className="h-4 w-4" />
               </TabsTrigger>
-              <TabsTrigger value="table" className="rounded-pill h-9 w-9 p-0">
+              <TabsTrigger value="table" className="h-9 w-9 rounded-pill p-0">
                 <List className="h-4 w-4" />
               </TabsTrigger>
             </TabsList>
@@ -230,29 +237,33 @@ export function ApplicantsList() {
             value={jobFilter}
             onValueChange={(value) => setJobFilter(value ?? "all")}
           >
-            <SelectTrigger className="h-11 w-52 rounded-pill border-border/50 bg-background shadow-ethereal text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
+            <SelectTrigger className="h-11 w-52 rounded-pill border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-ethereal">
               <div className="flex items-center">
-                 <SelectValue placeholder="Pipeline" />
+                <SelectValue placeholder="Pipeline" />
               </div>
             </SelectTrigger>
-            <SelectContent className="shadow-premium border-border/50">
+            <SelectContent className="border-border/50 shadow-premium">
               <SelectItem value="all">All Pipelines</SelectItem>
               {jobsData.map((j) => (
-                <SelectItem key={j.id} value={j.id}>{j.title}</SelectItem>
+                <SelectItem key={j.id} value={j.id}>
+                  {j.title}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
           <Select
             value={statusFilter}
-            onValueChange={(value) => isStatusFilter(value ?? "all") && setStatusFilter(value ?? "all")}
+            onValueChange={(value) =>
+              isStatusFilter(value ?? "all") && setStatusFilter(value ?? "all")
+            }
           >
-            <SelectTrigger className="h-11 w-44 rounded-pill border-border/50 bg-background shadow-ethereal text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
+            <SelectTrigger className="h-11 w-44 rounded-pill border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-ethereal">
               <div className="flex items-center">
-                 <SelectValue placeholder="Status" />
+                <SelectValue placeholder="Status" />
               </div>
             </SelectTrigger>
-            <SelectContent className="shadow-premium border-border/50">
+            <SelectContent className="border-border/50 shadow-premium">
               <SelectItem value="all">All States</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="screening">Screening</SelectItem>
@@ -261,28 +272,28 @@ export function ApplicantsList() {
             </SelectContent>
           </Select>
 
-          <UploadCandidatesDialog />
+          <IngestCandidatesDialog />
         </div>
       </div>
 
       {/* Grid Headers & Sorting */}
       {view === "grid" && (
-        <div className="flex items-center justify-between px-8 mb-4">
+        <div className="mb-4 flex items-center justify-between px-8">
           <div className="flex items-center gap-12">
-            <button 
+            <button
               onClick={() => handleSort("name")}
-              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors"
+              className="flex items-center gap-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] transition-colors hover:text-foreground"
             >
               Candidate <ArrowUpDown className="h-3 w-3 opacity-20" />
             </button>
-            <button 
+            <button
               onClick={() => handleSort("score")}
-              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/40 hover:text-foreground transition-colors"
+              className="flex items-center gap-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] transition-colors hover:text-foreground"
             >
               AI Rank <ArrowUpDown className="h-3 w-3 opacity-20" />
             </button>
           </div>
-          <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/30">
+          <div className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.2em]">
             Showing {filtered.length} experts
           </div>
         </div>
@@ -294,7 +305,7 @@ export function ApplicantsList() {
           {filtered.map((applicant, i) => {
             const sc = statusConfig[applicant.status];
             const job = jobsData.find((j) => j.id === applicant.jobId);
-            
+
             return (
               <motion.div
                 key={applicant.id}
@@ -304,89 +315,110 @@ export function ApplicantsList() {
               >
                 <Link
                   href={`/dashboard/applicants/${applicant.id}` as Route}
-                  className="group flex items-center justify-between bg-background rounded-xl border border-border/50 p-6 transition-all hover:border-primary/20 hover:shadow-premium shadow-ethereal"
+                  className="group flex items-center justify-between rounded-xl border border-border/50 bg-background p-6 shadow-ethereal transition-all hover:border-primary/20 hover:shadow-premium"
                 >
-                  <div className="flex items-center gap-6 flex-1 min-w-0">
-                    <div className="h-12 w-12 flex-shrink-0 rounded-xl bg-secondary/30 border border-border/20 flex items-center justify-center text-[13px] font-bold text-muted-foreground/40 uppercase shadow-ethereal group-hover:scale-[1.05] transition-transform">
-                      {applicant.firstName[0]}{applicant.lastName[0]}
+                  <div className="flex min-w-0 flex-1 items-center gap-6">
+                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border/20 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-ethereal transition-transform group-hover:scale-[1.05]">
+                      {applicant.firstName[0]}
+                      {applicant.lastName[0]}
                     </div>
-                    
+
                     <div className="min-w-0 flex-1">
-                      <p className="text-[16px] font-medium text-foreground tracking-tight mb-1 group-hover:text-primary transition-colors">
+                      <p className="mb-1 font-medium text-[16px] text-foreground tracking-tight transition-colors group-hover:text-primary">
                         {applicant.firstName} {applicant.lastName}
                       </p>
                       <div className="flex items-center gap-4">
-                         <p className="truncate text-[12px] text-muted-foreground/50 font-medium tracking-tight mt-1">
-                           {applicant.headline}
-                         </p>
-                         <div className="h-0.5 w-0.5 rounded-full bg-border/40 flex-shrink-0" />
-                         <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-info/40 truncate">
-                           {job?.title}
-                         </div>
+                        <p className="mt-1 truncate font-medium text-[12px] text-muted-foreground/50 tracking-tight">
+                          {applicant.headline}
+                        </p>
+                        <div className="h-0.5 w-0.5 flex-shrink-0 rounded-full bg-border/40" />
+                        <div className="truncate font-bold text-[10px] text-info/40 uppercase tracking-[0.2em]">
+                          {job?.title}
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-12 ml-8">
-                    <div className="hidden lg:flex items-center gap-2 opacity-30">
-                       <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60">{applicant.location}</span>
+                  <div className="ml-8 flex items-center gap-12">
+                    <div className="hidden items-center gap-2 opacity-30 lg:flex">
+                      <span className="font-bold text-[11px] text-muted-foreground/60 uppercase tracking-widest">
+                        {applicant.location}
+                      </span>
                     </div>
 
-                    <div className="flex flex-col items-center gap-2 w-28">
-                       <div className="flex items-center gap-2">
-                          <ScoreBadge score={applicant.screening?.matchScore ?? 0} />
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  screenMutation.mutate({
-                                    applicantId: applicant.id,
-                                    jobId: applicant.jobId,
-                                  });
-                                }}
-                                disabled={screenMutation.isPending}
-                                className="h-7 w-7 flex items-center justify-center rounded-full border border-border/50 bg-background transition-all hover:bg-secondary active:scale-95 disabled:opacity-50"
-                              >
-                                {screenMutation.isPending && screenMutation.variables?.applicantId === applicant.id ? (
-                                  <Loader2 className="h-3 w-3 animate-spin text-primary" />
-                                ) : (
-                                  <BrainCircuit className="h-3 w-3 text-muted-foreground/60" />
-                                )}
-                              </TooltipTrigger>
-                              <TooltipContent className="rounded-pill px-3 py-1 text-[9px] font-bold uppercase tracking-widest">
-                                Run AI Analysis
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                       </div>
-                       {(!applicant.screening || applicant.status === 'failed' || (screenMutation.isPending && screenMutation.variables?.applicantId === applicant.id)) && (
-                         <span className={cn(
-                           "text-[8px] font-bold uppercase tracking-[0.2em] animate-pulse",
-                           applicant.status === 'failed' ? "text-destructive/60 animate-none" : "text-muted-foreground/40"
-                         )}>
-                           {screenMutation.isPending && screenMutation.variables?.applicantId === applicant.id 
-                             ? 'Processing' 
-                             : applicant.status === 'failed' 
-                               ? 'Analysis Failed' 
-                               : 'Analyzing'}
-                         </span>
-                       )}
+                    <div className="flex w-28 flex-col items-center gap-2">
+                      <div className="flex items-center gap-2">
+                        <ScoreBadge
+                          score={applicant.screening?.matchScore ?? 0}
+                        />
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                screenMutation.mutate({
+                                  applicantId: applicant.id,
+                                  jobId: applicant.jobId,
+                                });
+                              }}
+                              disabled={screenMutation.isPending}
+                              className="flex h-7 w-7 items-center justify-center rounded-full border border-border/50 bg-background transition-all hover:bg-secondary active:scale-95 disabled:opacity-50"
+                            >
+                              {screenMutation.isPending &&
+                              screenMutation.variables?.applicantId ===
+                                applicant.id ? (
+                                <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                              ) : (
+                                <BrainCircuit className="h-3 w-3 text-muted-foreground/60" />
+                              )}
+                            </TooltipTrigger>
+                            <TooltipContent className="rounded-pill px-3 py-1 font-bold text-[9px] uppercase tracking-widest">
+                              Run AI Analysis
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      {(!applicant.screening ||
+                        applicant.status === "failed" ||
+                        (screenMutation.isPending &&
+                          screenMutation.variables?.applicantId ===
+                            applicant.id)) && (
+                        <span
+                          className={cn(
+                            "animate-pulse font-bold text-[8px] uppercase tracking-[0.2em]",
+                            applicant.status === "failed"
+                              ? "animate-none text-destructive/60"
+                              : "text-muted-foreground/40",
+                          )}
+                        >
+                          {screenMutation.isPending &&
+                          screenMutation.variables?.applicantId === applicant.id
+                            ? "Processing"
+                            : applicant.status === "failed"
+                              ? "Analysis Failed"
+                              : "Analyzing"}
+                        </span>
+                      )}
                     </div>
 
-                    <div className="w-32 flex justify-end">
-                      <span className={cn(
-                        "px-3 py-1 rounded-lg text-[9px] font-bold uppercase tracking-[0.15em] border shadow-ethereal",
-                        sc.color
-                      )}>
+                    <div className="flex w-32 justify-end">
+                      <span
+                        className={cn(
+                          "rounded-lg border px-3 py-1 font-bold text-[9px] uppercase tracking-[0.15em] shadow-ethereal",
+                          sc.color,
+                        )}
+                      >
                         {sc.label}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-6 pl-6 border-l border-border/5">
-                      <span className="text-[10px] font-bold text-muted-foreground/20 uppercase tracking-widest min-w-[70px] text-right">
-                        {new Date(applicant.appliedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    <div className="flex items-center gap-6 border-border/5 border-l pl-6">
+                      <span className="min-w-[70px] text-right font-bold text-[10px] text-muted-foreground/20 uppercase tracking-widest">
+                        {new Date(applicant.appliedAt).toLocaleDateString(
+                          "en-US",
+                          { month: "short", day: "numeric" },
+                        )}
                       </span>
                     </div>
                   </div>

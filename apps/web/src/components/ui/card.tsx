@@ -1,20 +1,42 @@
 import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
+const cardVariants = cva(
+  "group/card flex flex-col overflow-hidden transition-all",
+  {
+    variants: {
+      variant: {
+        default: "rounded-xl bg-card text-card-foreground ring-1 ring-foreground/10",
+        exhibit: "bg-card text-card-foreground rounded-card border border-border shadow-premium",
+        bento: "bg-card rounded-card border border-border shadow-premium relative hover:shadow-lift",
+        ethereal: "bg-background rounded-section border border-border/40 shadow-ethereal hover:border-primary/20 hover:shadow-premium active:scale-[0.99]",
+      },
+      size: {
+        default: "gap-4 py-4 data-[size=sm]:gap-3 data-[size=sm]:py-3",
+        sm: "gap-3 py-3",
+        none: "gap-0 py-0",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
 function Card({
   className,
+  variant = "default",
   size = "default",
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: React.ComponentProps<"div"> & VariantProps<typeof cardVariants>) {
   return (
     <div
       data-slot="card"
       data-size={size}
-      className={cn(
-        "group/card flex flex-col gap-4 overflow-hidden rounded-xl bg-card py-4 text-sm text-card-foreground ring-1 ring-foreground/10 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
-        className
-      )}
+      className={cn(cardVariants({ variant, size }), className)}
       {...props}
     />
   )

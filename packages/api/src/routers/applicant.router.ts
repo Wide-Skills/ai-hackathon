@@ -1,42 +1,112 @@
-import { Applicant } from "@ai-hackathon/db";
 import { sendApplicationReceivedEmail } from "@ai-hackathon/auth/email";
-import { ApplicantSchema, CreateApplicantSchema } from "@ai-hackathon/shared";
+import { Applicant } from "@ai-hackathon/db";
+import { ApplicantSchema, CreateApplicantSchema, PublicApplySchema } from "@ai-hackathon/shared";
 import { z } from "zod";
 import { ensureJobExists, syncJobMetrics } from "../router-helpers/job-metrics";
 import { serializeApplicant } from "../serializers";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
-import { runAIInternal, SYSTEM_USER_ID } from "./screening.router";
+import {
+  buildApplicantStatus,
+  createOrUpdateScreening,
+  evaluateAndExtractProfile,
+  runAIInternal,
+  SYSTEM_USER_ID,
+} from "./screening.router";
 
 export const applicantRouter = router({
   publicApply: publicProcedure
-    .input(CreateApplicantSchema)
+    .input(PublicApplySchema)
     .output(ApplicantSchema)
     .mutation(async ({ input }) => {
       const job = await ensureJobExists(input.jobId);
 
+      // 1. If we have resume text, try to extract a full profile
+      let extractedData: any = null;
+      if (input.resumeText) {
+        try {
+          extractedData = await evaluateAndExtractProfile(job as any, {
+            firstName: input.firstName,
+            lastName: input.lastName,
+            resumeText: input.resumeText,
+          });
+        } catch (e) {
+          console.error("AI extraction failed during public apply:", e);
+        }
+      }
+
+      // 2. Build applicant with extracted data or safe fallbacks
       const applicant = new Applicant({
-        ...input,
+        jobId: input.jobId,
+        firstName: input.firstName,
+        lastName: input.lastName,
+        email: input.email,
         name: `${input.firstName} ${input.lastName}`,
+        resumeText: input.resumeText,
+        resumeUrl: input.resumeUrl,
         appliedAt: new Date().toISOString(),
+        headline: extractedData?.headline || "Applicant",
+        bio: extractedData?.bio || "",
+        location: extractedData?.location || "Unknown",
+        skills: extractedData?.skills && extractedData.skills.length > 0 
+          ? extractedData.skills 
+          : [{ name: "General Professional", level: "Intermediate", yearsOfExperience: 0 }],
+        experience: extractedData?.experience && extractedData.experience.length > 0
+          ? extractedData.experience
+          : [{ company: "Unknown", role: "Applicant", startDate: "N/A", endDate: "N/A", description: "Not specified", technologies: [], isCurrent: false }],
+        education: extractedData?.education && extractedData.education.length > 0
+          ? extractedData.education
+          : [{ institution: "Unknown", degree: "Unknown", fieldOfStudy: "Unknown", startYear: 0, endYear: 0 }],
+        languages: extractedData?.languages || [],
+        certifications: extractedData?.certifications || [],
+        projects: extractedData?.projects && extractedData.projects.length > 0
+          ? extractedData.projects
+          : [{ name: "Unknown", description: "Unknown", technologies: [], role: "Unknown" }],
+        availability: { status: "Available", type: "Full-time" },
+        status: extractedData ? buildApplicantStatus(extractedData.matchScore) : "pending",
+        screening: extractedData ? {
+          ...extractedData,
+          languages: extractedData.languages || [],
+          experience: extractedData.experience || [],
+          education: extractedData.education || [],
+          skills: extractedData.skills || [],
+          certifications: extractedData.certifications || [],
+          projects: extractedData.projects || [],
+        } : undefined,
       });
+
       await applicant.save();
       await syncJobMetrics(input.jobId);
 
-      // 1. Send confirmation email (non-blocking)
+      // 3. Save screening result if AI was successful
+      if (extractedData) {
+        const screeningPayload = {
+          ...extractedData,
+          applicantId: applicant.id,
+          jobId: input.jobId,
+        };
+        await createOrUpdateScreening(
+          applicant.id,
+          input.jobId,
+          SYSTEM_USER_ID,
+          screeningPayload as any,
+        );
+      }
+
+      // 4. Send confirmation email (non-blocking)
       sendApplicationReceivedEmail({
         email: input.email,
         firstName: input.firstName,
         jobTitle: job.title,
       }).catch((err) => console.error("Email error:", err));
 
-      // 2. Trigger AI screening automatically (non-blocking)
-      // Note: We don't have a specific recruiter email here, 
-      // but runAIInternal will skip email if triggererEmail is missing.
-      runAIInternal({
-        applicantId: applicant.id,
-        jobId: job.id,
-        triggeredByUserId: SYSTEM_USER_ID,
-      }).catch((err) => console.error("Auto-screening error:", err));
+      // 5. If no AI screening was done yet but we have resume text, trigger it in background
+      if (!extractedData && input.resumeText) {
+        runAIInternal({
+          applicantId: applicant.id,
+          jobId: job.id,
+          triggeredByUserId: SYSTEM_USER_ID,
+        }).catch((err) => console.error("Auto-screening error:", err));
+      }
 
       return serializeApplicant(applicant);
     }),
@@ -56,6 +126,223 @@ export const applicantRouter = router({
       await applicant.save();
       await syncJobMetrics(input.jobId);
       return serializeApplicant(applicant);
+    }),
+
+  ingestFromResume: protectedProcedure
+    .input(
+      z.object({
+        jobId: z.string(),
+        firstName: z.string(),
+        lastName: z.string(),
+        email: z.string().email(),
+        resumeText: z.string(),
+      }),
+    )
+    .output(ApplicantSchema)
+    .mutation(async ({ input, ctx }) => {
+      const job = await ensureJobExists(input.jobId);
+
+      const validatedData = await evaluateAndExtractProfile(job as any, {
+        firstName: input.firstName,
+        lastName: input.lastName,
+        bio: "",
+        skills: [],
+        resumeText: input.resumeText,
+      });
+
+      const applicant = new Applicant({
+        jobId: input.jobId,
+        userId: ctx.session.user.id,
+        firstName: input.firstName,
+        lastName: input.lastName,
+        email: input.email,
+        name: `${input.firstName} ${input.lastName}`,
+        resumeText: input.resumeText,
+        appliedAt: new Date().toISOString(),
+        headline: validatedData.headline || "Applicant",
+        bio: validatedData.bio || "",
+        location: validatedData.location || "Unknown",
+        skills:
+          validatedData.skills && validatedData.skills.length > 0
+            ? validatedData.skills
+            : [
+                {
+                  name: "General Professional",
+                  level: "Intermediate",
+                  yearsOfExperience: 0,
+                },
+              ],
+        experience:
+          validatedData.experience && validatedData.experience.length > 0
+            ? validatedData.experience
+            : [
+                {
+                  company: "Unknown",
+                  role: "Applicant",
+                  startDate: "N/A",
+                  endDate: "N/A",
+                  description: "Not specified",
+                  technologies: [],
+                  isCurrent: false,
+                },
+              ],
+        education:
+          validatedData.education && validatedData.education.length > 0
+            ? validatedData.education
+            : [
+                {
+                  institution: "Unknown",
+                  degree: "Unknown",
+                  fieldOfStudy: "Unknown",
+                  startYear: 0,
+                  endYear: 0,
+                },
+              ],
+        languages: validatedData.languages || [],
+        certifications: validatedData.certifications || [],
+        projects:
+          validatedData.projects && validatedData.projects.length > 0
+            ? validatedData.projects
+            : [
+                {
+                  name: "Unknown",
+                  description: "Unknown",
+                  technologies: [],
+                  role: "Unknown",
+                },
+              ],
+        status: buildApplicantStatus(validatedData.matchScore),
+        availability: { status: "Available", type: "Full-time" }, // Default
+        screening: {
+          ...validatedData,
+          languages: validatedData.languages || [],
+          experience: validatedData.experience || [],
+          education: validatedData.education || [],
+          skills: validatedData.skills || [],
+          certifications: validatedData.certifications || [],
+          projects: validatedData.projects || [],
+        },
+      });
+      await applicant.save();
+      await syncJobMetrics(input.jobId);
+
+      const screeningPayload = {
+        ...validatedData,
+        applicantId: applicant.id,
+        jobId: input.jobId,
+      };
+      await createOrUpdateScreening(
+        applicant.id,
+        input.jobId,
+        ctx.session.user.id,
+        screeningPayload as any,
+      );
+
+      return serializeApplicant(applicant);
+    }),
+
+  ingestBatch: protectedProcedure
+    .input(
+      z.object({
+        jobId: z.string(),
+        candidates: z.array(
+          z.object({
+            firstName: z.string(),
+            lastName: z.string(),
+            email: z.string().email(),
+            headline: z.string().optional(),
+            location: z.string().optional(),
+            skills: z.array(z.string()).optional(),
+            resumeText: z.string().optional(),
+          }),
+        ),
+      }),
+    )
+    .output(z.object({ successCount: z.number(), failedCount: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const job = await ensureJobExists(input.jobId);
+
+      let successCount = 0;
+      let failedCount = 0;
+
+      for (const candidate of input.candidates) {
+        try {
+          const applicant = new Applicant({
+            jobId: input.jobId,
+            userId: ctx.session.user.id,
+            firstName: candidate.firstName,
+            lastName: candidate.lastName,
+            email: candidate.email,
+            name: `${candidate.firstName} ${candidate.lastName}`,
+            resumeText: candidate.resumeText,
+            appliedAt: new Date().toISOString(),
+            headline: candidate.headline || "Applicant",
+            location: candidate.location || "Unknown",
+            skills:
+              candidate.skills && candidate.skills.length > 0
+                ? candidate.skills.map((s) => ({
+                    name: s,
+                    level: "Intermediate",
+                    yearsOfExperience: 0,
+                  }))
+                : [
+                    {
+                      name: "General Professional",
+                      level: "Intermediate",
+                      yearsOfExperience: 0,
+                    },
+                  ],
+            experience: [
+              {
+                company: "Unknown",
+                role: "Applicant",
+                startDate: "N/A",
+                endDate: "N/A",
+                description: "Not specified",
+                technologies: [],
+                isCurrent: false,
+              },
+            ],
+            education: [
+              {
+                institution: "Unknown",
+                degree: "Unknown",
+                fieldOfStudy: "Unknown",
+                startYear: 0,
+                endYear: 0,
+              },
+            ],
+            projects: [
+              {
+                name: "Unknown",
+                description: "Unknown",
+                technologies: [],
+                role: "Unknown",
+              },
+            ],
+            availability: { status: "Available", type: "Full-time" }, // Default
+          });
+          await applicant.save();
+          successCount++;
+
+          if (candidate.resumeText) {
+            runAIInternal({
+              applicantId: applicant.id,
+              jobId: job.id,
+              triggeredByUserId: ctx.session.user.id,
+            }).catch((err) => console.error("Auto-screening error:", err));
+          }
+        } catch (e) {
+          console.error("Failed to ingest candidate:", e);
+          failedCount++;
+        }
+      }
+
+      if (successCount > 0) {
+        await syncJobMetrics(input.jobId);
+      }
+
+      return { successCount, failedCount };
     }),
 
   list: protectedProcedure

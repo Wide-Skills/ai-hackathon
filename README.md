@@ -1,6 +1,8 @@
 # AI-Powered Talent Screening Platform
 
-AI-driven recruiting platform for the Umurava AI Hackathon. Recruiters can create jobs, upload applicants, run explainable screening, and review dashboards backed by a shared tRPC API and MongoDB.
+A next-generation recruitment ecosystem built for the Umurava AI Hackathon. Our platform leverages deep semantic analysis to bridge the gap between massive talent pools and precise organizational needs.
+
+[**View the Product Pitch & Platform Docs**](http://localhost:3001/docs)
 
 ## Stack
 
@@ -46,7 +48,7 @@ pnpm dev
 
 Frontend: `http://localhost:3001`
 Backend: `http://localhost:3000`
-Docs page: `http://localhost:3001/docs`
+Product Pitch & Strategy: `http://localhost:3001/docs`
 
 ## Seeded Recruiter Login
 

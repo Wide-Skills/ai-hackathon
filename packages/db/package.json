@@ -11,7 +11,8 @@
   },
   "scripts": {
     "check-types": "tsc -b",
-    "seed": "tsx src/seed.ts"
+    "seed": "tsx src/seed.ts",
+    "reset": "tsx src/reset.ts"
   },
   "dependencies": {
     "@ai-hackathon/env": "workspace:*",

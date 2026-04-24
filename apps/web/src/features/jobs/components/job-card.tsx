@@ -2,11 +2,8 @@ import type { Job, JobStatus } from "@ai-hackathon/shared";
 import {
   Briefcase,
   Building,
-  ChevronRight,
-  Globe,
   Link2,
   MapPin,
-  MoreHorizontal,
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
@@ -19,22 +16,25 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const statusConfig: Record<
   JobStatus,
-  { label: string; color: string }
+  { label: string; variant: "success" | "warning" | "secondary" }
 > = {
   active: {
     label: "Active",
-    color: "text-success bg-success/10 border-success/20",
+    variant: "success",
   },
   draft: {
     label: "Draft",
-    color: "text-warning bg-warning/10 border-warning/20",
+    variant: "warning",
   },
   closed: {
     label: "Closed",
-    color: "text-muted-foreground bg-secondary border-border/50",
+    variant: "secondary",
   },
 };
 
@@ -59,20 +59,19 @@ export function JobCard({ job }: JobCardProps) {
       : 0;
 
   return (
-    <div
+    <Card
       onClick={() => router.push(`/dashboard/jobs/${job.id}` as Route)}
-      className="group bg-background rounded-section border border-border/40 p-0 cursor-pointer transition-all hover:border-primary/20 hover:shadow-premium shadow-ethereal relative overflow-hidden active:scale-[0.99]"
+      variant="ethereal"
+      size="none"
+      className="cursor-pointer group"
     >
       {/* SECTION 1: Identity & Primary Info */}
       <div className="p-10 pb-8">
         <div className="flex items-center gap-4 mb-6">
-          <span className={cn(
-            "px-2.5 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-[0.15em] border shadow-sm flex items-center gap-2 leading-none",
-            sc.color
-          )}>
+          <Badge variant={sc.variant} size="technical">
             <div className="h-1 w-1 rounded-full bg-current opacity-60" />
             <span className="translate-y-[0.5px]">{sc.label}</span>
-          </span>
+          </Badge>
           <span className="text-[9px] font-bold text-muted-foreground/20 uppercase tracking-[0.2em]">
             ID: {job.id.slice(-8).toUpperCase()}
           </span>
@@ -100,12 +99,13 @@ export function JobCard({ job }: JobCardProps) {
 
         <div className="flex flex-wrap gap-2">
           {job.skills.slice(0, 5).map((skill) => (
-            <span
+            <Badge
               key={skill}
-              className="rounded-lg bg-secondary/20 border border-border/5 px-3 py-1.5 text-[9px] font-bold text-muted-foreground/50 uppercase tracking-widest"
+              variant="secondary"
+              className="bg-secondary/20 border-border/5 px-3 py-1.5 text-[9px] font-bold text-muted-foreground/50 uppercase tracking-widest"
             >
               {skill}
-            </span>
+            </Badge>
           ))}
           {job.skills.length > 5 && (
             <span className="text-[9px] font-bold text-muted-foreground/20 self-center uppercase tracking-widest ml-1">
@@ -147,11 +147,14 @@ export function JobCard({ job }: JobCardProps) {
         <div className="flex items-center gap-4 shrink-0 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 border-border/5 pt-6 lg:pt-0">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger
-                onClick={copyToClipboard}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-border/50 bg-background shadow-ethereal transition-all hover:bg-secondary hover:border-primary/20 text-muted-foreground/60 hover:text-primary active:scale-95 cursor-pointer shrink-0"
-              >
-                <Link2 className="h-4 w-4" />
+              <TooltipTrigger render={<Button
+                  onClick={copyToClipboard}
+                  variant="outline"
+                  size="icon-lg"
+                  className="rounded-full shadow-ethereal hover:border-primary/20 text-muted-foreground/60 hover:text-primary"
+                />}>
+                
+                  <Link2 className="h-4 w-4" />
               </TooltipTrigger>
               <TooltipContent className="rounded-pill px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest">
                 Copy Link
@@ -159,15 +162,22 @@ export function JobCard({ job }: JobCardProps) {
             </Tooltip>
           </TooltipProvider>
 
-          <Link
-            href={`/dashboard/applicants?job=${job.id}` as Route}
-            onClick={(e) => e.stopPropagation()}
-            className="btn-pill-primary h-11 px-8 text-[11px] font-bold uppercase tracking-[0.2em] shadow-premium hover:shadow-lift transition-all flex-1 lg:flex-none text-center"
+          <Button
+            render={<Link
+              href={`/dashboard/applicants?job=${job.id}` as Route}
+              onClick={(e) => e.stopPropagation()}
+            />}
+            variant="pill-primary"
+            size="pill"
+            className="uppercase tracking-[0.2em] font-bold text-[11px] flex-1 lg:flex-none"
           >
-            Manage Pipeline
-          </Link>
+            
+              Manage Pipeline
+          
+          </Button>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
+

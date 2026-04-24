@@ -56,12 +56,7 @@ export function JobsList() {
             <h2 className="font-display text-display-section font-light text-foreground uppercase tracking-[0.1em]">Active Pipelines</h2>
             <p className="text-[12px] text-muted-foreground/30 font-bold mt-1 uppercase tracking-widest">{activeJobs.length} open roles</p>
           </div>
-          <button 
-            onClick={() => router.push("/dashboard/jobs/new" as Route)}
-            className="btn-pill-primary h-11 px-8 text-[12px] uppercase tracking-[0.2em] shadow-ethereal"
-          >
-            Create New Job
-          </button>
+     
         </div>
 
         <div className="grid grid-cols-1 gap-4">

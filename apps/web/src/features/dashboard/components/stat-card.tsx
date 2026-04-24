@@ -1,4 +1,3 @@
-import type { LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 interface StatCardProps {
@@ -15,11 +14,11 @@ export function StatCard({
   trend,
 }: StatCardProps) {
   return (
-    <Card className="p-8 h-full flex flex-col justify-between border-border/50 shadow-ethereal hover:shadow-premium transition-all duration-300">
+    <Card variant="ethereal" size="none" className="p-8 h-full flex flex-col justify-between">
       <div className="space-y-4">
         <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">{label}</p>
         <div className="flex items-baseline gap-1">
-          <span className="font-display text-[42px] font-light text-foreground leading-none tracking-tight">{value}</span>
+          <span className="font-display text-[42px] font-light text-foreground leading-none tracking-tighter">{value}</span>
         </div>
         <p className="text-[12px] text-muted-foreground/60 font-medium tracking-tight leading-snug">{sublabel}</p>
       </div>

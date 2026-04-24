@@ -140,10 +140,9 @@ export function JobDetail({ id }: JobDetailProps) {
         </div>
 
         <Link href="/dashboard/screening">
-          <button className="btn-pill-warm h-12 px-10 text-[12px] font-bold uppercase tracking-[0.2em] flex items-center gap-3 transition-all hover:scale-[1.02] active:scale-[0.98]">
-            <Sparkles className="h-4 w-4" />
+          <Button variant="outline" size="lg">
             Neural Match Report
-          </button>
+          </Button>
         </Link>
       </div>
 

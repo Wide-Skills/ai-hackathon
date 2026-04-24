@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "group/badge inline-flex items-center justify-center gap-1 overflow-hidden transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
       variant: {
@@ -19,10 +19,26 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
+        success: "text-success-foreground bg-success/10 border-success/20",
+        info: "text-info-foreground bg-info/10 border-info/20",
+        warning: "text-warning-foreground bg-warning/10 border-warning/20",
       },
+      size: {
+        default: "h-5 px-2 py-0.5 text-xs rounded-4xl",
+        sm: "h-4 px-1.5 text-[10px] rounded-lg",
+        lg: "h-6 px-3 py-1 text-sm rounded-4xl",
+        pill: "h-7 px-4 text-[11px] font-bold uppercase tracking-[0.15em] rounded-pill border shadow-ethereal",
+        technical: "px-2.5 py-0.5 rounded-lg text-[9px] font-bold uppercase tracking-[0.15em] border shadow-sm leading-none",
+      },
+      uppercase: {
+        true: "uppercase tracking-widest",
+        false: "",
+      }
     },
     defaultVariants: {
       variant: "default",
+      size: "default",
+      uppercase: false,
     },
   }
 )
@@ -30,6 +46,8 @@ const badgeVariants = cva(
 function Badge({
   className,
   variant = "default",
+  size = "default",
+  uppercase = false,
   render,
   ...props
 }: useRender.ComponentProps<"span"> & VariantProps<typeof badgeVariants>) {
@@ -37,7 +55,7 @@ function Badge({
     defaultTagName: "span",
     props: mergeProps<"span">(
       {
-        className: cn(badgeVariants({ variant }), className),
+        className: cn(badgeVariants({ variant, size, uppercase }), className),
       },
       props
     ),
@@ -45,6 +63,8 @@ function Badge({
     state: {
       slot: "badge",
       variant,
+      size,
+      uppercase,
     },
   })
 }

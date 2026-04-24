@@ -10,6 +10,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { invalidateHiringData, trpc } from "@/utils/trpc";
+import { toast } from "sonner";
+import { Loader2, BrainCircuit } from "lucide-react";
+
 interface ApplicantSidebarProps {
   applicant: Applicant;
   jobTitle?: string;
@@ -18,11 +23,32 @@ interface ApplicantSidebarProps {
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function ApplicantSidebar({
   applicant,
   jobTitle,
 }: ApplicantSidebarProps) {
+  const queryClient = useQueryClient();
+  const screenMutation = useMutation(
+    trpc.screenings.generate.mutationOptions({
+      onSuccess: () => {
+        toast.success("AI Analysis complete");
+        void invalidateHiringData(queryClient);
+      },
+      onError: (error) => {
+        toast.error(error.message || "AI Analysis failed");
+      },
+    }),
+  );
+
+  const handleRunAnalysis = () => {
+    screenMutation.mutate({
+      applicantId: applicant.id,
+      jobId: applicant.jobId,
+    });
+  };
+
   return (
     <div className="space-y-10 lg:col-span-1">
       <Card className="p-10 text-center shadow-premium border-border/50 relative overflow-hidden group">
@@ -71,14 +97,27 @@ export function ApplicantSidebar({
           </div>
 
           <div className="mt-14 space-y-3.5 pt-12 border-t border-border/10">
-            <button className="btn-pill-primary w-full h-11 text-[11px] font-bold uppercase tracking-[0.2em] shadow-ethereal">
-              Shortlist Expert
-            </button>
-            <button
-              className="btn-pill-outline w-full h-11 text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 shadow-ethereal border-border/40"
+            <button 
+              onClick={handleRunAnalysis}
+              disabled={screenMutation.isPending}
+              className="btn-pill-primary w-full h-11 text-[11px] font-bold uppercase tracking-[0.2em] shadow-ethereal flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              Decline Profile
+              {screenMutation.isPending ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <BrainCircuit className="h-3.5 w-3.5" />
+                  {applicant.screening ? "Re-Run Analysis" : "Process Analysis"}
+                </>
+              )}
             </button>
+            <Button render={
+              <Link href="/dashboard/applicants">Decline Profile</Link>
+            } variant="outline" className="rounded-full" size="lg">
+            </Button>
           </div>
         </div>
       </Card>

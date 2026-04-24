@@ -70,7 +70,6 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
         lastName,
         email,
         resumeText: uploadData.text,
-        skills: [], // Logic could be added to extract skills from text if needed
       });
 
       setSubmitted(true);

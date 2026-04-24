@@ -1,6 +1,7 @@
 import type { Experience } from "@ai-hackathon/shared";
 import { Briefcase } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 interface ExperienceCardProps {
   experience: Experience[];
@@ -8,7 +9,7 @@ interface ExperienceCardProps {
 
 export function ExperienceCard({ experience }: ExperienceCardProps) {
   return (
-    <Card className="shadow-premium border-border/50 p-8">
+    <Card variant="exhibit" size="none" className="p-8">
       <div className="mb-10 flex items-center gap-3 border-b border-border/10 pb-6">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-secondary/30 border border-border/20 text-foreground/30 shadow-ethereal">
           <Briefcase className="h-4.5 w-4.5" />
@@ -40,9 +41,9 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
                     {exp.startDate} – {exp.endDate}
                   </p>
                   {exp.isCurrent && (
-                    <span className="font-bold text-[9px] text-success/60 uppercase tracking-[0.2em] mt-1 block">
+                    <Badge variant="success" size="technical" className="mt-1">
                       Active
-                    </span>
+                    </Badge>
                   )}
                 </div>
               </div>
@@ -51,12 +52,14 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
               </p>
               <div className="mt-6 flex flex-wrap gap-2">
                 {exp.technologies.map((t) => (
-                  <span
+                  <Badge
                     key={t}
-                    className="rounded-lg bg-secondary/30 border border-border/10 px-2.5 py-1 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest shadow-ethereal"
+                    variant="secondary"
+                    size="technical"
+                    className="bg-secondary/30 border-border/10 px-2.5 py-1 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest shadow-ethereal"
                   >
                     {t}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             </div>

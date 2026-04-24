@@ -1,5 +1,5 @@
-import { Applicant, ScreeningResult } from "@ai-hackathon/db";
 import { sendScreeningCompletedEmail } from "@ai-hackathon/auth/email";
+import { Applicant, ScreeningResult } from "@ai-hackathon/db";
 import { env } from "@ai-hackathon/env/server";
 import { ScreeningResultSchema } from "@ai-hackathon/shared";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
@@ -20,13 +20,24 @@ export const SYSTEM_USER_ID = "usr_automated_system";
 // The confirmed working model from curl tests
 const WORKING_MODEL = "gemini-2.5-flash";
 
-function buildApplicantStatus(matchScore: number) {
+export function buildApplicantStatus(matchScore: number) {
   return matchScore >= SHORTLIST_THRESHOLD ? "shortlisted" : "screening";
 }
 
 function buildScreeningPrompt(
-  job: { title: string; description: string; requirements: string[]; skills: string[] },
-  applicant: { firstName: string; lastName: string; bio?: string; skills: { name: string }[]; resumeText?: string }
+  job: {
+    title: string;
+    description: string;
+    requirements: string[];
+    skills: string[];
+  },
+  applicant: {
+    firstName: string;
+    lastName: string;
+    bio?: string;
+    skills: { name: string }[];
+    resumeText?: string;
+  },
 ): string {
   return `You are an expert technical recruiter and data extractor. Your task is to perform a deep analysis of an applicant's resume and screen them for a specific job opening.
 
@@ -55,16 +66,21 @@ ${applicant.resumeText || "No resume text provided."}
 Ensure all extracted dates are in a readable format (e.g. "Jan 2022" or "2022-01"). If a field is missing in the resume, provide an empty array or reasonable default.`;
 }
 
-async function createOrUpdateScreening(
+export async function createOrUpdateScreening(
   applicantId: string,
   jobId: string,
   userId: string,
-  screeningData: z.infer<typeof ScreeningResultSchema>
+  screeningData: z.infer<typeof ScreeningResultSchema>,
 ) {
   const existing = await ScreeningResult.findOne({ applicantId });
 
   if (existing) {
-    existing.set({ ...screeningData, applicantId, jobId, createdByUserId: userId });
+    existing.set({
+      ...screeningData,
+      applicantId,
+      jobId,
+      createdByUserId: userId,
+    });
     return existing.save();
   }
 
@@ -76,61 +92,122 @@ async function createOrUpdateScreening(
   }).save();
 }
 
-const AIScreeningOutputSchema = z.object({
+export const AIScreeningOutputSchema = z.object({
   matchScore: z.number().min(0).max(100),
   strengths: z.array(z.string()),
   gaps: z.array(z.string()),
   recommendation: z.string(),
   summary: z.string(),
-  skillBreakdown: z.array(z.object({
-    skill: z.string(),
-    score: z.number(),
-  })),
+  skillBreakdown: z.array(
+    z.object({
+      skill: z.string(),
+      score: z.number(),
+    }),
+  ),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   headline: z.string().optional(),
   bio: z.string().optional(),
   location: z.string().optional(),
-  skills: z.array(z.object({
-    name: z.string(),
-    level: z.string(),
-    yearsOfExperience: z.number(),
-  })).default([]),
-  experience: z.array(z.object({
-    company: z.string(),
-    role: z.string(),
-    startDate: z.string(),
-    endDate: z.string(),
-    description: z.string(),
-    technologies: z.array(z.string()),
-    isCurrent: z.boolean(),
-  })).default([]),
-  education: z.array(z.object({
-    institution: z.string(),
-    degree: z.string(),
-    fieldOfStudy: z.string(),
-    startYear: z.number(),
-    endYear: z.number(),
-  })).default([]),
-  languages: z.array(z.object({
-    name: z.string(),
-    proficiency: z.string(),
-  })).default([]),
-  certifications: z.array(z.object({
-    name: z.string(),
-    issuer: z.string(),
-    issueDate: z.string(),
-  })).default([]),
-  projects: z.array(z.object({
-    name: z.string(),
-    description: z.string(),
-    technologies: z.array(z.string()),
-    role: z.string(),
-    link: z.string().optional(),
-    startDate: z.string().optional(),
-    endDate: z.string().optional(),
-  })).default([]),
+  skills: z
+    .array(
+      z.object({
+        name: z.string(),
+        level: z.string(),
+        yearsOfExperience: z.number(),
+      }),
+    )
+    .default([]),
+  experience: z
+    .array(
+      z.object({
+        company: z.string(),
+        role: z.string(),
+        startDate: z.string(),
+        endDate: z.string(),
+        description: z.string(),
+        technologies: z.array(z.string()),
+        isCurrent: z.boolean(),
+      }),
+    )
+    .default([]),
+  education: z
+    .array(
+      z.object({
+        institution: z.string(),
+        degree: z.string(),
+        fieldOfStudy: z.string(),
+        startYear: z.number(),
+        endYear: z.number(),
+      }),
+    )
+    .default([]),
+  languages: z
+    .array(
+      z.object({
+        name: z.string(),
+        proficiency: z.string(),
+      }),
+    )
+    .default([]),
+  certifications: z
+    .array(
+      z.object({
+        name: z.string(),
+        issuer: z.string(),
+        issueDate: z.string(),
+      }),
+    )
+    .default([]),
+  projects: z
+    .array(
+      z.object({
+        name: z.string(),
+        description: z.string(),
+        technologies: z.array(z.string()),
+        role: z.string(),
+        link: z.string().optional(),
+        startDate: z.string().optional(),
+        endDate: z.string().optional(),
+      }),
+    )
+    .default([]),
 });
+
+export type AIScreeningOutput = z.infer<typeof AIScreeningOutputSchema>;
+
+export async function evaluateAndExtractProfile(
+  job: {
+    title: string;
+    description: string;
+    requirements: string[];
+    skills: string[];
+  },
+  applicant: {
+    firstName: string;
+    lastName: string;
+    bio?: string;
+    skills?: { name: string }[];
+    resumeText?: string;
+  },
+): Promise<AIScreeningOutput> {
+  const prompt = buildScreeningPrompt(job, {
+    ...applicant,
+    skills: applicant.skills || [],
+  });
+  const systemPrompt =
+    "You are an expert technical recruiter and data extractor. Provide structured, objective evaluations and extract accurate profile data from the provided resume text.";
+
+  const { output } = await generateText({
+    model: google(WORKING_MODEL) as any,
+    system: systemPrompt,
+    prompt,
+    output: Output.object({ schema: AIScreeningOutputSchema }),
+    temperature: 0,
+  });
+
+  return output;
+}
 
 /**
  * Internal helper to run screening logic with automatic retries.
@@ -143,8 +220,15 @@ export async function runAIInternal(params: {
   triggererName?: string;
   maxRetries?: number;
 }) {
-  const { applicantId, jobId, triggeredByUserId, triggererEmail, triggererName, maxRetries = 3 } = params;
-  
+  const {
+    applicantId,
+    jobId,
+    triggeredByUserId,
+    triggererEmail,
+    triggererName,
+    maxRetries = 3,
+  } = params;
+
   const [applicant, job] = await Promise.all([
     Applicant.findById(applicantId),
     ensureJobExists(jobId),
@@ -160,25 +244,25 @@ export async function runAIInternal(params: {
   let lastError: any;
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      console.log(`[Screening] AI Analysis Attempt ${attempt}/${maxRetries} for Applicant ${applicantId}`);
-      
-      const prompt = buildScreeningPrompt(job, applicant);
-      const systemPrompt = "You are an expert technical recruiter and data extractor. Provide structured, objective evaluations and extract accurate profile data from the provided resume text.";
+      console.log(
+        `[Screening] AI Analysis Attempt ${attempt}/${maxRetries} for Applicant ${applicantId}`,
+      );
 
-      const { output: validatedData } = await generateText({
-        model: google(WORKING_MODEL) as any,
-        system: systemPrompt,
-        prompt,
-        output: Output.object({ schema: AIScreeningOutputSchema }),
-        temperature: 0,
-      });
+      const validatedData = await evaluateAndExtractProfile(job, applicant);
 
-      console.log(`[Screening] AI Analysis Complete for Applicant ${applicantId}. Match Score: ${validatedData.matchScore}`);
+      console.log(
+        `[Screening] AI Analysis Complete for Applicant ${applicantId}. Match Score: ${validatedData.matchScore}`,
+      );
 
       const screeningPayload = { ...validatedData, applicantId, jobId };
 
       const [savedRecord] = await Promise.all([
-        createOrUpdateScreening(applicantId, jobId, triggeredByUserId, screeningPayload as any),
+        createOrUpdateScreening(
+          applicantId,
+          jobId,
+          triggeredByUserId,
+          screeningPayload as any,
+        ),
         Applicant.findByIdAndUpdate(applicantId, {
           screening: {
             ...validatedData,
@@ -192,12 +276,30 @@ export async function runAIInternal(params: {
           headline: validatedData.headline || applicant.headline,
           bio: validatedData.bio || applicant.bio,
           location: validatedData.location || applicant.location,
-          skills: validatedData.skills.length > 0 ? validatedData.skills : applicant.skills,
-          experience: validatedData.experience.length > 0 ? validatedData.experience : applicant.experience,
-          education: validatedData.education.length > 0 ? validatedData.education : applicant.education,
-          languages: validatedData.languages.length > 0 ? validatedData.languages : applicant.languages,
-          certifications: validatedData.certifications.length > 0 ? validatedData.certifications : applicant.certifications,
-          projects: validatedData.projects.length > 0 ? validatedData.projects : applicant.projects,
+          skills:
+            validatedData.skills.length > 0
+              ? validatedData.skills
+              : applicant.skills,
+          experience:
+            validatedData.experience.length > 0
+              ? validatedData.experience
+              : applicant.experience,
+          education:
+            validatedData.education.length > 0
+              ? validatedData.education
+              : applicant.education,
+          languages:
+            validatedData.languages.length > 0
+              ? validatedData.languages
+              : applicant.languages,
+          certifications:
+            validatedData.certifications.length > 0
+              ? validatedData.certifications
+              : applicant.certifications,
+          projects:
+            validatedData.projects.length > 0
+              ? validatedData.projects
+              : applicant.projects,
           status: buildApplicantStatus(validatedData.matchScore),
         }),
         syncJobMetrics(jobId),
@@ -218,18 +320,20 @@ export async function runAIInternal(params: {
     } catch (error: any) {
       lastError = error;
       console.error(`[Screening] Attempt ${attempt} failed:`, error.message);
-      
+
       // Wait before retrying (exponential backoff)
       if (attempt < maxRetries) {
         const delay = attempt * 2000;
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
   }
 
   // If we reach here, all retries failed
-  console.error(`[Screening] All ${maxRetries} attempts failed for Applicant ${applicantId}`);
-  
+  console.error(
+    `[Screening] All ${maxRetries} attempts failed for Applicant ${applicantId}`,
+  );
+
   await Applicant.findByIdAndUpdate(applicantId, {
     status: "failed",
   });
@@ -244,23 +348,29 @@ export async function runAIInternal(params: {
 export const screeningRouter = router({
   testConnection: protectedProcedure
     .input(z.void())
-    .output(z.object({ success: z.boolean(), message: z.string(), workingModel: z.string().optional() }))
+    .output(
+      z.object({
+        success: z.boolean(),
+        message: z.string(),
+        workingModel: z.string().optional(),
+      }),
+    )
     .query(async () => {
       try {
         const { text } = await generateText({
           model: google(WORKING_MODEL),
           prompt: "Respond with 'pong'",
         });
-        return { 
-          success: true, 
+        return {
+          success: true,
           message: `Gemini connected with ${WORKING_MODEL}: ${text}`,
-          workingModel: WORKING_MODEL
+          workingModel: WORKING_MODEL,
         };
       } catch (error: any) {
         console.error("[Screening] Connection Test Failed:", error.message);
-        return { 
-          success: false, 
-          message: `Connection failed: ${error.message}` 
+        return {
+          success: false,
+          message: `Connection failed: ${error.message}`,
         };
       }
     }),

@@ -209,24 +209,6 @@
     @apply flex flex-col bg-card rounded-card border border-border shadow-premium overflow-hidden relative transition-all hover:shadow-lift;
   }
 
-  /* Button Primitives - Aligned with ElevenLabs signatures */
-  .btn-pill-primary {
-    @apply h-[44px] rounded-pill bg-primary px-6 text-[15px] font-medium text-primary-foreground transition-all active:scale-[0.97] shadow-lift flex items-center justify-center;
-  }
-
-  .btn-pill-warm {
-    @apply h-[52px] rounded-warm bg-accent/80 px-10 text-[15px] font-medium text-accent-foreground shadow-warm-lift transition-all active:scale-[0.97] flex items-center justify-center backdrop-blur-sm;
-    padding: 12px 20px 12px 14px; /* Asymmetric padding from design doc */
-  }
-
-  .btn-pill-outline {
-    @apply h-[44px] rounded-pill bg-background border border-border px-6 text-[15px] font-medium text-foreground transition-all active:scale-[0.97] shadow-lift flex items-center justify-center hover:bg-secondary/50;
-  }
-
-  .btn-uppercase {
-    @apply font-display font-bold uppercase text-[14px] tracking-[0.7px];
-  }
-
   .container-tight {
     @apply mx-auto max-w-[1440px] w-full px-6 md:px-16;
   }

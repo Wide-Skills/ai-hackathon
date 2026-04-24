@@ -18,6 +18,7 @@
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
     "seed": "pnpm --filter @ai-hackathon/db seed",
+    "reset": "pnpm --filter @ai-hackathon/db reset",
     "check": "biome check --write .",
     "prepare": "pnpm dlx husky install"
   },

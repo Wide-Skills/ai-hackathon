@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
+import { QueryErrorState } from "@/components/data/query-state";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,7 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { QueryErrorState } from "@/components/data/query-state";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 
 interface ParsedCandidate {
@@ -139,7 +139,9 @@ export function UploadCandidatesDialog({
   const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
   const jobs = jobsQuery.data ?? [];
 
-  const createApplicant = useMutation(trpc.applicants.create.mutationOptions());
+  const ingestBatch = useMutation(
+    trpc.applicants.ingestBatch.mutationOptions(),
+  );
 
   const handleFile = useCallback((file: File) => {
     if (!file.name.endsWith(".csv")) {
@@ -188,27 +190,23 @@ export function UploadCandidatesDialog({
     let success = 0;
     let failed = 0;
 
-    for (const candidate of candidates) {
-      try {
-        await createApplicant.mutateAsync({
-          jobId: selectedJobId,
-          firstName: candidate.firstName,
-          lastName: candidate.lastName,
-          email: candidate.email,
-          headline: candidate.headline,
-          location: candidate.location,
-          skills: candidate.skills
-            ? candidate.skills.map((s) => ({
-                name: s,
-                level: "Intermediate" as const,
-                yearsOfExperience: 0,
-              }))
-            : [],
-        });
-        success++;
-      } catch {
-        failed++;
-      }
+    try {
+      const result = await ingestBatch.mutateAsync({
+        jobId: selectedJobId,
+        candidates: candidates.map((c) => ({
+          firstName: c.firstName,
+          lastName: c.lastName,
+          email: c.email,
+          headline: c.headline,
+          location: c.location,
+          skills: c.skills,
+        })),
+      });
+      success = result.successCount;
+      failed = result.failedCount;
+    } catch (e) {
+      console.error("Batch upload failed:", e);
+      failed = candidates.length;
     }
 
     await invalidateHiringData(queryClient);
