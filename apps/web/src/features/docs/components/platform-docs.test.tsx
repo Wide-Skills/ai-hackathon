@@ -11,10 +11,10 @@ describe("PlatformDocs", () => {
         name: /how the talent screening platform works/i,
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText("saddynkurunziza8@gmail.com")).toBeInTheDocument();
     expect(
-      screen.getByText("saddynkurunziza8@gmail.com"),
+      screen.getByText(/magic link, google, or github/i),
     ).toBeInTheDocument();
-    expect(screen.getByText(/magic link, google, or github/i)).toBeInTheDocument();
     expect(screen.getByText("pnpm seed")).toBeInTheDocument();
     expect(screen.getByText("pnpm test")).toBeInTheDocument();
   });

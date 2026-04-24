@@ -82,7 +82,9 @@ export function AuthView() {
       });
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : `Failed to continue with ${provider}.`,
+        error instanceof Error
+          ? error.message
+          : `Failed to continue with ${provider}.`,
       );
     }
   };
@@ -90,7 +92,7 @@ export function AuthView() {
   return (
     <div className="space-y-10">
       <div className="space-y-3">
-        <h1 className="font-display text-[32px] font-light tracking-tight text-foreground">
+        <h1 className="font-display font-light text-[32px] text-foreground tracking-tight">
           Sign in to the recruiter console.
         </h1>
         <p className="text-[16px] text-muted-foreground leading-relaxed">
@@ -102,7 +104,7 @@ export function AuthView() {
       <div className="space-y-3">
         <Button
           variant="outline"
-          className="w-full h-11 rounded-full border-border hover:bg-secondary/50 font-normal"
+          className="h-11 w-full rounded-full border-border font-normal hover:bg-secondary/50"
           onClick={() => void handleSocial("google")}
         >
           <GoogleIcon className="mr-3 h-4 w-4" />
@@ -110,7 +112,7 @@ export function AuthView() {
         </Button>
         <Button
           variant="outline"
-          className="w-full h-11 rounded-full border-border hover:bg-secondary/50 font-normal"
+          className="h-11 w-full rounded-full border-border font-normal hover:bg-secondary/50"
           onClick={() => void handleSocial("github")}
         >
           <GitHubIcon className="mr-3 h-4 w-4" />
@@ -122,7 +124,7 @@ export function AuthView() {
 
       <form className="space-y-4" onSubmit={handleMagicLink}>
         <div className="space-y-2">
-          <p className="ml-1 text-[12px] font-medium text-muted-foreground">
+          <p className="ml-1 font-medium text-[12px] text-muted-foreground">
             Full Name
           </p>
           <InputGroup className="h-11 overflow-hidden rounded-full border-border bg-background px-1 shadow-[0_1px_3px_rgba(0,0,0,0.01)] focus-within:ring-info/20">
@@ -139,7 +141,7 @@ export function AuthView() {
         </div>
 
         <div className="space-y-2">
-          <p className="ml-1 text-[12px] font-medium text-muted-foreground">
+          <p className="ml-1 font-medium text-[12px] text-muted-foreground">
             Work Email
           </p>
           <InputGroup className="h-11 overflow-hidden rounded-full border-border bg-background px-1 shadow-[0_1px_3px_rgba(0,0,0,0.01)] focus-within:ring-info/20">

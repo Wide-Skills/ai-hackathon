@@ -2,12 +2,11 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "ai-hackathon",
-    short_name: "ai-hackathon",
-    description: "my pwa app",
-    start_url: "/new",
+    name: "Umurava AI",
+    short_name: "Umurava AI",
+    description: "Talent Screening Platform",
+    start_url: "/",
     display: "standalone",
-    background_color: "#ffffff",
     theme_color: "#000000",
     icons: [
       {

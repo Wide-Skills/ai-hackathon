@@ -1,5 +1,3 @@
-import { Star } from "lucide-react";
-
 interface ScoreBadgeProps {
   score: number;
 }
@@ -15,9 +13,9 @@ export function ScoreBadge({ score }: ScoreBadgeProps) {
           : "text-destructive-foreground bg-destructive/5 border-destructive/10";
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-pill border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.1em] shadow-ethereal leading-none ${color}`}
+      className={`inline-flex items-center gap-2 rounded-pill border px-3 py-1.5 font-bold text-[10px] uppercase leading-none tracking-[0.1em] shadow-ethereal ${color}`}
     >
-      <div className="h-1.5 w-1.5 rounded-full bg-current opacity-40 shrink-0" />
+      <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-current opacity-40" />
       <span className="translate-y-[0.5px]">{score}% Match</span>
     </span>
   );

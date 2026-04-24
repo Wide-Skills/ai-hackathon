@@ -25,9 +25,7 @@ export default async function DashboardLayout({
         <SidebarInset className="flex flex-col bg-transparent">
           <Header />
           <main className="flex-1 px-8 py-10 lg:px-12">
-            <div className="mx-auto w-full">
-              {children}
-            </div>
+            <div className="mx-auto w-full">{children}</div>
           </main>
         </SidebarInset>
       </div>

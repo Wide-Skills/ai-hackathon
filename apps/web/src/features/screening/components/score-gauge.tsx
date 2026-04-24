@@ -40,7 +40,7 @@ export function ScoreGauge({ score }: ScoreGaugeProps) {
       </svg>
       <span
         className={cn(
-          "absolute inset-0 flex items-center justify-center font-display text-[13px] font-light tracking-tighter tabular-nums",
+          "absolute inset-0 flex items-center justify-center font-display font-light text-[13px] tabular-nums tracking-tighter",
           colorClass,
         )}
       >

@@ -46,7 +46,9 @@ describe("AuthView", () => {
 
     render(<AuthView />);
 
-    fireEvent.click(screen.getByRole("button", { name: /email me a magic link/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /email me a magic link/i }),
+    );
 
     await waitFor(() => {
       expect(signInMagicLinkMock).toHaveBeenCalledWith({
@@ -63,7 +65,9 @@ describe("AuthView", () => {
 
     render(<AuthView />);
 
-    fireEvent.click(screen.getByRole("button", { name: /continue with google/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /continue with google/i }),
+    );
 
     await waitFor(() => {
       expect(signInSocialMock).toHaveBeenCalledWith({

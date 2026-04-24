@@ -1,13 +1,15 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { QueryErrorState } from "@/components/data/query-state";
-import { trpc } from "@/utils/trpc";
+import {
+  InteractivePerformanceChart,
+  StatCard,
+} from "@/features/dashboard/components";
 import { ScoreDistributionChart } from "@/features/dashboard/components/score-distribution-chart";
 import { SkillsRadarChart } from "@/features/dashboard/components/skills-radar-chart";
-import { StatCard, InteractivePerformanceChart } from "@/features/dashboard/components";
-import { motion } from "framer-motion";
-import { Users, Sparkles, BrainCircuit, Target } from "lucide-react";
+import { trpc } from "@/utils/trpc";
 
 export default function AnalyticsPage() {
   const applicantsQuery = useQuery(trpc.applicants.list.queryOptions());
@@ -17,14 +19,16 @@ export default function AnalyticsPage() {
 
   if (isLoading) {
     return (
-      <div className="w-full space-y-16 animate-pulse">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-40 bg-secondary/30 rounded-section" />)}
+      <div className="w-full animate-pulse space-y-16">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-40 rounded-section bg-secondary/30" />
+          ))}
         </div>
-        <div className="h-[500px] bg-secondary/30 rounded-section" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-           <div className="h-[450px] bg-secondary/30 rounded-section" />
-           <div className="h-[450px] bg-secondary/30 rounded-section" />
+        <div className="h-[500px] rounded-section bg-secondary/30" />
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+          <div className="h-[450px] rounded-section bg-secondary/30" />
+          <div className="h-[450px] rounded-section bg-secondary/30" />
         </div>
       </div>
     );
@@ -46,16 +50,42 @@ export default function AnalyticsPage() {
   const applicants = applicantsQuery.data ?? [];
   const stats = statsQuery.data;
 
-  const shortlistedCount = applicants.filter(a => a.status === 'shortlisted').length;
-  const aiCoverage = applicants.length > 0 
-    ? Math.round((applicants.filter(a => !!a.screening).length / applicants.length) * 100) 
-    : 0;
+  const shortlistedCount = applicants.filter(
+    (a) => a.status === "shortlisted",
+  ).length;
+  const aiCoverage =
+    applicants.length > 0
+      ? Math.round(
+          (applicants.filter((a) => !!a.screening).length / applicants.length) *
+            100,
+        )
+      : 0;
 
   const statCards = [
-    { label: "Total Talent", value: stats?.totalCandidates ?? 0, desc: "Cumulative profiles in pool", trend: "Active" },
-    { label: "Quality Index", value: `${stats?.avgMatchScore ?? 0}%`, desc: "Avg match score across pool", trend: "High" },
-    { label: "AI Saturation", value: `${aiCoverage}%`, desc: "Profiles analyzed by Gemini", trend: "Sync" },
-    { label: "Shortlisted", value: shortlistedCount, desc: "Top tier experts identified", trend: "Elite" },
+    {
+      label: "Total Talent",
+      value: stats?.totalCandidates ?? 0,
+      desc: "Cumulative profiles in pool",
+      trend: "Active",
+    },
+    {
+      label: "Quality Index",
+      value: `${stats?.avgMatchScore ?? 0}%`,
+      desc: "Avg match score across pool",
+      trend: "High",
+    },
+    {
+      label: "AI Saturation",
+      value: `${aiCoverage}%`,
+      desc: "Profiles analyzed by Gemini",
+      trend: "Sync",
+    },
+    {
+      label: "Shortlisted",
+      value: shortlistedCount,
+      desc: "Top tier experts identified",
+      trend: "Elite",
+    },
   ];
 
   return (
@@ -69,7 +99,7 @@ export default function AnalyticsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
           >
-            <StatCard 
+            <StatCard
               label={stat.label}
               value={stat.value}
               sublabel={stat.desc}
@@ -82,34 +112,41 @@ export default function AnalyticsPage() {
       {/* Velocity Visualization */}
       <section className="space-y-10">
         <header className="px-2">
-          <h3 className="font-display text-[20px] font-light text-foreground uppercase tracking-[0.15em]">Neural Processing Velocity</h3>
-          <p className="text-[12px] text-muted-foreground font-medium mt-1 uppercase tracking-widest opacity-60">High-resolution throughput analysis (Last 14 Days)</p>
+          <h3 className="font-display font-light text-[20px] text-foreground uppercase tracking-[0.15em]">
+            Neural Processing Velocity
+          </h3>
+          <p className="mt-1 font-medium text-[12px] text-muted-foreground uppercase tracking-widest opacity-60">
+            High-resolution throughput analysis (Last 14 Days)
+          </p>
         </header>
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }} 
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="bg-background rounded-section border border-border/50 shadow-premium overflow-hidden">
+          <div className="overflow-hidden rounded-section border border-border/50 bg-background shadow-premium">
             <InteractivePerformanceChart applicants={applicants} />
           </div>
         </motion.div>
       </section>
 
       {/* Distribution & Mapping Layer */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        
+      <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
         {/* Score Distribution */}
-        <motion.div 
+        <motion.div
           className="lg:col-span-7"
-          initial={{ opacity: 0, y: 10 }} 
-          animate={{ opacity: 1, y: 0 }} 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <div className="bg-background rounded-section border border-border/50 p-12 shadow-premium h-full">
+          <div className="h-full rounded-section border border-border/50 bg-background p-12 shadow-premium">
             <header className="mb-12">
-               <h3 className="font-display text-[18px] font-light text-foreground uppercase tracking-[0.15em]">Resonance Distribution</h3>
-               <p className="text-[11px] text-muted-foreground font-bold mt-1 uppercase tracking-widest opacity-40">Candidate match density mapping</p>
+              <h3 className="font-display font-light text-[18px] text-foreground uppercase tracking-[0.15em]">
+                Resonance Distribution
+              </h3>
+              <p className="mt-1 font-bold text-[11px] text-muted-foreground uppercase tracking-widest opacity-40">
+                Candidate match density mapping
+              </p>
             </header>
             <div className="h-[300px]">
               <ScoreDistributionChart applicants={applicants} />
@@ -118,20 +155,24 @@ export default function AnalyticsPage() {
         </motion.div>
 
         {/* Skill Radar */}
-        <motion.div 
+        <motion.div
           className="lg:col-span-5"
-          initial={{ opacity: 0, y: 10 }} 
-          animate={{ opacity: 1, y: 0 }} 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <div className="bg-background rounded-section border border-border/50 p-12 shadow-premium h-full">
-             <header className="mb-12">
-                <h3 className="font-display text-[18px] font-light text-foreground uppercase tracking-[0.15em]">Expertise Topology</h3>
-                <p className="text-[11px] text-muted-foreground font-bold mt-1 uppercase tracking-widest opacity-40">Aggregate cross-pipeline skill mapping</p>
-             </header>
-             <div className="max-w-[450px] mx-auto h-[300px]">
-               <SkillsRadarChart applicants={applicants} />
-             </div>
+          <div className="h-full rounded-section border border-border/50 bg-background p-12 shadow-premium">
+            <header className="mb-12">
+              <h3 className="font-display font-light text-[18px] text-foreground uppercase tracking-[0.15em]">
+                Expertise Topology
+              </h3>
+              <p className="mt-1 font-bold text-[11px] text-muted-foreground uppercase tracking-widest opacity-40">
+                Aggregate cross-pipeline skill mapping
+              </p>
+            </header>
+            <div className="mx-auto h-[300px] max-w-[450px]">
+              <SkillsRadarChart applicants={applicants} />
+            </div>
           </div>
         </motion.div>
       </div>

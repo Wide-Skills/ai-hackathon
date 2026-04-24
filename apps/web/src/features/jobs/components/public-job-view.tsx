@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import {
   Briefcase,
   CheckCircle2,
@@ -9,15 +10,14 @@ import {
   MapPin,
   Upload,
 } from "lucide-react";
-import { useId, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { Footer } from "@/components/landing/footer";
+import { Navbar } from "@/components/landing/navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/utils/trpc";
-import { motion } from "framer-motion";
-import { Navbar } from "@/components/landing/navbar";
-import { Footer } from "@/components/landing/footer";
 
 interface PublicJobViewProps {
   jobId: string;
@@ -31,8 +31,12 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
   const [uploading, setUploading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const jobQuery = useQuery(trpc.jobs.getPublicById.queryOptions({ id: jobId }));
-  const applyMutation = useMutation(trpc.applicants.publicApply.mutationOptions());
+  const jobQuery = useQuery(
+    trpc.jobs.getPublicById.queryOptions({ id: jobId }),
+  );
+  const applyMutation = useMutation(
+    trpc.applicants.publicApply.mutationOptions(),
+  );
 
   const job = jobQuery.data;
 
@@ -93,9 +97,11 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
   if (!job) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center space-y-4">
-        <h1 className="text-2xl font-bold">Job Not Found</h1>
-        <p className="text-muted-foreground">The job listing you are looking for does not exist or has been closed.</p>
-        <Button onClick={() => window.location.href = "/"}>Go Home</Button>
+        <h1 className="font-bold text-2xl">Job Not Found</h1>
+        <p className="text-muted-foreground">
+          The job listing you are looking for does not exist or has been closed.
+        </p>
+        <Button onClick={() => (window.location.href = "/")}>Go Home</Button>
       </div>
     );
   }
@@ -106,17 +112,25 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full bg-background p-10 rounded-3xl shadow-premium border border-border/50 text-center space-y-6"
+          className="w-full max-w-md space-y-6 rounded-3xl border border-border/50 bg-background p-10 text-center shadow-premium"
         >
-          <div className="mx-auto w-16 h-16 bg-success/10 rounded-full flex items-center justify-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
             <CheckCircle2 className="h-8 w-8 text-success" />
           </div>
-          <h2 className="text-2xl font-display font-light">Application Received!</h2>
+          <h2 className="font-display font-light text-2xl">
+            Application Received!
+          </h2>
           <p className="text-muted-foreground">
-            Thank you for applying for the <span className="font-semibold text-foreground">{job.title}</span> position. 
-            Our AI-powered screening engine will review your profile shortly.
+            Thank you for applying for the{" "}
+            <span className="font-semibold text-foreground">{job.title}</span>{" "}
+            position. Our AI-powered screening engine will review your profile
+            shortly.
           </p>
-          <Button variant="outline" className="rounded-full px-8" onClick={() => window.location.href = "/"}>
+          <Button
+            variant="outline"
+            className="rounded-full px-8"
+            onClick={() => (window.location.href = "/")}
+          >
             Back to Home
           </Button>
         </motion.div>
@@ -127,16 +141,19 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="container-tight pt-32 pb-24">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
           {/* Job Details */}
-          <div className="lg:col-span-2 space-y-10">
+          <div className="space-y-10 lg:col-span-2">
             <div className="space-y-4">
-              <Badge variant="secondary" className="bg-primary/5 text-primary border-primary/10 rounded-full px-4 py-1">
+              <Badge
+                variant="secondary"
+                className="rounded-full border-primary/10 bg-primary/5 px-4 py-1 text-primary"
+              >
                 {job.department}
               </Badge>
-              <h1 className="text-4xl md:text-5xl font-display font-light tracking-tight leading-tight">
+              <h1 className="font-display font-light text-4xl leading-tight tracking-tight md:text-5xl">
                 {job.title}
               </h1>
               <div className="flex flex-wrap gap-6 text-muted-foreground text-sm">
@@ -152,25 +169,38 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
             </div>
 
             <div className="prose prose-slate max-w-none">
-              <h3 className="text-xl font-display font-light text-foreground border-b border-border/50 pb-4">Description</h3>
-              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap pt-4">
+              <h3 className="border-border/50 border-b pb-4 font-display font-light text-foreground text-xl">
+                Description
+              </h3>
+              <p className="whitespace-pre-wrap pt-4 text-muted-foreground leading-relaxed">
                 {job.description}
               </p>
 
-              <h3 className="text-xl font-display font-light text-foreground border-b border-border/50 pb-4 mt-10">Requirements</h3>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+              <h3 className="mt-10 border-border/50 border-b pb-4 font-display font-light text-foreground text-xl">
+                Requirements
+              </h3>
+              <ul className="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
                 {job.requirements.map((req, i) => (
-                  <li key={i} className="flex items-start gap-3 text-muted-foreground text-sm">
-                    <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                  <li
+                    key={i}
+                    className="flex items-start gap-3 text-muted-foreground text-sm"
+                  >
+                    <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
                     {req}
                   </li>
                 ))}
               </ul>
 
-              <h3 className="text-xl font-display font-light text-foreground border-b border-border/50 pb-4 mt-10">Key Skills</h3>
+              <h3 className="mt-10 border-border/50 border-b pb-4 font-display font-light text-foreground text-xl">
+                Key Skills
+              </h3>
               <div className="flex flex-wrap gap-2 pt-4">
                 {job.skills.map((skill, i) => (
-                  <Badge key={i} variant="outline" className="rounded-full px-4 py-1 border-border/50 bg-secondary/30">
+                  <Badge
+                    key={i}
+                    variant="outline"
+                    className="rounded-full border-border/50 bg-secondary/30 px-4 py-1"
+                  >
                     {skill}
                   </Badge>
                 ))}
@@ -180,93 +210,112 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
 
           {/* Application Form */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-background border border-border/50 rounded-3xl p-8 shadow-premium space-y-6">
-              <h3 className="text-xl font-display font-light">Apply Now</h3>
-              
+            <div className="sticky top-24 space-y-6 rounded-3xl border border-border/50 bg-background p-8 shadow-premium">
+              <h3 className="font-display font-light text-xl">Apply Now</h3>
+
               <form onSubmit={handleApply} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60">First Name</label>
-                    <Input 
-                      required 
-                      value={firstName} 
+                    <label className="font-bold text-muted-foreground/60 text-xs uppercase tracking-wider">
+                      First Name
+                    </label>
+                    <Input
+                      required
+                      value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="Jane"
-                      className="rounded-xl bg-secondary/30 border-border/50 h-11"
+                      className="h-11 rounded-xl border-border/50 bg-secondary/30"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60">Last Name</label>
-                    <Input 
-                      required 
-                      value={lastName} 
+                    <label className="font-bold text-muted-foreground/60 text-xs uppercase tracking-wider">
+                      Last Name
+                    </label>
+                    <Input
+                      required
+                      value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder="Doe"
-                      className="rounded-xl bg-secondary/30 border-border/50 h-11"
+                      className="h-11 rounded-xl border-border/50 bg-secondary/30"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60">Email Address</label>
-                  <Input 
-                    required 
+                  <label className="font-bold text-muted-foreground/60 text-xs uppercase tracking-wider">
+                    Email Address
+                  </label>
+                  <Input
+                    required
                     type="email"
-                    value={email} 
+                    value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="jane.doe@example.com"
-                    className="rounded-xl bg-secondary/30 border-border/50 h-11"
+                    className="h-11 rounded-xl border-border/50 bg-secondary/30"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground/60">Resume (PDF)</label>
-                  <div 
-                    onClick={() => document.getElementById('file-upload')?.click()}
-                    className={`border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all ${
-                      file ? 'border-primary/40 bg-primary/5' : 'border-border/50 hover:border-primary/20 hover:bg-secondary/20'
+                  <label className="font-bold text-muted-foreground/60 text-xs uppercase tracking-wider">
+                    Resume (PDF)
+                  </label>
+                  <div
+                    onClick={() =>
+                      document.getElementById("file-upload")?.click()
+                    }
+                    className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 transition-all ${
+                      file
+                        ? "border-primary/40 bg-primary/5"
+                        : "border-border/50 hover:border-primary/20 hover:bg-secondary/20"
                     }`}
                   >
-                    <input 
+                    <input
                       id="file-upload"
-                      type="file" 
-                      accept=".pdf" 
-                      className="hidden" 
+                      type="file"
+                      accept=".pdf"
+                      className="hidden"
                       onChange={(e) => setFile(e.target.files?.[0] || null)}
                     />
                     {file ? (
                       <div className="flex items-center gap-3">
                         <FileText className="h-6 w-6 text-primary" />
-                        <span className="text-sm font-medium truncate max-w-[150px]">{file.name}</span>
+                        <span className="max-w-[150px] truncate font-medium text-sm">
+                          {file.name}
+                        </span>
                       </div>
                     ) : (
                       <>
-                        <Upload className="h-6 w-6 text-muted-foreground/40 mb-2" />
-                        <span className="text-sm text-muted-foreground text-center">Click to upload your resume</span>
-                        <span className="text-[10px] text-muted-foreground/40 mt-1">PDF max 5MB</span>
+                        <Upload className="mb-2 h-6 w-6 text-muted-foreground/40" />
+                        <span className="text-center text-muted-foreground text-sm">
+                          Click to upload your resume
+                        </span>
+                        <span className="mt-1 text-[10px] text-muted-foreground/40">
+                          PDF max 5MB
+                        </span>
                       </>
                     )}
                   </div>
                 </div>
 
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={uploading}
-                  className="w-full h-12 rounded-full bg-primary text-white font-semibold text-[15px] shadow-premium hover:shadow-lift transition-all mt-4"
+                  className="mt-4 h-12 w-full rounded-full bg-primary font-semibold text-[15px] text-white shadow-premium transition-all hover:shadow-lift"
                 >
                   {uploading ? (
                     <>
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Processing...
                     </>
                   ) : (
                     "Submit Application"
                   )}
                 </Button>
-                
-                <p className="text-[10px] text-center text-muted-foreground/40 leading-relaxed px-4">
-                  By applying, you agree to our Terms of Service and Privacy Policy. 
-                  Our AI will analyze your data for recruitment purposes only.
+
+                <p className="px-4 text-center text-[10px] text-muted-foreground/40 leading-relaxed">
+                  By applying, you agree to our Terms of Service and Privacy
+                  Policy. Our AI will analyze your data for recruitment purposes
+                  only.
                 </p>
               </form>
             </div>

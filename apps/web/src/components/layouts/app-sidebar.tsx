@@ -1,12 +1,12 @@
 "use client";
 
 import {
+  BarChart3Icon,
   BriefcaseIcon,
   LayoutDashboardIcon,
   Settings2Icon,
   SparklesIcon,
   UsersIcon,
-  BarChart3Icon,
 } from "lucide-react";
 import type * as React from "react";
 import { NavMain } from "@/components/layouts/nav-main";
@@ -78,18 +78,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border bg-background" {...props}>
-      <SidebarHeader className="pt-6 px-4 pb-8">
+    <Sidebar
+      collapsible="icon"
+      className="border-border border-r bg-background"
+      {...props}
+    >
+      <SidebarHeader className="px-4 pt-6 pb-8">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
               className="hover:bg-transparent active:bg-transparent"
             >
-           
-              <div className="grid flex-1 text-left leading-tight ml-2">
-                <span className="truncate font-display text-[15px] font-light tracking-[0.2em] text-foreground uppercase">
-                  Umurava <span className="text-muted-foreground/40 italic normal-case tracking-tight">AI</span>
+              <div className="ml-2 grid flex-1 text-left leading-tight">
+                <span className="truncate font-display font-light text-[15px] text-foreground uppercase tracking-[0.2em]">
+                  Umurava{" "}
+                  <span className="text-muted-foreground/40 normal-case italic tracking-tight">
+                    AI
+                  </span>
                 </span>
               </div>
             </SidebarMenuButton>
@@ -99,7 +105,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent className="px-2">
         <NavMain items={navItems} />
       </SidebarContent>
-      <SidebarFooter className="p-4 mt-auto border-t border-border/50">
+      <SidebarFooter className="mt-auto border-border/50 border-t p-4">
         {session?.user && <NavUser user={user} />}
       </SidebarFooter>
       <SidebarRail />

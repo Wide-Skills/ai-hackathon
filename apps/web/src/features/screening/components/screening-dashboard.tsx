@@ -1,10 +1,14 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BrainCircuit, Loader2, RefreshCw } from "lucide-react";
+import { motion } from "framer-motion";
+import { Loader2, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { QueryEmptyState, QueryErrorState } from "@/components/data/query-state";
+import {
+  QueryEmptyState,
+  QueryErrorState,
+} from "@/components/data/query-state";
 import {
   Select,
   SelectContent,
@@ -12,11 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { StatCard } from "@/features/dashboard/components/stat-card";
 import { cn } from "@/lib/utils";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 import { ScreeningCard } from "./screening-card";
-import { StatCard } from "@/features/dashboard/components/stat-card";
-import { motion } from "framer-motion";
 
 export function ScreeningDashboard() {
   const [selectedJob, setSelectedJob] = useState<string>("all");
@@ -24,9 +27,7 @@ export function ScreeningDashboard() {
   const [progress, setProgress] = useState(0);
   const queryClient = useQueryClient();
 
-  const applicantsQuery = useQuery(
-    trpc.applicants.list.queryOptions(),
-  );
+  const applicantsQuery = useQuery(trpc.applicants.list.queryOptions());
   const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
 
   const screenMutation = useMutation(
@@ -51,14 +52,24 @@ export function ScreeningDashboard() {
   );
 
   const distribution = {
-    "Strongly Recommend": filtered.filter((a) => a.screening?.recommendation === "Strongly Recommend").length,
-    Recommend: filtered.filter((a) => a.screening?.recommendation === "Recommend").length,
-    Consider: filtered.filter((a) => a.screening?.recommendation === "Consider").length,
-    "Not Recommended": filtered.filter((a) => a.screening?.recommendation === "Not Recommended").length,
+    "Strongly Recommend": filtered.filter(
+      (a) => a.screening?.recommendation === "Strongly Recommend",
+    ).length,
+    Recommend: filtered.filter(
+      (a) => a.screening?.recommendation === "Recommend",
+    ).length,
+    Consider: filtered.filter((a) => a.screening?.recommendation === "Consider")
+      .length,
+    "Not Recommended": filtered.filter(
+      (a) => a.screening?.recommendation === "Not Recommended",
+    ).length,
   };
 
   const handleRunScreening = async () => {
-    const pendingToScreen = selectedJob === "all" ? pending : pending.filter((a) => a.jobId === selectedJob);
+    const pendingToScreen =
+      selectedJob === "all"
+        ? pending
+        : pending.filter((a) => a.jobId === selectedJob);
     if (pendingToScreen.length === 0) {
       toast.info("No pending candidates to screen.");
       return;
@@ -69,7 +80,10 @@ export function ScreeningDashboard() {
     const errors: string[] = [];
     for (const applicant of pendingToScreen) {
       try {
-        await screenMutation.mutateAsync({ applicantId: applicant.id, jobId: applicant.jobId });
+        await screenMutation.mutateAsync({
+          applicantId: applicant.id,
+          jobId: applicant.jobId,
+        });
         completed++;
         setProgress(Math.round((completed / pendingToScreen.length) * 100));
       } catch {
@@ -80,7 +94,9 @@ export function ScreeningDashboard() {
     setRunning(false);
     setProgress(0);
     if (errors.length > 0) {
-      toast.warning(`Screened ${completed} candidates. ${errors.length} failed.`);
+      toast.warning(
+        `Screened ${completed} candidates. ${errors.length} failed.`,
+      );
     } else {
       toast.success(`AI screening complete! Analyzed ${completed} candidates.`);
     }
@@ -88,11 +104,13 @@ export function ScreeningDashboard() {
 
   if (applicantsQuery.isLoading || jobsQuery.isLoading) {
     return (
-      <div className="w-full space-y-12 animate-pulse">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-           {[1,2,3,4].map(i => <div key={i} className="h-32 bg-secondary/30 rounded-xl" />)}
+      <div className="w-full animate-pulse space-y-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-32 rounded-xl bg-secondary/30" />
+          ))}
         </div>
-        <div className="h-[600px] w-full bg-secondary/30 rounded-xl" />
+        <div className="h-[600px] w-full rounded-xl bg-secondary/30" />
       </div>
     );
   }
@@ -121,28 +139,52 @@ export function ScreeningDashboard() {
     <div className="w-full space-y-12 pb-20">
       {/* Top Metrics row */}
       <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-        <StatCard label="Total Screened" value={screened.length} sublabel="Analysis throughput" trend="+15%" />
-        <StatCard label="Avg Match" value={`${avgScore}%`} sublabel="Pool quality" trend="+2%" />
-        <StatCard label="Shortlisted" value={filtered.filter((a) => (a.screening?.matchScore ?? 0) >= 85).length} sublabel="Top tier matches" trend="+8%" />
-        <StatCard label="Queue" value={pending.length} sublabel="Awaiting review" trend="-12%" />
+        <StatCard
+          label="Total Screened"
+          value={screened.length}
+          sublabel="Analysis throughput"
+          trend="+15%"
+        />
+        <StatCard
+          label="Avg Match"
+          value={`${avgScore}%`}
+          sublabel="Pool quality"
+          trend="+2%"
+        />
+        <StatCard
+          label="Shortlisted"
+          value={
+            filtered.filter((a) => (a.screening?.matchScore ?? 0) >= 85).length
+          }
+          sublabel="Top tier matches"
+          trend="+8%"
+        />
+        <StatCard
+          label="Queue"
+          value={pending.length}
+          sublabel="Awaiting review"
+          trend="-12%"
+        />
       </div>
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-4 items-start">
+      <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-4">
         {/* Control Sidebar */}
         <div className="space-y-10 lg:col-span-1">
-          <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium group transition-all hover:shadow-lift">
-            <div className="px-8 py-5 border-b border-border/20 bg-secondary/[0.02] flex items-center justify-between">
-              <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Engine</h3>
+          <div className="group overflow-hidden rounded-section border border-border/50 bg-background shadow-premium transition-all hover:shadow-lift">
+            <div className="flex items-center justify-between border-border/20 border-b bg-secondary/[0.02] px-8 py-5">
+              <h3 className="font-display font-light text-[15px] text-foreground uppercase tracking-[0.1em]">
+                Engine
+              </h3>
             </div>
             <div className="p-8">
-              <p className="text-muted-foreground/50 text-[13px] leading-relaxed mb-10 font-medium tracking-tight">
+              <p className="mb-10 font-medium text-[13px] text-muted-foreground/50 leading-relaxed tracking-tight">
                 Neural architecture analysis powered by Gemini 1.5 Pro.
               </p>
 
               <button
                 onClick={handleRunScreening}
                 disabled={running || pending.length === 0}
-                className="btn-pill-primary w-full h-11 text-[11px] uppercase tracking-[0.2em] gap-2.5 disabled:opacity-40 shadow-ethereal"
+                className="btn-pill-primary h-11 w-full gap-2.5 text-[11px] uppercase tracking-[0.2em] shadow-ethereal disabled:opacity-40"
               >
                 {running ? (
                   <>
@@ -153,7 +195,7 @@ export function ScreeningDashboard() {
                 )}
               </button>
               {running && (
-                <div className="mt-8 h-1 w-full bg-secondary/50 rounded-pill overflow-hidden shadow-inset">
+                <div className="mt-8 h-1 w-full overflow-hidden rounded-pill bg-secondary/50 shadow-inset">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
@@ -164,11 +206,13 @@ export function ScreeningDashboard() {
             </div>
           </div>
 
-          <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium">
-            <div className="px-8 py-5 border-b border-border/20 bg-secondary/[0.02]">
-              <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Distribution</h3>
+          <div className="overflow-hidden rounded-section border border-border/50 bg-background shadow-premium">
+            <div className="border-border/20 border-b bg-secondary/[0.02] px-8 py-5">
+              <h3 className="font-display font-light text-[15px] text-foreground uppercase tracking-[0.1em]">
+                Distribution
+              </h3>
             </div>
-            <div className="p-8 space-y-7">
+            <div className="space-y-7 p-8">
               {Object.entries(distribution).map(([rec, count]) => {
                 const colors: Record<string, string> = {
                   "Strongly Recommend": "bg-success/40",
@@ -176,15 +220,24 @@ export function ScreeningDashboard() {
                   Consider: "bg-warning/40",
                   "Not Recommended": "bg-destructive/40",
                 };
-                const pct = filtered.length > 0 ? Math.round((count / filtered.length) * 100) : 0;
+                const pct =
+                  filtered.length > 0
+                    ? Math.round((count / filtered.length) * 100)
+                    : 0;
                 return (
                   <div key={rec} className="space-y-3">
-                    <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
-                      <span>{rec.split(' ')[0]}</span>
+                    <div className="flex items-center justify-between font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.15em]">
+                      <span>{rec.split(" ")[0]}</span>
                       <span className="text-foreground/70">{count}</span>
                     </div>
-                    <div className="h-1 w-full bg-secondary/50 rounded-pill overflow-hidden shadow-inset">
-                       <div className={cn("h-full rounded-pill shadow-ethereal", colors[rec])} style={{ width: `${pct}%` }} />
+                    <div className="h-1 w-full overflow-hidden rounded-pill bg-secondary/50 shadow-inset">
+                      <div
+                        className={cn(
+                          "h-full rounded-pill shadow-ethereal",
+                          colors[rec],
+                        )}
+                        style={{ width: `${pct}%` }}
+                      />
                     </div>
                   </div>
                 );
@@ -192,19 +245,26 @@ export function ScreeningDashboard() {
             </div>
           </div>
 
-          <div className="bg-background rounded-section border border-border/50 overflow-hidden shadow-premium">
-            <div className="px-8 py-5 border-b border-border/20 bg-secondary/[0.02]">
-              <h3 className="font-display text-[15px] font-light text-foreground uppercase tracking-[0.1em]">Pipeline</h3>
+          <div className="overflow-hidden rounded-section border border-border/50 bg-background shadow-premium">
+            <div className="border-border/20 border-b bg-secondary/[0.02] px-8 py-5">
+              <h3 className="font-display font-light text-[15px] text-foreground uppercase tracking-[0.1em]">
+                Pipeline
+              </h3>
             </div>
             <div className="p-8">
-              <Select value={selectedJob} onValueChange={(value) => setSelectedJob(value ?? "all")}>
-                <SelectTrigger className="h-11 rounded-pill border-border/50 bg-background shadow-ethereal text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50">
+              <Select
+                value={selectedJob}
+                onValueChange={(value) => setSelectedJob(value ?? "all")}
+              >
+                <SelectTrigger className="h-11 rounded-pill border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-ethereal">
                   <SelectValue placeholder="All Jobs" />
                 </SelectTrigger>
-                <SelectContent className="shadow-premium border-border/50">
+                <SelectContent className="border-border/50 shadow-premium">
                   <SelectItem value="all">All Pipelines</SelectItem>
                   {jobs.map((j) => (
-                    <SelectItem key={j.id} value={j.id}>{j.title}</SelectItem>
+                    <SelectItem key={j.id} value={j.id}>
+                      {j.title}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -213,14 +273,20 @@ export function ScreeningDashboard() {
         </div>
 
         <div className="lg:col-span-3">
-          <div className="mb-5 flex items-end justify-between border-b border-border/20 pb-10 px-2">
+          <div className="mb-5 flex items-end justify-between border-border/20 border-b px-2 pb-10">
             <div>
-              <h2 className="font-display text-[24px] font-light text-foreground uppercase tracking-[0.1em]">Screening Report</h2>
-              <p className="text-[12px] text-muted-foreground/30 font-bold mt-1 uppercase tracking-widest">{filtered.length} experts analyzed</p>
+              <h2 className="font-display font-light text-[24px] text-foreground uppercase tracking-[0.1em]">
+                Screening Report
+              </h2>
+              <p className="mt-1 font-bold text-[12px] text-muted-foreground/30 uppercase tracking-widest">
+                {filtered.length} experts analyzed
+              </p>
             </div>
             <button
-              onClick={() => queryClient.invalidateQueries({ queryKey: [["applicants"]] })}
-              className="flex h-10 w-10 items-center justify-center rounded-pill border border-border/50 bg-background transition-all hover:bg-secondary active:scale-[0.95] shadow-ethereal text-muted-foreground/20"
+              onClick={() =>
+                queryClient.invalidateQueries({ queryKey: [["applicants"]] })
+              }
+              className="flex h-10 w-10 items-center justify-center rounded-pill border border-border/50 bg-background text-muted-foreground/20 shadow-ethereal transition-all hover:bg-secondary active:scale-[0.95]"
             >
               <RefreshCw className="h-4 w-4" />
             </button>
@@ -229,15 +295,15 @@ export function ScreeningDashboard() {
           <div>
             <div className="flex flex-col gap-4">
               {filtered.map((applicant) => {
-              const job = jobs.find((j) => j.id === applicant.jobId);
-              return (
-                <ScreeningCard
-                  key={applicant.id}
-                  applicant={applicant}
-                  jobTitle={job?.title ?? ""}
-                />
-              );
-            })}
+                const job = jobs.find((j) => j.id === applicant.jobId);
+                return (
+                  <ScreeningCard
+                    key={applicant.id}
+                    applicant={applicant}
+                    jobTitle={job?.title ?? ""}
+                  />
+                );
+              })}
             </div>
 
             {filtered.length === 0 ? (

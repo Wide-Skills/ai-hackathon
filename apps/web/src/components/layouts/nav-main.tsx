@@ -2,6 +2,7 @@
 
 import { ChevronRightIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
+import React from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -18,7 +19,6 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
-import React from "react";
 
 type AppRoute =
   | "/dashboard"
@@ -46,13 +46,16 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 mb-4">
+      <SidebarGroupLabel className="mb-4 px-4 font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em]">
         Platform
       </SidebarGroupLabel>
       <SidebarMenu className="space-y-1">
         {items.map((item) => {
-          const isItemActive = pathname === item.url || (item.url !== '/dashboard' && pathname.startsWith(item.url)) || item.isActive;
-          
+          const isItemActive =
+            pathname === item.url ||
+            (item.url !== "/dashboard" && pathname.startsWith(item.url)) ||
+            item.isActive;
+
           if (!item.items || item.items.length === 0) {
             return (
               <SidebarMenuItem key={item.title}>
@@ -63,26 +66,34 @@ export function NavMain({
                   }}
                   isActive={isItemActive}
                   className={cn(
-                    "h-10 px-4 transition-all duration-300 rounded-lg relative group overflow-hidden mb-1",
+                    "group relative mb-1 h-10 overflow-hidden rounded-lg px-4 transition-all duration-300",
                     "hover:bg-secondary/30 active:scale-[0.98]",
-                    isItemActive 
-                      ? "bg-secondary/50 text-foreground font-medium shadow-ethereal" 
-                      : "text-muted-foreground/50 hover:text-foreground/80"
+                    isItemActive
+                      ? "bg-secondary/50 font-medium text-foreground shadow-ethereal"
+                      : "text-muted-foreground/50 hover:text-foreground/80",
                   )}
                 >
-                  <div className={cn(
-                    "flex-shrink-0 transition-colors mr-3",
-                    isItemActive ? "text-primary" : "text-muted-foreground/20 group-hover:text-muted-foreground/40"
-                  )}>
-                    {React.isValidElement(item.icon) 
-                      ? React.cloneElement(item.icon as React.ReactElement<any>, { className: "size-4 stroke-[1.5px]" })
-                      : item.icon
-                    }
+                  <div
+                    className={cn(
+                      "mr-3 flex-shrink-0 transition-colors",
+                      isItemActive
+                        ? "text-primary"
+                        : "text-muted-foreground/20 group-hover:text-muted-foreground/40",
+                    )}
+                  >
+                    {React.isValidElement(item.icon)
+                      ? React.cloneElement(
+                          item.icon as React.ReactElement<any>,
+                          { className: "size-4 stroke-[1.5px]" },
+                        )
+                      : item.icon}
                   </div>
-                  <span className="text-[14px] tracking-tight">{item.title}</span>
-                  
+                  <span className="text-[14px] tracking-tight">
+                    {item.title}
+                  </span>
+
                   {isItemActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-3 bg-primary/60 rounded-r-full" />
+                    <div className="absolute top-1/2 left-0 h-3 w-1 -translate-y-1/2 rounded-r-full bg-primary/60" />
                   )}
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -98,30 +109,31 @@ export function NavMain({
             >
               <CollapsibleTrigger
                 render={
-                  <SidebarMenuButton 
-                    tooltip={item.title} 
-                    className="h-9 px-4 text-muted-foreground/60 hover:text-foreground/90 hover:bg-transparent"
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    className="h-9 px-4 text-muted-foreground/60 hover:bg-transparent hover:text-foreground/90"
                   />
                 }
               >
-                <div className="text-muted-foreground/30 group-hover:text-muted-foreground/60 mr-3">
+                <div className="mr-3 text-muted-foreground/30 group-hover:text-muted-foreground/60">
                   {React.isValidElement(item.icon)
-                    ? React.cloneElement(item.icon as React.ReactElement<any>, { className: "size-4.5 stroke-[1.5px]" })
-                    : item.icon
-                  }
+                    ? React.cloneElement(item.icon as React.ReactElement<any>, {
+                        className: "size-4.5 stroke-[1.5px]",
+                      })
+                    : item.icon}
                 </div>
                 <span className="text-[14px] tracking-tight">{item.title}</span>
-                <ChevronRightIcon className="ml-auto size-3.5 transition-transform duration-200 group-data-open/collapsible:rotate-90 opacity-30" />
+                <ChevronRightIcon className="ml-auto size-3.5 opacity-30 transition-transform duration-200 group-data-open/collapsible:rotate-90" />
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <SidebarMenuSub className="ml-4 border-l border-border/40 py-1.5 space-y-1">
+                <SidebarMenuSub className="ml-4 space-y-1 border-border/40 border-l py-1.5">
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton
                         onClick={() => {
                           window.location.href = subItem.url;
                         }}
-                        className="h-8 text-[13px] text-muted-foreground/50 hover:text-foreground transition-colors"
+                        className="h-8 text-[13px] text-muted-foreground/50 transition-colors hover:text-foreground"
                       >
                         <span>{subItem.title}</span>
                       </SidebarMenuSubButton>

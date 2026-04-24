@@ -5,11 +5,16 @@ import {
   type ColumnDef,
   flexRender,
   getCoreRowModel,
-  useReactTable,
   getSortedRowModel,
   type SortingState,
+  useReactTable,
 } from "@tanstack/react-table";
+import { ArrowUpDown, ChevronRight } from "lucide-react";
+import type { Route } from "next";
+import Link from "next/link";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -19,12 +24,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ScoreBadge } from "@/features/dashboard/components/score-badge";
-import { cn } from "@/lib/utils";
-import { ArrowUpDown, ChevronRight } from "lucide-react";
-import Link from "next/link";
-import type { Route } from "next";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 
 interface ApplicantsTableProps {
   data: Applicant[];
@@ -66,7 +65,7 @@ export const columns: ColumnDef<Applicant>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50"
+          className="flex items-center gap-2 font-bold text-[10px] text-muted-foreground/50 uppercase tracking-widest"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Candidate
@@ -78,12 +77,19 @@ export const columns: ColumnDef<Applicant>[] = [
       const applicant = row.original;
       return (
         <div className="flex items-center gap-4 py-1">
-          <div className="h-9 w-9 rounded-xl bg-secondary/50 border border-border/10 flex items-center justify-center text-[11px] font-bold text-muted-foreground/60 shrink-0 shadow-ethereal">
-            <span className="translate-y-[0.5px]">{applicant.firstName[0]}{applicant.lastName[0]}</span>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border/10 bg-secondary/50 font-bold text-[11px] text-muted-foreground/60 shadow-ethereal">
+            <span className="translate-y-[0.5px]">
+              {applicant.firstName[0]}
+              {applicant.lastName[0]}
+            </span>
           </div>
-          <div className="flex flex-col justify-center min-w-0">
-            <div className="font-semibold text-foreground tracking-tight leading-tight">{applicant.firstName} {applicant.lastName}</div>
-            <div className="text-[11px] text-muted-foreground/50 font-medium truncate mt-0.5 leading-none">{applicant.email}</div>
+          <div className="flex min-w-0 flex-col justify-center">
+            <div className="font-semibold text-foreground leading-tight tracking-tight">
+              {applicant.firstName} {applicant.lastName}
+            </div>
+            <div className="mt-0.5 truncate font-medium text-[11px] text-muted-foreground/50 leading-none">
+              {applicant.email}
+            </div>
           </div>
         </div>
       );
@@ -94,7 +100,7 @@ export const columns: ColumnDef<Applicant>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50"
+          className="flex items-center gap-2 font-bold text-[10px] text-muted-foreground/50 uppercase tracking-widest"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           AI Score
@@ -105,7 +111,7 @@ export const columns: ColumnDef<Applicant>[] = [
     cell: ({ row }) => {
       const score = row.original.screening?.matchScore ?? 0;
       return (
-        <div className="flex items-center h-full py-1">
+        <div className="flex h-full items-center py-1">
           <ScoreBadge score={score} />
         </div>
       );
@@ -113,17 +119,21 @@ export const columns: ColumnDef<Applicant>[] = [
   },
   {
     accessorKey: "status",
-    header: () => <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Status</span>,
+    header: () => (
+      <span className="font-bold text-[10px] text-muted-foreground/50 uppercase tracking-widest">
+        Status
+      </span>
+    ),
     cell: ({ row }) => {
       const status = row.getValue("status") as ApplicationStatus;
       const config = statusConfig[status] || statusConfig.pending;
       return (
-        <div className="flex items-center h-full py-1">
+        <div className="flex h-full items-center py-1">
           <Badge
             variant={config.variant}
             size="sm"
             uppercase
-            className="tracking-[0.12em] border shadow-ethereal leading-none"
+            className="border leading-none tracking-[0.12em] shadow-ethereal"
           >
             <span className="translate-y-[0.5px]">{config.label}</span>
           </Badge>
@@ -133,11 +143,19 @@ export const columns: ColumnDef<Applicant>[] = [
   },
   {
     accessorKey: "appliedAt",
-    header: () => <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Applied</span>,
+    header: () => (
+      <span className="font-bold text-[10px] text-muted-foreground/50 uppercase tracking-widest">
+        Applied
+      </span>
+    ),
     cell: ({ row }) => {
       return (
-        <div className="text-[12px] font-medium text-muted-foreground/60 py-1 flex items-center h-full">
-          {new Date(row.getValue("appliedAt")).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+        <div className="flex h-full items-center py-1 font-medium text-[12px] text-muted-foreground/60">
+          {new Date(row.getValue("appliedAt")).toLocaleDateString([], {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
         </div>
       );
     },
@@ -147,9 +165,12 @@ export const columns: ColumnDef<Applicant>[] = [
     cell: ({ row }) => {
       const applicant = row.original;
       return (
-        <div className="flex items-center justify-end py-1 h-full">
-          <Link href={`/dashboard/applicants/${applicant.id}` as Route} className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-secondary transition-all group">
-            <ChevronRight className="h-4 w-4 text-muted-foreground/20 group-hover:text-foreground transition-all" />
+        <div className="flex h-full items-center justify-end py-1">
+          <Link
+            href={`/dashboard/applicants/${applicant.id}` as Route}
+            className="group flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-secondary"
+          >
+            <ChevronRight className="h-4 w-4 text-muted-foreground/20 transition-all group-hover:text-foreground" />
           </Link>
         </div>
       );
@@ -185,7 +206,7 @@ export function ApplicantsTable({ data }: ApplicantsTableProps) {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableHead>
               ))}

@@ -23,6 +23,5 @@ const jobsSlice = createSlice({
   },
 });
 
-export const { setSearchKeyword, setSelectedJobId } =
-  jobsSlice.actions;
+export const { setSearchKeyword, setSelectedJobId } = jobsSlice.actions;
 export default jobsSlice.reducer;

@@ -4,21 +4,12 @@ import type { ApplicationStatus } from "@ai-hackathon/shared";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
-  ArrowDown,
-  ArrowUp,
   ArrowUpDown,
   BrainCircuit,
-  Briefcase,
-  ChevronRight,
-  Cpu,
   LayoutGrid,
   List,
   Loader2,
-  MapPin,
-  RefreshCw,
   Search,
-  SlidersHorizontal,
-  Users,
 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";

@@ -2,11 +2,11 @@
 
 import { Bell, BrainCircuit, Shield, User } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 import { AISettings } from "./ai-settings";
 import { NotificationSettings } from "./notification-settings";
 import { ProfileSettings } from "./profile-settings";
 import { SecuritySettings } from "./security-settings";
-import { cn } from "@/lib/utils";
 
 const tabs = [
   { id: "profile", label: "Profile Details", icon: User },
@@ -20,10 +20,10 @@ export function SettingsForm() {
 
   return (
     <div className="w-full">
-      <div className="flex flex-col lg:flex-row gap-12">
+      <div className="flex flex-col gap-12 lg:flex-row">
         {/* Settings Navigation */}
-        <div className="w-full lg:w-64 flex-shrink-0">
-          <nav className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 scrollbar-hide">
+        <div className="w-full flex-shrink-0 lg:w-64">
+          <nav className="scrollbar-hide flex gap-1 overflow-x-auto pb-4 lg:flex-col lg:overflow-visible lg:pb-0">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
@@ -31,17 +31,23 @@ export function SettingsForm() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "flex items-center gap-4 rounded-xl px-3 py-2.5 text-left transition-all whitespace-nowrap lg:whitespace-normal group mb-1",
+                    "group mb-1 flex items-center gap-4 whitespace-nowrap rounded-xl px-3 py-2.5 text-left transition-all lg:whitespace-normal",
                     isActive
                       ? "bg-secondary/50 text-foreground shadow-ethereal"
-                      : "text-muted-foreground/40 hover:text-foreground/70 hover:bg-secondary/20"
+                      : "text-muted-foreground/40 hover:bg-secondary/20 hover:text-foreground/70",
                   )}
                 >
-                  <tab.icon className={cn(
-                    "h-4 w-4 flex-shrink-0 transition-colors",
-                    isActive ? "text-primary" : "text-muted-foreground/20 group-hover:text-muted-foreground/40"
-                  )} />
-                  <span className="text-[12px] font-semibold uppercase tracking-[0.15em]">{tab.label}</span>
+                  <tab.icon
+                    className={cn(
+                      "h-4 w-4 flex-shrink-0 transition-colors",
+                      isActive
+                        ? "text-primary"
+                        : "text-muted-foreground/20 group-hover:text-muted-foreground/40",
+                    )}
+                  />
+                  <span className="font-semibold text-[12px] uppercase tracking-[0.15em]">
+                    {tab.label}
+                  </span>
                 </button>
               );
             })}
@@ -49,8 +55,8 @@ export function SettingsForm() {
         </div>
 
         {/* Content Area - Expansive exhibit */}
-        <div className="flex-1 max-w-[800px]">
-          <div className="bg-background rounded-section border border-border/50 p-12 shadow-premium">
+        <div className="max-w-[800px] flex-1">
+          <div className="rounded-section border border-border/50 bg-background p-12 shadow-premium">
             {activeTab === "profile" && <ProfileSettings />}
             {activeTab === "ai" && <AISettings />}
             {activeTab === "notifications" && <NotificationSettings />}

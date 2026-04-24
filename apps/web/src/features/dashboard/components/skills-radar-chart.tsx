@@ -38,20 +38,26 @@ export function SkillsRadarChart({ applicants }: SkillsRadarChartProps) {
 
   if (data.length < 3) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[300px] text-muted-foreground/30 font-bold uppercase tracking-widest text-[10px]">
+      <div className="flex h-full min-h-[300px] items-center justify-center font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest">
         Insufficient Neural Data
       </div>
     );
   }
 
   return (
-    <div className="w-full h-full min-h-[300px]">
+    <div className="h-full min-h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
           <PolarGrid stroke="rgba(0,0,0,0.05)" />
           <PolarAngleAxis
             dataKey="skill"
-            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 600, letterSpacing: "0.05em", opacity: 0.5 }}
+            tick={{
+              fontSize: 10,
+              fill: "var(--color-muted-foreground)",
+              fontWeight: 600,
+              letterSpacing: "0.05em",
+              opacity: 0.5,
+            }}
           />
           <Radar
             name="Proficiency"

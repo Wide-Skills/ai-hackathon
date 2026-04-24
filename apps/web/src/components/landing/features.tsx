@@ -1,38 +1,53 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
-import { User2, Search, MoreHorizontal } from "lucide-react";
+import type React from "react";
 
 const RankingPreview = () => (
-  <div className="absolute top-10 right-10 w-[300px] space-y-2.5 opacity-40 group-hover:opacity-100 transition-all duration-700 pointer-events-none hidden lg:block rotate-[-1deg] group-hover:rotate-0">
+  <div className="pointer-events-none absolute top-10 right-10 hidden w-[300px] rotate-[-1deg] space-y-2.5 opacity-40 transition-all duration-700 group-hover:rotate-0 group-hover:opacity-100 lg:block">
     {[
-      { name: "Sarah Jenkins", score: "98", color: "text-success-foreground bg-success/10 border-success/20" },
-      { name: "Michael Chen", score: "94", color: "text-info-foreground bg-info/10 border-info/20" },
-      { name: "Elena Rodriguez", score: "89", color: "text-warning-foreground bg-warning/10 border-warning/20" }
+      {
+        name: "Sarah Jenkins",
+        score: "98",
+        color: "text-success-foreground bg-success/10 border-success/20",
+      },
+      {
+        name: "Michael Chen",
+        score: "94",
+        color: "text-info-foreground bg-info/10 border-info/20",
+      },
+      {
+        name: "Elena Rodriguez",
+        score: "89",
+        color: "text-warning-foreground bg-warning/10 border-warning/20",
+      },
     ].map((candidate, i) => (
       <motion.div
         key={i}
         initial={{ opacity: 0, y: 10, scale: 0.98 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ delay: i * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-background p-3.5 rounded-xl border border-border shadow-sm flex items-center justify-between"
+        className="flex items-center justify-between rounded-xl border border-border bg-background p-3.5 shadow-sm"
       >
         <div className="flex items-center gap-3">
-          <div className="h-7 w-7 rounded-full bg-secondary flex items-center justify-center text-[9px] font-bold text-muted-foreground/50">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary font-bold text-[9px] text-muted-foreground/50">
             {candidate.name.charAt(0)}
           </div>
-          <p className="text-[12px] font-medium text-foreground">{candidate.name}</p>
+          <p className="font-medium text-[12px] text-foreground">
+            {candidate.name}
+          </p>
         </div>
-        <div className="text-right flex flex-col items-end">
-          <span className="font-display text-[16px] font-light text-foreground leading-none">{candidate.score}%</span>
-          <div className="w-10 h-0.5 bg-foreground/5 rounded-full mt-1 overflow-hidden">
-             <motion.div 
-               initial={{ width: 0 }}
-               whileInView={{ width: `${candidate.score}%` }}
-               transition={{ delay: 0.5 + (i * 0.05), duration: 0.8 }}
-               className="h-full bg-success/40" 
-             />
+        <div className="flex flex-col items-end text-right">
+          <span className="font-display font-light text-[16px] text-foreground leading-none">
+            {candidate.score}%
+          </span>
+          <div className="mt-1 h-0.5 w-10 overflow-hidden rounded-full bg-foreground/5">
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: `${candidate.score}%` }}
+              transition={{ delay: 0.5 + i * 0.05, duration: 0.8 }}
+              className="h-full bg-success/40"
+            />
           </div>
         </div>
       </motion.div>
@@ -41,31 +56,39 @@ const RankingPreview = () => (
 );
 
 const ModelPreview = () => (
-  <div className="absolute top-8 right-8 flex items-center justify-center pointer-events-none opacity-20 group-hover:opacity-100 transition-all duration-500">
+  <div className="pointer-events-none absolute top-8 right-8 flex items-center justify-center opacity-20 transition-all duration-500 group-hover:opacity-100">
     <div className="relative h-20 w-20">
-      <motion.div 
+      <motion.div
         animate={{ rotate: 360 }}
-        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-0 border-t border-info/30 rounded-full"
+        transition={{
+          duration: 12,
+          repeat: Number.POSITIVE_INFINITY,
+          ease: "linear",
+        }}
+        className="absolute inset-0 rounded-full border-info/30 border-t"
       />
-      <motion.div 
+      <motion.div
         animate={{ rotate: -360 }}
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-        className="absolute inset-1.5 border-b border-success/30 rounded-full"
+        transition={{
+          duration: 8,
+          repeat: Number.POSITIVE_INFINITY,
+          ease: "linear",
+        }}
+        className="absolute inset-1.5 rounded-full border-success/30 border-b"
       />
     </div>
   </div>
 );
 
 const ParsingPreview = () => (
-  <div className="absolute top-10 right-10 w-28 space-y-1.5 pointer-events-none opacity-20 group-hover:opacity-100 transition-all duration-500">
+  <div className="pointer-events-none absolute top-10 right-10 w-28 space-y-1.5 opacity-20 transition-all duration-500 group-hover:opacity-100">
     {[0.8, 0.4, 0.6].map((w, i) => (
-      <div key={i} className="h-1 bg-foreground/5 rounded-full overflow-hidden">
-        <motion.div 
+      <div key={i} className="h-1 overflow-hidden rounded-full bg-foreground/5">
+        <motion.div
           initial={{ x: "-100%" }}
           whileInView={{ x: "0%" }}
-          transition={{ delay: 0.3 + (i * 0.05), duration: 0.6 }}
-          className={`h-full ${i === 0 ? 'bg-success/30' : i === 1 ? 'bg-info/30' : 'bg-warning/30'}`}
+          transition={{ delay: 0.3 + i * 0.05, duration: 0.6 }}
+          className={`h-full ${i === 0 ? "bg-success/30" : i === 1 ? "bg-info/30" : "bg-warning/30"}`}
           style={{ width: `${w * 100}%` }}
         />
       </div>
@@ -74,34 +97,34 @@ const ParsingPreview = () => (
 );
 
 const IngestionPreview = () => (
-  <div className="absolute top-10 right-10 flex items-center gap-1.5 pointer-events-none opacity-20 group-hover:opacity-100 transition-all duration-500">
-    <div className="h-4 w-4 rounded bg-success/20 border border-success/10" />
-    <motion.div 
+  <div className="pointer-events-none absolute top-10 right-10 flex items-center gap-1.5 opacity-20 transition-all duration-500 group-hover:opacity-100">
+    <div className="h-4 w-4 rounded border border-success/10 bg-success/20" />
+    <motion.div
       animate={{ x: [0, 4, 0] }}
-      transition={{ duration: 2, repeat: Infinity }}
-      className="h-px w-4 bg-info/40" 
+      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+      className="h-px w-4 bg-info/40"
     />
-    <div className="h-5 w-5 rounded bg-info/20 border border-info/10" />
+    <div className="h-5 w-5 rounded border border-info/10 bg-info/20" />
   </div>
 );
 
 const DashboardPreview = () => (
-  <div className="absolute top-10 right-10 w-[280px] bg-background rounded-xl border border-border p-5 shadow-sm pointer-events-none hidden lg:block opacity-30 group-hover:opacity-100 transition-all duration-700 translate-y-2 group-hover:translate-y-0">
-    <div className="flex items-center justify-between mb-5">
+  <div className="pointer-events-none absolute top-10 right-10 hidden w-[280px] translate-y-2 rounded-xl border border-border bg-background p-5 opacity-30 shadow-sm transition-all duration-700 group-hover:translate-y-0 group-hover:opacity-100 lg:block">
+    <div className="mb-5 flex items-center justify-between">
       <div className="space-y-1">
-        <div className="h-1.5 w-12 bg-success/20 rounded" />
-        <div className="h-2 w-20 bg-foreground/10 rounded" />
+        <div className="h-1.5 w-12 rounded bg-success/20" />
+        <div className="h-2 w-20 rounded bg-foreground/10" />
       </div>
       <div className="h-6 w-6 rounded-full bg-info/10" />
     </div>
-    <div className="flex items-end gap-1.5 h-12">
+    <div className="flex h-12 items-end gap-1.5">
       {[40, 70, 45, 90, 65, 80, 50].map((h, i) => (
-        <motion.div 
+        <motion.div
           key={i}
           initial={{ height: 0 }}
           whileInView={{ height: `${h}%` }}
-          transition={{ delay: 0.3 + (i * 0.04), duration: 0.6 }}
-          className={`flex-1 rounded-t-sm ${h > 70 ? 'bg-success/30' : 'bg-info/20'}`}
+          transition={{ delay: 0.3 + i * 0.04, duration: 0.6 }}
+          className={`flex-1 rounded-t-sm ${h > 70 ? "bg-success/30" : "bg-info/20"}`}
         />
       ))}
     </div>
@@ -110,99 +133,114 @@ const DashboardPreview = () => (
 
 export const Features: React.FC = () => {
   return (
-    <section className="py-[100px] bg-background border-y border-border">
+    <section className="border-border border-y bg-background py-[100px]">
       <div className="container-tight">
         <div className="mb-16 max-w-[800px]">
-          <h2 className="text-foreground font-display mb-5 text-[32px] md:text-display-section font-light leading-[1.1] tracking-[-0.03em]">
+          <h2 className="mb-5 font-display font-light text-[32px] text-foreground leading-[1.1] tracking-[-0.03em] md:text-display-section">
             Precision Screening for <br />
             <span className="text-muted-foreground">modern recruiters.</span>
           </h2>
-          <p className="text-muted-foreground text-[17px] leading-[1.6] tracking-[0.1px] max-w-[500px]">
-            Eliminate bias and manual overhead with an intelligent assistant 
+          <p className="max-w-[500px] text-[17px] text-muted-foreground leading-[1.6] tracking-[0.1px]">
+            Eliminate bias and manual overhead with an intelligent assistant
             that understands skill sets as deeply as you do.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 auto-rows-[280px]">
-          <motion.div 
+        <div className="grid auto-rows-[280px] grid-cols-1 gap-5 md:grid-cols-12">
+          <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.99 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="bento-card md:col-span-8 md:row-span-2 p-10 justify-end relative group bg-background border-border"
+            className="bento-card group relative justify-end border-border bg-background p-10 md:col-span-8 md:row-span-2"
           >
             <RankingPreview />
             <div className="relative z-10 max-w-[400px]">
-              <h3 className="text-foreground text-display-card font-light font-display tracking-tight mb-4">Explainable AI Ranking</h3>
-              <p className="text-muted-foreground text-[15px] leading-relaxed tracking-[0.1px]">
-                Our platform provides natural-language justifications for every ranking. 
-                Understand the "why" behind every shortlist with reasoning.
+              <h3 className="mb-4 font-display font-light text-display-card text-foreground tracking-tight">
+                Explainable AI Ranking
+              </h3>
+              <p className="text-[15px] text-muted-foreground leading-relaxed tracking-[0.1px]">
+                Our platform provides natural-language justifications for every
+                ranking. Understand the "why" behind every shortlist with
+                reasoning.
               </p>
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.99 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
-            className="bento-card md:col-span-4 p-8 bg-background group border-border"
+            className="bento-card group border-border bg-background p-8 md:col-span-4"
           >
             <ModelPreview />
             <div className="relative z-10 pt-6">
-              <h3 className="text-foreground text-display-card font-light font-display tracking-tight mb-2.5">Multi-Model Analysis</h3>
-              <p className="text-muted-foreground text-[14px] leading-relaxed tracking-[0.05px]">
-                Leveraging Gemini 1.5 Pro to analyze candidate profiles against job requirements.
+              <h3 className="mb-2.5 font-display font-light text-display-card text-foreground tracking-tight">
+                Multi-Model Analysis
+              </h3>
+              <p className="text-[14px] text-muted-foreground leading-relaxed tracking-[0.05px]">
+                Leveraging Gemini 1.5 Pro to analyze candidate profiles against
+                job requirements.
               </p>
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.99 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="bento-card md:col-span-4 p-8 bg-background group border-border"
+            className="bento-card group border-border bg-background p-8 md:col-span-4"
           >
             <ParsingPreview />
             <div className="relative z-10 pt-6">
-              <h3 className="text-foreground text-display-card font-light font-display tracking-tight mb-2.5">Unstructured Parsing</h3>
-              <p className="text-muted-foreground text-[14px] leading-relaxed tracking-[0.05px]">
-                Extract and normalize skills from messy PDFs, spreadsheets, and external resumes.
+              <h3 className="mb-2.5 font-display font-light text-display-card text-foreground tracking-tight">
+                Unstructured Parsing
+              </h3>
+              <p className="text-[14px] text-muted-foreground leading-relaxed tracking-[0.05px]">
+                Extract and normalize skills from messy PDFs, spreadsheets, and
+                external resumes.
               </p>
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.99 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="bento-card md:col-span-4 p-8 bg-background group border-border"
+            className="bento-card group border-border bg-background p-8 md:col-span-4"
           >
             <IngestionPreview />
             <div className="relative z-10 pt-6">
-              <h3 className="text-foreground text-display-card font-light font-display tracking-tight mb-2.5">Unified Ingestion</h3>
-              <p className="text-muted-foreground text-[14px] leading-relaxed tracking-[0.05px]">
-                Sync data from your internal platform or upload external job board data in one click.
+              <h3 className="mb-2.5 font-display font-light text-display-card text-foreground tracking-tight">
+                Unified Ingestion
+              </h3>
+              <p className="text-[14px] text-muted-foreground leading-relaxed tracking-[0.05px]">
+                Sync data from your internal platform or upload external job
+                board data in one click.
               </p>
             </div>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.99 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="bento-card md:col-span-8 p-10 flex-row items-center gap-10 bg-background group border-border"
+            className="bento-card group flex-row items-center gap-10 border-border bg-background p-10 md:col-span-8"
           >
-             <DashboardPreview />
-             <div className="flex-1 relative z-10">
-                <h3 className="text-foreground text-display-card font-light font-display tracking-tight mb-4">Recruiter Dashboard</h3>
-                <p className="text-muted-foreground text-[15px] leading-relaxed tracking-[0.1px] max-w-[320px]">
-                  A high-fidelity interface designed for decision-makers. Manage postings and visualize shortlists.
-                </p>
-             </div>
+            <DashboardPreview />
+            <div className="relative z-10 flex-1">
+              <h3 className="mb-4 font-display font-light text-display-card text-foreground tracking-tight">
+                Recruiter Dashboard
+              </h3>
+              <p className="max-w-[320px] text-[15px] text-muted-foreground leading-relaxed tracking-[0.1px]">
+                A high-fidelity interface designed for decision-makers. Manage
+                postings and visualize shortlists.
+              </p>
+            </div>
           </motion.div>
         </div>
       </div>

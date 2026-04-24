@@ -37,9 +37,13 @@ export function ScoreDistributionChart({
   }));
 
   return (
-    <div className="w-full h-full min-h-[300px]">
+    <div className="h-full min-h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} barSize={40} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+        <BarChart
+          data={data}
+          barSize={40}
+          margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+        >
           <CartesianGrid
             strokeDasharray="3 3"
             vertical={false}
@@ -47,13 +51,25 @@ export function ScoreDistributionChart({
           />
           <XAxis
             dataKey="range"
-            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 600, letterSpacing: "0.05em", opacity: 0.5 }}
+            tick={{
+              fontSize: 10,
+              fill: "var(--color-muted-foreground)",
+              fontWeight: 600,
+              letterSpacing: "0.05em",
+              opacity: 0.5,
+            }}
             axisLine={false}
             tickLine={false}
             dy={15}
           />
           <YAxis
-            tick={{ fontSize: 10, fill: "var(--color-muted-foreground)", fontWeight: 600, letterSpacing: "0.05em", opacity: 0.5 }}
+            tick={{
+              fontSize: 10,
+              fill: "var(--color-muted-foreground)",
+              fontWeight: 600,
+              letterSpacing: "0.05em",
+              opacity: 0.5,
+            }}
             axisLine={false}
             tickLine={false}
             allowDecimals={false}
@@ -66,7 +82,7 @@ export function ScoreDistributionChart({
               fontSize: "11px",
               fontWeight: 700,
               boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-              padding: "8px 12px"
+              padding: "8px 12px",
             }}
             cursor={{ fill: "rgba(0,0,0,0.02)", radius: 6 }}
           />

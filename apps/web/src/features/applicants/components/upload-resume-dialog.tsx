@@ -82,20 +82,23 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
     }
   }, []);
 
-  const handleFile = useCallback((file: File) => {
-    if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
-      extractTextFromPdf(file);
-    } else if (file.type === "text/plain" || file.name.endsWith(".txt")) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setResumeText(e.target?.result as string);
-        setFileName(file.name);
-      };
-      reader.readAsText(file);
-    } else {
-      toast.error("Please upload a PDF or TXT file");
-    }
-  }, [extractTextFromPdf]);
+  const handleFile = useCallback(
+    (file: File) => {
+      if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
+        extractTextFromPdf(file);
+      } else if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setResumeText(e.target?.result as string);
+          setFileName(file.name);
+        };
+        reader.readAsText(file);
+      } else {
+        toast.error("Please upload a PDF or TXT file");
+      }
+    },
+    [extractTextFromPdf],
+  );
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {

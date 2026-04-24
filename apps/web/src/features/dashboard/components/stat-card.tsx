@@ -7,28 +7,35 @@ interface StatCardProps {
   trend?: string;
 }
 
-export function StatCard({
-  label,
-  value,
-  sublabel,
-  trend,
-}: StatCardProps) {
+export function StatCard({ label, value, sublabel, trend }: StatCardProps) {
   return (
-    <Card variant="ethereal" size="none" className="p-8 h-full flex flex-col justify-between">
+    <Card
+      variant="ethereal"
+      size="none"
+      className="flex h-full flex-col justify-between p-8"
+    >
       <div className="space-y-4">
-        <p className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">{label}</p>
+        <p className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em]">
+          {label}
+        </p>
         <div className="flex items-baseline gap-1">
-          <span className="font-display text-[42px] font-light text-foreground leading-none tracking-tighter">{value}</span>
+          <span className="font-display font-light text-[42px] text-foreground leading-none tracking-tighter">
+            {value}
+          </span>
         </div>
-        <p className="text-[12px] text-muted-foreground/60 font-medium tracking-tight leading-snug">{sublabel}</p>
+        <p className="font-medium text-[12px] text-muted-foreground/60 leading-snug tracking-tight">
+          {sublabel}
+        </p>
       </div>
-      
+
       {trend && (
-        <div className="mt-8 flex items-center gap-2.5 pt-6 border-t border-border/10">
-          <div className="flex items-center gap-1 text-[11px] font-bold text-success/80 tracking-widest uppercase">
+        <div className="mt-8 flex items-center gap-2.5 border-border/10 border-t pt-6">
+          <div className="flex items-center gap-1 font-bold text-[11px] text-success/80 uppercase tracking-widest">
             {trend}
           </div>
-          <span className="text-[10px] text-muted-foreground/30 font-medium uppercase tracking-wider translate-y-[0.5px]">Index</span>
+          <span className="translate-y-[0.5px] font-medium text-[10px] text-muted-foreground/30 uppercase tracking-wider">
+            Index
+          </span>
         </div>
       )}
     </Card>

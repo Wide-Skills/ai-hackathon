@@ -27,13 +27,20 @@ export function QueryErrorState({
   onRetry,
 }: QueryErrorStateProps) {
   return (
-    <Alert variant="destructive" className="rounded-xl border-destructive/20 p-5">
+    <Alert
+      variant="destructive"
+      className="rounded-xl border-destructive/20 p-5"
+    >
       <AlertCircle className="mt-0.5 size-4" />
       <AlertTitle>{title}</AlertTitle>
       <AlertDescription>{getErrorMessage(error)}</AlertDescription>
       {onRetry ? (
         <div className="mt-4">
-          <Button type="button" variant="outline" onClick={() => void onRetry()}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => void onRetry()}
+          >
             {retryLabel}
           </Button>
         </div>
@@ -47,10 +54,7 @@ interface QueryEmptyStateProps {
   description: string;
 }
 
-export function QueryEmptyState({
-  title,
-  description,
-}: QueryEmptyStateProps) {
+export function QueryEmptyState({ title, description }: QueryEmptyStateProps) {
   return (
     <Empty className="rounded-section border-border/50 bg-secondary/5 py-16">
       <EmptyHeader>

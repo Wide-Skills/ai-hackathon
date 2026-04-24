@@ -135,7 +135,8 @@
   --color-ring: var(--ring);
 
   /* Elevation mapping - Multi-layered stacks */
-  --shadow-premium: var(--shadow-outline), var(--shadow-elevation), var(--shadow-inset);
+  --shadow-premium:
+    var(--shadow-outline), var(--shadow-elevation), var(--shadow-inset);
   --shadow-ethereal: var(--shadow-outline), var(--shadow-inset);
   --shadow-lift: var(--shadow-card);
   --shadow-warm-lift: var(--shadow-warm), var(--shadow-inset);
@@ -185,15 +186,25 @@
     @apply font-sans antialiased bg-background text-foreground;
     letter-spacing: 0.16px; /* Airy body text */
   }
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     @apply font-display font-light;
     letter-spacing: -0.02em;
   }
 
   /* Specific Heading adjustments */
-  h1 { @apply text-display-hero leading-[1.08]; letter-spacing: -0.96px; }
-  h2 { @apply text-display-section leading-[1.17]; }
-  h3 { @apply text-display-card leading-[1.13]; }
+  h1 {
+    @apply text-display-hero leading-[1.08];
+    letter-spacing: -0.96px;
+  }
+  h2 {
+    @apply text-display-section leading-[1.17];
+  }
+  h3 {
+    @apply text-display-card leading-[1.13];
+  }
   html {
     @apply font-sans;
   }
