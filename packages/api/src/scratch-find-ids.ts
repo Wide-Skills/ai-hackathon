@@ -1,6 +1,6 @@
 import { Applicant, Job } from "@ai-hackathon/db";
-import { connect } from "mongoose";
 import { env } from "@ai-hackathon/env/server";
+import { connect } from "mongoose";
 
 async function main() {
   await connect(env.DATABASE_URL);
@@ -10,7 +10,7 @@ async function main() {
   process.exit(0);
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error(err);
   process.exit(1);
 });

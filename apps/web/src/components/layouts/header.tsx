@@ -3,12 +3,12 @@
 import { Bell, Plus, Search } from "lucide-react";
 import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { Button } from "@/components/ui/button";
 
 const pageInfo: Record<
   string,

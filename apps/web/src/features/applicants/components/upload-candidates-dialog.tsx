@@ -238,7 +238,7 @@ export function UploadCandidatesDialog({
             <Button
               variant="outline"
               size="sm"
-              className="h-10 gap-2 border-border/50 rounded-full font-bold text-[11px] uppercase tracking-widest shadow-md hover:bg-secondary"
+              className="h-10 gap-2 rounded-full border-border/50 font-bold text-[11px] uppercase tracking-widest shadow-md hover:bg-secondary"
             >
               <Upload className="h-4 w-4" />
               Upload CSV

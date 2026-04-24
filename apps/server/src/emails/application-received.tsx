@@ -27,14 +27,17 @@ export function ApplicationReceivedEmail({
           <Heading style={h1}>Application Received</Heading>
           <Text style={text}>Hi {firstName},</Text>
           <Text style={text}>
-            Thank you for applying for the <strong>{jobTitle}</strong> position at Umurava.
+            Thank you for applying for the <strong>{jobTitle}</strong> position
+            at Umurava.
           </Text>
           <Text style={text}>
-            Our AI-powered screening assistant is currently reviewing your profile against the job requirements. 
-            We will be in touch shortly with an update.
+            Our AI-powered screening assistant is currently reviewing your
+            profile against the job requirements. We will be in touch shortly
+            with an update.
           </Text>
           <Text style={footer}>
-            Best regards,<br />
+            Best regards,
+            <br />
             The Umurava Talent Team
           </Text>
         </Container>

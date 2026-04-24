@@ -195,7 +195,7 @@ export function ApplicantsTable({ data }: ApplicantsTableProps) {
   });
 
   return (
-    <Card variant="premium">
+    <Card variant="premium" className="py-0">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

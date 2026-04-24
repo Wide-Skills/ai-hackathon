@@ -1,7 +1,7 @@
 "use client";
 
 import { DEMO_RECRUITER } from "@ai-hackathon/shared";
-import { AtSignIcon, SparklesIcon, User2Icon } from "lucide-react";
+import { AtSignIcon, User2Icon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AuthDivider } from "@/components/auth-divider";
@@ -163,7 +163,6 @@ export function AuthView() {
           disabled={isSubmitting}
           className="h-11 w-full rounded-full bg-primary font-normal text-primary-foreground transition-transform hover:scale-[1.01] active:scale-[0.98]"
         >
-          <SparklesIcon className="mr-2 h-4 w-4" />
           {isSubmitting ? "Sending link..." : "Email me a magic link"}
         </Button>
       </form>

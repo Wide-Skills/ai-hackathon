@@ -8,10 +8,13 @@ const cardVariants = cva(
   {
     variants: {
       variant: {
-        default: "rounded-xl border border-border bg-card text-card-foreground shadow-sm",
-        outline: "rounded-xl border border-border bg-transparent text-foreground",
-        secondary: "rounded-xl border border-border bg-secondary/50 text-secondary-foreground",
-premium: `
+        default:
+          "rounded-xl border border-border bg-card text-card-foreground shadow-sm",
+        outline:
+          "rounded-xl border border-border bg-transparent text-foreground",
+        secondary:
+          "rounded-xl border border-border bg-secondary/50 text-secondary-foreground",
+        premium: `
   rounded-2xl bg-card text-card-foreground
 
   border border-border/60
@@ -21,8 +24,8 @@ premium: `
 
   transition-all duration-300
   hover:shadow-[0_2px_6px_rgba(0,0,0,0.06),0_10px_24px_rgba(0,0,0,0.06)]
-`, 
-},
+`,
+      },
       size: {
         default: "gap-4 py-4 data-[size=sm]:gap-3 data-[size=sm]:py-3",
         sm: "gap-3 py-3",

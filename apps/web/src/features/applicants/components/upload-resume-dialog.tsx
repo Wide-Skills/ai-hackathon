@@ -9,8 +9,10 @@ import { QueryErrorState } from "@/components/data/query-state";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -157,7 +159,7 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
             <Button
               variant="outline"
               size="sm"
-              className="h-10 gap-2 border-border/50 rounded-full font-bold text-[11px] uppercase tracking-widest shadow-md hover:bg-secondary"
+              className="h-10 gap-2 rounded-full border-border/50 font-bold text-[11px] uppercase tracking-widest shadow-md hover:bg-secondary"
             >
               <FileText className="h-4 w-4" />
               Upload Resume
@@ -168,9 +170,6 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 shadow-md">
-              <FileText className="h-6 w-6 text-primary" />
-            </div>
             <div>
               <DialogTitle className="font-display font-light text-xl uppercase tracking-widest">
                 Profile Ingestion
@@ -344,15 +343,14 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
             )}
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button
-              variant="outline"
+          <DialogFooter>
+            <DialogClose
               onClick={() => setOpen(false)}
               className="rounded-full border-border/50 font-bold text-[11px] uppercase tracking-widest"
             >
               Cancel
-            </Button>
-            <Button
+            </DialogClose>
+            <DialogClose
               onClick={handleUpload}
               disabled={
                 uploading ||
@@ -375,8 +373,8 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                   Initialize Import
                 </>
               )}
-            </Button>
-          </div>
+            </DialogClose>
+          </DialogFooter>
         </div>
       </DialogContent>
     </Dialog>

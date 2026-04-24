@@ -23,17 +23,22 @@ export class ApplicantsController {
         mimetype: file.mimetype,
         size: file.size,
         bufferExists: !!file.buffer,
-        bufferLength: file.buffer?.length
+        bufferLength: file.buffer?.length,
       });
 
       // Create a new parser instance with the file buffer
       parser = new PDFParse({ data: file.buffer });
-      
+
       console.log("PDFParse instance created, extracting text...");
       const textResult = await parser.getText();
-      
-      console.log("Extraction complete. Pages:", textResult.pages?.length, "Text length:", textResult.text?.length);
-      
+
+      console.log(
+        "Extraction complete. Pages:",
+        textResult.pages?.length,
+        "Text length:",
+        textResult.text?.length,
+      );
+
       if (!textResult.text || textResult.text.trim().length === 0) {
         console.warn("Extracted text is empty!");
       }
@@ -44,11 +49,11 @@ export class ApplicantsController {
       };
     } catch (error: any) {
       console.error("PDF Parsing Error:", error);
-      return { 
-        error: "Failed to parse PDF", 
+      return {
+        error: "Failed to parse PDF",
         message: error.message,
         stack: error.stack,
-        details: typeof error === 'string' ? error : JSON.stringify(error)
+        details: typeof error === "string" ? error : JSON.stringify(error),
       };
     } finally {
       if (parser) {

@@ -35,7 +35,7 @@ vi.mock("@ai-hackathon/db", () => ({
   Job,
   ScreeningResult: {
     findOne: vi.fn().mockResolvedValue(null),
-  }
+  },
 }));
 
 vi.mock("@ai-hackathon/env/server", () => ({
@@ -85,7 +85,9 @@ describe("public flows", () => {
       description: "Anyone can see this",
       requirements: ["Requirement 1"],
       skills: ["Skill 1"],
-      toObject: function() { return this; }
+      toObject: function () {
+        return this;
+      },
     });
 
     const caller = jobRouter.createCaller({ session: null });
@@ -103,7 +105,9 @@ describe("public flows", () => {
       title: "Public Role",
       requirements: ["Requirement 1"],
       skills: ["Skill 1"],
-      toObject: function() { return this; }
+      toObject: function () {
+        return this;
+      },
     });
 
     const caller = applicantRouter.createCaller({ session: null });

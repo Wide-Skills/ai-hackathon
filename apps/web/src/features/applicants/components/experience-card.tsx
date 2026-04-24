@@ -43,7 +43,12 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
                     {exp.startDate} – {exp.endDate}
                   </p>
                   {exp.isCurrent && (
-                    <Badge variant="success" size="xs" uppercase className="shadow-sm">
+                    <Badge
+                      variant="success"
+                      size="xs"
+                      uppercase
+                      className="shadow-sm"
+                    >
                       Active
                     </Badge>
                   )}

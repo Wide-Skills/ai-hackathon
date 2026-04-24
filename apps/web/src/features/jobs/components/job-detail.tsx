@@ -19,7 +19,10 @@ import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 import { ScoreBadge } from "../../dashboard/components/score-badge";
 
-const statusConfig: Record<string, { label: string; variant: "success" | "warning" | "secondary" }> = {
+const statusConfig: Record<
+  string,
+  { label: string; variant: "success" | "warning" | "secondary" }
+> = {
   active: {
     label: "Active Posting",
     variant: "success",

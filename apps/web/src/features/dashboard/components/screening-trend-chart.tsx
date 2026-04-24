@@ -10,6 +10,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 interface ScreeningTrendChartProps {
   applicants: Applicant[];
@@ -34,6 +39,17 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
     .map(([date, count]) => ({ date, count }))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     .slice(-7);
+  if (data.length === 0) {
+    return (
+      <Empty className="mt-6 h-48 border-none bg-transparent">
+        <EmptyHeader>
+          <EmptyTitle className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest">
+            No Screening Data Available
+          </EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
 
   return (
     <div className="mt-6 h-48">

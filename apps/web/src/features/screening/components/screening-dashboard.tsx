@@ -9,6 +9,7 @@ import {
   QueryEmptyState,
   QueryErrorState,
 } from "@/components/data/query-state";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -16,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { cn } from "@/lib/utils";
 import { invalidateHiringData, trpc } from "@/utils/trpc";

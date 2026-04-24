@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  BrainCircuit,
   FileSpreadsheet,
   FileText,
   Globe,
@@ -63,13 +62,10 @@ export function IngestCandidatesDialog() {
         <Plus className="h-4 w-4" />
         Ingest Talent
       </DialogTrigger>
-      <DialogContent className="max-w-4xl! overflow-hidden border-border/40 bg-background p-0 shadow-lg">
+      <DialogContent className="max-w-4xl! overflow-hidden border-border/40 bg-background p-0">
         <div className="grid grid-cols-1 md:grid-cols-5">
           <div className="flex flex-col justify-between border-border/10 border-r bg-secondary/30 p-8 md:col-span-2">
             <div>
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 shadow-md">
-                <BrainCircuit className="h-6 w-6 text-primary" />
-              </div>
               <h2 className="mb-4 font-display font-light text-foreground text-xl uppercase tracking-widest">
                 Ingestion Core
               </h2>
@@ -112,7 +108,7 @@ export function IngestCandidatesDialog() {
                     trigger={
                       <button className="group relative flex w-full items-start gap-4 overflow-hidden rounded-2xl border border-border/10 p-5 text-left transition-all hover:border-primary/20 hover:bg-primary/[0.02] active:scale-[0.99]">
                         <div
-                          className={`h-10 w-10 rounded-xl ${method.bg} flex shrink-0 items-center justify-center border border-transparent transition-colors group-hover:border-current`}
+                          className={`h-10 w-10 rounded-xl ${method.bg} flex shrink-0 items-center justify-center border border-transparent transition-colors`}
                         >
                           <method.icon className={`h-5 w-5 ${method.color}`} />
                         </div>

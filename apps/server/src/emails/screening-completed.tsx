@@ -35,16 +35,18 @@ export function ScreeningCompletedEmail({
           <Heading style={h1}>Screening Analysis Complete</Heading>
           <Text style={text}>Hi {recruiterName},</Text>
           <Text style={text}>
-            Our AI has finished analyzing <strong>{applicantName}</strong> for the <strong>{jobTitle}</strong> position.
+            Our AI has finished analyzing <strong>{applicantName}</strong> for
+            the <strong>{jobTitle}</strong> position.
           </Text>
           <Section style={scoreContainer}>
-             <div style={scoreBox}>
-                <Text style={scoreLabel}>Match Score</Text>
-                <Text style={scoreValue}>{matchScore}%</Text>
-             </div>
+            <div style={scoreBox}>
+              <Text style={scoreLabel}>Match Score</Text>
+              <Text style={scoreValue}>{matchScore}%</Text>
+            </div>
           </Section>
           <Text style={text}>
-            You can now review the detailed strengths, gaps, and final recommendation in your dashboard.
+            You can now review the detailed strengths, gaps, and final
+            recommendation in your dashboard.
           </Text>
           <Section style={buttonContainer}>
             <Button style={button} href={dashboardUrl}>

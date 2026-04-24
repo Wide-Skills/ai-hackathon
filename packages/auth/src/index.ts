@@ -3,8 +3,8 @@ import { env } from "@ai-hackathon/env/server";
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { magicLink } from "better-auth/plugins";
-import { sendMagicLinkEmail, sendWelcomeEmail } from "./email";
 import { writeAuditLog } from "./audit";
+import { sendMagicLinkEmail, sendWelcomeEmail } from "./email";
 
 export const auth = betterAuth({
   database: mongodbAdapter(client),

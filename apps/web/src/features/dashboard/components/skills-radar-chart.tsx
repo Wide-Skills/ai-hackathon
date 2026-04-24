@@ -8,6 +8,7 @@ import {
   RadarChart,
   ResponsiveContainer,
 } from "recharts";
+import { Empty, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 interface SkillsRadarChartProps {
   applicants: Applicant[];
@@ -38,9 +39,13 @@ export function SkillsRadarChart({ applicants }: SkillsRadarChartProps) {
 
   if (data.length < 3) {
     return (
-      <div className="flex h-full min-h-[300px] items-center justify-center font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest">
-        Insufficient Neural Data
-      </div>
+      <Empty className="h-full min-h-[300px] border-none bg-transparent">
+        <EmptyHeader>
+          <EmptyTitle className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest">
+            Insufficient Neural Data
+          </EmptyTitle>
+        </EmptyHeader>
+      </Empty>
     );
   }
 

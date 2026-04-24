@@ -44,6 +44,8 @@ import { cn } from "@/lib/utils";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 import { ApplicantsTable } from "./applicants-table";
 import { IngestCandidatesDialog } from "./ingest-candidates-dialog";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const statusConfig: Record<
   ApplicationStatus,
@@ -214,11 +216,11 @@ export function ApplicantsList() {
             onValueChange={(v) => setView(v as "grid" | "table")}
             className="hidden sm:block"
           >
-            <TabsList className="h-11 rounded-full border-border/50 bg-background px-1 shadow-md">
-              <TabsTrigger value="grid" className="h-9 w-9 rounded-full p-0">
+            <TabsList >
+              <TabsTrigger value="grid" >
                 <LayoutGrid className="h-4 w-4" />
               </TabsTrigger>
-              <TabsTrigger value="table" className="h-9 w-9 rounded-full p-0">
+              <TabsTrigger value="table" >
                 <List className="h-4 w-4" />
               </TabsTrigger>
             </TabsList>
@@ -312,111 +314,111 @@ export function ApplicantsList() {
                     href={`/dashboard/applicants/${applicant.id}` as Route}
                     className="flex w-full items-center justify-between"
                   >
-                  <div className="flex min-w-0 flex-1 items-center gap-6">
-                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-border/20 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-md transition-transform group-hover:scale-[1.05]">
-                      {applicant.firstName[0]}
-                      {applicant.lastName[0]}
-                    </div>
+                    <div className="flex min-w-0 flex-1 items-center gap-6">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border/20 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-md transition-transform group-hover:scale-[1.05]">
+                        {applicant.firstName[0]}
+                        {applicant.lastName[0]}
+                      </div>
 
-                    <div className="min-w-0 flex-1">
-                      <p className="mb-1 font-medium text-[16px] text-foreground tracking-tight transition-colors group-hover:text-primary">
-                        {applicant.firstName} {applicant.lastName}
-                      </p>
-                      <div className="flex items-center gap-4">
-                        <p className="mt-1 truncate font-medium text-[12px] text-muted-foreground/50 tracking-tight">
-                          {applicant.headline}
+                      <div className="min-w-0 flex-1">
+                        <p className="mb-1 font-medium text-[16px] text-foreground tracking-tight transition-colors group-hover:text-primary">
+                          {applicant.firstName} {applicant.lastName}
                         </p>
-                        <div className="h-0.5 w-0.5 flex-shrink-0 rounded-full bg-border/40" />
-                        <div className="truncate font-bold text-[10px] text-info/40 uppercase tracking-[0.2em]">
-                          {job?.title}
+                        <div className="flex items-center gap-4">
+                          <p className="mt-1 truncate font-medium text-[12px] text-muted-foreground/50 tracking-tight">
+                            {applicant.headline}
+                          </p>
+                          <div className="h-0.5 w-0.5 shrink-0 rounded-full bg-border/40" />
+                          <div className="truncate font-bold text-[10px] text-info/40 uppercase tracking-[0.2em]">
+                            {job?.title}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="ml-8 flex items-center gap-12">
-                    <div className="hidden items-center gap-2 opacity-30 lg:flex">
-                      <span className="font-bold text-[11px] text-muted-foreground/60 uppercase tracking-widest">
-                        {applicant.location}
-                      </span>
-                    </div>
-
-                    <div className="flex w-28 flex-col items-center gap-2">
-                      <div className="flex items-center gap-2">
-                        <ScoreBadge
-                          score={applicant.screening?.matchScore ?? 0}
-                        />
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                screenMutation.mutate({
-                                  applicantId: applicant.id,
-                                  jobId: applicant.jobId,
-                                });
-                              }}
-                              disabled={screenMutation.isPending}
-                              className="flex h-7 w-7 items-center justify-center rounded-full border border-border/50 bg-background transition-all hover:bg-secondary active:scale-95 disabled:opacity-50"
-                            >
-                              {screenMutation.isPending &&
-                              screenMutation.variables?.applicantId ===
-                                applicant.id ? (
-                                <Loader2 className="h-3 w-3 animate-spin text-primary" />
-                              ) : (
-                                <BrainCircuit className="h-3 w-3 text-muted-foreground/60" />
-                              )}
-                            </TooltipTrigger>
-                            <TooltipContent className="rounded-full px-3 py-1 font-bold text-[9px] uppercase tracking-widest">
-                              Run AI Analysis
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      {(!applicant.screening ||
-                        applicant.status === "failed" ||
-                        (screenMutation.isPending &&
-                          screenMutation.variables?.applicantId ===
-                            applicant.id)) && (
-                        <span
-                          className={cn(
-                            "animate-pulse font-bold text-[8px] uppercase tracking-[0.2em]",
-                            applicant.status === "failed"
-                              ? "animate-none text-destructive/60"
-                              : "text-muted-foreground/40",
-                          )}
-                        >
-                          {screenMutation.isPending &&
-                          screenMutation.variables?.applicantId === applicant.id
-                            ? "Processing"
-                            : applicant.status === "failed"
-                              ? "Analysis Failed"
-                              : "Analyzing"}
+                    <div className="ml-8 flex items-center gap-12">
+                      <div className="hidden items-center gap-2 opacity-30 lg:flex">
+                        <span className="font-bold text-[11px] text-muted-foreground/60 uppercase tracking-widest">
+                          {applicant.location}
                         </span>
-                      )}
-                    </div>
+                      </div>
 
-                    <div className="flex w-32 justify-end">
-                      <Badge
-                        variant={sc.variant}
-                        size="sm"
-                        uppercase
-                        className="shadow-md"
-                      >
-                        {sc.label}
-                      </Badge>
-                    </div>
-
-                    <div className="flex items-center gap-6 border-border/5 border-l pl-6">
-                      <span className="min-w-[70px] text-right font-bold text-[10px] text-muted-foreground/20 uppercase tracking-widest">
-                        {new Date(applicant.appliedAt).toLocaleDateString(
-                          "en-US",
-                          { month: "short", day: "numeric" },
+                      <div className="flex w-28 flex-col items-center gap-2">
+                        <div className="flex items-center gap-2">
+                          <ScoreBadge
+                            score={applicant.screening?.matchScore ?? 0}
+                          />
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  screenMutation.mutate({
+                                    applicantId: applicant.id,
+                                    jobId: applicant.jobId,
+                                  });
+                                }}
+                                disabled={screenMutation.isPending}
+                                className="flex h-7 w-7 items-center justify-center rounded-full border border-border/50 bg-background transition-all hover:bg-secondary active:scale-95 disabled:opacity-50"
+                              >
+                                {screenMutation.isPending &&
+                                screenMutation.variables?.applicantId ===
+                                  applicant.id ? (
+                                  <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                                ) : (
+                                  <BrainCircuit className="h-3 w-3 text-muted-foreground/60" />
+                                )}
+                              </TooltipTrigger>
+                              <TooltipContent className="rounded-full px-3 py-1 font-bold text-[9px] uppercase tracking-widest">
+                                Run AI Analysis
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        {(!applicant.screening ||
+                          applicant.status === "failed" ||
+                          (screenMutation.isPending &&
+                            screenMutation.variables?.applicantId ===
+                              applicant.id)) && (
+                          <span
+                            className={cn(
+                              "animate-pulse font-bold text-[8px] uppercase tracking-[0.2em]",
+                              applicant.status === "failed"
+                                ? "animate-none text-destructive/60"
+                                : "text-muted-foreground/40",
+                            )}
+                          >
+                            {screenMutation.isPending &&
+                            screenMutation.variables?.applicantId ===
+                              applicant.id
+                              ? "Processing"
+                              : applicant.status === "failed"
+                                ? "Analysis Failed"
+                                : "Analyzing"}
+                          </span>
                         )}
-                      </span>
-                    </div>
-                  </div>
+                      </div>
+
+                      <div className="flex w-32 justify-end">
+                        <Badge
+                          variant={sc.variant}
+                          size="sm"
+                          uppercase
+                          className="shadow-md"
+                        >
+                          {sc.label}
+                        </Badge>
+                      </div>
+
+                      <div className="flex items-center gap-6 border-border/5 border-l pl-6">
+                        <span className="min-w-[70px] text-right font-bold text-[10px] text-muted-foreground/20 uppercase tracking-widest">
+                          {new Date(applicant.appliedAt).toLocaleDateString(
+                            "en-US",
+                            { month: "short", day: "numeric" },
+                          )}
+                        </span>
+                      </div>
                     </div>
                   </Link>
                 </Card>

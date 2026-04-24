@@ -9,6 +9,12 @@ import { QueryErrorState } from "@/components/data/query-state";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+} from "@/components/ui/empty";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 import { ScoreBadge } from "./score-badge";
@@ -192,12 +198,16 @@ export function DashboardOverview() {
                     </Link>
                   ))
                 ) : (
-                  <div className="py-32 text-center">
-                    <Sparkles className="mx-auto mb-6 h-12 w-12 text-muted-foreground/10" />
-                    <p className="px-20 font-bold text-[11px] text-muted-foreground/30 uppercase tracking-[0.25em]">
-                      Awaiting High-Resolution Signal Analysis
-                    </p>
-                  </div>
+                  <Empty className="border-none bg-transparent py-32">
+                    <EmptyHeader>
+                      <EmptyMedia>
+                        <Sparkles className="size-4 text-muted-foreground" />
+                      </EmptyMedia>
+                      <EmptyDescription>
+                        Awaiting High-Resolution Signal Analysis
+                      </EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
                 )}
               </div>
             </Card>
@@ -264,12 +274,16 @@ export function DashboardOverview() {
                     );
                   })
                 ) : (
-                  <div className="col-span-2 py-20 text-center opacity-30">
-                    <Briefcase className="mx-auto mb-4 h-8 w-8" />
-                    <p className="font-bold text-[10px] uppercase tracking-widest">
-                      No Active Channels
-                    </p>
-                  </div>
+                  <Empty className="col-span-2 border-none bg-transparent py-20">
+                    <EmptyHeader>
+                      <EmptyMedia>
+                        <Briefcase className="size-4 text-muted-foreground" />
+                      </EmptyMedia>
+                      <EmptyDescription>
+                        No Active Channels
+                      </EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
                 )}
               </div>
             </Card>
@@ -278,7 +292,11 @@ export function DashboardOverview() {
           {/* Activity & Health Column */}
           <div className="space-y-12 lg:col-span-4">
             {/* Health Index Card */}
-            <Card variant="premium" className="space-y-12 bg-accent/5 p-10 transition-all hover:border-primary/20" size="none">
+            <Card
+              variant="premium"
+              className="space-y-12 bg-accent/5 p-10 transition-all hover:border-primary/20"
+              size="none"
+            >
               <header>
                 <h3 className="mb-1 font-display font-light text-[16px] text-foreground uppercase tracking-[0.12em]">
                   Intelligence Hub
@@ -287,7 +305,7 @@ export function DashboardOverview() {
                   System Health & Coverage
                 </p>
               </header>
- 
+
               <div className="space-y-10">
                 <div className="space-y-4">
                   <div className="flex items-end justify-between">
@@ -305,7 +323,7 @@ export function DashboardOverview() {
                     />
                   </div>
                 </div>
- 
+
                 <div className="space-y-4">
                   <div className="flex items-end justify-between">
                     <p className="pl-1 font-bold text-[10px] text-muted-foreground/50 uppercase tracking-widest">
@@ -332,7 +350,7 @@ export function DashboardOverview() {
                   </div>
                 </div>
               </div>
- 
+
               <Button
                 render={<Link href="/dashboard/analytics" className="block" />}
                 variant="outline"
@@ -383,9 +401,16 @@ export function DashboardOverview() {
                     </div>
                   ))
                 ) : (
-                  <div className="py-16 text-center opacity-10">
-                    <Users className="mx-auto h-8 w-8" />
-                  </div>
+                  <Empty className="border-none bg-transparent py-16">
+                    <EmptyHeader>
+                      <EmptyMedia>
+                        <Users className="size-4 text-muted-foreground" />
+                      </EmptyMedia>
+                      <EmptyDescription>
+                        No Recent Activity
+                      </EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
                 )}
               </div>
             </Card>

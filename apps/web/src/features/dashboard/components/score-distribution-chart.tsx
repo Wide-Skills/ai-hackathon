@@ -10,6 +10,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 interface ScoreDistributionChartProps {
   applicants: Applicant[];
@@ -35,6 +40,17 @@ export function ScoreDistributionChart({
       return score >= bucket.min && score <= bucket.max;
     }).length,
   }));
+  if (screened.length === 0) {
+    return (
+      <Empty className="h-full min-h-[300px] border-none bg-transparent">
+        <EmptyHeader>
+          <EmptyTitle className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest">
+            No Distribution Data Available
+          </EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
 
   return (
     <div className="h-full min-h-[300px] w-full">

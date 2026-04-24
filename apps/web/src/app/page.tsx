@@ -1,18 +1,19 @@
-"use client";
-
-import { motion } from "framer-motion";
+import * as motion from "framer-motion/client";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
 import { Hero } from "@/components/landing/hero";
 import { Navbar } from "@/components/landing/navbar";
+import { Button } from "@/components/ui/button";
+import { getSession } from "@/lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getSession();
+
   return (
     <main className="relative min-h-screen overflow-x-hidden selection:bg-secondary selection:text-foreground">
       <div className="relative z-10 flex min-h-screen flex-col">
-        <Navbar />
+        <Navbar session={session} />
 
         <div className="flex-1">
           <Hero />
@@ -40,20 +41,20 @@ export default function Home() {
               </p>
               <div className="flex flex-wrap items-center justify-center gap-5">
                 <Button
-                  render={<Link href="/auth" />}
+                  render={<Link href={session ? "/dashboard" : "/auth"} />}
                   variant="default"
                   size="2xl"
                   className="shadow-xl"
                 >
-                  Get Started for Free
+                  {session ? "Go to Dashboard" : "Get Started for Free"}
                 </Button>
                 <Button
-                  render={<Link href="/auth" />}
+                  render={<Link href={session ? "/dashboard" : "/auth"} />}
                   variant="outline"
                   size="2xl"
                   className="shadow-sm"
                 >
-                  Schedule a Demo
+                  {session ? "View Jobs" : "Schedule a Demo"}
                 </Button>
               </div>
             </motion.div>

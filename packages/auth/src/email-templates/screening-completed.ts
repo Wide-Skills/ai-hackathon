@@ -21,6 +21,7 @@ export function buildScreeningCompletedEmail({
     intro: `Hi ${recruiterName}, our AI has finished analyzing ${applicantName} for the ${jobTitle} position. The analysis produced a Match Score of ${matchScore}%.`,
     ctaLabel: "View Full Report",
     ctaUrl: url,
-    outro: "You can now review the detailed strengths, gaps, and final recommendation in your dashboard.",
+    outro:
+      "You can now review the detailed strengths, gaps, and final recommendation in your dashboard.",
   });
 }

@@ -1,10 +1,12 @@
-"use client";
-
 import type { Route } from "next";
 import Link from "next/link";
 import type React from "react";
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  session?: any;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ session }) => {
   return (
     <nav className="fixed top-0 right-0 left-0 z-50 flex h-[64px] items-center border-border border-b bg-background/40 backdrop-blur-md">
       <div className="container-tight flex items-center justify-between">
@@ -33,17 +35,28 @@ export const Navbar: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-5">
-          <Link
-            href="/auth"
-            className="font-medium text-[13px] text-muted-foreground tracking-[0.1px] transition-colors hover:text-foreground"
-          >
-            Sign in
-          </Link>
-          <Link href="/auth">
-            <button className="h-[36px] rounded-full bg-primary px-5 text-[13px] text-primary-foreground shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]">
-              Get Started
-            </button>
-          </Link>
+          {session ? (
+            <Link
+              href="/dashboard"
+              className="font-medium text-[13px] text-muted-foreground tracking-[0.1px] transition-colors hover:text-foreground"
+            >
+              Go to Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/auth"
+                className="font-medium text-[13px] text-muted-foreground tracking-[0.1px] transition-colors hover:text-foreground"
+              >
+                Sign in
+              </Link>
+              <Link href="/auth">
+                <button className="h-[36px] rounded-full bg-primary px-5 text-[13px] text-primary-foreground shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]">
+                  Get Started
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

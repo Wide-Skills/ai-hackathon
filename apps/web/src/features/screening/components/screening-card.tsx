@@ -9,10 +9,15 @@ import {
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Card } from "@/components/ui/card";
 
 const recommendationConfig: Record<
   string,
-  { label: string; variant: "success" | "info" | "warning" | "destructive"; icon: any }
+  {
+    label: string;
+    variant: "success" | "info" | "warning" | "destructive";
+    icon: any;
+  }
 > = {
   "Strongly Recommend": {
     label: "Strongly Recommend",
@@ -62,10 +67,7 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
 
   return (
     <Link href={`/dashboard/applicants/${applicant.id}`}>
-      <Card
-        variant="premium"
-        className="group relative flex flex-col p-6"
-      >
+      <Card variant="premium" className="group relative flex flex-col p-6">
         <div className="flex items-start gap-8">
           {/* Score Side */}
           <div className="flex w-20 shrink-0 flex-col items-center gap-2 border-border/10 border-r pr-6">
@@ -145,7 +147,6 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
               </div>
             </div>
           </div>
-        </div>
         </div>
       </Card>
     </Link>

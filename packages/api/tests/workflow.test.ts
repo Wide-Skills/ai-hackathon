@@ -150,7 +150,9 @@ describe("End-to-End Recruitment Workflow", () => {
       description: "Build next-gen AI tools.",
       requirements: ["5+ years React", "Node.js mastery"],
       skills: ["React", "Node.js", "TypeScript"],
-      toObject() { return this; }
+      toObject() {
+        return this;
+      },
     });
 
     applicantCountDocumentsMock.mockResolvedValue(1);
@@ -172,7 +174,7 @@ describe("End-to-End Recruitment Workflow", () => {
     expect(result.firstName).toBe("Jane");
     expect(result.status).toBe("shortlisted"); // 92 score >= 85
     expect(result.screening?.matchScore).toBe(92);
-    
+
     // Verify Profile Extraction worked
     expect(result.headline).toBe("Senior Software Architect");
     expect(result.location).toBe("Kigali, Rwanda");
@@ -207,8 +209,8 @@ describe("End-to-End Recruitment Workflow", () => {
     expect(applicantFindByIdAndUpdateMock).toHaveBeenCalledWith(
       applicantId,
       expect.objectContaining({
-        status: "shortlisted"
-      })
+        status: "shortlisted",
+      }),
     );
   });
 
@@ -229,13 +231,13 @@ describe("End-to-End Recruitment Workflow", () => {
           lastName: "Jones",
           email: "bob@example.com",
           resumeText: "Bob's resume text...",
-        }
+        },
       ],
     });
 
     expect(result.successCount).toBe(2);
     expect(applicantSaveMock).toHaveBeenCalledTimes(2);
-    
+
     // In batch, AI runs in background (non-blocking)
     // We expect the syncJobMetrics to have been called
     expect(jobFindByIdAndUpdateMock).toHaveBeenCalled();

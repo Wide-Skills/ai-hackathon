@@ -33,7 +33,7 @@ export function SettingsForm() {
                   className={cn(
                     "group mb-1 flex items-center gap-4 whitespace-nowrap rounded-xl px-3 py-2.5 text-left transition-all lg:whitespace-normal",
                     isActive
-                      ? "bg-secondary/50 text-foreground shadow-md"
+                      ? "bg-secondary/50 text-foreground/80"
                       : "text-muted-foreground/40 hover:bg-secondary/20 hover:text-foreground/70",
                   )}
                 >

@@ -5,10 +5,7 @@ interface WelcomeEmailProps {
   url: string;
 }
 
-export function buildWelcomeEmail({
-  name = "there",
-  url,
-}: WelcomeEmailProps) {
+export function buildWelcomeEmail({ name = "there", url }: WelcomeEmailProps) {
   return buildAuthEmailTemplate({
     preview: "Welcome to the Umurava AI recruiter platform",
     heading: `Welcome, ${name}`,

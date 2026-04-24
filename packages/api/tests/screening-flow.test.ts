@@ -118,10 +118,7 @@ describe("screening flow", () => {
       jobId: "job-1",
       firstName: "Ada",
       lastName: "Lovelace",
-      skills: [
-        { name: "TypeScript" },
-        { name: "PostgreSQL" },
-      ],
+      skills: [{ name: "TypeScript" }, { name: "PostgreSQL" }],
     });
 
     jobFindByIdMock.mockResolvedValue({
@@ -138,28 +135,26 @@ describe("screening flow", () => {
 
     applicantFindByIdAndUpdateMock.mockResolvedValue(null);
     jobFindByIdAndUpdateMock.mockResolvedValue(null);
-    screeningFindOneMock
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce({
-        _id: new Types.ObjectId(),
-        applicantId: "applicant-1",
-        jobId: "job-1",
-        matchScore: 85,
-        strengths: ["Strength 1"],
-        gaps: ["Gap 1"],
-        recommendation: "Strongly Recommend",
-        summary: "Fits well",
-        skillBreakdown: [
-          { skill: "typescript", score: 90 },
-          { skill: "postgresql", score: 80 },
-          { skill: "docker", score: 85 },
-        ],
-        createdAt: new Date("2026-04-15T00:00:00.000Z"),
-        updatedAt: new Date("2026-04-15T00:00:00.000Z"),
-        toObject() {
-          return this;
-        },
-      });
+    screeningFindOneMock.mockResolvedValueOnce(null).mockResolvedValueOnce({
+      _id: new Types.ObjectId(),
+      applicantId: "applicant-1",
+      jobId: "job-1",
+      matchScore: 85,
+      strengths: ["Strength 1"],
+      gaps: ["Gap 1"],
+      recommendation: "Strongly Recommend",
+      summary: "Fits well",
+      skillBreakdown: [
+        { skill: "typescript", score: 90 },
+        { skill: "postgresql", score: 80 },
+        { skill: "docker", score: 85 },
+      ],
+      createdAt: new Date("2026-04-15T00:00:00.000Z"),
+      updatedAt: new Date("2026-04-15T00:00:00.000Z"),
+      toObject() {
+        return this;
+      },
+    });
   });
 
   it("creates a screening result and synchronizes applicant and job state", async () => {

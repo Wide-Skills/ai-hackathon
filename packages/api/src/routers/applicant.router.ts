@@ -1,6 +1,10 @@
 import { sendApplicationReceivedEmail } from "@ai-hackathon/auth/email";
 import { Applicant } from "@ai-hackathon/db";
-import { ApplicantSchema, CreateApplicantSchema, PublicApplySchema } from "@ai-hackathon/shared";
+import {
+  ApplicantSchema,
+  CreateApplicantSchema,
+  PublicApplySchema,
+} from "@ai-hackathon/shared";
 import { z } from "zod";
 import { ensureJobExists, syncJobMetrics } from "../router-helpers/job-metrics";
 import { serializeApplicant } from "../serializers";
@@ -47,31 +51,70 @@ export const applicantRouter = router({
         headline: extractedData?.headline || "Applicant",
         bio: extractedData?.bio || "",
         location: extractedData?.location || "Unknown",
-        skills: extractedData?.skills && extractedData.skills.length > 0 
-          ? extractedData.skills 
-          : [{ name: "General Professional", level: "Intermediate", yearsOfExperience: 0 }],
-        experience: extractedData?.experience && extractedData.experience.length > 0
-          ? extractedData.experience
-          : [{ company: "Unknown", role: "Applicant", startDate: "N/A", endDate: "N/A", description: "Not specified", technologies: [], isCurrent: false }],
-        education: extractedData?.education && extractedData.education.length > 0
-          ? extractedData.education
-          : [{ institution: "Unknown", degree: "Unknown", fieldOfStudy: "Unknown", startYear: 0, endYear: 0 }],
+        skills:
+          extractedData?.skills && extractedData.skills.length > 0
+            ? extractedData.skills
+            : [
+                {
+                  name: "General Professional",
+                  level: "Intermediate",
+                  yearsOfExperience: 0,
+                },
+              ],
+        experience:
+          extractedData?.experience && extractedData.experience.length > 0
+            ? extractedData.experience
+            : [
+                {
+                  company: "Unknown",
+                  role: "Applicant",
+                  startDate: "N/A",
+                  endDate: "N/A",
+                  description: "Not specified",
+                  technologies: [],
+                  isCurrent: false,
+                },
+              ],
+        education:
+          extractedData?.education && extractedData.education.length > 0
+            ? extractedData.education
+            : [
+                {
+                  institution: "Unknown",
+                  degree: "Unknown",
+                  fieldOfStudy: "Unknown",
+                  startYear: 0,
+                  endYear: 0,
+                },
+              ],
         languages: extractedData?.languages || [],
         certifications: extractedData?.certifications || [],
-        projects: extractedData?.projects && extractedData.projects.length > 0
-          ? extractedData.projects
-          : [{ name: "Unknown", description: "Unknown", technologies: [], role: "Unknown" }],
+        projects:
+          extractedData?.projects && extractedData.projects.length > 0
+            ? extractedData.projects
+            : [
+                {
+                  name: "Unknown",
+                  description: "Unknown",
+                  technologies: [],
+                  role: "Unknown",
+                },
+              ],
         availability: { status: "Available", type: "Full-time" },
-        status: extractedData ? buildApplicantStatus(extractedData.matchScore) : "pending",
-        screening: extractedData ? {
-          ...extractedData,
-          languages: extractedData.languages || [],
-          experience: extractedData.experience || [],
-          education: extractedData.education || [],
-          skills: extractedData.skills || [],
-          certifications: extractedData.certifications || [],
-          projects: extractedData.projects || [],
-        } : undefined,
+        status: extractedData
+          ? buildApplicantStatus(extractedData.matchScore)
+          : "pending",
+        screening: extractedData
+          ? {
+              ...extractedData,
+              languages: extractedData.languages || [],
+              experience: extractedData.experience || [],
+              education: extractedData.education || [],
+              skills: extractedData.skills || [],
+              certifications: extractedData.certifications || [],
+              projects: extractedData.projects || [],
+            }
+          : undefined,
       });
 
       await applicant.save();

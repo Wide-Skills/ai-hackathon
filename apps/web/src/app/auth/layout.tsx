@@ -1,10 +1,10 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { ChevronLeftIcon } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import type React from "react";
 import { Button } from "@/components/ui/button";
+import { getSession } from "@/lib/auth";
 
 const Logo = ({ className }: { className?: string }) => (
   <Link href="/" className={`flex items-center gap-2 ${className}`}>
@@ -68,11 +68,17 @@ const FloatingPaths = ({ position }: { position: number }) => {
   );
 };
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
     <main className="relative min-h-screen bg-background selection:bg-secondary selection:text-foreground lg:grid lg:grid-cols-[440px_1fr]">
       <div className="relative hidden h-full flex-col overflow-hidden border-border border-r bg-secondary/20 p-12 lg:flex">

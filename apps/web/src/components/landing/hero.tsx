@@ -2,10 +2,10 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, MoreHorizontal, Search, User2 } from "lucide-react";
-import type React from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import type React from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const AppPreview = () => {
   const { scrollYProgress } = useScroll();
@@ -127,7 +127,7 @@ const AppPreview = () => {
                           variant={c.variant as any}
                           size="xs"
                           uppercase
-                          className="mb-1.5 px-2 py-0.5 border-border/10 shadow-sm"
+                          className="mb-1.5 border-border/10 px-2 py-0.5 shadow-sm"
                         >
                           {c.match}
                         </Badge>
