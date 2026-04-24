@@ -95,7 +95,7 @@ export default function Header() {
           className="relative rounded-full shadow-sm"
         >
           <RiNotification3Line className="h-4 w-4 text-muted-foreground" />
-          <span className="absolute top-2.5 right-2.5 h-1.5 w-1.5 rounded-full bg-info" />
+          <span className="absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full bg-info" />
         </Button>
 
         {info.action && (
