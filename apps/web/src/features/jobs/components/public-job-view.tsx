@@ -1,15 +1,15 @@
 "use client";
 
+import {
+  RiBriefcaseLine,
+  RiCheckboxCircleLine,
+  RiFileTextLine,
+  RiLoader2Line,
+  RiMapPinLine,
+  RiUploadCloud2Line,
+} from "@remixicon/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import {
-  Briefcase,
-  CheckCircle2,
-  FileText,
-  Loader2,
-  MapPin,
-  Upload,
-} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Footer } from "@/components/landing/footer";
@@ -89,7 +89,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
   if (jobQuery.isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <RiLoader2Line className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -115,7 +115,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
           className="w-full max-w-md space-y-6 rounded-3xl border border-border/50 bg-background p-10 text-center shadow-lg"
         >
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
-            <CheckCircle2 className="h-8 w-8 text-success" />
+            <RiCheckboxCircleLine className="h-8 w-8 text-success" />
           </div>
           <h2 className="font-display font-light text-2xl">
             Application Received!
@@ -158,11 +158,11 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
               </h1>
               <div className="flex flex-wrap gap-6 text-muted-foreground text-sm">
                 <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
+                  <RiMapPinLine className="h-4 w-4" />
                   {job.location}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Briefcase className="h-4 w-4" />
+                  <RiBriefcaseLine className="h-4 w-4" />
                   {job.type}
                 </div>
               </div>
@@ -278,14 +278,14 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                     />
                     {file ? (
                       <div className="flex items-center gap-3">
-                        <FileText className="h-6 w-6 text-primary" />
+                        <RiFileTextLine className="h-6 w-6 text-primary" />
                         <span className="max-w-[150px] truncate font-medium text-sm">
                           {file.name}
                         </span>
                       </div>
                     ) : (
                       <>
-                        <Upload className="mb-2 h-6 w-6 text-muted-foreground/40" />
+                        <RiUploadCloud2Line className="mb-2 h-6 w-6 text-muted-foreground/40" />
                         <span className="text-center text-muted-foreground text-sm">
                           Click to upload your resume
                         </span>
@@ -304,7 +304,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                 >
                   {uploading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <RiLoader2Line className="mr-2 h-4 w-4 animate-spin" />
                       Processing...
                     </>
                   ) : (

@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Inbox } from "lucide-react";
+import { RiErrorWarningLine, RiInboxLine } from "@remixicon/react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,7 +31,7 @@ export function QueryErrorState({
       variant="destructive"
       className="rounded-xl border-destructive/20 p-5"
     >
-      <AlertCircle className="mt-0.5 size-4" />
+      <RiErrorWarningLine className="mt-0.5 size-4" />
       <AlertTitle>{title}</AlertTitle>
       <AlertDescription>{getErrorMessage(error)}</AlertDescription>
       {onRetry ? (
@@ -59,7 +59,7 @@ export function QueryEmptyState({ title, description }: QueryEmptyStateProps) {
     <Empty className="rounded-3xl border-border/50 bg-secondary/5 py-16">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <Inbox className="size-4" />
+          <RiInboxLine className="size-4" />
         </EmptyMedia>
         <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription>{description}</EmptyDescription>

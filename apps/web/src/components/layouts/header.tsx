@@ -1,6 +1,10 @@
 "use client";
 
-import { Bell, Plus, Search } from "lucide-react";
+import {
+  RiAddLine,
+  RiNotification3Line,
+  RiSearch2Line,
+} from "@remixicon/react";
 import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -76,7 +80,7 @@ export default function Header() {
               align="inline-start"
               className="flex items-center justify-center pl-4"
             >
-              <Search className="h-3.5 w-3.5 text-muted-foreground/40" />
+              <RiSearch2Line className="h-4 w-4 text-muted-foreground/40" />
             </InputGroupAddon>
             <InputGroupInput
               placeholder="Search talent pool..."
@@ -90,7 +94,7 @@ export default function Header() {
           size="icon"
           className="relative rounded-full shadow-sm"
         >
-          <Bell className="h-4 w-4 text-muted-foreground" />
+          <RiNotification3Line className="h-4 w-4 text-muted-foreground" />
           <span className="absolute top-2.5 right-2.5 h-1.5 w-1.5 rounded-full bg-info" />
         </Button>
 
@@ -105,7 +109,7 @@ export default function Header() {
             size="xl"
             className="h-10 px-6 shadow-sm"
           >
-            <Plus className="mr-2 h-3.5 w-3.5" />
+            <RiAddLine className="mr-2 h-4 w-4" />
             {info.action.label}
           </Button>
         )}

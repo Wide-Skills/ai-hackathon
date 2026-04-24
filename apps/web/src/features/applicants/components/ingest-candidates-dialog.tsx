@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  FileSpreadsheet,
-  FileText,
-  Globe,
-  Plus,
-} from "lucide-react";
+  RiAddLine,
+  RiFileExcel2Line,
+  RiFileTextLine,
+  RiGlobeLine,
+} from "@remixicon/react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ export function IngestCandidatesDialog() {
       title: "Neural Resume Import",
       description:
         "Extract full talent profiles from PDF/Text using deep semantic analysis.",
-      icon: FileText,
+      icon: RiFileTextLine,
       color: "text-primary",
       bg: "bg-primary/5",
       badge: "Deep Analysis",
@@ -33,7 +33,7 @@ export function IngestCandidatesDialog() {
       title: "Batch CSV Protocol",
       description:
         "Import massive talent pools from structured data files for high-volume screening.",
-      icon: FileSpreadsheet,
+      icon: RiFileExcel2Line,
       color: "text-info",
       bg: "bg-info/5",
       badge: "Scale",
@@ -44,7 +44,7 @@ export function IngestCandidatesDialog() {
       title: "External API Node",
       description:
         "Connect Greenhouse, Lever, or custom endpoints for automated ingestion.",
-      icon: Globe,
+      icon: RiGlobeLine,
       color: "text-muted-foreground",
       bg: "bg-muted/5",
       badge: "Coming Soon",
@@ -59,7 +59,7 @@ export function IngestCandidatesDialog() {
           <Button className="h-11 gap-2 bg-primary font-bold text-[11px] text-white uppercase tracking-[0.2em] shadow-lg transition-all hover:bg-primary/90 active:scale-[0.98]" />
         }
       >
-        <Plus className="h-4 w-4" />
+        <RiAddLine className="h-4 w-4" />
         Ingest Talent
       </DialogTrigger>
       <DialogContent className="max-w-4xl! overflow-hidden border-border/40 bg-background p-0">

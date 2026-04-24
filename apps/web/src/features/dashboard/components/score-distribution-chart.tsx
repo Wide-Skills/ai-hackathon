@@ -10,11 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import {
-  Empty,
-  EmptyHeader,
-  EmptyTitle,
-} from "@/components/ui/empty";
+import { Empty, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 
 interface ScoreDistributionChartProps {
   applicants: Applicant[];

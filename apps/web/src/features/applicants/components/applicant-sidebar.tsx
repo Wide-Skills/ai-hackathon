@@ -1,6 +1,6 @@
 import type { Applicant } from "@ai-hackathon/shared";
+import { RiBrainLine, RiLoader2Line } from "@remixicon/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BrainCircuit, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 
@@ -97,12 +97,12 @@ export function ApplicantSidebar({
             >
               {screenMutation.isPending ? (
                 <>
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <RiLoader2Line className="h-4 w-4 animate-spin" />
                   Analyzing...
                 </>
               ) : (
                 <>
-                  <BrainCircuit className="h-3.5 w-3.5" />
+                  <RiBrainLine className="h-4 w-4" />
                   {applicant.screening ? "Re-Run Analysis" : "Process Analysis"}
                 </>
               )}

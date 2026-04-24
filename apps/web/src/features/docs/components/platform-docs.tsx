@@ -1,12 +1,12 @@
 import { DEMO_RECRUITER } from "@ai-hackathon/shared";
 import {
-  BarChart3,
-  BrainCircuit,
-  Cpu,
-  Layers,
-  Upload,
-  Zap,
-} from "lucide-react";
+  RiBarChartLine,
+  RiBrainLine,
+  RiCpuLine,
+  RiFlashlightLine,
+  RiStackLine,
+  RiUploadCloud2Line,
+} from "@remixicon/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,7 +16,7 @@ const features = [
     title: "AI-First Intelligence",
     description:
       "Powered by Gemini 2.5 Flash, our platform performs deep semantic analysis of resumes beyond simple keyword matching. It understands context, nuances in experience, and potential resonance with specific role requirements.",
-    icon: BrainCircuit,
+    icon: RiBrainLine,
     color: "text-primary",
     bg: "bg-primary/5",
   },
@@ -24,7 +24,7 @@ const features = [
     title: "Multichannel Ingestion",
     description:
       "Seamlessly import talent from any source. Whether it's direct API integration from platforms like Umurava, batch CSV uploads, or raw resume PDF parsing, the system handles it all with zero friction.",
-    icon: Upload,
+    icon: RiUploadCloud2Line,
     color: "text-info",
     bg: "bg-info/5",
   },
@@ -32,7 +32,7 @@ const features = [
     title: "High-Fidelity Talent Schema",
     description:
       "Every applicant is transformed into a standardized, rich Talent Profile. We capture skills with proficiency levels, detailed career trajectories, and project portfolios to ensure every record is a source of truth.",
-    icon: Layers,
+    icon: RiStackLine,
     color: "text-success",
     bg: "bg-success/5",
   },
@@ -40,7 +40,7 @@ const features = [
     title: "Strategic Analytics",
     description:
       "Our recruiter dashboard provides real-time visibility into pipeline health. Track match quality indexing, screening throughput, and pipeline saturation with data-driven clarity.",
-    icon: BarChart3,
+    icon: RiBarChartLine,
     color: "text-amber-500",
     bg: "bg-amber-500/5",
   },
@@ -81,7 +81,7 @@ export function PlatformDocs() {
         <section className="relative overflow-hidden rounded-[48px] border border-border/60 bg-secondary/10 p-10 shadow-md md:p-20 lg:p-24">
           <div className="relative z-10 max-w-3xl">
             <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
-              <Cpu className="h-6 w-6 text-primary" />
+              <RiCpuLine className="h-6 w-6 text-primary" />
             </div>
             <p className="mb-4 font-bold text-[12px] text-primary/60 uppercase tracking-[0.3em]">
               Next-Gen Recruitment
@@ -216,7 +216,7 @@ export function PlatformDocs() {
             >
               <span className="flex w-full items-center justify-between">
                 Sign In Now
-                <Zap className="h-4 w-4" />
+                <RiFlashlightLine className="h-4 w-4" />
               </span>
             </Button>
           </div>

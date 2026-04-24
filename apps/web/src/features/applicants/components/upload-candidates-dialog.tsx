@@ -1,14 +1,14 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  AlertCircle,
-  CheckCircle2,
-  FileSpreadsheet,
-  Loader2,
-  Upload,
-  X,
-} from "lucide-react";
+  RiAlertLine,
+  RiCheckboxCircleLine,
+  RiCloseLine,
+  RiFileExcel2Line,
+  RiLoader2Line,
+  RiUploadCloud2Line,
+} from "@remixicon/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import { QueryErrorState } from "@/components/data/query-state";
@@ -240,7 +240,7 @@ export function UploadCandidatesDialog({
               size="sm"
               className="h-10 gap-2 rounded-full border-border/50 font-bold text-[11px] uppercase tracking-widest shadow-md hover:bg-secondary"
             >
-              <Upload className="h-4 w-4" />
+              <RiUploadCloud2Line className="h-4 w-4" />
               Upload CSV
             </Button>
           )
@@ -250,7 +250,7 @@ export function UploadCandidatesDialog({
         <DialogHeader>
           <div className="flex items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 shadow-md">
-              <FileSpreadsheet className="h-6 w-6 text-primary" />
+              <RiFileExcel2Line className="h-6 w-6 text-primary" />
             </div>
             <div>
               <DialogTitle className="font-display font-light text-xl uppercase tracking-widest">
@@ -308,7 +308,7 @@ export function UploadCandidatesDialog({
                   : "border-border hover:border-primary/40 hover:bg-muted/50"
               }`}
             >
-              <Upload className="mb-3 h-8 w-8 text-muted-foreground/50" />
+              <RiUploadCloud2Line className="mb-3 h-8 w-8 text-muted-foreground/50" />
               <p className="font-medium text-foreground text-sm">
                 Drop your CSV file here
               </p>
@@ -336,7 +336,7 @@ export function UploadCandidatesDialog({
             <div className="space-y-3">
               <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
                 <div className="flex items-center gap-3">
-                  <FileSpreadsheet className="h-5 w-5 text-primary" />
+                  <RiFileExcel2Line className="h-5 w-5 text-primary" />
                   <div>
                     <p className="font-medium text-foreground text-sm">
                       {fileName}
@@ -350,7 +350,7 @@ export function UploadCandidatesDialog({
                   onClick={reset}
                   className="rounded-full p-1 hover:bg-muted"
                 >
-                  <X className="h-4 w-4 text-muted-foreground" />
+                  <RiCloseLine className="h-4 w-4 text-muted-foreground" />
                 </button>
               </div>
 
@@ -403,7 +403,7 @@ export function UploadCandidatesDialog({
               </div>
 
               <div className="flex items-center gap-2 rounded-lg bg-success/10 px-3 py-2">
-                <CheckCircle2 className="h-4 w-4 text-success" />
+                <RiCheckboxCircleLine className="h-4 w-4 text-success" />
                 <p className="font-medium text-sm text-success">
                   {candidates.length} candidates ready to import
                 </p>
@@ -426,12 +426,12 @@ export function UploadCandidatesDialog({
             >
               {uploading ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <RiLoader2Line className="h-4 w-4 animate-spin" />
                   Processing...
                 </>
               ) : (
                 <>
-                  <Upload className="h-4 w-4" />
+                  <RiUploadCloud2Line className="h-4 w-4" />
                   Initialize Batch Import
                 </>
               )}
@@ -439,7 +439,7 @@ export function UploadCandidatesDialog({
           </div>
 
           <div className="flex items-start gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2">
-            <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground/50" />
+            <RiAlertLine className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground/50" />
             <p className="text-muted-foreground text-xs leading-relaxed">
               Your CSV should have headers like{" "}
               <code className="rounded bg-muted px-1 text-[10px]">

@@ -1,16 +1,16 @@
 "use client";
 
 import type { ApplicationStatus } from "@ai-hackathon/shared";
+import {
+  RiArrowUpDownLine,
+  RiBrainLine,
+  RiLayoutGridLine,
+  RiListCheck,
+  RiLoader2Line,
+  RiSearch2Line,
+} from "@remixicon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import {
-  ArrowUpDown,
-  BrainCircuit,
-  LayoutGrid,
-  List,
-  Loader2,
-  Search,
-} from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -20,6 +20,8 @@ import {
   QueryEmptyState,
   QueryErrorState,
 } from "@/components/data/query-state";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import {
   InputGroup,
   InputGroupAddon,
@@ -44,8 +46,6 @@ import { cn } from "@/lib/utils";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 import { ApplicantsTable } from "./applicants-table";
 import { IngestCandidatesDialog } from "./ingest-candidates-dialog";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 const statusConfig: Record<
   ApplicationStatus,
@@ -199,7 +199,7 @@ export function ApplicantsList() {
         <div className="relative min-w-[320px] flex-1">
           <InputGroup className="h-11 overflow-hidden rounded-full border-border/50 bg-foreground/[0.01] px-1 shadow-md focus-within:ring-info/20">
             <InputGroupAddon align="inline-start" className="pl-5">
-              <Search className="h-4 w-4 text-muted-foreground/20" />
+              <RiSearch2Line className="h-4 w-4 text-muted-foreground/20" />
             </InputGroupAddon>
             <InputGroupInput
               placeholder="Search talent pool..."
@@ -216,12 +216,12 @@ export function ApplicantsList() {
             onValueChange={(v) => setView(v as "grid" | "table")}
             className="hidden sm:block"
           >
-            <TabsList >
-              <TabsTrigger value="grid" >
-                <LayoutGrid className="h-4 w-4" />
+            <TabsList className={"rounded-full"}>
+              <TabsTrigger value="grid" className="rounded-full">
+                <RiLayoutGridLine className="h-4 w-4" />
               </TabsTrigger>
-              <TabsTrigger value="table" >
-                <List className="h-4 w-4" />
+              <TabsTrigger value="table" className="rounded-full">
+                <RiListCheck className="h-4 w-4" />
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -277,13 +277,13 @@ export function ApplicantsList() {
               onClick={() => handleSort("name")}
               className="flex items-center gap-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] transition-colors hover:text-foreground"
             >
-              Candidate <ArrowUpDown className="h-3 w-3 opacity-20" />
+              Candidate <RiArrowUpDownLine className="h-3 w-3 opacity-20" />
             </button>
             <button
               onClick={() => handleSort("score")}
               className="flex items-center gap-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] transition-colors hover:text-foreground"
             >
-              AI Rank <ArrowUpDown className="h-3 w-3 opacity-20" />
+              AI Rank <RiArrowUpDownLine className="h-3 w-3 opacity-20" />
             </button>
           </div>
           <div className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.2em]">
@@ -365,9 +365,9 @@ export function ApplicantsList() {
                                 {screenMutation.isPending &&
                                 screenMutation.variables?.applicantId ===
                                   applicant.id ? (
-                                  <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                                  <RiLoader2Line className="h-3 w-3 animate-spin text-primary" />
                                 ) : (
-                                  <BrainCircuit className="h-3 w-3 text-muted-foreground/60" />
+                                  <RiBrainLine className="h-3 w-3 text-muted-foreground/60" />
                                 )}
                               </TooltipTrigger>
                               <TooltipContent className="rounded-full px-3 py-1 font-bold text-[9px] uppercase tracking-widest">

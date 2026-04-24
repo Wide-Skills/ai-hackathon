@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  BadgeCheckIcon,
-  ChevronsUpDownIcon,
-  LogOutIcon,
-  Sparkles,
-} from "lucide-react";
+  RiArrowUpDownLine,
+  RiLogoutCircleLine,
+  RiSparklingLine,
+  RiUserLine,
+} from "@remixicon/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -71,7 +71,7 @@ export function NavUser({
                 {user.email}
               </span>
             </div>
-            <ChevronsUpDownIcon className="ml-auto size-3 w-3 text-muted-foreground/20" />
+            <RiArrowUpDownLine className="ml-auto size-3.5 text-muted-foreground/20" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className=""
@@ -102,12 +102,12 @@ export function NavUser({
               <DropdownMenuGroup>
                 <Link href="/dashboard/settings" passHref>
                   <DropdownMenuItem>
-                    <BadgeCheckIcon />
+                    <RiUserLine className="size-4" />
                     Account Settings
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem>
-                  <Sparkles />
+                  <RiSparklingLine className="size-4" />
                   Plan Details
                 </DropdownMenuItem>
               </DropdownMenuGroup>
@@ -115,7 +115,7 @@ export function NavUser({
               <DropdownMenuSeparator className="my-0.5 bg-border/40" />
 
               <DropdownMenuItem onClick={handleLogout}>
-                <LogOutIcon />
+                <RiLogoutCircleLine className="size-4" />
                 Sign out
               </DropdownMenuItem>
             </DropdownMenuGroup>

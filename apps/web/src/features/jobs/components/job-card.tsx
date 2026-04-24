@@ -1,5 +1,10 @@
 import type { Job, JobStatus } from "@ai-hackathon/shared";
-import { Briefcase, Building, Link2, MapPin } from "lucide-react";
+import {
+  RiBriefcaseLine,
+  RiBuildingLine,
+  RiLink,
+  RiMapPinLine,
+} from "@remixicon/react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -79,17 +84,17 @@ export function JobCard({ job }: JobCardProps) {
       {/* SECTION 2: Hierarchal Metadata Band (Separated by subtle border) */}
       <div className="flex flex-wrap items-center gap-x-8 gap-y-2 border-border/5 border-y bg-secondary/[0.01] px-10 py-5 font-bold text-[9px] text-muted-foreground uppercase tracking-widest opacity-60">
         <span className="flex items-center gap-2">
-          <Building className="h-3 w-3 opacity-40" />
+          <RiBuildingLine className="h-3 w-3 opacity-40" />
           {job.department}
         </span>
         <div className="hidden h-3 w-px bg-border/20 sm:block" />
         <span className="flex items-center gap-2">
-          <MapPin className="h-3 w-3 opacity-40" />
+          <RiMapPinLine className="h-3 w-3 opacity-40" />
           {job.location}
         </span>
         <div className="hidden h-3 w-px bg-border/20 sm:block" />
         <span className="flex items-center gap-2">
-          <Briefcase className="h-3 w-3 opacity-40" />
+          <RiBriefcaseLine className="h-3 w-3 opacity-40" />
           {job.type}
         </span>
       </div>
@@ -180,7 +185,7 @@ export function JobCard({ job }: JobCardProps) {
                   />
                 }
               >
-                <Link2 className="h-4 w-4" />
+                <RiLink className="h-4 w-4" />
               </TooltipTrigger>
               <TooltipContent className="rounded-full px-4 py-1.5 font-bold text-[10px] uppercase tracking-widest">
                 Copy Link

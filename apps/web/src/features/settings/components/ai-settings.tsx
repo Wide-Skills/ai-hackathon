@@ -1,6 +1,6 @@
 "use client";
 
-import { Save } from "lucide-react";
+import { RiSaveLine } from "@remixicon/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
@@ -129,7 +129,7 @@ export function AISettings() {
           onClick={handleSave}
           className="flex h-11 items-center gap-2 rounded-full bg-primary px-8 font-semibold text-[12px] text-primary-foreground uppercase tracking-[0.2em] shadow-[0_1px_3px_rgba(0,0,0,0.01)] transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
-          <Save className="h-4 w-4" />
+          <RiSaveLine className="h-4 w-4" />
           Save Core Settings
         </button>
       </div>

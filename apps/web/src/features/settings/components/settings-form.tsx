@@ -1,6 +1,11 @@
 "use client";
 
-import { Bell, BrainCircuit, Shield, User } from "lucide-react";
+import {
+  RiBrainLine,
+  RiNotification3Line,
+  RiShieldLine,
+  RiUserLine,
+} from "@remixicon/react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { AISettings } from "./ai-settings";
@@ -9,10 +14,14 @@ import { ProfileSettings } from "./profile-settings";
 import { SecuritySettings } from "./security-settings";
 
 const tabs = [
-  { id: "profile", label: "Profile Details", icon: User },
-  { id: "ai", label: "Model Intelligence", icon: BrainCircuit },
-  { id: "notifications", label: "Alert Configuration", icon: Bell },
-  { id: "security", label: "Access & Security", icon: Shield },
+  { id: "profile", label: "Profile Details", icon: RiUserLine },
+  { id: "ai", label: "Model Intelligence", icon: RiBrainLine },
+  {
+    id: "notifications",
+    label: "Alert Configuration",
+    icon: RiNotification3Line,
+  },
+  { id: "security", label: "Access & Security", icon: RiShieldLine },
 ];
 
 export function SettingsForm() {

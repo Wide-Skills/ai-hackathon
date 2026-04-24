@@ -1,5 +1,5 @@
 import type { Experience } from "@ai-hackathon/shared";
-import { Briefcase } from "lucide-react";
+import { RiBriefcaseLine } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
@@ -12,7 +12,7 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
     <Card variant="premium" className="p-8" size="none">
       <div className="mb-10 flex items-center gap-3 border-border/10 border-b pb-6">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-md">
-          <Briefcase className="h-4.5 w-4.5" />
+          <RiBriefcaseLine className="h-4.5 w-4.5" />
         </div>
         <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
           Career History

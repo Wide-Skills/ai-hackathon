@@ -1,6 +1,6 @@
 "use client";
 
-import { Building, Camera, Save } from "lucide-react";
+import { RiBuildingLine, RiCameraLine, RiSaveLine } from "@remixicon/react";
 import { toast } from "sonner";
 
 export function ProfileSettings() {
@@ -21,10 +21,10 @@ export function ProfileSettings() {
         <div className="mb-10 flex items-center gap-8">
           <div className="group relative">
             <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-border bg-secondary shadow-sm">
-              <Building className="h-8 w-8 text-foreground/30" />
+              <RiBuildingLine className="h-8 w-8 text-foreground/30" />
             </div>
             <button className="absolute -right-2 -bottom-2 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background shadow-sm transition-colors hover:bg-secondary">
-              <Camera className="h-3.5 w-3.5 text-muted-foreground" />
+              <RiCameraLine className="h-3.5 w-3.5 text-muted-foreground" />
             </button>
           </div>
           <div>
@@ -72,7 +72,7 @@ export function ProfileSettings() {
           onClick={handleSave}
           className="flex h-11 items-center gap-2 rounded-full bg-primary px-8 font-semibold text-[12px] text-primary-foreground uppercase tracking-[0.2em] shadow-[0_1px_3px_rgba(0,0,0,0.01)] transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
-          <Save className="h-4 w-4" />
+          <RiSaveLine className="h-4 w-4" />
           Update Profile
         </button>
       </div>

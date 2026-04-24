@@ -1,10 +1,16 @@
 "use client";
 
 import { CreateJobSchema } from "@ai-hackathon/shared";
+import {
+  RiAddLine,
+  RiArrowLeftLine,
+  RiBriefcaseLine,
+  RiCloseLine,
+  RiLoader2Line,
+} from "@remixicon/react";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ArrowLeft, Briefcase, Loader2, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -86,7 +92,7 @@ export function CreateJobForm() {
           onClick={() => router.back()}
           className="flex h-10 w-10 items-center justify-center rounded-full border border-border/50 bg-background transition-all hover:bg-secondary"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <RiArrowLeftLine className="h-4 w-4" />
         </button>
         <div>
           <h1 className="mb-1 font-display font-light text-[32px] text-foreground leading-none tracking-tight">
@@ -309,7 +315,7 @@ export function CreateJobForm() {
                       }}
                       className="h-12 rounded-xl border-border/50 px-6 shadow-md transition-all hover:bg-secondary active:scale-[0.98]"
                     >
-                      <Plus className="h-4 w-4" />
+                      <RiAddLine className="h-4 w-4" />
                     </Button>
                   </div>
                   {field.state.meta.errors.length > 0 && (
@@ -335,7 +341,7 @@ export function CreateJobForm() {
                             }
                             className="rounded-full p-0.5 transition-colors hover:bg-foreground/10"
                           >
-                            <X className="h-3 w-3" />
+                            <RiCloseLine className="h-3 w-3" />
                           </button>
                         </Badge>
                       ))}
@@ -384,7 +390,7 @@ export function CreateJobForm() {
                       }}
                       className="h-12 rounded-xl border-border/50 px-6 shadow-md transition-all hover:bg-secondary active:scale-[0.98]"
                     >
-                      <Plus className="h-4 w-4" />
+                      <RiAddLine className="h-4 w-4" />
                     </Button>
                   </div>
                   {field.state.value.length > 0 && (
@@ -405,7 +411,7 @@ export function CreateJobForm() {
                             }
                             className="rounded-full p-0.5 transition-colors hover:bg-primary/20"
                           >
-                            <X className="h-3 w-3" />
+                            <RiCloseLine className="h-3 w-3" />
                           </button>
                         </Badge>
                       ))}
@@ -499,12 +505,12 @@ export function CreateJobForm() {
                 >
                   {isSubmitting || createJob.isPending ? (
                     <>
-                      <Loader2 className="mr-3 h-4 w-4 animate-spin" />
+                      <RiLoader2Line className="mr-3 h-4 w-4 animate-spin" />
                       Creating...
                     </>
                   ) : (
                     <>
-                      <Briefcase className="mr-3 h-4 w-4" />
+                      <RiBriefcaseLine className="mr-3 h-4 w-4" />
                       Publish Position
                     </>
                   )}

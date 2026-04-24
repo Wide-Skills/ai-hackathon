@@ -1,13 +1,13 @@
 "use client";
 
+import {
+  RiArrowLeftLine,
+  RiArrowRightSLine,
+  RiMoreLine,
+  RiSparklingLine,
+} from "@remixicon/react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import {
-  ArrowLeft,
-  ChevronRight,
-  MoreHorizontal,
-  Sparkles,
-} from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
@@ -104,7 +104,7 @@ export function JobDetail({ id }: JobDetailProps) {
           onClick={() => router.back()}
           className="group flex items-center gap-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] transition-all hover:text-foreground"
         >
-          <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
+          <RiArrowLeftLine className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
           Pipeline Overview
         </button>
 
@@ -122,7 +122,7 @@ export function JobDetail({ id }: JobDetailProps) {
             size="icon-sm"
             className="h-9 w-9 rounded-full"
           >
-            <MoreHorizontal className="h-4 w-4 text-muted-foreground/40" />
+            <RiMoreLine className="h-4 w-4 text-muted-foreground/40" />
           </Button>
         </div>
       </div>
@@ -198,7 +198,7 @@ export function JobDetail({ id }: JobDetailProps) {
                 className="font-bold text-[10px] text-info/70 uppercase tracking-[0.2em] transition-colors hover:text-info"
               >
                 View Analysis{" "}
-                <ChevronRight className="ml-1 inline-block h-3 w-3 opacity-40" />
+                <RiArrowRightSLine className="ml-1 inline-block h-3 w-3 opacity-40" />
               </Link>
             </div>
             <div className="space-y-4">
@@ -232,7 +232,7 @@ export function JobDetail({ id }: JobDetailProps) {
                         <ScoreBadge
                           score={applicant.screening?.matchScore ?? 0}
                         />
-                        <ChevronRight className="h-4 w-4 text-muted-foreground/10 transition-all group-hover:text-foreground" />
+                        <RiArrowRightSLine className="h-4 w-4 text-muted-foreground/10 transition-all group-hover:text-foreground" />
                       </div>
                     </Link>
                   </motion.div>
@@ -313,7 +313,7 @@ export function JobDetail({ id }: JobDetailProps) {
                   <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
                     Intelligence
                   </h3>
-                  <Sparkles className="h-4 w-4 text-info/40" />
+                  <RiSparklingLine className="h-4 w-4 text-info/40" />
                 </div>
                 <div className="space-y-6 pt-2">
                   <p className="font-medium text-[14px] text-foreground/70 leading-relaxed tracking-tight">

@@ -1,14 +1,14 @@
 import type { ApplicantScreening } from "@ai-hackathon/shared";
-import { motion } from "framer-motion";
 import {
-  BrainCircuit,
-  CircleCheck as CheckCircle2,
-  ThumbsUp,
-  Circle as XCircle,
-} from "lucide-react";
+  RiBrainLine,
+  RiCheckboxCircleLine,
+  RiCloseCircleLine,
+  RiThumbUpLine,
+} from "@remixicon/react";
+import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface AIAnalysisCardProps {
   screening: ApplicantScreening;
@@ -17,19 +17,19 @@ interface AIAnalysisCardProps {
 const recommendationConfig = {
   "Strongly Recommend": {
     color: "text-success bg-success/10 border-success/20",
-    icon: CheckCircle2,
+    icon: RiCheckboxCircleLine,
   },
   Recommend: {
     color: "text-info bg-info/10 border-info/20",
-    icon: ThumbsUp,
+    icon: RiThumbUpLine,
   },
   Consider: {
     color: "text-warning bg-warning/10 border-warning/20",
-    icon: ThumbsUp,
+    icon: RiThumbUpLine,
   },
   "Not Recommended": {
     color: "text-destructive bg-destructive/10 border-destructive/20",
-    icon: XCircle,
+    icon: RiCloseCircleLine,
   },
 };
 
@@ -38,7 +38,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
     recommendationConfig[
       screening.recommendation as keyof typeof recommendationConfig
     ];
-  const _RecIcon = recConfig?.icon || BrainCircuit;
+  const _RecIcon = recConfig?.icon || RiBrainLine;
 
   const scoreColor =
     screening.matchScore >= 85
@@ -128,9 +128,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <BrainCircuit
-                  className={cn("h-8 w-8 opacity-10", scoreColor)}
-                />
+                <RiBrainLine className={cn("h-8 w-8 opacity-10", scoreColor)} />
               </div>
             </div>
           </div>

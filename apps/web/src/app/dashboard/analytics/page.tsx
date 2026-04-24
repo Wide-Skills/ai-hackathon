@@ -89,8 +89,7 @@ export default function AnalyticsPage() {
   ];
 
   return (
-    <div className="w-full space-y-24 pb-24">
-      {/* Dynamic Metrics Layer */}
+    <div className="w-full space-y-20 pb-24">
       <section className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat, i) => (
           <motion.div
@@ -109,7 +108,6 @@ export default function AnalyticsPage() {
         ))}
       </section>
 
-      {/* Velocity Visualization */}
       <section className="space-y-10">
         <header className="px-2">
           <h3 className="font-display font-light text-[20px] text-foreground uppercase tracking-[0.15em]">
@@ -130,9 +128,7 @@ export default function AnalyticsPage() {
         </motion.div>
       </section>
 
-      {/* Distribution & Mapping Layer */}
       <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
-        {/* Score Distribution */}
         <motion.div
           className="lg:col-span-7"
           initial={{ opacity: 0, y: 10 }}
@@ -154,7 +150,6 @@ export default function AnalyticsPage() {
           </div>
         </motion.div>
 
-        {/* Skill Radar */}
         <motion.div
           className="lg:col-span-5"
           initial={{ opacity: 0, y: 10 }}

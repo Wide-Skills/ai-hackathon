@@ -1,20 +1,25 @@
 "use client";
 
+import {
+  RiArrowRightUpLine,
+  RiBriefcaseLine,
+  RiGroupLine,
+  RiSparklingLine,
+} from "@remixicon/react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Briefcase, Sparkles, Users } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { QueryErrorState } from "@/components/data/query-state";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
 } from "@/components/ui/empty";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 import { ScoreBadge } from "./score-badge";
@@ -192,7 +197,7 @@ export function DashboardOverview() {
                           score={applicant.screening?.matchScore ?? 0}
                         />
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border/30 text-muted-foreground/20 transition-all group-hover:border-primary/30 group-hover:text-primary">
-                          <ArrowUpRight className="h-4 w-4" />
+                          <RiArrowRightUpLine className="h-4 w-4" />
                         </div>
                       </div>
                     </Link>
@@ -201,7 +206,7 @@ export function DashboardOverview() {
                   <Empty className="border-none bg-transparent py-32">
                     <EmptyHeader>
                       <EmptyMedia>
-                        <Sparkles className="size-4 text-muted-foreground" />
+                        <RiSparklingLine className="size-4 text-muted-foreground" />
                       </EmptyMedia>
                       <EmptyDescription>
                         Awaiting High-Resolution Signal Analysis
@@ -277,11 +282,9 @@ export function DashboardOverview() {
                   <Empty className="col-span-2 border-none bg-transparent py-20">
                     <EmptyHeader>
                       <EmptyMedia>
-                        <Briefcase className="size-4 text-muted-foreground" />
+                        <RiBriefcaseLine className="size-4 text-muted-foreground" />
                       </EmptyMedia>
-                      <EmptyDescription>
-                        No Active Channels
-                      </EmptyDescription>
+                      <EmptyDescription>No Active Channels</EmptyDescription>
                     </EmptyHeader>
                   </Empty>
                 )}
@@ -404,11 +407,9 @@ export function DashboardOverview() {
                   <Empty className="border-none bg-transparent py-16">
                     <EmptyHeader>
                       <EmptyMedia>
-                        <Users className="size-4 text-muted-foreground" />
+                        <RiGroupLine className="size-4 text-muted-foreground" />
                       </EmptyMedia>
-                      <EmptyDescription>
-                        No Recent Activity
-                      </EmptyDescription>
+                      <EmptyDescription>No Recent Activity</EmptyDescription>
                     </EmptyHeader>
                   </Empty>
                 )}

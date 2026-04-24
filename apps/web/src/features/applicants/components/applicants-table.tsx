@@ -1,6 +1,7 @@
 "use client";
 
 import type { Applicant, ApplicationStatus } from "@ai-hackathon/shared";
+import { RiArrowRightSLine, RiArrowUpDownLine } from "@remixicon/react";
 import {
   type ColumnDef,
   flexRender,
@@ -9,7 +10,6 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronRight } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useState } from "react";
@@ -69,7 +69,7 @@ export const columns: ColumnDef<Applicant>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Candidate
-          <ArrowUpDown className="h-3 w-3" />
+          <RiArrowUpDownLine className="h-4 w-4" />
         </button>
       );
     },
@@ -104,7 +104,7 @@ export const columns: ColumnDef<Applicant>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           AI Score
-          <ArrowUpDown className="h-3 w-3" />
+          <RiArrowUpDownLine className="h-4 w-4" />
         </button>
       );
     },
@@ -170,7 +170,7 @@ export const columns: ColumnDef<Applicant>[] = [
             href={`/dashboard/applicants/${applicant.id}` as Route}
             className="group flex h-8 w-8 items-center justify-center rounded-full transition-all hover:bg-secondary"
           >
-            <ChevronRight className="h-4 w-4 text-muted-foreground/20 transition-all group-hover:text-foreground" />
+            <RiArrowRightSLine className="h-4 w-4 text-muted-foreground/20 transition-all group-hover:text-foreground" />
           </Link>
         </div>
       );

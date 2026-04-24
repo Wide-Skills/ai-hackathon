@@ -1,8 +1,8 @@
 "use client";
 
+import { RiLoader2Line, RiRefreshLine } from "@remixicon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Loader2, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -191,7 +191,8 @@ export function ScreeningDashboard() {
               >
                 {running ? (
                   <>
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" /> {progress}%
+                    <RiLoader2Line className="h-3.5 w-3.5 animate-spin" />{" "}
+                    {progress}%
                   </>
                 ) : (
                   "Initiate Analysis"
@@ -291,7 +292,7 @@ export function ScreeningDashboard() {
               }
               className="flex h-10 w-10 items-center justify-center rounded-full border border-border/50 bg-background text-muted-foreground/20 shadow-md transition-all hover:bg-secondary active:scale-[0.95]"
             >
-              <RefreshCw className="h-4 w-4" />
+              <RiRefreshLine className="h-4 w-4" />
             </button>
           </div>
 

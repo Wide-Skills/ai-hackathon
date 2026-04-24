@@ -1,7 +1,7 @@
 "use client";
 
 import { DEMO_RECRUITER } from "@ai-hackathon/shared";
-import { AtSignIcon, User2Icon } from "lucide-react";
+import { RiAtLine, RiUserLine } from "@remixicon/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AuthDivider } from "@/components/auth-divider";
@@ -129,7 +129,7 @@ export function AuthView() {
           </p>
           <InputGroup className="h-11 overflow-hidden rounded-full border-border bg-background px-1 shadow-[0_1px_3px_rgba(0,0,0,0.01)] focus-within:ring-info/20">
             <InputGroupAddon align="inline-start" className="pl-4">
-              <User2Icon className="h-3.5 w-3.5 text-muted-foreground" />
+              <RiUserLine className="h-3.5 w-3.5 text-muted-foreground" />
             </InputGroupAddon>
             <InputGroupInput
               placeholder="Your full name"
@@ -146,7 +146,7 @@ export function AuthView() {
           </p>
           <InputGroup className="h-11 overflow-hidden rounded-full border-border bg-background px-1 shadow-[0_1px_3px_rgba(0,0,0,0.01)] focus-within:ring-info/20">
             <InputGroupAddon align="inline-start" className="pl-4">
-              <AtSignIcon className="h-3.5 w-3.5 text-muted-foreground" />
+              <RiAtLine className="h-3.5 w-3.5 text-muted-foreground" />
             </InputGroupAddon>
             <InputGroupInput
               placeholder="name@company.com"

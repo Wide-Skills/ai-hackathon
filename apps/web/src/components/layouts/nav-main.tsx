@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRightIcon } from "lucide-react";
+import { RiArrowRightSLine } from "@remixicon/react";
 import { usePathname } from "next/navigation";
 import React from "react";
 import {
@@ -123,7 +123,7 @@ export function NavMain({
                     : item.icon}
                 </div>
                 <span className="text-[14px] tracking-tight">{item.title}</span>
-                <ChevronRightIcon className="ml-auto size-3.5 opacity-30 transition-transform duration-200 group-data-open/collapsible:rotate-90" />
+                <RiArrowRightSLine className="ml-auto size-4 opacity-30 transition-transform duration-200 group-data-open/collapsible:rotate-90" />
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub className="ml-4 space-y-1 border-border/40 border-l py-1.5">

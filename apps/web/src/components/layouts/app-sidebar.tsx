@@ -1,13 +1,13 @@
 "use client";
 
 import {
-  BarChart3Icon,
-  BriefcaseIcon,
-  LayoutDashboardIcon,
-  Settings2Icon,
-  SparklesIcon,
-  UsersIcon,
-} from "lucide-react";
+  RiBarChartLine,
+  RiBriefcaseLine,
+  RiDashboardLine,
+  RiGroupLine,
+  RiSettingsLine,
+  RiSparklingLine,
+} from "@remixicon/react";
 import type * as React from "react";
 import { NavMain } from "@/components/layouts/nav-main";
 import { NavUser } from "@/components/layouts/nav-user";
@@ -39,32 +39,32 @@ const navItems: Array<{
   {
     title: "Overview",
     url: "/dashboard",
-    icon: <LayoutDashboardIcon />,
+    icon: <RiDashboardLine />,
   },
   {
     title: "Jobs",
     url: "/dashboard/jobs",
-    icon: <BriefcaseIcon />,
+    icon: <RiBriefcaseLine />,
   },
   {
     title: "Applicants",
     url: "/dashboard/applicants",
-    icon: <UsersIcon />,
+    icon: <RiGroupLine />,
   },
   {
     title: "AI Screening",
     url: "/dashboard/screening",
-    icon: <SparklesIcon />,
+    icon: <RiSparklingLine />,
   },
   {
     title: "Analytics",
     url: "/dashboard/analytics",
-    icon: <BarChart3Icon />,
+    icon: <RiBarChartLine />,
   },
   {
     title: "Settings",
     url: "/dashboard/settings",
-    icon: <Settings2Icon />,
+    icon: <RiSettingsLine />,
   },
 ];
 

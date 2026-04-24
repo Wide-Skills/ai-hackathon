@@ -1,5 +1,5 @@
 import type { Project } from "@ai-hackathon/shared";
-import { Code2, ExternalLink } from "lucide-react";
+import { RiCodeLine, RiExternalLinkLine } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
@@ -14,7 +14,7 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
     <Card className="border-border/50 p-8 shadow-lg">
       <div className="mb-10 flex items-center gap-3 border-border/10 border-b pb-6">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-md">
-          <Code2 className="h-4.5 w-4.5" />
+          <RiCodeLine className="h-4.5 w-4.5" />
         </div>
         <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
           Technical Portfolio
@@ -43,7 +43,7 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
                   rel="noopener noreferrer"
                   className="flex h-8 w-8 items-center justify-center rounded-full border border-border/10 text-muted-foreground/30 transition-all hover:bg-background hover:text-foreground hover:shadow-md"
                 >
-                  <ExternalLink className="h-3.5 w-3.5" />
+                  <RiExternalLinkLine className="h-4 w-4" />
                 </a>
               )}
             </div>

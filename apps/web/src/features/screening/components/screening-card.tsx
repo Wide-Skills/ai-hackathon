@@ -1,15 +1,15 @@
 import type { Applicant } from "@ai-hackathon/shared";
 import {
-  CircleAlert as AlertCircle,
-  ArrowUpRight,
-  CircleCheck as CheckCircle2,
-  ThumbsUp,
-  Circle as XCircle,
-} from "lucide-react";
+  RiArrowRightUpLine,
+  RiCheckboxCircleLine,
+  RiCloseCircleLine,
+  RiErrorWarningLine,
+  RiThumbUpLine,
+} from "@remixicon/react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 const recommendationConfig: Record<
   string,
@@ -22,22 +22,22 @@ const recommendationConfig: Record<
   "Strongly Recommend": {
     label: "Strongly Recommend",
     variant: "success",
-    icon: CheckCircle2,
+    icon: RiCheckboxCircleLine,
   },
   Recommend: {
     label: "Recommend",
     variant: "info",
-    icon: ThumbsUp,
+    icon: RiThumbUpLine,
   },
   Consider: {
     label: "Consider",
     variant: "warning",
-    icon: AlertCircle,
+    icon: RiErrorWarningLine,
   },
   "Not Recommended": {
     label: "Not Recommended",
     variant: "destructive",
-    icon: XCircle,
+    icon: RiCloseCircleLine,
   },
 };
 
@@ -54,7 +54,7 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
     recommendationConfig[
       screening.recommendation as keyof typeof recommendationConfig
     ];
-  const RecIcon = rec?.icon || AlertCircle;
+  const RecIcon = rec?.icon || RiErrorWarningLine;
 
   const scoreColor =
     screening.matchScore >= 85
@@ -142,7 +142,7 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
                 </span>
                 <div className="flex items-center gap-2 font-bold text-[10px] text-info/70 uppercase tracking-[0.2em] transition-colors group-hover:text-info">
                   Insight Report{" "}
-                  <ArrowUpRight className="h-3 w-3 opacity-20 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
+                  <RiArrowRightUpLine className="h-3 w-3 opacity-20 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
                 </div>
               </div>
             </div>

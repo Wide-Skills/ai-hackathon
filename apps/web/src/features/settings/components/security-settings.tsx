@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, Save, Shield } from "lucide-react";
+import { RiLockLine, RiSaveLine, RiShieldLine } from "@remixicon/react";
 import { toast } from "sonner";
 
 export function SecuritySettings() {
@@ -18,7 +18,7 @@ export function SecuritySettings() {
               Manage your credentials and session security
             </p>
           </div>
-          <Shield className="h-5 w-5 text-foreground/20" />
+          <RiShieldLine className="h-5 w-5 text-foreground/20" />
         </div>
 
         <div className="grid max-w-[480px] grid-cols-1 gap-8">
@@ -37,7 +37,7 @@ export function SecuritySettings() {
                   placeholder={field.placeholder}
                   className="h-11 w-full rounded-lg border border-border bg-foreground/[0.01] px-10 font-medium text-[14px] text-foreground transition-all placeholder:text-muted-foreground/30 focus:border-info/30 focus:outline-none focus:ring-1 focus:ring-info/20"
                 />
-                <Lock className="absolute top-1/2 left-3.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/30" />
+                <RiLockLine className="absolute top-1/2 left-3.5 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/30" />
               </div>
             </div>
           ))}
@@ -56,7 +56,7 @@ export function SecuritySettings() {
           onClick={handleSave}
           className="flex h-11 items-center gap-2 rounded-full bg-primary px-8 font-semibold text-[12px] text-primary-foreground uppercase tracking-[0.2em] shadow-[0_1px_3px_rgba(0,0,0,0.01)] transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
-          <Save className="h-4 w-4" />
+          <RiSaveLine className="h-4 w-4" />
           Update Credentials
         </button>
       </div>

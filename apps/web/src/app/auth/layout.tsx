@@ -1,5 +1,5 @@
+import { RiArrowLeftSLine } from "@remixicon/react";
 import { motion } from "framer-motion";
-import { ChevronLeftIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type React from "react";
@@ -131,7 +131,7 @@ export default async function AuthLayout({
           className="absolute top-8 left-8 h-9 px-4 font-normal text-[13px] hover:bg-background/80"
           variant="ghost"
         >
-          <ChevronLeftIcon className="mr-2 h-3.5 w-3.5" />
+          <RiArrowLeftSLine className="mr-2 h-3.5 w-3.5" />
           Back to Home
         </Button>
 

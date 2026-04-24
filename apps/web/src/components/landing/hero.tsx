@@ -1,7 +1,12 @@
 "use client";
 
+import {
+  RiArrowRightLine,
+  RiMoreLine,
+  RiSearchLine,
+  RiUserLine,
+} from "@remixicon/react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, MoreHorizontal, Search, User2 } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
 import { Badge } from "@/components/ui/badge";
@@ -60,7 +65,7 @@ const AppPreview = () => {
           <div className="flex flex-1 flex-col bg-secondary/20">
             <div className="flex h-[60px] items-center justify-between border-border border-b bg-background px-8">
               <div className="flex items-center gap-3 rounded-lg border border-border bg-foreground/[0.015] px-3 py-1.5">
-                <Search className="h-3 w-3 text-muted-foreground/40" />
+                <RiSearchLine className="h-3 w-3 text-muted-foreground/40" />
                 <div className="h-1 w-32 rounded-full bg-foreground/5" />
               </div>
               <div className="flex items-center gap-4">
@@ -110,7 +115,7 @@ const AppPreview = () => {
                   >
                     <div className="flex items-center gap-5">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-secondary">
-                        <User2 className="h-4 w-4 text-muted-foreground/30" />
+                        <RiUserLine className="h-4 w-4 text-muted-foreground/30" />
                       </div>
                       <div>
                         <p className="font-medium text-[14px] text-foreground tracking-tight">
@@ -148,7 +153,7 @@ const AppPreview = () => {
                           %
                         </span>
                       </div>
-                      <MoreHorizontal className="h-4 w-4 text-muted-foreground/50" />
+                      <RiMoreLine className="h-4 w-4 text-muted-foreground/50" />
                     </div>
                   </div>
                 ))}
@@ -201,7 +206,7 @@ export const Hero: React.FC = () => {
               className="shadow-xl"
             >
               <span>Start Screening Now</span>
-              <ArrowRight className="ml-2 h-4 w-4 opacity-40 transition-transform group-hover:translate-x-1" />
+              <RiArrowRightLine className="ml-2 h-4 w-4 opacity-40 transition-transform group-hover:translate-x-1" />
             </Button>
 
             <Button

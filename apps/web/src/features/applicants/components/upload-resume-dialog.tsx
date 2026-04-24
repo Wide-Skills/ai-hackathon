@@ -1,7 +1,13 @@
 "use client";
 
+import {
+  RiCloseLine,
+  RiFileLine,
+  RiFileTextLine,
+  RiLoader2Line,
+  RiUploadCloud2Line,
+} from "@remixicon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FileIcon, FileText, Loader2, Upload, X } from "lucide-react";
 import * as pdfjsLib from "pdfjs-dist";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -161,7 +167,7 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
               size="sm"
               className="h-10 gap-2 rounded-full border-border/50 font-bold text-[11px] uppercase tracking-widest shadow-md hover:bg-secondary"
             >
-              <FileText className="h-4 w-4" />
+              <RiFileTextLine className="h-4 w-4" />
               Upload Resume
             </Button>
           )
@@ -286,9 +292,9 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                   }`}
                 >
                   {parsingPdf ? (
-                    <Loader2 className="mb-3 h-8 w-8 animate-spin text-primary" />
+                    <RiLoader2Line className="mb-3 h-8 w-8 animate-spin text-primary" />
                   ) : (
-                    <Upload className="mb-3 h-8 w-8 text-muted-foreground/50" />
+                    <RiUploadCloud2Line className="mb-3 h-8 w-8 text-muted-foreground/50" />
                   )}
                   <p className="font-medium text-foreground text-sm">
                     {parsingPdf
@@ -312,7 +318,7 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
               ) : (
                 <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <FileIcon className="h-5 w-5 text-primary" />
+                    <RiFileLine className="h-5 w-5 text-primary" />
                     <div>
                       <p className="font-medium text-foreground text-sm">
                         {fileName}
@@ -329,7 +335,7 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                     }}
                     className="rounded-full p-1 hover:bg-muted"
                   >
-                    <X className="h-4 w-4 text-muted-foreground" />
+                    <RiCloseLine className="h-4 w-4 text-muted-foreground" />
                   </button>
                 </div>
               )
@@ -364,12 +370,12 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
             >
               {uploading ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <RiLoader2Line className="h-4 w-4 animate-spin" />
                   Neural Processing...
                 </>
               ) : (
                 <>
-                  <Upload className="h-4 w-4" />
+                  <RiUploadCloud2Line className="h-4 w-4" />
                   Initialize Import
                 </>
               )}

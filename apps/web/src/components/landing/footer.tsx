@@ -1,6 +1,6 @@
 "use client";
 
-import { Globe, Mail, MessageSquare } from "lucide-react";
+import { RiGlobeLine, RiMailLine, RiMessage3Line } from "@remixicon/react";
 import Link from "next/link";
 import type React from "react";
 
@@ -20,7 +20,7 @@ export const Footer: React.FC = () => {
               for recruiters who value precision and speed.
             </p>
             <div className="flex items-center gap-10">
-              {[Globe, Mail, MessageSquare].map((Icon, i) => (
+              {[RiGlobeLine, RiMailLine, RiMessage3Line].map((Icon, i) => (
                 <Link
                   key={i}
                   href="#"
