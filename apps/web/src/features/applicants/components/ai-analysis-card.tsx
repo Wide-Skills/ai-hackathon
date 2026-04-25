@@ -38,7 +38,6 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
     recommendationConfig[
       screening.recommendation as keyof typeof recommendationConfig
     ];
-  const _RecIcon = recConfig?.icon || RiBrainLine;
 
   const scoreColor =
     screening.matchScore >= 85

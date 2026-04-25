@@ -64,15 +64,9 @@ async function bootstrap() {
   );
 
   expressApp.all(/\/api\/auth\/.*/, async (req: any, res: any) => {
-    logger.info(`Auth request: ${req.method} ${req.url}`);
     try {
       return await authHandler(req, res);
     } catch (error: any) {
-      logger.error(`Auth handler error: ${error.message}`, {
-        stack: error.stack,
-        url: req.url,
-        method: req.method,
-      });
       res.status(500).json({
         error: "Internal Server Error",
         message: error.message,
