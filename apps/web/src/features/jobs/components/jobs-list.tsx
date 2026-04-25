@@ -20,6 +20,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/utils/trpc";
 import { JobCard } from "./job-card";
 import { JobsTable } from "./jobs-table";
+import Link from "next/link";
 
 export function JobsList() {
   const [search, setSearch] = useState("");
@@ -63,13 +64,13 @@ export function JobsList() {
   return (
     <div className="w-full space-y-section-padding pb-section-padding">
       {/* Search & Filters */}
-      <div className="flex flex-wrap items-center gap-base border-line border-b pb-section-gap">
-        <div className="relative min-w-[320px] flex-1">
+      <div className="flex flex-col gap-base border-line border-b pb-section-gap lg:flex-row lg:items-center">
+        <div className="relative w-full lg:flex-1">
           <div className="group flex h-10 items-center gap-3 rounded-standard border border-line bg-bg2/40 px-3.5 transition-all focus-within:border-primary/20 focus-within:bg-surface">
             <RiSearch2Line className="size-4 text-ink-faint" />
             <input
               type="text"
-              placeholder="Search active pipelines..."
+              placeholder="Search active jobs..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="flex-1 bg-transparent font-normal font-sans text-[13px] outline-none placeholder:text-ink-faint"
@@ -77,7 +78,7 @@ export function JobsList() {
           </div>
         </div>
 
-        <div className="flex items-center gap-base">
+        <div className="flex flex-wrap items-center gap-base">
           <Tabs
             value={view}
             onValueChange={(v) => setView(v as "grid" | "table")}
@@ -103,8 +104,16 @@ export function JobsList() {
             value={statusFilter}
             onValueChange={(val) => setStatusFilter(val || "all")}
           >
-            <SelectTrigger className="h-10 w-44 rounded-standard border-line bg-bg2/40 font-medium font-sans text-[11px] text-ink-muted uppercase tracking-[0.06em] shadow-none">
-              <SelectValue placeholder="State" />
+            <SelectTrigger className="h-10 w-full rounded-standard border-line bg-bg2/40 font-medium font-sans text-[11px] text-ink-muted uppercase tracking-[0.06em] shadow-none sm:w-44">
+              <SelectValue placeholder="State">
+                {statusFilter === "all"
+                  ? "All States"
+                  : statusFilter === "active"
+                    ? "Active"
+                    : statusFilter === "draft"
+                      ? "Drafts"
+                      : "Closed"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent className="border-line bg-surface shadow-none">
               <SelectItem value="all">All States</SelectItem>
@@ -114,7 +123,11 @@ export function JobsList() {
             </SelectContent>
           </Select>
 
-          <Button>New Pipeline</Button>
+          <div className="w-full sm:w-auto">
+            <Button className="w-full h-10 px-6 font-medium font-sans text-[13px]" render={<Link href="/dashboard/jobs/new"/>}>
+              New Job
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -143,8 +156,8 @@ export function JobsList() {
               ))
             ) : (
               <QueryEmptyState
-                title="No pipelines match the current filters"
-                description="Adjust the search or create a new technical pipeline."
+                title="No jobs match the current filters"
+                description="Adjust the search or create a new job."
               />
             )}
           </div>
@@ -154,6 +167,4 @@ export function JobsList() {
       </section>
     </div>
   );
-}
- );
 }

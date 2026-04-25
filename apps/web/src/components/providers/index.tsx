@@ -23,7 +23,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         </ReduxProvider>
         <ReactQueryDevtools />
       </QueryClientProvider>
-      <Toaster richColors />
+      <Toaster />
     </ThemeProvider>
   );
 }

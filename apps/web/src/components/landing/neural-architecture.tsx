@@ -3,12 +3,12 @@
 import { motion } from "framer-motion";
 import type React from "react";
 
-export const NeuralArchitecture: React.FC = () => {
+export const AIArchitecture: React.FC = () => {
   const nodes = [
     { x: 100, y: 100, label: "Intent" },
     { x: 300, y: 100, label: "Context" },
     { x: 100, y: 300, label: "Gap" },
-    { x: 300, y: 300, label: "Resonance" },
+    { x: 300, y: 300, label: "Match" },
   ];
 
   return (

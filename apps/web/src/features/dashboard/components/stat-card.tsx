@@ -19,7 +19,7 @@ export function StatCard({ label, value, sublabel, trend }: StatCardProps) {
           {label}
         </p>
         <div className="flex items-baseline gap-micro">
-          <span className="font-serif text-[32px] text-primary leading-none">
+          <span className="font-serif text-[24px] text-primary leading-none sm:text-[32px]">
             {value}
           </span>
         </div>
@@ -30,11 +30,11 @@ export function StatCard({ label, value, sublabel, trend }: StatCardProps) {
 
       {trend && (
         <div className="mt-comfortable flex items-center gap-small border-line border-t pt-medium">
-          <div className="flex items-center gap-micro font-medium font-sans text-[11px] text-success-text uppercase tracking-[0.01em]">
+          <div className="flex items-center gap-micro font-medium font-sans text-[11px] text-status-success-text uppercase tracking-[0.01em]">
             {trend}
           </div>
           <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
-            Index
+            Growth
           </span>
         </div>
       )}

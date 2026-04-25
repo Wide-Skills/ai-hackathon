@@ -26,7 +26,7 @@ export function SecuritySettings() {
           {[
             { label: "Current Password", placeholder: "••••••••" },
             { label: "New Password", placeholder: "••••••••" },
-            { label: "Confirm New Password", placeholder: "••••••••" },
+            { label: "Confirm Password", placeholder: "••••••••" },
           ].map((field, i) => (
             <div key={i} className="space-y-micro">
               <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
@@ -36,7 +36,7 @@ export function SecuritySettings() {
                 <input
                   type="password"
                   placeholder={field.placeholder}
-                  className="h-10 w-full rounded-standard border border-line bg-bg2 px-10 font-normal font-sans text-[13px] text-primary outline-none transition-all placeholder:text-ink-faint/30 focus:bg-surface focus:ring-Pa"
+                  className="h-10 w-full rounded-standard border border-line bg-bg2 px-10 font-normal font-sans text-[13px] text-primary outline-none transition-all placeholder:text-ink-faint/30 focus:bg-surface focus:ring-4 focus:ring-primary-alpha/5"
                 />
                 <RiLockLine className="absolute top-1/2 left-3.5 size-3.5 -translate-y-1/2 text-ink-faint/40" />
               </div>
@@ -47,7 +47,7 @@ export function SecuritySettings() {
         <div className="mt-section-gap rounded-standard border border-line bg-bg-alt/30 p-comfortable">
           <p className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
             Regularly updating your password ensures the security of your
-            candidate pipelines and prevents unauthorized access to your data.
+            candidate pool and prevents unauthorized access to your recruitment data.
           </p>
         </div>
       </section>

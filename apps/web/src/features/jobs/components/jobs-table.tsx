@@ -222,8 +222,9 @@ export function JobsTable({ data }: JobsTableProps) {
       className="overflow-hidden border-line shadow-none"
       size="none"
     >
-      <Table>
-        <TableHeader className="bg-bg-alt/20">
+      <div className="overflow-x-auto">
+        <Table className="min-w-[800px] md:min-w-full">
+          <TableHeader className="bg-bg-alt/20">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               key={headerGroup.id}
@@ -263,12 +264,13 @@ export function JobsTable({ data }: JobsTableProps) {
                 colSpan={columns.length}
                 className="h-32 text-center font-light font-sans text-[13px] text-ink-faint"
               >
-                No pipelines match the current operational filter.
+                No jobs match the current filter.
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
+      </div>
     </Card>
   );
 }

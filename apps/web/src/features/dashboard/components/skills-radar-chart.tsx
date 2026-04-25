@@ -42,7 +42,7 @@ export function SkillsRadarChart({ applicants }: SkillsRadarChartProps) {
       <Empty className="h-full min-h-[300px] border-none bg-transparent">
         <EmptyHeader>
           <EmptyTitle className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-wider">
-            Insufficient Neural Data
+            Insufficient Skills Data
           </EmptyTitle>
         </EmptyHeader>
       </Empty>

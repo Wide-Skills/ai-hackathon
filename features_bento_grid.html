@@ -1,0 +1,210 @@
+
+<style>
+  .bento-root { font-family: var(--font-sans, system-ui); padding: 2rem 0; }
+  .bento-header { margin-bottom: 2.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+  .bento-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.08em; text-transform: uppercase; }
+  .bento-h2 { font-family: var(--font-serif, Georgia, serif); font-size: 36px; line-height: 1.08; font-weight: 400; margin: 0; color: var(--color-text-primary); }
+  .bento-h2 em { font-style: italic; opacity: 0.6; font-weight: 300; }
+  .bento-sub { font-size: 14px; color: var(--color-text-secondary); line-height: 1.65; font-weight: 400; max-width: 360px; margin-left: auto; padding-top: 0.5rem; }
+
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: auto; gap: 1px; background: var(--color-border-tertiary); border-radius: 16px; overflow: hidden; }
+
+  .cell {
+    background: var(--color-background-primary);
+    padding: 1.75rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 260px;
+    transition: background 0.2s ease;
+  }
+  .cell:hover { background: var(--color-background-secondary); }
+
+  .cell-hero { grid-column: span 7; min-height: 320px; }
+  .cell-sm   { grid-column: span 5; min-height: 260px; }
+  .cell-md   { grid-column: span 4; min-height: 260px; }
+  .cell-wide { grid-column: span 8; min-height: 260px; }
+
+  .cell-tag { font-size: 10px; font-weight: 500; font-family: var(--font-mono, monospace); color: var(--color-text-secondary); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.75rem; display: block; opacity: 0.5; }
+  .cell-title { font-family: var(--font-serif, Georgia, serif); font-size: 24px; font-weight: 400; line-height: 1.2; margin: 0 0 0.5rem 0; color: var(--color-text-primary); }
+  .cell-hero .cell-title { font-size: 30px; }
+  .cell-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.65; font-weight: 400; margin: 0; max-width: 340px; }
+
+  /* Ranking illustration */
+  .rank-visual { position: absolute; top: 1.5rem; right: 1.5rem; display: flex; flex-direction: column; gap: 8px; width: 200px; pointer-events: none; }
+  .rank-card { display: flex; align-items: center; justify-content: space-between; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; padding: 10px 12px; }
+  .rank-left { display: flex; align-items: center; gap: 8px; }
+  .rank-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--color-background-tertiary); border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 500; color: var(--color-text-secondary); }
+  .rank-badge { font-size: 9px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 7px; border-radius: 4px; }
+  .rank-badge.strong { background: var(--color-background-success); color: var(--color-text-success); }
+  .rank-badge.match  { background: var(--color-background-info); color: var(--color-text-info); }
+  .rank-score { font-family: var(--font-serif, Georgia, serif); font-size: 15px; color: var(--color-text-primary); }
+  .rank-insight { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); border-radius: 10px; padding: 10px 12px; font-size: 11px; color: var(--color-text-secondary); line-height: 1.55; }
+
+  /* Model illustration */
+  .model-visual { position: absolute; top: 1.25rem; right: 1.25rem; pointer-events: none; }
+  .model-ring { width: 110px; height: 110px; border-radius: 50%; border: 0.5px dashed var(--color-border-secondary); position: relative; display: flex; align-items: center; justify-content: center; animation: spin 20s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .model-core { width: 52px; height: 52px; border-radius: 50%; background: var(--color-background-primary); border: 0.5px solid var(--color-border-primary); display: flex; align-items: center; justify-content: center; animation: spin 20s linear infinite reverse; }
+  .model-core span { font-family: var(--font-serif, Georgia, serif); font-size: 11px; color: var(--color-text-secondary); font-style: italic; }
+  .orbit-dot { position: absolute; width: 18px; height: 18px; border-radius: 4px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); }
+  .orbit-dot:nth-child(1) { top: -9px;  left: 50%; transform: translateX(-50%) rotate(0deg); }
+  .orbit-dot:nth-child(2) { bottom: -9px; left: 50%; transform: translateX(-50%); }
+  .orbit-dot:nth-child(3) { left: -9px;  top: 50%; transform: translateY(-50%); }
+  .orbit-dot:nth-child(4) { right: -9px; top: 50%; transform: translateY(-50%); }
+
+  /* Parsing illustration */
+  .parse-visual { position: absolute; top: 1.25rem; right: 1rem; bottom: 4.5rem; left: 1rem; display: flex; gap: 8px; pointer-events: none; opacity: 0.55; }
+  .parse-doc { flex: 1; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 7px; overflow: hidden; }
+  .parse-line { height: 5px; border-radius: 10px; background: var(--color-border-secondary); }
+  .parse-tags { display: flex; flex-direction: column; gap: 6px; justify-content: center; padding: 4px 0; }
+  .parse-tag { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); border-radius: 5px; padding: 5px 8px; text-align: center; font-size: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-secondary); white-space: nowrap; }
+
+  /* Import illustration */
+  .import-visual { position: absolute; top: 1.5rem; right: 1.5rem; pointer-events: none; display: flex; align-items: center; gap: 8px; }
+  .import-node { width: 32px; height: 32px; border-radius: 7px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); display: flex; align-items: center; justify-content: center; }
+  .import-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--color-background-success); border: 1px solid var(--color-border-secondary); }
+  .import-line { width: 48px; height: 1px; background: var(--color-border-secondary); position: relative; overflow: visible; }
+  .import-pulse { position: absolute; top: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--color-text-success); animation: slide 2.2s ease-in-out infinite; }
+  @keyframes slide { 0%,100%{left:0} 50%{left:calc(100% - 8px)} }
+  .import-dest { width: 32px; height: 32px; border-radius: 7px; background: var(--color-text-primary); display: flex; align-items: center; justify-content: center; }
+  .import-dest-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.25); }
+
+  /* Dashboard illustration */
+  .dash-visual { position: absolute; top: 1rem; right: 1rem; bottom: 4.5rem; left: 5rem; border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; overflow: hidden; background: var(--color-background-primary); pointer-events: none; opacity: 0.6; transition: opacity 0.3s; }
+  .cell:hover .dash-visual { opacity: 0.9; }
+  .dash-bar { height: 36px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; padding: 0 12px; gap: 6px; }
+  .dash-bar-pill { height: 7px; border-radius: 10px; background: var(--color-border-secondary); }
+  .dash-body { padding: 10px 10px; display: flex; flex-direction: column; gap: 8px; }
+  .dash-search { height: 22px; border-radius: 5px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); }
+  .dash-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+  .dash-minicard { height: 46px; border-radius: 5px; border: 0.5px dashed var(--color-border-tertiary); background: transparent; }
+
+  @media (max-width: 640px) {
+    .cell-hero, .cell-sm, .cell-md, .cell-wide { grid-column: span 12; }
+    .bento-header { flex-direction: column; }
+    .bento-sub { margin-left: 0; }
+  }
+</style>
+
+<div class="bento-root">
+  <h2 class="sr-only">Features — Precision screening capabilities for elite recruitment teams</h2>
+
+  <div class="bento-header" style="flex-direction: row; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;">
+    <div>
+      <span class="bento-label">System capabilities</span>
+      <h2 class="bento-h2">Precision screening<br><em>for elite teams.</em></h2>
+    </div>
+    <p class="bento-sub">Eliminate bias and manual overhead with an intelligent assistant that understands candidate quality as deeply as you do.</p>
+  </div>
+
+  <div class="grid">
+
+    <!-- 01 AI Ranking — hero -->
+    <div class="cell cell-hero">
+      <div class="rank-visual">
+        <div class="rank-card">
+          <div class="rank-left">
+            <div class="rank-avatar">SJ</div>
+            <span class="rank-badge strong">Strong match</span>
+          </div>
+          <span class="rank-score">98%</span>
+        </div>
+        <div class="rank-card">
+          <div class="rank-left">
+            <div class="rank-avatar">MC</div>
+            <span class="rank-badge match">Match</span>
+          </div>
+          <span class="rank-score">94%</span>
+        </div>
+        <div class="rank-insight">"Candidate shows exceptional alignment with the Architecture requirements outlined in the role."</div>
+      </div>
+      <div style="position: relative; z-index: 2;">
+        <span class="cell-tag">01 / AI ranking</span>
+        <h3 class="cell-title">Explainable intent</h3>
+        <p class="cell-desc">Natural-language justifications for every ranking. Understand the "why" behind every shortlist with full contextual reasoning that adapts to your requirements.</p>
+      </div>
+    </div>
+
+    <!-- 02 Multi-Model Logic -->
+    <div class="cell cell-sm">
+      <div class="model-visual">
+        <div class="model-ring">
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+          <div class="orbit-dot"></div>
+          <div class="model-core"><span>Engine</span></div>
+        </div>
+      </div>
+      <span class="cell-tag">02 / Technology</span>
+      <h3 class="cell-title">Multi-model logic</h3>
+      <p class="cell-desc">Gemini 1.5 Pro analyzes candidate fit against technical requirements with multi-layered evaluation.</p>
+    </div>
+
+    <!-- 03 Unified Extraction -->
+    <div class="cell cell-md">
+      <div class="parse-visual">
+        <div class="parse-doc">
+          <div class="parse-line" style="width: 100%"></div>
+          <div class="parse-line" style="width: 75%"></div>
+          <div class="parse-line" style="width: 90%"></div>
+          <div class="parse-line" style="width: 60%"></div>
+          <div class="parse-line" style="width: 85%"></div>
+          <div class="parse-line" style="width: 45%"></div>
+        </div>
+        <div class="parse-tags">
+          <div class="parse-tag">Skills</div>
+          <div class="parse-tag">Tags</div>
+          <div class="parse-tag">Role</div>
+        </div>
+      </div>
+      <span class="cell-tag">03 / Import</span>
+      <h3 class="cell-title">Unified extraction</h3>
+      <p class="cell-desc">Extract and normalize complex skills from unstructured resume data automatically.</p>
+    </div>
+
+    <!-- 04 Deep Integrations -->
+    <div class="cell cell-md">
+      <div class="import-visual">
+        <div class="import-node"><div class="import-dot"></div></div>
+        <div class="import-line"><div class="import-pulse"></div></div>
+        <div class="import-dest"><div class="import-dest-dot"></div></div>
+      </div>
+      <span class="cell-tag">04 / Connectivity</span>
+      <h3 class="cell-title">Deep integrations</h3>
+      <p class="cell-desc">Sync from Greenhouse, Lever, or upload board data in one click with zero friction.</p>
+    </div>
+
+    <!-- 05 Operational Control — wide -->
+    <div class="cell cell-wide">
+      <div class="dash-visual">
+        <div class="dash-bar">
+          <div class="dash-bar-pill" style="width: 80px"></div>
+          <div style="flex:1"></div>
+          <div class="dash-bar-pill" style="width: 18px"></div>
+          <div class="dash-bar-pill" style="width: 18px"></div>
+        </div>
+        <div class="dash-body">
+          <div class="dash-search"></div>
+          <div class="dash-cards">
+            <div class="dash-minicard"></div>
+            <div class="dash-minicard"></div>
+            <div class="dash-minicard"></div>
+          </div>
+          <div class="dash-cards">
+            <div class="dash-minicard"></div>
+            <div class="dash-minicard"></div>
+            <div class="dash-minicard"></div>
+          </div>
+        </div>
+      </div>
+      <span class="cell-tag">05 / Command</span>
+      <h3 class="cell-title">Operational control</h3>
+      <p class="cell-desc">A high-fidelity cockpit for recruitment leads — manage postings, track pipeline health, and audit every AI decision with full traceability.</p>
+    </div>
+
+  </div>
+</div>

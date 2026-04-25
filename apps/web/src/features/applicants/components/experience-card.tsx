@@ -21,15 +21,15 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
 
       <div className="space-y-comfortable p-comfortable">
         {experience.map((exp, i) => (
-          <div key={i} className="group flex gap-base">
+          <div key={i} className="group flex gap-comfortable">
             <div className="flex flex-col items-center">
-              <div className="mt-2 flex h-1.5 w-1.5 flex-shrink-0 items-center justify-center rounded-full bg-primary/20" />
+              <div className="mt-2 flex h-2 w-2 flex-shrink-0 items-center justify-center rounded-full bg-primary/40 ring-4 ring-primary-alpha/5" />
               {i < experience.length - 1 && (
                 <div className="mt-4 w-px flex-1 bg-line" />
               )}
             </div>
-            <div className="flex-1 pb-2">
-              <div className="flex items-start justify-between gap-base">
+            <div className="flex-1 pb-4">
+              <div className="flex flex-col gap-base sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <p className="font-medium font-sans text-[15px] text-primary tracking-tight transition-colors">
                     {exp.role}
@@ -38,7 +38,7 @@ export function ExperienceCard({ experience }: ExperienceCardProps) {
                     {exp.company}
                   </p>
                 </div>
-                <div className="flex-shrink-0 space-y-1 text-right">
+                <div className="flex flex-row items-center gap-base sm:flex-col sm:items-end sm:gap-1">
                   <p className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                     {exp.startDate} – {exp.endDate}
                   </p>

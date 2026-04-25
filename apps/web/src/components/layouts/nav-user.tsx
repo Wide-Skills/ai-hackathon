@@ -3,7 +3,6 @@
 import {
   RiArrowUpDownLine,
   RiLogoutCircleLine,
-  RiSparklingLine,
   RiUserLine,
 } from "@remixicon/react";
 import Link from "next/link";
@@ -54,16 +53,16 @@ export function NavUser({
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <SidebarMenuButton className="rounded-standard transition-colors hover:bg-bg-alt/30 active:bg-bg-alt/50" />
+              <SidebarMenuButton className="rounded-standard transition-colors hover:bg-bg-alt/30 active:bg-bg-alt/50 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center" />
             }
           >
-            <Avatar className="h-7 w-7 rounded-micro border border-line">
+            <Avatar className="h-7 w-7 shrink-0 rounded-micro border border-line group-data-[collapsible=icon]:mx-auto">
               <AvatarImage src={user.avatar} alt={user.name} />
               <AvatarFallback className="rounded-micro bg-bg-deep font-bold text-[10px] text-ink-faint">
                 {user.name?.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>
-            <div className="ml-2 grid flex-1 text-left leading-tight">
+            <div className="ml-2 grid flex-1 text-left leading-tight group-data-[collapsible=icon]:hidden">
               <span className="truncate font-medium font-sans text-[13px] text-primary tracking-tight">
                 {user.name}
               </span>
@@ -71,7 +70,7 @@ export function NavUser({
                 {user.email}
               </span>
             </div>
-            <RiArrowUpDownLine className="ml-auto size-3.5 text-ink-faint opacity-40" />
+            <RiArrowUpDownLine className="ml-auto size-3.5 text-ink-faint opacity-40 group-data-[collapsible=icon]:hidden" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-56 border-line bg-surface shadow-none"
@@ -106,10 +105,6 @@ export function NavUser({
                     Account Settings
                   </DropdownMenuItem>
                 </Link>
-                <DropdownMenuItem>
-                  <RiSparklingLine className="size-4" />
-                  Plan Details
-                </DropdownMenuItem>
               </DropdownMenuGroup>
 
               <DropdownMenuSeparator className="my-0.5 bg-border/40" />

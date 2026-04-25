@@ -54,7 +54,7 @@ export function AuthVisuals() {
             shortlist experts with surgical precision.&rdquo;
           </p>
           <footer className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
-            — Head of Talent, Neural Labs
+            — Head of Talent, Umurava Labs
           </footer>
         </blockquote>
       </motion.div>

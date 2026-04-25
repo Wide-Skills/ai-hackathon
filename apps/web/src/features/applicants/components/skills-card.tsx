@@ -36,8 +36,8 @@ export function SkillsCard({ skills }: SkillsCardProps) {
                   : "border-line bg-bg2 text-ink-muted",
             )}
           >
-            {skill.name}
-            <span className="mx-micro opacity-20">|</span>
+            <span className="text-primary">{skill.name}</span>
+            <div className="size-1 rounded-full bg-current opacity-20" />
             <span className="font-mono text-[10px] opacity-60">
               {skill.yearsOfExperience}Y
             </span>

@@ -23,13 +23,13 @@ export const Hero: React.FC = () => {
                   The New Standard
                 </span>
               </div>
-              <h1 className="mb-base text-[56px] leading-[0.95] tracking-[-0.03em] md:text-[72px]">
+              <h1 className="mb-base text-[42px] leading-[0.95] tracking-[-0.03em] md:text-[72px]">
                 Recruitment <br />
                 <em className="font-light text-brand-primary italic opacity-80">
                   Engineered.
                 </em>
               </h1>
-              <p className="mb-section-gap font-light font-sans text-[17px] text-ink-muted leading-[1.6]">
+              <p className="mb-section-gap font-light font-sans text-[15px] text-ink-muted leading-[1.6] md:text-[17px]">
                 The world's first high-fidelity screening engine that justifies
                 its intent. Discover the top 1% with human-readable rationale.
               </p>
@@ -74,7 +74,7 @@ export const Hero: React.FC = () => {
         >
           <div className="mb-section-gap grid grid-cols-1 gap-comfortable md:grid-cols-3">
             {[
-              { label: "Precision", val: "98.2% Accurate Resonance" },
+              { label: "Precision", val: "98.2% Match Accuracy" },
               { label: "Intelligence", val: "LLM Reflection Layer" },
               { label: "Trust", val: "Explainable Rationales" },
             ].map((m, i) => (
@@ -91,10 +91,10 @@ export const Hero: React.FC = () => {
 
           <div className="flex flex-col items-center gap-comfortable opacity-40 mix-blend-multiply grayscale md:flex-row">
             <span className="px-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
-              Integrating with the world's best
+              Empowering Rwanda's top organizations
             </span>
             <div className="flex flex-wrap items-center gap-comfortable">
-              {["Linear", "Vercel", "Stripe", "Supabase", "Retool"].map(
+              {["BK Group", "Irembo", "MTN Rwanda", "Mara", "RDB"].map(
                 (logo) => (
                   <span
                     key={logo}

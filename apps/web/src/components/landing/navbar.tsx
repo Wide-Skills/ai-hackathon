@@ -9,7 +9,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ session }) => {
   return (
-    <nav className="fixed top-0 right-0 left-0 z-50 flex h-[52px] items-center border-line border-b bg-background/92 backdrop-blur-md">
+    <nav className="fixed top-0 right-0 left-0 z-50 flex h-[52px] items-center border-line border-b bg-canvas">
       <div className="container-meridian flex w-full items-center justify-between">
         <Link href="/" className="group flex items-center gap-[6px]">
           <div className="size-[16px] rounded-micro bg-primary" />

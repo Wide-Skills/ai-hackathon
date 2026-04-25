@@ -135,7 +135,7 @@ export function JobDetail({ id }: JobDetailProps) {
         <div className="flex-1">
           <div className="mb-comfortable flex items-center gap-base">
             <span className="font-medium font-sans text-[10px] text-primary/40 uppercase tracking-[0.1em]">
-              Neural Pipeline Active
+              Active Pipeline
             </span>
           </div>
 
@@ -158,7 +158,7 @@ export function JobDetail({ id }: JobDetailProps) {
             size="default"
             className="h-10 px-6 font-medium font-sans"
           >
-            Neural Match Report
+            AI Screening Report
           </Button>
         </Link>
       </div>
@@ -271,7 +271,7 @@ export function JobDetail({ id }: JobDetailProps) {
               ) : (
                 <div className="rounded-card border border-line border-dashed bg-bg-alt/10 py-20 text-center">
                   <p className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.1em]">
-                    Awaiting Signal Analysis
+                    Awaiting AI Analysis
                   </p>
                 </div>
               )}
@@ -283,7 +283,7 @@ export function JobDetail({ id }: JobDetailProps) {
           <Card variant="default" size="none" className="overflow-hidden">
             <CardHeader>
               <CardDescription>Metrics</CardDescription>
-              <CardTitle>Neural Vitals</CardTitle>
+              <CardTitle>Statistics</CardTitle>
             </CardHeader>
             <div className="space-y-comfortable bg-surface p-comfortable">
               {[
@@ -296,7 +296,7 @@ export function JobDetail({ id }: JobDetailProps) {
                   color: "text-status-success-text",
                 },
                 {
-                  label: "Quality Index",
+                  label: "Average Match",
                   val: `${avgScore}%`,
                   color: "text-primary",
                 },

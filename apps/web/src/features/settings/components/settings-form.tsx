@@ -15,14 +15,14 @@ import { ProfileSettings } from "./profile-settings";
 import { SecuritySettings } from "./security-settings";
 
 const tabs = [
-  { id: "profile", label: "Profile Details", icon: RiUserLine },
-  { id: "ai", label: "Model Intelligence", icon: RiBrainLine },
+  { id: "profile", label: "Profile", icon: RiUserLine },
+  { id: "ai", label: "AI Config", icon: RiBrainLine },
   {
     id: "notifications",
-    label: "Alert Configuration",
+    label: "Notifications",
     icon: RiNotification3Line,
   },
-  { id: "security", label: "Access & Security", icon: RiShieldLine },
+  { id: "security", label: "Security", icon: RiShieldLine },
 ];
 
 export function SettingsForm() {
@@ -55,7 +55,7 @@ export function SettingsForm() {
                         : "text-ink-faint group-hover:text-ink-muted",
                     )}
                   />
-                  <span className="font-medium font-sans text-[12px] uppercase tracking-[0.06em]">
+                  <span className="font-medium font-sans text-[12px] tracking-[0.06em]">
                     {tab.label}
                   </span>
 

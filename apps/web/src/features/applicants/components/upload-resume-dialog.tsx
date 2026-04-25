@@ -165,7 +165,7 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
             <Button
               variant="outline"
               size="sm"
-              className="h-10 gap-2 rounded-full border-border/50 font-bold text-[11px] uppercase tracking-widest shadow-md hover:bg-secondary"
+              className="h-10 gap-2 rounded-full border-line/50 font-bold text-[11px] uppercase tracking-widest shadow-md hover:bg-secondary"
             >
               <RiFileTextLine className="h-4 w-4" />
               Upload Resume
@@ -204,7 +204,9 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                   onValueChange={(val) => setSelectedJobId(val ?? "")}
                 >
                   <SelectTrigger className="h-10 rounded-standard border-line bg-bg2 font-medium font-sans text-[13px] text-primary shadow-none">
-                    <SelectValue placeholder="Select a job..." />
+                    <SelectValue placeholder="Select a job...">
+                      {jobs.find((j) => j.id === selectedJobId)?.title}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="border-line bg-surface shadow-none">
                     {jobs.map((j) => (

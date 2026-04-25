@@ -83,10 +83,10 @@ export function InteractivePerformanceChart({
   return (
     <Card className="border-none bg-transparent py-0 shadow-none">
       <CardHeader className="flex flex-col items-stretch border-line border-b bg-transparent p-0 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-micro px-comfortable py-comfortable sm:py-6">
+        <div className="flex flex-1 flex-col justify-center gap-micro px-4 py-4 sm:px-comfortable sm:py-6">
           <CardDescription className="text-ink-faint">Velocity</CardDescription>
-          <CardTitle className="font-serif text-[20px] text-primary leading-tight">
-            Recruitment Throughput
+          <CardTitle className="font-serif text-[18px] text-primary leading-tight sm:text-[20px]">
+            Screening Activity
           </CardTitle>
         </div>
         <div className="flex border-line border-l">
@@ -96,13 +96,13 @@ export function InteractivePerformanceChart({
               <button
                 key={chart}
                 data-active={activeChart === chart}
-                className="relative flex flex-1 flex-col justify-center gap-micro border-line border-t px-comfortable py-4 text-left transition-all even:border-l data-[active=true]:bg-bg2 sm:border-t-0 sm:px-8 sm:py-6"
+                className="relative flex flex-1 flex-col justify-center gap-micro border-line border-t px-4 py-3 text-left transition-all even:border-l data-[active=true]:bg-bg2 sm:border-t-0 sm:px-8 sm:py-6"
                 onClick={() => setActiveChart(chart)}
               >
                 <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
                   {chartConfig[chart].label}
                 </span>
-                <span className="font-serif text-[24px] text-primary leading-none sm:text-[28px]">
+                <span className="font-serif text-[20px] text-primary leading-none sm:text-[28px]">
                   {total[key as keyof typeof total].toLocaleString()}
                 </span>
               </button>

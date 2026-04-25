@@ -145,17 +145,17 @@ export function ScreeningDashboard() {
   return (
     <div className="w-full space-y-section-padding pb-section-padding">
       {/* Top Metrics row */}
-      <div className="grid grid-cols-2 gap-comfortable lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-comfortable sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Total Screened"
           value={screened.length}
-          sublabel="Analysis throughput"
+          sublabel="Total Screened"
           trend="+15%"
         />
         <StatCard
           label="Avg Match"
           value={`${avgScore}%`}
-          sublabel="Pool quality"
+          sublabel="Average match score"
           trend="+2%"
         />
         <StatCard
@@ -163,13 +163,13 @@ export function ScreeningDashboard() {
           value={
             filtered.filter((a) => (a.screening?.matchScore ?? 0) >= 85).length
           }
-          sublabel="Top tier matches"
+          sublabel="Top quality matches"
           trend="+8%"
         />
         <StatCard
           label="Queue"
           value={pending.length}
-          sublabel="Awaiting review"
+          sublabel="Waiting to be screened"
           trend="-12%"
         />
       </div>
@@ -186,7 +186,7 @@ export function ScreeningDashboard() {
 
             <div className="space-y-comfortable p-comfortable">
               <p className="font-light font-sans text-[13px] text-ink-muted leading-relaxed">
-                Neural architecture analysis powered by Gemini AI.
+                AI screening analysis powered by Gemini AI.
               </p>
 
               <Button
@@ -241,7 +241,7 @@ export function ScreeningDashboard() {
                       <span>{rec.split(" ")[0]}</span>
                       <span className="text-primary">{count}</span>
                     </div>
-                    <div className="h-1 w-full overflow-hidden rounded-pill bg-bg-deep">
+                    <div className="h-1.5 w-full overflow-hidden rounded-pill bg-bg-deep">
                       <div
                         className={cn(
                           "h-full rounded-full transition-all duration-500",
@@ -268,7 +268,11 @@ export function ScreeningDashboard() {
                 onValueChange={(value) => setSelectedJob(value ?? "all")}
               >
                 <SelectTrigger className="h-10 w-full rounded-standard border-line bg-bg2 font-medium font-sans text-[12px] text-primary shadow-none transition-all">
-                  <SelectValue placeholder="All Jobs" />
+                  <SelectValue placeholder="All Jobs">
+                    {selectedJob === "all"
+                      ? "All Jobs"
+                      : jobs.find((j) => j.id === selectedJob)?.title}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent className="border-line bg-surface shadow-none">
                   <SelectItem value="all">All Jobs</SelectItem>
@@ -327,8 +331,5 @@ export function ScreeningDashboard() {
         </div>
       </div>
     </div>
-  );
-}
- </div>
   );
 }

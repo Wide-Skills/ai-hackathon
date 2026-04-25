@@ -29,11 +29,11 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
 
   if (applicantQuery.isLoading || jobQuery.isLoading) {
     return (
-      <div className="w-full animate-pulse space-y-12">
-        <div className="h-8 w-40 rounded-full bg-secondary/30" />
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-4">
-          <div className="h-[700px] rounded-3xl bg-secondary/30 lg:col-span-1" />
-          <div className="h-[700px] rounded-3xl bg-secondary/30 lg:col-span-3" />
+      <div className="w-full animate-pulse space-y-comfortable">
+        <div className="h-6 w-32 rounded-micro bg-bg-deep" />
+        <div className="grid grid-cols-1 gap-comfortable lg:grid-cols-4">
+          <div className="h-[600px] rounded-card bg-bg-deep lg:col-span-1" />
+          <div className="h-[600px] rounded-card bg-bg-deep lg:col-span-3" />
         </div>
       </div>
     );
@@ -65,45 +65,81 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
   if (!applicant) notFound();
 
   return (
-    <div className="w-full space-y-12 pb-20">
-      <div className="flex items-center justify-between px-2">
+    <div className="w-full space-y-comfortable pb-section-padding">
+      <div className="flex items-center justify-between px-1">
         <button
           onClick={() => router.back()}
-          className="group flex items-center gap-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] transition-all hover:text-foreground"
+          className="group flex items-center gap-base font-medium font-sans text-[11px] text-ink-faint uppercase tracking-widest transition-all hover:text-primary"
         >
+          <span className="opacity-40 transition-transform group-hover:-translate-x-0.5">
+            ←
+          </span>
           Candidate Pool
         </button>
       </div>
 
-      <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-4">
+      <div className="grid grid-cols-1 items-start gap-comfortable lg:grid-cols-4">
         <ApplicantSidebar applicant={applicant} jobTitle={job?.title} />
 
-        <div className="space-y-16 lg:col-span-3">
+        <div className="space-y-section-gap lg:col-span-3">
           {applicant.screening && (
-            <section>
-              <div className="mb-8 px-2">
-                <h3 className="font-display font-light text-[16px] text-foreground uppercase tracking-[0.15em] opacity-50">
+            <section className="space-y-base">
+              <div className="mb-comfortable border-line border-b pb-base px-1">
+                <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.06em]">
                   Intelligence Evaluation
+                </span>
+                <h3 className="font-serif text-[28px] text-primary leading-tight">
+                  AI Fit Summary
                 </h3>
               </div>
               <AIAnalysisCard screening={applicant.screening} />
             </section>
           )}
 
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-            <ExperienceCard experience={applicant.experience} />
-            <div className="space-y-12">
-              <SkillsCard skills={applicant.skills} />
-              <LanguagesCard languages={applicant.languages} />
+          <section className="space-y-base">
+            <div className="mb-comfortable border-line border-b pb-base px-1">
+              <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.06em]">
+                Background
+              </span>
+              <h3 className="font-serif text-[28px] text-primary leading-tight">
+                Professional Journey
+              </h3>
             </div>
-          </div>
+            <div className="grid grid-cols-1 gap-comfortable lg:grid-cols-2">
+              <ExperienceCard experience={applicant.experience} />
+              <div className="space-y-comfortable">
+                <SkillsCard skills={applicant.skills} />
+                <LanguagesCard languages={applicant.languages} />
+              </div>
+            </div>
+          </section>
 
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-            <EducationCard education={applicant.education} />
-            <CertificationsCard certifications={applicant.certifications} />
-          </div>
+          <section className="space-y-base">
+            <div className="mb-comfortable border-line border-b pb-base px-1">
+              <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.06em]">
+                Credentials
+              </span>
+              <h3 className="font-serif text-[28px] text-primary leading-tight">
+                Expertise &amp; Validation
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 gap-comfortable lg:grid-cols-2">
+              <EducationCard education={applicant.education} />
+              <CertificationsCard certifications={applicant.certifications} />
+            </div>
+          </section>
 
-          <ProjectsCard projects={applicant.projects} />
+          <section className="space-y-base">
+            <div className="mb-comfortable border-line border-b pb-base px-1">
+              <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.06em]">
+                Evidence
+              </span>
+              <h3 className="font-serif text-[28px] text-primary leading-tight">
+                Strategic Projects
+              </h3>
+            </div>
+            <ProjectsCard projects={applicant.projects} />
+          </section>
         </div>
       </div>
     </div>

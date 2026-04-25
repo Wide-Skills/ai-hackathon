@@ -200,7 +200,9 @@ export function UploadCandidatesDialog({
               onValueChange={(val) => setSelectedJobId(val ?? "")}
             >
               <SelectTrigger className="h-10 rounded-standard border-line bg-bg2 font-medium font-sans text-[13px] text-primary shadow-none">
-                <SelectValue placeholder="Select a job..." />
+                <SelectValue placeholder="Select a job...">
+                  {jobs.find((j) => j.id === selectedJobId)?.title}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent className="border-line bg-surface shadow-none">
                 {jobs.map((j) => (

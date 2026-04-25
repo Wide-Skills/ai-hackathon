@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { UploadCandidatesDialog } from "./upload-candidates-dialog";
 import { UploadResumeDialog } from "./upload-resume-dialog";
+import { SimulateCandidatesDialog } from "./cloud-import-dialog";
 
 export function IngestCandidatesDialog() {
   const [open, setOpen] = useState(false);
@@ -28,6 +29,7 @@ export function IngestCandidatesDialog() {
       bg: "bg-primary/5",
       badge: "AI Powered",
       component: UploadResumeDialog,
+      disabled: false,
     },
     {
       id: "csv" as const,
@@ -39,17 +41,19 @@ export function IngestCandidatesDialog() {
       bg: "bg-info/5",
       badge: "Bulk",
       component: UploadCandidatesDialog,
+      disabled: false,
     },
     {
-      id: "api" as const,
-      title: "External ATS Sync",
+      id: "simulate" as const,
+      title: "Cloud Talent Import",
       description:
-        "Connect Greenhouse, Lever, or custom endpoints for automated candidate syncing.",
+        "Directly sync candidates from our secure global talent cloud into your active recruitment pipelines.",
       icon: RiGlobeLine,
-      color: "text-muted-foreground",
-      bg: "bg-muted/5",
-      badge: "Coming Soon",
-      disabled: true,
+      color: "text-primary",
+      bg: "bg-primary/5",
+      badge: "Direct Sync",
+      component: SimulateCandidatesDialog,
+      disabled: false,
     },
   ];
 
@@ -64,27 +68,25 @@ export function IngestCandidatesDialog() {
           <div className="flex flex-col justify-between border-line border-r bg-bg-alt/40 p-comfortable md:col-span-2">
             <div>
               <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.08em]">
-                Source Operation
+                Import Method
               </span>
               <h2 className="mb-base font-serif text-[32px] text-primary leading-tight">
                 Import Center
               </h2>
               <p className="font-light font-sans text-[15px] text-ink-muted leading-relaxed">
-                Seamlessly ingest talent pools from multiple technical channels.
-                Our engine analyzes latent skill resonance and experiential
-                context automatically.
+                Add talent pools from multiple sources. Our system summarizes candidate skills and experience automatically.
               </p>
             </div>
 
             <div className="space-y-base">
-              <div className="rounded-standard border border-line bg-surface/40 p-comfortable backdrop-blur-sm">
+              <div className="rounded-standard border border-line bg-surface p-comfortable">
                 <p className="mb-2.5 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.1em]">
-                  Engine Status
+                  System Status
                 </p>
                 <div className="flex items-center gap-base">
                   <span className="size-1.5 rounded-full bg-status-success-text shadow-[0_0_8px_rgba(26,112,85,0.4)]" />
                   <span className="font-medium font-sans text-[11px] text-primary/60">
-                    Neural Systems Operational
+                    AI Engine Online
                   </span>
                 </div>
               </div>
@@ -94,7 +96,7 @@ export function IngestCandidatesDialog() {
           <div className="flex flex-col justify-center space-y-comfortable p-comfortable md:col-span-3">
             <div className="mb-comfortable">
               <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.1em]">
-                Select Channel
+                Select Method
               </span>
             </div>
 

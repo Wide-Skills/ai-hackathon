@@ -177,7 +177,7 @@ export function DashboardOverview() {
                     <Link
                       key={applicant.id}
                       href={`/dashboard/applicants/${applicant.id}` as Route}
-                      className="group flex h-[100px] items-center gap-base px-comfortable transition-all hover:bg-bg2"
+                      className="group flex min-h-[90px] items-center gap-base px-comfortable py-comfortable transition-all hover:bg-bg2"
                     >
                       <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 font-medium font-sans text-[13px] text-ink-faint uppercase transition-transform group-hover:scale-[1.05]">
                         <span className="translate-y-[0.5px]">

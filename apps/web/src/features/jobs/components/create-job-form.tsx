@@ -226,7 +226,9 @@ export function CreateJobForm() {
                       }
                     >
                       <SelectTrigger className="h-10 rounded-standard border-line bg-bg2 font-medium font-sans text-[12px] text-primary shadow-none">
-                        <SelectValue />
+                        <SelectValue>
+                          {field.state.value}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent className="border-line bg-surface shadow-none">
                         <SelectItem value="Full-time">Full-time</SelectItem>
@@ -253,7 +255,9 @@ export function CreateJobForm() {
                       }
                     >
                       <SelectTrigger className="h-10 rounded-standard border-line bg-bg2 font-medium font-sans text-[12px] text-primary shadow-none">
-                        <SelectValue />
+                        <SelectValue>
+                          {field.state.value.charAt(0).toUpperCase() + field.state.value.slice(1)}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent className="border-line bg-surface shadow-none">
                         <SelectItem value="active">Active</SelectItem>

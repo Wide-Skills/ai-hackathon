@@ -10,14 +10,14 @@ export const Footer: React.FC = () => {
         <div className="mb-hero grid grid-cols-2 gap-hero md:grid-cols-4 lg:grid-cols-6">
           <div className="col-span-2 space-y-medium">
             <div className="flex items-center gap-[6px]">
-              <div className="size-[14px] rounded-micro bg-white" />
+              <div className="size-[16px] rounded-micro bg-white" />
               <span className="font-medium font-sans text-[15px] text-white tracking-[-0.3px]">
                 Umurava AI
               </span>
             </div>
             <p className="max-w-[200px] font-light font-sans text-[13px] text-white/40 leading-relaxed">
               The new standard in high-fidelity talent screening and
-              architectural recruitment.
+              advanced recruitment tech.
             </p>
           </div>
 
@@ -26,7 +26,7 @@ export const Footer: React.FC = () => {
               Product
             </p>
             <ul className="space-y-small">
-              {["Neural Ranking", "Unified Ingestion", "Intelligence Hub"].map(
+              {["AI Scoring", "Smart Import", "Analytics Hub"].map(
                 (l) => (
                   <li key={l}>
                     <Link
@@ -46,7 +46,7 @@ export const Footer: React.FC = () => {
               Platform
             </p>
             <ul className="space-y-small">
-              {["Documentation", "API Reference", "Architecture"].map((l) => (
+              {["Documentation", "API Reference", "Technology"].map((l) => (
                 <li key={l}>
                   <Link
                     href="#"

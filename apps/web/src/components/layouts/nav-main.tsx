@@ -66,15 +66,17 @@ export function NavMain({
                   }}
                   isActive={isItemActive}
                   className={cn(
-                    "group relative h-9 rounded-standard px-3 shadow-none transition-all duration-150",
+                    "group relative h-9 rounded-standard px-3 shadow-none transition-all duration-150 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center",
                     isItemActive
-                      ? "bg-bg-deep font-medium text-primary"
+                      ? "bg-bg-deep font-medium text-primary shadow-none"
                       : "text-ink-muted hover:bg-bg-alt hover:text-ink-full",
                   )}
                 >
                   <div
                     className={cn(
-                      "mr-2.5 flex-shrink-0 transition-colors",
+                      "flex-shrink-0 transition-colors group-data-[collapsible=icon]:mr-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center",
+                      !isItemActive && "mr-2.5",
+                      isItemActive && "mr-2.5 group-data-[collapsible=icon]:mr-0",
                       isItemActive
                         ? "text-primary"
                         : "text-ink-faint group-hover:text-ink-muted",
@@ -87,12 +89,12 @@ export function NavMain({
                         )
                       : item.icon}
                   </div>
-                  <span className="font-sans text-[13px] tracking-tight">
+                  <span className="font-sans text-[13px] tracking-tight group-data-[collapsible=icon]:hidden">
                     {item.title}
                   </span>
 
                   {isItemActive && (
-                    <div className="absolute top-1/2 left-0 h-4 w-1 -translate-y-1/2 rounded-r-pill bg-primary" />
+                    <div className="absolute top-1/2 left-0 h-4 w-1 -translate-y-1/2 rounded-r-pill bg-primary group-data-[collapsible=icon]:hidden" />
                   )}
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -125,7 +127,7 @@ export function NavMain({
                 <RiArrowRightSLine className="ml-auto size-4 opacity-30 transition-transform duration-200 group-data-open/collapsible:rotate-90" />
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <SidebarMenuSub className="ml-4 space-y-1 border-border/40 border-l py-1.5">
+                <SidebarMenuSub className="ml-4 space-y-1 border-line/40 border-l py-1.5">
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton

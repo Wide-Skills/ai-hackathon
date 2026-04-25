@@ -25,9 +25,9 @@ export function CertificationsCard({
 
       <div className="space-y-comfortable p-comfortable">
         {certifications.map((cert, i) => (
-          <div key={i} className="group flex gap-base">
-            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 text-ink-faint transition-transform group-hover:scale-[1.05]">
-              <RiAwardLine className="size-4.5" />
+          <div key={i} className="group flex gap-comfortable">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 text-primary transition-all group-hover:bg-bg-alt/40 group-hover:scale-[1.05]">
+              <RiAwardLine className="size-5" />
             </div>
             <div className="flex flex-col justify-center">
               <p className="font-medium font-sans text-[15px] text-primary tracking-tight transition-colors">

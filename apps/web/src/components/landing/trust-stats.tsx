@@ -31,13 +31,12 @@ export const TrustStats: React.FC = () => {
               </em>
             </h2>
             <p className="font-light font-sans text-[15px] text-ink-muted leading-relaxed">
-              We've built a high-throughput architecture that processes
-              thousands of resumes without sacrificing the "why" behind every
-              decision.
+              We've built a high-performance system that processes thousands of
+              resumes without sacrificing the "why" behind every decision.
             </p>
           </div>
 
-          <div className="grid w-full max-w-[600px] flex-1 grid-cols-2 gap-[1px] overflow-hidden rounded-card border border-line bg-line shadow-sm">
+          <div className="grid w-full max-w-[600px] flex-1 grid-cols-1 gap-[1px] overflow-hidden rounded-card border border-line bg-line shadow-none sm:grid-cols-2">
             {[
               {
                 label: "Analytic Velocity",
@@ -45,7 +44,7 @@ export const TrustStats: React.FC = () => {
                 suffix: "per analysis",
               },
               {
-                label: "Resonance Accuracy",
+                label: "Match Accuracy",
                 value: "94.8%",
                 suffix: "human-verified",
               },
@@ -68,7 +67,7 @@ export const TrustStats: React.FC = () => {
                   {stat.label}
                 </p>
                 <div className="mb-micro flex items-baseline gap-micro">
-                  <p className="font-serif text-[36px] text-primary leading-none">
+                  <p className="font-serif text-[32px] text-primary leading-none sm:text-[36px]">
                     {stat.value}
                   </p>
                 </div>

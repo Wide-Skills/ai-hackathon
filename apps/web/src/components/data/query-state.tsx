@@ -56,7 +56,7 @@ interface QueryEmptyStateProps {
 
 export function QueryEmptyState({ title, description }: QueryEmptyStateProps) {
   return (
-    <Empty className="rounded-3xl border-border/50 bg-secondary/5 py-16">
+    <Empty className="rounded-card border-line bg-bg2/40 py-16">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <RiInboxLine className="size-4" />

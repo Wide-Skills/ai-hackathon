@@ -189,8 +189,8 @@ export function ApplicantsList() {
   return (
     <div className="w-full space-y-section-padding pb-section-padding">
       {/* Search & Filters */}
-      <div className="flex flex-wrap items-center gap-base border-line border-b pb-section-gap">
-        <div className="relative min-w-[320px] flex-1">
+      <div className="flex flex-col gap-base border-line border-b pb-section-gap lg:flex-row lg:items-center">
+        <div className="relative w-full lg:flex-1">
           <div className="group flex h-10 items-center gap-3 rounded-standard border border-line bg-bg2/40 px-3.5 transition-all focus-within:border-primary/20 focus-within:bg-surface">
             <RiSearch2Line className="size-4 text-ink-faint" />
             <input
@@ -203,7 +203,7 @@ export function ApplicantsList() {
           </div>
         </div>
 
-        <div className="flex items-center gap-base">
+        <div className="flex flex-wrap items-center gap-base">
           <Tabs
             value={view}
             onValueChange={(v) => setView(v as "grid" | "table")}
@@ -229,8 +229,12 @@ export function ApplicantsList() {
             value={jobFilter}
             onValueChange={(value) => setJobFilter(value ?? "all")}
           >
-            <SelectTrigger className="h-10 w-52 rounded-standard border-line bg-bg2/40 font-medium font-sans text-[11px] text-ink-muted uppercase tracking-[0.06em] shadow-none">
-              <SelectValue placeholder="Pipeline" />
+            <SelectTrigger className="h-10 w-full rounded-standard border-line bg-bg2/40 font-medium font-sans text-[11px] text-ink-muted uppercase tracking-[0.06em] shadow-none sm:w-52">
+              <SelectValue placeholder="Pipeline">
+                {jobFilter === "all"
+                  ? "All Pipelines"
+                  : jobsData.find((j) => j.id === jobFilter)?.title}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent className="border-line bg-surface shadow-none">
               <SelectItem value="all">All Pipelines</SelectItem>
@@ -248,8 +252,18 @@ export function ApplicantsList() {
               isStatusFilter(value ?? "all") && setStatusFilter(value ?? "all")
             }
           >
-            <SelectTrigger className="h-10 w-44 rounded-standard border-line bg-bg2/40 font-medium font-sans text-[11px] text-ink-muted uppercase tracking-[0.06em] shadow-none">
-              <SelectValue placeholder="Status" />
+            <SelectTrigger className="h-10 w-full rounded-standard border-line bg-bg2/40 font-medium font-sans text-[11px] text-ink-muted uppercase tracking-[0.06em] shadow-none sm:w-44">
+              <SelectValue placeholder="Status">
+                {statusFilter === "all"
+                  ? "All States"
+                  : statusFilter === "pending"
+                    ? "Pending"
+                    : statusFilter === "screening"
+                      ? "Analyzing"
+                      : statusFilter === "shortlisted"
+                        ? "Shortlisted"
+                        : "Rejected"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent className="border-line bg-surface shadow-none">
               <SelectItem value="all">All States</SelectItem>
@@ -260,7 +274,9 @@ export function ApplicantsList() {
             </SelectContent>
           </Select>
 
-          <IngestCandidatesDialog />
+          <div className="w-full sm:w-auto">
+            <IngestCandidatesDialog />
+          </div>
         </div>
       </div>
 
@@ -304,12 +320,12 @@ export function ApplicantsList() {
               >
                 <Card
                   variant="default"
-                  className="group flex flex-row items-center justify-between border-line p-comfortable shadow-none transition-all hover:border-line-medium"
+                  className="group overflow-hidden border-line shadow-none transition-all hover:border-line-medium"
                   size="none"
                 >
                   <Link
                     href={`/dashboard/applicants/${applicant.id}` as Route}
-                    className="flex w-full items-center justify-between"
+                    className="flex flex-col items-stretch gap-base p-comfortable sm:flex-row sm:items-center"
                   >
                     <div className="flex min-w-0 flex-1 items-center gap-comfortable">
                       <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 font-medium font-sans text-[13px] text-ink-faint uppercase transition-transform group-hover:scale-[1.05]">
@@ -321,67 +337,65 @@ export function ApplicantsList() {
                         <p className="mb-1 font-serif text-[18px] text-primary leading-tight transition-colors group-hover:text-primary-muted">
                           {applicant.firstName} {applicant.lastName}
                         </p>
-                        <div className="flex items-center gap-base">
-                          <p className="truncate font-light font-sans text-[12px] text-ink-muted">
+                        <div className="flex flex-wrap items-center gap-x-base gap-y-1">
+                          <p className="max-w-[240px] truncate font-light font-sans text-[12px] text-ink-muted leading-none">
                             {applicant.headline}
                           </p>
-                          <div className="size-1 rounded-full bg-line" />
-                          <div className="truncate font-medium font-sans text-[10px] text-primary/40 uppercase tracking-wider">
+                          <div className="hidden size-1 rounded-full bg-line sm:block" />
+                          <div className="max-w-[180px] truncate font-medium font-sans text-[10px] text-primary/40 uppercase tracking-wider leading-none">
                             {job?.title}
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="ml-8 flex items-center gap-hero">
-                      <div className="hidden items-center gap-base lg:flex">
+                    <div className="flex flex-wrap items-center justify-between gap-base border-line border-t pt-base sm:flex-nowrap sm:justify-end sm:border-0 sm:pt-0">
+                      <div className="hidden items-center gap-base xl:flex">
                         <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
                           {applicant.location}
                         </span>
                       </div>
 
-                      <div className="flex flex-col items-center gap-micro">
-                        <div className="flex items-center gap-base">
-                          <ScoreBadge
-                            score={applicant.screening?.matchScore ?? 0}
-                          />
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  screenMutation.mutate({
-                                    applicantId: applicant.id,
-                                    jobId: applicant.jobId,
-                                  });
-                                }}
-                                disabled={screenMutation.isPending}
-                                className="flex h-7 w-7 items-center justify-center rounded-micro border border-line bg-bg transition-all hover:bg-bg-alt active:scale-95 disabled:opacity-50"
-                              >
-                                {screenMutation.isPending &&
-                                screenMutation.variables?.applicantId ===
-                                  applicant.id ? (
-                                  <RiLoader2Line className="h-3 w-3 animate-spin text-primary" />
-                                ) : (
-                                  <RiBrainLine className="h-3 w-3 text-ink-faint" />
-                                )}
-                              </TooltipTrigger>
-                              <TooltipContent className="rounded-standard border-line bg-surface px-3 py-1 font-medium font-sans text-[11px] text-primary">
-                                Refresh Neural Analysis
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
+                      <div className="flex items-center gap-base">
+                        <ScoreBadge
+                          score={applicant.screening?.matchScore ?? 0}
+                        />
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                screenMutation.mutate({
+                                  applicantId: applicant.id,
+                                  jobId: applicant.jobId,
+                                });
+                              }}
+                              disabled={screenMutation.isPending}
+                              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-micro border border-line bg-bg transition-all hover:bg-bg-alt active:scale-95 disabled:opacity-50"
+                            >
+                              {screenMutation.isPending &&
+                              screenMutation.variables?.applicantId ===
+                                applicant.id ? (
+                                <RiLoader2Line className="h-3 w-3 animate-spin text-primary" />
+                              ) : (
+                                <RiBrainLine className="h-3 w-3 text-ink-faint" />
+                              )}
+                            </TooltipTrigger>
+                            <TooltipContent className="rounded-standard border-line bg-surface px-3 py-1 font-medium font-sans text-[11px] text-primary">
+                              Refresh AI Summary
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
 
-                      <div className="flex w-32 justify-end">
+                      <div className="flex min-w-[100px] justify-end sm:w-32">
                         <Badge variant={sc.variant} size="sm" uppercase>
                           {sc.label}
                         </Badge>
                       </div>
 
-                      <div className="flex items-center gap-comfortable border-line border-l pl-comfortable">
+                      <div className="hidden items-center border-line border-l pl-comfortable sm:flex">
                         <span className="min-w-[60px] text-right font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
                           {new Date(applicant.appliedAt).toLocaleDateString(
                             "en-US",

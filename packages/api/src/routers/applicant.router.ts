@@ -413,4 +413,93 @@ export const applicantRouter = router({
       const applicant = await Applicant.findById(input.id);
       return applicant ? serializeApplicant(applicant) : null;
     }),
+
+  generateDummy: protectedProcedure
+    .input(
+      z.object({
+        jobId: z.string(),
+        count: z.number().min(1).max(20).default(5),
+      }),
+    )
+    .output(z.object({ success: z.boolean(), count: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      const job = await ensureJobExists(input.jobId);
+
+      const firstNames = [
+        "James", "Mary", "Robert", "Patricia", "John", "Jennifer", "Michael",
+        "Linda", "William", "Elizabeth", "David", "Barbara", "Richard", "Susan",
+        "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen"
+      ];
+      const lastNames = [
+        "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller",
+        "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez",
+        "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin"
+      ];
+      const headlines = [
+        "Senior Frontend Engineer", "Full Stack Developer", "Backend Specialist",
+        "Cloud Architect", "DevOps Engineer", "Mobile App Developer",
+        "UI/UX Designer", "Machine Learning Engineer", "Data Scientist",
+        "Security Analyst", "Systems Engineer", "Product Manager"
+      ];
+      const locations = [
+        "San Francisco, CA", "New York, NY", "London, UK", "Berlin, Germany",
+        "Toronto, Canada", "Sydney, Australia", "Remote", "Austin, TX",
+        "Seattle, WA", "Amsterdam, Netherlands"
+      ];
+
+      let generated = 0;
+      for (let i = 0; i < input.count; i++) {
+        const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+        const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+        const headline = headlines[Math.floor(Math.random() * headlines.length)];
+        const location = locations[Math.floor(Math.random() * locations.length)];
+        const email = `${firstName?.toLowerCase() || ""}.${lastName?.toLowerCase() || ""}.${Math.floor(Math.random() * 1000)}@example.com`;
+
+        const dummyResumeText = `
+          ${firstName} ${lastName}
+          ${headline} | ${location}
+          ${email}
+
+          Professional Summary:
+          Highly skilled ${headline} with over 5 years of experience in technical implementations and strategic architecture.
+          Proficient in ${job.skills.join(", ")} and other modern technologies.
+
+          Experience:
+          - Senior Engineer at Tech Solutions (2020 - Present)
+          - Software Developer at Innovation Hub (2017 - 2020)
+
+          Education:
+          - B.S. Computer Science, University of Technology
+        `;
+
+        const applicant = new Applicant({
+          jobId: input.jobId,
+          userId: ctx.session.user.id,
+          firstName,
+          lastName,
+          email,
+          name: `${firstName} ${lastName}`,
+          appliedAt: new Date().toISOString(),
+          headline,
+          location,
+          resumeText: dummyResumeText,
+          status: "pending",
+          skills: job.skills.map(s => ({ name: s, level: "Intermediate", yearsOfExperience: 3 })),
+          availability: { status: "Available", type: "Full-time" },
+        });
+
+        await applicant.save();
+        generated++;
+
+        // Trigger AI screening in the background
+        runAIInternal({
+          applicantId: applicant.id,
+          jobId: job.id,
+          triggeredByUserId: ctx.session.user.id,
+        }).catch((err) => console.error("Background AI screening failed:", err));
+      }
+
+      await syncJobMetrics(input.jobId);
+      return { success: true, count: generated };
+    }),
 });

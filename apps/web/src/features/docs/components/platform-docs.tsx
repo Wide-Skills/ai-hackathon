@@ -1,3 +1,5 @@
+"use client";
+
 import { DEMO_RECRUITER } from "@ai-hackathon/shared";
 import {
   RiBarChartLine,
@@ -13,103 +15,100 @@ import { cn } from "@/lib/utils";
 
 const features = [
   {
-    title: "AI-First Intelligence",
+    title: "Deep Skill Analysis",
     description:
-      "Powered by Gemini AI, our platform performs deep semantic analysis of resumes beyond simple keyword matching. It understands context, nuances in experience, and potential resonance with specific role requirements.",
+      "Powered by Gemini AI, our platform performs deep analysis of resumes beyond simple keyword matching. It understands context, nuances in experience, and potential fit with specific role requirements.",
     icon: RiBrainLine,
     color: "text-primary",
-    bg: "bg-primary/5",
   },
   {
-    title: "Multichannel Ingestion",
+    title: "Direct Data Imports",
     description:
-      "Seamlessly import talent from any source. Whether it's direct API integration from platforms like Umurava, batch CSV uploads, or raw resume PDF parsing, the system handles it all with zero friction.",
+      "Add technical talent from any source instantly. Our system extracts and normalizes complex profile data from PDFs, text, and spreadsheets automatically with high precision.",
     icon: RiUploadCloud2Line,
-    color: "text-info",
-    bg: "bg-info/5",
+    color: "text-primary",
   },
   {
-    title: "High-Fidelity Talent Schema",
+    title: "Standardized Profiles",
     description:
-      "Every applicant is transformed into a standardized, rich Talent Profile. We capture skills with proficiency levels, detailed career trajectories, and project portfolios to ensure every record is a source of truth.",
+      "Every applicant is transformed into a rich, structured profile. We capture skills, proficiency levels, and career trajectories to ensure every record is a clear source of truth.",
     icon: RiStackLine,
-    color: "text-success",
-    bg: "bg-success/5",
+    color: "text-primary",
   },
   {
-    title: "Strategic Analytics",
+    title: "Match Quality Insights",
     description:
-      "Our recruiter dashboard provides real-time visibility into pipeline health. Track match quality indexing, screening throughput, and pipeline saturation with data-driven clarity.",
+      "Our dashboard provides real-time visibility into talent quality. Track match scores, screening activity, and pipeline health with data-driven clarity.",
     icon: RiBarChartLine,
-    color: "text-amber-500",
-    bg: "bg-amber-500/5",
+    color: "text-primary",
   },
 ] as const;
 
 const workflow = [
   {
     step: "1",
-    title: "Define the Pipeline",
+    title: "Setup Job",
     description:
-      "Create high-fidelity job requirements that serve as the neural anchor for our AI screening engine.",
+      "Create clear job requirements that serve as the anchor for our AI screening engine.",
   },
   {
     step: "2",
-    title: "Universal Import",
+    title: "Import Talent",
     description:
-      "Ingest candidates via platform sync, mass CSV upload, or individual resume parsing.",
+      "Add candidates via bulk CSV upload, individual resume parsing, or manual entry.",
   },
   {
     step: "3",
-    title: "Neural Screening",
+    title: "AI Screening",
     description:
-      "AI evaluates every candidate, generating objective match scores, strategic strengths, and critical gap analyses.",
+      "AI evaluates every candidate, generating match scores, strengths, and potential gaps.",
   },
   {
     step: "4",
-    title: "Strategic Selection",
+    title: "Hire Top Talent",
     description:
-      "Recruiters use AI-ranked shortlists and deep analytics to move top talent into the hiring phase.",
+      "Use AI-ranked shortlists and deep analytics to move the best people into the hiring phase.",
   },
 ] as const;
 
 export function PlatformDocs() {
   return (
-    <main className="min-h-screen bg-background px-6 py-20 text-foreground md:px-10 lg:py-32">
+    <main className="min-h-screen bg-canvas px-6 py-12 text-ink-full md:px-6 lg:py-20">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-24">
         {/* Hero Section */}
-        <section className="relative overflow-hidden rounded-[48px] border border-border/60 bg-secondary/10 p-10 shadow-md md:p-20 lg:p-24">
+        <section className="relative overflow-hidden rounded-card border border-line bg-surface p-10 shadow-none md:p-20 lg:p-24">
           <div className="relative z-10 max-w-3xl">
-            <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
-              <RiCpuLine className="h-6 w-6 text-primary" />
+            <div className="mb-8 flex h-11 w-11 items-center justify-center rounded-micro border border-line bg-bg2">
+              <RiCpuLine className="size-5 text-primary" />
             </div>
-            <p className="mb-4 font-bold text-[12px] text-primary/60 uppercase tracking-[0.3em]">
-              Next-Gen Recruitment
+            <p className="mb-4 font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.2em]">
+              The Technology
             </p>
-            <h1 className="font-display font-light text-[48px] leading-[1.1] tracking-tight md:text-[72px] lg:text-[84px]">
+            <h1 className="font-serif text-[48px] text-primary leading-[1.1] tracking-tight md:text-[72px] lg:text-[84px]">
               Intelligence at the core of{" "}
-              <span className="text-muted-foreground/40">
-                Talent Acquisition.
+              <span className="text-ink-faint">
+                Talent Discovery.
               </span>
             </h1>
-            <p className="mt-8 text-[18px] text-muted-foreground/80 leading-relaxed md:text-[20px]">
+            <p className="mt-8 font-light font-sans text-[18px] text-ink-muted leading-relaxed max-w-[55ch]">
               A high-performance screening ecosystem designed to bridge the gap
               between massive talent pools and precise organizational needs
-              through deep AI analysis and standardized data schemas.
+              through deep AI analysis and standardized data.
             </p>
-            <div className="mt-12 flex flex-wrap gap-6">
+            <div className="mt-12 flex flex-wrap gap-base">
               <Button
                 render={<Link href="/auth" />}
                 variant="default"
-                size="2xl"
-                className="shadow-xl"
+                size="xl"
+                className="h-12 px-10 rounded-standard"
               >
-                Launch Platform
+                Launch Console
               </Button>
               <Button
                 render={<Link href="/dashboard" />}
                 variant="outline"
-                size="2xl"
+                size="xl"
+                className="h-12 px-10 rounded-standard border-line bg-bg2/40"
               >
                 Explore Dashboard
               </Button>
@@ -117,8 +116,8 @@ export function PlatformDocs() {
           </div>
 
           {/* Subtle background decoration */}
-          <div className="absolute -top-20 -right-20 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
-          <div className="absolute -bottom-20 -left-20 h-[500px] w-[500px] rounded-full bg-info/5 blur-[120px]" />
+          <div className="absolute -top-20 -right-20 h-[500px] w-[500px] rounded-full bg-primary-alpha/5 blur-[120px]" />
+          <div className="absolute -bottom-20 -left-20 h-[500px] w-[500px] rounded-full bg-primary-alpha/5 blur-[120px]" />
         </section>
 
         {/* Feature Grid */}
@@ -146,10 +145,10 @@ export function PlatformDocs() {
         </section>
 
         {/* Product Workflow */}
-        <section className="rounded-[40px] border border-line bg-surface p-10 shadow-none md:p-20">
+        <section className="rounded-card border border-line bg-surface p-10 shadow-none md:p-20">
           <div className="mb-section-gap text-center">
             <span className="mb-micro block font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.1em]">
-              Architecture
+               Architecture
             </span>
             <h2 className="font-serif text-[42px] text-primary leading-tight">
               The Strategic Workflow
@@ -161,8 +160,8 @@ export function PlatformDocs() {
             <div className="absolute top-10 left-0 -z-10 hidden h-[1px] w-full bg-line lg:block" />
 
             {workflow.map((w) => (
-              <div key={w.step} className="space-y-base">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-line bg-surface font-serif text-[28px] text-primary/30 shadow-none ring-8 ring-bg-alt/40 transition-colors hover:text-primary">
+              <div key={w.step} className="space-y-base text-center lg:text-left">
+                <div className="mx-auto lg:mx-0 flex h-20 w-20 items-center justify-center rounded-full border border-line bg-bg px-1 font-serif text-[28px] text-primary/30 shadow-none ring-8 ring-bg-alt/40 transition-colors hover:text-primary">
                   {w.step}
                 </div>
                 <div>
@@ -179,29 +178,29 @@ export function PlatformDocs() {
         </section>
 
         {/* Access Layer */}
-        <section className="grid gap-8 lg:grid-cols-12">
-          <div className="flex flex-col justify-between rounded-[40px] border border-border/40 bg-secondary/5 p-10 shadow-md lg:col-span-4">
+        <section className="grid gap-comfortable lg:grid-cols-12">
+          <div className="flex flex-col justify-between rounded-card border border-line bg-bg2/40 p-comfortable shadow-none lg:col-span-4">
             <div>
-              <p className="mb-2 font-bold text-[11px] text-muted-foreground/40 uppercase tracking-[0.2em]">
+              <span className="mb-micro block font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.1em]">
                 Live Demo
-              </p>
-              <h3 className="mb-6 font-display font-light text-[24px]">
+              </span>
+              <h3 className="mb-comfortable font-serif text-[28px] text-primary leading-tight">
                 Recruiter Access
               </h3>
-              <div className="space-y-6">
+              <div className="space-y-base">
                 <div>
-                  <p className="mb-1 font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest">
+                  <p className="mb-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                     Email
                   </p>
-                  <p className="font-medium text-[16px]">
+                  <p className="font-serif text-[18px] text-primary">
                     {DEMO_RECRUITER.email}
                   </p>
                 </div>
                 <div>
-                  <p className="mb-1 font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest">
+                  <p className="mb-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                     Method
                   </p>
-                  <p className="font-medium text-[16px]">
+                  <p className="font-light font-sans text-[14px] text-ink-muted">
                     Magic Link / Social Auth
                   </p>
                 </div>
@@ -209,54 +208,54 @@ export function PlatformDocs() {
             </div>
             <Button
               render={<Link href="/auth" />}
-              variant="outline"
-              size="2xl"
-              className="mt-10 w-full border-primary/20 bg-primary/5 text-primary shadow-xl hover:bg-primary hover:text-white"
+              variant="default"
+              size="xl"
+              className="mt-10 h-11 w-full rounded-standard shadow-none"
             >
               <span className="flex w-full items-center justify-between">
                 Sign In Now
-                <RiFlashlightLine className="h-4 w-4" />
+                <RiFlashlightLine className="size-4" />
               </span>
             </Button>
           </div>
 
-          <div className="rounded-[40px] border border-border/40 bg-background p-10 shadow-md lg:col-span-8">
-            <h3 className="mb-8 font-display font-light text-[24px]">
+          <div className="rounded-card border border-line bg-surface p-comfortable shadow-none lg:col-span-8">
+            <h3 className="mb-section-gap font-serif text-[28px] text-primary leading-tight">
               Platform Architecture
             </h3>
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div className="rounded-3xl border border-border/30 bg-secondary/[0.02] p-6">
-                <h5 className="mb-3 font-bold text-[12px] text-primary/60 uppercase tracking-widest">
+            <div className="grid gap-comfortable sm:grid-cols-2">
+              <div className="rounded-standard border border-line bg-bg2/30 p-base transition-colors hover:bg-bg2/50">
+                <h5 className="mb-2 font-medium font-sans text-[11px] text-primary uppercase tracking-widest">
                   Front-End
                 </h5>
-                <p className="text-[14px] text-muted-foreground/70 leading-relaxed">
+                <p className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
                   Modern dashboard built with Next.js, optimized with React
                   Query and Framer Motion for premium fluidity.
                 </p>
               </div>
-              <div className="rounded-3xl border border-border/30 bg-secondary/[0.02] p-6">
-                <h5 className="mb-3 font-bold text-[12px] text-info/60 uppercase tracking-widest">
+              <div className="rounded-standard border border-line bg-bg2/30 p-base transition-colors hover:bg-bg2/50">
+                <h5 className="mb-2 font-medium font-sans text-[11px] text-primary uppercase tracking-widest">
                   Intelligence Layer
                 </h5>
-                <p className="text-[14px] text-muted-foreground/70 leading-relaxed">
-                  Integrated with Gemini AI for deep semantic screening and
-                  automated profile extraction.
+                <p className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
+                  Integrated with Gemini AI for deep analysis and
+                  automated candidate profile extraction.
                 </p>
               </div>
-              <div className="rounded-3xl border border-border/30 bg-secondary/[0.02] p-6">
-                <h5 className="mb-3 font-bold text-[12px] text-success/60 uppercase tracking-widest">
+              <div className="rounded-standard border border-line bg-bg2/30 p-base transition-colors hover:bg-bg2/50">
+                <h5 className="mb-2 font-medium font-sans text-[11px] text-primary uppercase tracking-widest">
                   Data Core
                 </h5>
-                <p className="text-[14px] text-muted-foreground/70 leading-relaxed">
-                  Standardized Talent Schema on MongoDB, ensuring high-fidelity
+                <p className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
+                  Standardized Candidate Schema on MongoDB, ensuring high-fidelity
                   profiles across the ecosystem.
                 </p>
               </div>
-              <div className="rounded-3xl border border-border/30 bg-secondary/[0.02] p-6">
-                <h5 className="mb-3 font-bold text-[12px] text-amber-500/60 uppercase tracking-widest">
+              <div className="rounded-standard border border-line bg-bg2/30 p-base transition-colors hover:bg-bg2/50">
+                <h5 className="mb-2 font-medium font-sans text-[11px] text-primary uppercase tracking-widest">
                   Infrastructure
                 </h5>
-                <p className="text-[14px] text-muted-foreground/70 leading-relaxed">
+                <p className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
                   Secure authentication via better-auth and high-performance
                   communication with shared tRPC routers.
                 </p>

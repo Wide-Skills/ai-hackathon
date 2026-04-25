@@ -12,6 +12,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 
 const getLabel = (p: string) => {
   const map: Record<string, string> = {
@@ -32,39 +34,46 @@ export default function Header() {
   const paths = pathname.split("/").filter(Boolean);
 
   return (
-    <header className="sticky top-0 z-30 flex h-20 w-full shrink-0 items-center justify-between border-line border-b bg-surface/80 px-8 backdrop-blur-md lg:px-10">
-      <div className="flex flex-col justify-center">
-        <Breadcrumb>
-          <BreadcrumbList>
-            {paths.map((p, i) => {
-              const href = `/${paths.slice(0, i + 1).join("/")}`;
-              const isLast = i === paths.length - 1;
-              const label = getLabel(p);
+    <header className="sticky top-0 z-30 flex h-20 w-full shrink-0 items-center justify-between border-line border-b bg-surface px-4 lg:px-8">
+      <div className="flex items-center gap-small">
+        <SidebarTrigger className="-ml-2 md:hidden" />
+        <div className="flex flex-col justify-center">
+          <Breadcrumb>
+            <BreadcrumbList>
+              {paths.map((p, i) => {
+                const href = `/${paths.slice(0, i + 1).join("/")}`;
+                const isLast = i === paths.length - 1;
+                const label = getLabel(p);
 
-              return (
-                <React.Fragment key={p}>
-                  <BreadcrumbItem>
-                    {isLast ? (
-                      <BreadcrumbPage className="font-serif text-[24px] text-primary tracking-tight">
-                        {label}
-                      </BreadcrumbPage>
-                    ) : (
-                      <BreadcrumbLink
-                        render={
-                          <button onClick={() => router.push(href as Route)} />
-                        }
-                        className="cursor-pointer text-ink-faint transition-colors hover:text-primary"
-                      >
-                        {label}
-                      </BreadcrumbLink>
+                return (
+                  <React.Fragment key={p}>
+                    <BreadcrumbItem
+                      className={cn(!isLast && "hidden sm:inline-flex")}
+                    >
+                      {isLast ? (
+                        <BreadcrumbPage className="font-serif text-[18px] text-primary tracking-tight md:text-[24px]">
+                          {label}
+                        </BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink
+                          render={
+                            <button onClick={() => router.push(href as Route)} />
+                          }
+                          className="cursor-pointer text-ink-faint transition-colors hover:text-primary"
+                        >
+                          {label}
+                        </BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                    {!isLast && (
+                      <BreadcrumbSeparator className="hidden sm:inline-flex" />
                     )}
-                  </BreadcrumbItem>
-                  {!isLast && <BreadcrumbSeparator />}
-                </React.Fragment>
-              );
-            })}
-          </BreadcrumbList>
-        </Breadcrumb>
+                  </React.Fragment>
+                );
+              })}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
       </div>
 
       <div className="flex items-center gap-base">

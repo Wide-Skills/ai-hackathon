@@ -18,7 +18,7 @@ export function AISettings() {
         <div className="mb-section-gap flex items-end justify-between border-line border-b pb-base">
           <div>
             <span className="mb-micro block font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
-              Neural Config
+              AI Strategy
             </span>
             <h3 className="font-serif text-[28px] text-primary leading-tight">
               Intelligence Core
@@ -36,12 +36,12 @@ export function AISettings() {
             <div className="mb-base flex items-center justify-between">
               <div>
                 <p className="mb-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
-                  Operational Quota
+                  Usage Credits
                 </p>
                 <p className="font-serif text-[24px] text-primary leading-none">
                   847{" "}
                   <span className="text-[14px] text-ink-faint">
-                    / 1,000 Credits
+                    / 1,000 Total
                   </span>
                 </p>
               </div>
@@ -53,7 +53,7 @@ export function AISettings() {
               />
             </div>
             <p className="mt-comfortable font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
-              Neural resets in 12 days
+              Limits reset in 12 days
             </p>
           </div>
         </div>
@@ -61,20 +61,20 @@ export function AISettings() {
         <div className="space-y-comfortable">
           {[
             {
-              label: "Autonomous Ingestion",
-              desc: "Automatically evaluate candidates upon submission resonance.",
+              label: "Auto Screening",
+              desc: "Automatically evaluate candidates upon submission.",
               state: autoScreen,
               set: setAutoScreen,
             },
             {
-              label: "Neural Rationales",
-              desc: "Generate high-fidelity natural-language justifications.",
+              label: "AI Summaries",
+              desc: "Generate clear natural-language candidate explanations.",
               state: emailAlerts,
               set: setEmailAlerts,
             },
             {
-              label: "Precision Threshold Alerts",
-              desc: "Notify when a match resonance exceeds 85%.",
+              label: "High Score Alerts",
+              desc: "Notify when a candidate match exceeds 85%.",
               state: highScoreAlert,
               set: setHighScoreAlert,
             },
@@ -100,14 +100,14 @@ export function AISettings() {
           <div className="flex items-center justify-between gap-hero">
             <div className="max-w-[360px]">
               <p className="mb-1 font-medium font-sans text-[14px] text-primary tracking-tight">
-                Confidence Threshold
+                Match Threshold
               </p>
               <p className="font-light font-sans text-[12px] text-ink-muted leading-relaxed">
-                Candidates scoring above this neural value will be marked for
-                immediate strategic review.
+                Candidates scoring above this value will be marked for immediate
+                team review.
               </p>
             </div>
-            <div className="flex items-center gap-base rounded-standard border border-line bg-bg2 p-2">
+            <div className="flex items-center gap-base rounded-standard border border-line bg-bg2 p-2 focus-within:border-primary/20 transition-all">
               <input
                 type="number"
                 defaultValue="75"

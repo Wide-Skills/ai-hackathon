@@ -71,6 +71,7 @@
   --color-bg-alt: var(--bg-secondary);
   --color-bg-deep: var(--bg-tertiary);
   --color-surface: var(--bg-surface);
+  --color-canvas: var(--canvas);
 
   --color-ink: var(--text-primary);
   --color-ink-muted: var(--text-secondary);
@@ -101,20 +102,20 @@
   --spacing-small: 8px;
   --spacing-base: 12px;
   --spacing-medium: 16px;
-  --spacing-comfortable: 24px;
-  --spacing-section-gap: 36px;
-  --spacing-section-padding: 64px;
-  --spacing-hero: 96px;
+  --spacing-comfortable: 20px;
+  --spacing-section-gap: 32px;
+  --spacing-section-padding: 48px;
+  --spacing-hero: 64px;
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-line;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   body {
-    @apply font-sans bg-background text-ink-muted;
+    @apply font-sans bg-bg text-ink-muted;
     font-size: 15px;
     font-weight: 300;
     line-height: 1.68;
@@ -131,13 +132,13 @@
   }
 
   h1 {
-    @apply text-[52px] leading-[1.06] tracking-[-0.8px];
+    @apply text-[36px] leading-[1.1] tracking-[-0.02em] sm:text-[44px] md:text-[52px] lg:text-[64px];
   }
   h2 {
-    @apply text-[32px] leading-[1.14] tracking-[-0.4px];
+    @apply text-[26px] leading-[1.15] tracking-[-0.015em] sm:text-[30px] md:text-[32px] lg:text-[42px];
   }
   h3 {
-    @apply text-[22px] leading-[1.22] tracking-[-0.2px];
+    @apply text-[20px] leading-[1.2] tracking-[-0.01em] sm:text-[22px] md:text-[24px] lg:text-[28px];
   }
 
   hr {
@@ -150,6 +151,6 @@
 
 @layer components {
   .container-meridian {
-    @apply mx-auto max-w-[var(--container-width)] px-10;
+    @apply mx-auto max-w-[var(--container-width)] px-6;
   }
 }

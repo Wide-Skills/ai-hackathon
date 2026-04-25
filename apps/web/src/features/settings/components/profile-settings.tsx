@@ -41,14 +41,14 @@ export function ProfileSettings() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-hero gap-y-base md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-x-comfortable gap-y-base md:grid-cols-2">
           {[
             { label: "Account ID", val: "UM-90283", disabled: true },
-            { label: "Operation Role", val: "Recruitment Manager" },
-            { label: "Lead First Name", val: "HR" },
-            { label: "Lead Last Name", val: "Manager" },
+            { label: "Team Role", val: "Recruitment Manager" },
+            { label: "First Name", val: "HR" },
+            { label: "Last Name", val: "Manager" },
             { label: "Work Email", val: "recruiter@umurava.com" },
-            { label: "Regional Timezone", val: "Eastern Time (GMT-5)" },
+            { label: "Timezone", val: "Eastern Time (GMT-5)" },
           ].map((field, i) => (
             <div key={i} className="space-y-micro">
               <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
@@ -58,7 +58,7 @@ export function ProfileSettings() {
                 defaultValue={field.val}
                 disabled={field.disabled}
                 className={cn(
-                  "focus:ring- Pa h-10 w-full rounded-standard border border-line bg-bg2 px-4 font-normal font-sans text-[13px] text-primary outline-none transition-all focus:bg-surface",
+                  "h-10 w-full rounded-standard border border-line bg-bg2 px-4 font-normal font-sans text-[13px] text-primary outline-none transition-all focus:bg-surface focus:ring-4 focus:ring-primary-alpha/5",
                   field.disabled &&
                     "cursor-not-allowed bg-bg-deep/50 opacity-40 grayscale",
                 )}

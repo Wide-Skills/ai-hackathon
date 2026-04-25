@@ -5,11 +5,12 @@ import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
 import { Hero } from "@/components/landing/hero";
 import { Navbar } from "@/components/landing/navbar";
-import { NeuralArchitecture } from "@/components/landing/neural-architecture";
 import { Testimonials } from "@/components/landing/testimonials";
 import { TrustStats } from "@/components/landing/trust-stats";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth";
+import { AIArchitecture } from "@/components/landing/neural-architecture";
+
 
 export default async function Home() {
   const session = await getSession();
@@ -59,8 +60,8 @@ export default async function Home() {
                   {[
                     {
                       step: "01",
-                      title: "Semantic Ingestion",
-                      body: "Resumes are parsed for latent resonance, not just keywords.",
+                      title: "Smart Parsing",
+                      body: "Resumes are analyzed for match quality, not just keywords.",
                     },
                     {
                       step: "02",
@@ -104,7 +105,7 @@ export default async function Home() {
                 transition={{ duration: 1 }}
                 className="flex aspect-square w-full max-w-[500px] flex-1 items-center justify-center overflow-hidden rounded-card border border-line bg-surface p-comfortable shadow-[0_30px_60px_-12px_rgba(0,0,0,0.02)]"
               >
-                <NeuralArchitecture />
+                <AIArchitecture />
               </motion.div>
             </div>
           </div>
@@ -121,7 +122,7 @@ export default async function Home() {
           <TrustStats />
         </section>
 
-        <section className="border-line border-b bg-bg-alt/20 py-section-padding">
+        <section className="border-line border-y bg-surface py-section-padding">
           <Testimonials />
         </section>
 
@@ -137,12 +138,12 @@ export default async function Home() {
               <h2 className="mb-base text-[48px] leading-[0.95] tracking-tight md:text-[64px]">
                 Hire with <br />
                 <em className="font-light text-brand-primary italic opacity-80">
-                  absolute resonance.
+                  confidence.
                 </em>
               </h2>
               <p className="max-w-[500px] font-light font-sans text-[17px] text-ink-muted leading-[1.68]">
-                Unlock high-fidelity talent discovery. Shortlist the top 1% with
-                human-readable reasoning and total decision clarity.
+                Find the right people faster. Shortlist top candidates with
+                clear AI-driven reasoning and total decision clarity.
               </p>
             </div>
 

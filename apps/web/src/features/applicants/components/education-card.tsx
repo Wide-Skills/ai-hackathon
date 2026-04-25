@@ -21,9 +21,9 @@ export function EducationCard({ education }: EducationCardProps) {
 
       <div className="space-y-comfortable p-comfortable">
         {education.map((edu, i) => (
-          <div key={i} className="group flex gap-base">
-            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 text-ink-faint transition-transform group-hover:scale-[1.05]">
-              <RiGraduationCapLine className="size-4.5" />
+          <div key={i} className="group flex gap-comfortable">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 text-primary transition-all group-hover:bg-bg-alt/40 group-hover:scale-[1.05]">
+              <RiGraduationCapLine className="size-5" />
             </div>
             <div>
               <p className="font-medium font-sans text-[15px] text-primary tracking-tight transition-colors">

@@ -136,7 +136,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
 
       <div className="grid grid-cols-1 gap-hero border-line border-b bg-bg-alt/10 p-comfortable md:grid-cols-2">
         <div>
-          <h4 className="mb-base font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
+          <h4 className="mb-comfortable font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
             Key Strengths
           </h4>
           <ul className="space-y-base">
@@ -145,7 +145,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
                 key={s}
                 className="flex items-start gap-base font-light font-sans text-[14px] text-ink-muted leading-relaxed"
               >
-                <div className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-status-success-text/30" />
+                <RiCheckboxCircleLine className="mt-1 size-3.5 shrink-0 text-status-success-text" />
                 {s}
               </li>
             ))}
@@ -153,7 +153,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
         </div>
 
         <div>
-          <h4 className="mb-base font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
+          <h4 className="mb-comfortable font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
             Critical Gaps
           </h4>
           <ul className="space-y-base">
@@ -162,7 +162,7 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
                 key={g}
                 className="flex items-start gap-base font-light font-sans text-[14px] text-ink-muted leading-relaxed"
               >
-                <div className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-status-error-text/30" />
+                <RiCloseCircleLine className="mt-1 size-3.5 shrink-0 text-status-error-text" />
                 {g}
               </li>
             ))}
@@ -181,17 +181,17 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
                 <span className="font-medium font-sans text-[13px] text-primary">
                   {sb.skill}
                 </span>
-                <span className="font-medium font-sans text-[11px] text-ink-faint">
+                <span className="font-medium font-sans text-[11px] text-primary">
                   {sb.score}%
                 </span>
               </div>
-              <div className="h-1 w-full overflow-hidden rounded-full border border-line/50 bg-bg-deep">
+              <div className="h-1.5 w-full overflow-hidden rounded-full border border-line bg-bg-deep shadow-none">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${sb.score}%` }}
                   transition={{ duration: 1.2, ease: "circOut" }}
                   className={cn(
-                    "h-full rounded-full",
+                    "h-full rounded-full shadow-none",
                     sb.score >= 85
                       ? "bg-status-success-text"
                       : sb.score >= 70

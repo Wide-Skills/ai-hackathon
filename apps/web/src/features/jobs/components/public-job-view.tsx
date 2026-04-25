@@ -153,7 +153,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
           <p className="font-light font-sans text-[15px] text-ink-muted leading-relaxed">
             Thank you for applying for the{" "}
             <span className="font-medium text-primary">{job.title}</span>{" "}
-            position. Our neural engine will review your profile resonance
+            position. Our AI system will review your match score
             shortly.
           </p>
           <Button
@@ -360,8 +360,8 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                 </Button>
 
                 <p className="px-base text-center font-light font-sans text-[10px] text-ink-faint italic leading-relaxed">
-                  By applying, you agree to our terms. Data is processed with
-                  neural analysis for organizational resonance.
+                  By applying, you agree to our terms. Data is processed with AI
+                  analysis to determine fit.
                 </p>
               </form>
             </div>

@@ -26,20 +26,20 @@ export function NotificationSettings() {
         <div className="space-y-comfortable">
           {[
             {
-              label: "Submission Alerts",
-              desc: "Receive instant notifications for new technical expert applications.",
+              label: "New Applications",
+              desc: "Receive instant notifications for new candidate submissions.",
             },
             {
-              label: "Screening Completion",
-              desc: "Get notified when the neural engine finishes deep batch analysis.",
+              label: "Review Completion",
+              desc: "Get notified when the AI finishes analyzing a batch of candidates.",
             },
             {
-              label: "Quality Threshold Triggers",
-              desc: "Immediate alert when a candidate resonance exceeds 90%.",
+              label: "High Score Alerts",
+              desc: "Immediate alert when a candidate match score exceeds 90%.",
             },
             {
-              label: "Intelligence Digest",
-              desc: "Weekly summary of neural performance and latent insights.",
+              label: "Weekly Summary",
+              desc: "A digest of AI screening activity and pipeline insights.",
             },
           ].map((n, i) => (
             <div

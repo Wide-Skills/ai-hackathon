@@ -26,7 +26,7 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
         {projects.map((proj, i) => (
           <div
             key={i}
-            className="group rounded-standard border border-line bg-bg2/30 p-comfortable transition-all hover:border-line-medium"
+            className="group rounded-standard border border-line bg-surface p-comfortable transition-all hover:bg-bg2/40 hover:border-line-medium shadow-none"
           >
             <div className="mb-comfortable flex items-start justify-between">
               <div>
