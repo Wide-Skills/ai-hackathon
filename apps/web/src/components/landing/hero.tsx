@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  RiMoreLine,
-  RiSearchLine,
-  RiUserLine,
-} from "@remixicon/react";
+import { RiArrowRightLine, RiMoreLine, RiSearchLine, RiUserLine } from "@remixicon/react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import type React from "react";
@@ -198,8 +194,9 @@ export const Hero: React.FC = () => {
             className="flex flex-wrap items-center justify-center gap-5"
           >
             <Link href="/auth">
-              <button className="h-[48px] rounded-full border border-primary bg-primary px-7 text-[15px] text-white shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl">
+              <button className="flex items-center gap-2 h-[48px] rounded-full border border-primary bg-primary px-7 text-[15px] text-white transition-all hover:scale-[1.02] active:scale-[0.98]">
                 Start Screening Now
+                <RiArrowRightLine className="h-4 w-4 opacity-60" />
               </button>
             </Link>
 

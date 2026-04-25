@@ -49,11 +49,9 @@ export const Testimonials: React.FC = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 className="mb-5 font-display font-light text-[32px] text-foreground leading-[1.1] tracking-[-0.03em] md:text-display-section">
+            <h2 className="mb-5 font-display font-light text-[32px] text-primary leading-[1.1] tracking-[-0.03em] md:text-display-section">
               Loved by <br />
-              <span className="text-primary">
-                forward-thinking teams.
-              </span>
+              <span className="text-primary">forward-thinking teams.</span>
             </h2>
           </motion.div>
         </div>
@@ -88,12 +86,12 @@ export const Testimonials: React.FC = () => {
                     {t.avatar}
                   </div>
                   <div>
-                    <p className={`font-semibold text-[14px] tracking-tight ${t.nameColor}`}>
+                    <p
+                      className={`font-semibold text-[14px] tracking-tight ${t.nameColor}`}
+                    >
                       {t.author}
                     </p>
-                    <p className={`text-[12px] ${t.roleColor}`}>
-                      {t.role}
-                    </p>
+                    <p className={`text-[12px] ${t.roleColor}`}>{t.role}</p>
                   </div>
                 </div>
               </Card>
