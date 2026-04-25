@@ -34,7 +34,7 @@ const testimonials = [
 
 export const Testimonials: React.FC = () => {
   return (
-    <section className="bg-background py-[120px]">
+    <section className="bg-white py-[120px] text-foreground">
       <div className="container-tight">
         <div className="mb-16 text-center">
           <motion.div
