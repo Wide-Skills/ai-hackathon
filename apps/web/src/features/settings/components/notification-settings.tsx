@@ -1,6 +1,6 @@
 "use client";
 
-import { RiNotification3Line, RiSaveLine } from "@remixicon/react";
+import { RiNotification3Line } from "@remixicon/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";

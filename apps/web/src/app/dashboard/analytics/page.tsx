@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { QueryErrorState } from "@/components/data/query-state";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,

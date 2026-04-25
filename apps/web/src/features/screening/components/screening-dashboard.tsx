@@ -220,8 +220,8 @@ export function ScreeningDashboard() {
           {/* Distribution Card */}
           <Card variant="default" size="none" className="overflow-hidden">
             <CardHeader>
-              <CardDescription>Analytics</CardDescription>
-              <CardTitle>Distribution</CardTitle>
+              <CardDescription>Metrics</CardDescription>
+              <CardTitle>Match Ranges</CardTitle>
             </CardHeader>
             <div className="space-y-base bg-bg-alt/10 p-comfortable">
               {Object.entries(distribution).map(([rec, count]) => {
@@ -327,5 +327,8 @@ export function ScreeningDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+ </div>
   );
 }

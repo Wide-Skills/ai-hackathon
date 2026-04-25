@@ -1,5 +1,4 @@
 import type { Language } from "@ai-hackathon/shared";
-import { RiTranslate2 } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,

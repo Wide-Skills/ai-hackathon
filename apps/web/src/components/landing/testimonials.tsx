@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-const testimonials = [
+const _testimonials = [
   {
     quote:
       "The only platform that doesn't feel like a black box. The explainable rankings have transformed our hiring trust.",

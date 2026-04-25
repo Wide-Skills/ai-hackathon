@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  RiBriefcaseLine,
-  RiLayoutGridLine,
-  RiListCheck,
-  RiSearch2Line,
-} from "@remixicon/react";
+import { RiLayoutGridLine, RiListCheck, RiSearch2Line } from "@remixicon/react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -126,10 +121,10 @@ export function JobsList() {
       <section>
         <div className="mb-small flex items-center justify-between px-comfortable">
           <div className="flex items-center gap-base font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
-            Operational Channels
+            Active Jobs
           </div>
           <div className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
-            {filtered.length} positions active
+            {filtered.length} positions open
           </div>
         </div>
 
@@ -159,4 +154,6 @@ export function JobsList() {
       </section>
     </div>
   );
+}
+ );
 }

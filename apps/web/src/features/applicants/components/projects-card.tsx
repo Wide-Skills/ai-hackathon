@@ -1,5 +1,5 @@
 import type { Project } from "@ai-hackathon/shared";
-import { RiCodeLine, RiExternalLinkLine } from "@remixicon/react";
+import { RiExternalLinkLine } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,

@@ -2,7 +2,6 @@
 
 import {
   RiCloseLine,
-  RiFileLine,
   RiFileTextLine,
   RiLoader2Line,
   RiUploadCloud2Line,

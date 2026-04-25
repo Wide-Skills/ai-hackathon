@@ -1,18 +1,14 @@
 "use client";
 
 import {
-  RiAlertLine,
   RiCheckboxCircleLine,
   RiCloseLine,
   RiFileExcel2Line,
-  RiLoader2Line,
   RiUploadCloud2Line,
 } from "@remixicon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
-import { QueryErrorState } from "@/components/data/query-state";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -171,7 +167,7 @@ export function UploadCandidatesDialog({
       setOpen(false);
       setCandidates([]);
       setFileName("");
-    } catch (e) {
+    } catch (_e) {
       toast.error("Batch upload failed");
     } finally {
       setUploading(false);

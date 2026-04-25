@@ -1,9 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import type React from "react";
 
-const stats = [
+const _stats = [
   { label: "Hours Saved", value: "400+", description: "per recruitment cycle" },
   {
     label: "Match Accuracy",

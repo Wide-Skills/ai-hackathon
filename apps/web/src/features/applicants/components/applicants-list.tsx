@@ -23,11 +23,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -42,7 +37,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ScoreBadge } from "@/features/dashboard/components/score-badge";
-import { cn } from "@/lib/utils";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 import { ApplicantsTable } from "./applicants-table";
 import { IngestCandidatesDialog } from "./ingest-candidates-dialog";
@@ -287,9 +281,10 @@ export function ApplicantsList() {
               AI Match Score <RiArrowUpDownLine className="size-3 opacity-30" />
             </button>
           </div>
-          <div className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
-            {filtered.length} experts discovery
+          <div className="font-sans font-medium text-[10px] text-ink-faint uppercase tracking-[0.06em]">
+            {filtered.length} candidates found
           </div>
+
         </div>
       )}
 

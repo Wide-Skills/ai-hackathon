@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import type React from "react";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const RankingPreview = () => {

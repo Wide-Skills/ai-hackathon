@@ -3,7 +3,6 @@ import {
   RiArrowRightUpLine,
   RiCheckboxCircleLine,
   RiCloseCircleLine,
-  RiErrorWarningLine,
   RiThumbUpLine,
 } from "@remixicon/react";
 import Link from "next/link";

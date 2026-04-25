@@ -1,6 +1,6 @@
 "use client";
 
-import { RiBuildingLine, RiCameraLine, RiSaveLine } from "@remixicon/react";
+import { RiCameraLine } from "@remixicon/react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 

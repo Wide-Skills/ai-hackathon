@@ -1,5 +1,4 @@
 import type { Skill } from "@ai-hackathon/shared";
-import { RiCodeLine } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,

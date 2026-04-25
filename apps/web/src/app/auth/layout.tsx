@@ -2,7 +2,6 @@ import { RiArrowLeftSLine } from "@remixicon/react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type React from "react";
-import { Button } from "@/components/ui/button";
 import {
   AuthContentWrapper,
   AuthVisuals,

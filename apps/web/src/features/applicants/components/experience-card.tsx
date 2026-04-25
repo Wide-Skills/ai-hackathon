@@ -1,5 +1,4 @@
 import type { Experience } from "@ai-hackathon/shared";
-import { RiBriefcaseLine } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,

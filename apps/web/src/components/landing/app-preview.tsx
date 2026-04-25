@@ -1,9 +1,8 @@
 "use client";
 
-import { RiMoreLine, RiSearchLine, RiUserLine } from "@remixicon/react";
+import { RiMoreLine, RiSearchLine } from "@remixicon/react";
 import { motion } from "framer-motion";
 import type React from "react";
-import { Badge } from "@/components/ui/badge";
 
 export const AppPreview: React.FC = () => {
   return (
