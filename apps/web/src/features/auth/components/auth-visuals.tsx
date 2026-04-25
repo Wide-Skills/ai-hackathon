@@ -6,9 +6,9 @@ import type React from "react";
 
 const Logo = ({ className }: { className?: string }) => (
   <Link href="/" className={`flex items-center gap-2 ${className}`}>
-    <span className="truncate font-display font-light text-[16px] text-foreground uppercase tracking-[0.2em]">
+    <span className="truncate font-display font-light text-[16px] text-white uppercase tracking-[0.2em]">
       Umurava{" "}
-      <span className="text-muted-foreground/40 normal-case italic tracking-tight">
+      <span className="text-white/70 normal-case italic tracking-tight">
         AI
       </span>
     </span>
@@ -68,7 +68,7 @@ const FloatingPaths = ({ position }: { position: number }) => {
 
 export function AuthVisuals() {
   return (
-    <div className="relative hidden h-full flex-col overflow-hidden border-border border-r bg-secondary/20 p-12 lg:flex">
+    <div className="relative hidden h-full flex-col overflow-hidden border-white/10 border-r bg-[#255fd2] p-12 lg:flex">
       <Logo className="relative z-10 mb-12" />
 
       <div className="relative z-10 flex flex-1 flex-col justify-center py-20">
@@ -77,11 +77,11 @@ export function AuthVisuals() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h2 className="mb-6 font-display font-light text-[36px] text-foreground leading-[1.1] tracking-tight">
+          <h2 className="mb-6 font-display font-light text-[36px] text-white leading-[1.1] tracking-tight">
             Hire the top 1% <br />
             with absolute clarity.
           </h2>
-          <p className="max-w-[300px] text-[15px] text-muted-foreground leading-relaxed">
+          <p className="max-w-[300px] text-[15px] text-white/75 leading-relaxed">
             The first explainable talent screening platform powered by Gemini
             AI.
           </p>
@@ -92,20 +92,20 @@ export function AuthVisuals() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 1 }}
-        className="relative z-10 mt-auto border-border border-t pt-10"
+        className="relative z-10 mt-auto border-white/10 border-t pt-10"
       >
         <blockquote className="space-y-4">
-          <p className="font-light text-[15px] text-foreground italic leading-relaxed">
+          <p className="font-light text-[15px] text-white italic leading-relaxed">
             &ldquo;Umurava has transformed our hiring process, allowing us to
             shortlist experts with surgical precision.&rdquo;
           </p>
-          <footer className="font-bold text-[11px] text-muted-foreground uppercase tracking-widest">
+          <footer className="font-bold text-[11px] text-white/65 uppercase tracking-widest">
             — Head of Talent, Neural Labs
           </footer>
         </blockquote>
       </motion.div>
 
-      <div className="absolute inset-0 z-0 text-foreground/5 opacity-50">
+      <div className="absolute inset-0 z-0 text-white/10 opacity-50">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
       </div>
