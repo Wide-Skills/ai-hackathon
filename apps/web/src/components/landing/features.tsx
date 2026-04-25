@@ -999,7 +999,7 @@ export const Features: React.FC = () => {
   });
 
   return (
-    <section className="border-border border-y bg-background py-[100px]">
+    <section className="border-border border-y bg-secondary/20 py-[100px] text-foreground">
       <div className="container-tight">
         <div className="mb-16 max-w-[800px]">
           <h2 className="mb-5 font-display font-light text-[32px] text-foreground leading-[1.1] tracking-[-0.03em] md:text-display-section">
