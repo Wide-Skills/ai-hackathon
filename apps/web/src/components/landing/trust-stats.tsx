@@ -5,7 +5,11 @@ import type React from "react";
 
 const stats = [
   { label: "Hours Saved", value: "400+", description: "per recruitment cycle" },
-  { label: "Match Accuracy", value: "94%", description: "verified by human experts" },
+  {
+    label: "Match Accuracy",
+    value: "94%",
+    description: "verified by human experts",
+  },
   { label: "Global Reach", value: "50+", description: "countries represented" },
   { label: "Cost Reduction", value: "60%", description: "on average per hire" },
 ];
@@ -21,7 +25,11 @@ export const TrustStats: React.FC = () => {
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                duration: 0.6,
+                delay: i * 0.1,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="text-center"
             >
               <p className="mb-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">

@@ -240,8 +240,8 @@ export function PlatformDocs() {
                   Intelligence Layer
                 </h5>
                 <p className="text-[14px] text-muted-foreground/70 leading-relaxed">
-                  Integrated with Gemini AI for deep semantic screening
-                  and automated profile extraction.
+                  Integrated with Gemini AI for deep semantic screening and
+                  automated profile extraction.
                 </p>
               </div>
               <div className="rounded-3xl border border-border/30 bg-secondary/[0.02] p-6">

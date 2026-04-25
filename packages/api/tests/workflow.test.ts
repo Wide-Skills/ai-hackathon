@@ -12,6 +12,8 @@ const jobFindByIdAndUpdateMock = vi.fn();
 
 const screeningFindOneMock = vi.fn();
 const screeningSaveMock = vi.fn();
+const screeningCacheFindOneMock = vi.fn();
+const screeningCacheCreateMock = vi.fn();
 
 const Applicant = Object.assign(
   vi.fn(function Applicant(this: any, input: any) {
@@ -45,6 +47,11 @@ const ScreeningResult = Object.assign(
   },
 );
 
+const ScreeningCache = {
+  findOne: screeningCacheFindOneMock,
+  create: screeningCacheCreateMock.mockResolvedValue({}),
+};
+
 // Mocks for External Services
 vi.mock("@ai-hackathon/env/server", () => ({
   env: {
@@ -57,6 +64,7 @@ vi.mock("@ai-hackathon/db", () => ({
   Applicant,
   Job,
   ScreeningResult,
+  ScreeningCache,
 }));
 
 vi.mock("@ai-hackathon/auth/email", () => ({

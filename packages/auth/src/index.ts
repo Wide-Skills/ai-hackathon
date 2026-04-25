@@ -95,7 +95,10 @@ export const auth = betterAuth({
               },
             });
           } catch (error) {
-            console.error("Failed to write audit log for session creation", error);
+            console.error(
+              "Failed to write audit log for session creation",
+              error,
+            );
           }
         },
       },

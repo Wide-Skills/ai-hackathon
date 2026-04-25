@@ -82,7 +82,8 @@ export function AuthVisuals() {
             with absolute clarity.
           </h2>
           <p className="max-w-[300px] text-[15px] text-muted-foreground leading-relaxed">
-            The first explainable talent screening platform powered by Gemini AI.
+            The first explainable talent screening platform powered by Gemini
+            AI.
           </p>
         </motion.div>
       </div>
@@ -112,7 +113,11 @@ export function AuthVisuals() {
   );
 }
 
-export function AuthContentWrapper({ children }: { children: React.ReactNode }) {
+export function AuthContentWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.99 }}

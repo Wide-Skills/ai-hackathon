@@ -3,7 +3,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type React from "react";
 import { Button } from "@/components/ui/button";
-import { AuthContentWrapper, AuthVisuals } from "@/features/auth/components/auth-visuals";
+import {
+  AuthContentWrapper,
+  AuthVisuals,
+} from "@/features/auth/components/auth-visuals";
 import { getSession } from "@/lib/auth";
 
 export default async function AuthLayout({
@@ -33,9 +36,7 @@ export default async function AuthLayout({
         </Button>
 
         <div className="mx-auto w-full max-w-[400px]">
-          <AuthContentWrapper>
-            {children}
-          </AuthContentWrapper>
+          <AuthContentWrapper>{children}</AuthContentWrapper>
         </div>
       </div>
     </main>

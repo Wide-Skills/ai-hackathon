@@ -358,8 +358,8 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
               render={
                 <Button
                   variant="outline"
-                          className="rounded-full"
-                   size={"lg"}
+                  className="rounded-full"
+                  size={"lg"}
                 />
               }
             >
@@ -375,8 +375,8 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                 !firstName ||
                 !email
               }
-                      className="rounded-full"
-                   size={"lg"}
+              className="rounded-full"
+              size={"lg"}
             >
               {uploading ? (
                 <>

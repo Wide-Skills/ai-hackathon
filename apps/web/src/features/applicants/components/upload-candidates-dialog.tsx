@@ -251,7 +251,6 @@ export function UploadCandidatesDialog({
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
           <div className="flex items-center gap-4">
-       
             <div>
               <DialogTitle className="font-display font-light text-xl uppercase tracking-widest">
                 Ingestion Node
@@ -420,7 +419,7 @@ export function UploadCandidatesDialog({
                 <Button
                   variant="outline"
                   className="rounded-full"
-                   size={"lg"}
+                  size={"lg"}
                 />
               }
             >
@@ -446,7 +445,7 @@ export function UploadCandidatesDialog({
             </Button>
           </DialogFooter>
 
-          <div className="flex items-start gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2 mt-4">
+          <div className="mt-4 flex items-start gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2">
             <RiAlertLine className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground/50" />
             <p className="text-muted-foreground text-xs leading-relaxed">
               Your CSV should have headers like{" "}

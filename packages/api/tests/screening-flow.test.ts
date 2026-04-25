@@ -8,6 +8,8 @@ const jobFindByIdMock = vi.fn();
 const jobFindByIdAndUpdateMock = vi.fn();
 const screeningFindOneMock = vi.fn();
 const screeningSaveMock = vi.fn();
+const screeningCacheFindOneMock = vi.fn();
+const screeningCacheCreateMock = vi.fn();
 
 const Applicant = Object.assign(vi.fn(), {
   findById: applicantFindByIdMock,
@@ -44,6 +46,11 @@ const ScreeningResult = Object.assign(
   },
 );
 
+const ScreeningCache = {
+  findOne: screeningCacheFindOneMock,
+  create: screeningCacheCreateMock.mockResolvedValue({}),
+};
+
 vi.mock("@ai-hackathon/env/server", () => ({
   env: {
     DATABASE_URL: "mongodb://localhost:27017/test",
@@ -56,6 +63,7 @@ vi.mock("@ai-hackathon/db", () => ({
   Applicant,
   Job,
   ScreeningResult,
+  ScreeningCache,
 }));
 
 vi.mock("@ai-hackathon/auth/email", () => ({
@@ -78,6 +86,12 @@ vi.mock("ai", () => ({
         { skill: "postgresql", score: 80 },
         { skill: "docker", score: 85 },
       ],
+      skills: [],
+      experience: [],
+      education: [],
+      languages: [],
+      certifications: [],
+      projects: [],
     },
   }),
   Output: {

@@ -24,4 +24,7 @@ export interface ScreeningCacheDocument extends mongoose.Document {
 
 export const ScreeningCache = mongoose.models.ScreeningCache
   ? mongoose.model<ScreeningCacheDocument>("ScreeningCache")
-  : mongoose.model<ScreeningCacheDocument>("ScreeningCache", screeningCacheSchema);
+  : mongoose.model<ScreeningCacheDocument>(
+      "ScreeningCache",
+      screeningCacheSchema,
+    );

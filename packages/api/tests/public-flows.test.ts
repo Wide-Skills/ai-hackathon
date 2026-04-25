@@ -5,6 +5,7 @@ const jobSaveMock = vi.fn();
 const applicantSaveMock = vi.fn();
 const jobFindByIdMock = vi.fn();
 const jobFindByIdAndUpdateMock = vi.fn();
+const applicantFindByIdMock = vi.fn();
 
 const Job = Object.assign(
   vi.fn(function Job(this: any, input: any) {
@@ -27,14 +28,30 @@ const Applicant = Object.assign(
   {
     countDocuments: vi.fn().mockResolvedValue(0),
     findByIdAndUpdate: vi.fn().mockResolvedValue({}),
+    findById: applicantFindByIdMock,
+  },
+);
+
+const ScreeningResult = Object.assign(
+  vi.fn(function ScreeningResult(this: any, input: any) {
+    Object.assign(this, input);
+    this.save = vi.fn().mockResolvedValue(this);
+    this.set = (next: any) => Object.assign(this, next);
+    this.toObject = () => this;
+  }),
+  {
+    findOne: vi.fn().mockResolvedValue(null),
+    findOneAndReplace: vi.fn().mockResolvedValue({}),
   },
 );
 
 vi.mock("@ai-hackathon/db", () => ({
   Applicant,
   Job,
-  ScreeningResult: {
+  ScreeningResult,
+  ScreeningCache: {
     findOne: vi.fn().mockResolvedValue(null),
+    create: vi.fn().mockResolvedValue({}),
   },
 }));
 

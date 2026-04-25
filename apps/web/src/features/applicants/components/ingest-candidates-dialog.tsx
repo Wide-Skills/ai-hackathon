@@ -71,8 +71,8 @@ export function IngestCandidatesDialog() {
               </h2>
               <p className="font-medium text-[13px] text-muted-foreground/60 leading-relaxed tracking-tight">
                 Choose how you want to add candidates. Our AI engine will
-                automatically extract details and match them against your
-                job requirements.
+                automatically extract details and match them against your job
+                requirements.
               </p>
             </div>
 
