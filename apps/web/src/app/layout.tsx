@@ -35,6 +35,7 @@ export default function RootLayout({
       className={cn("font-sans", inter.variable)}
     >
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
