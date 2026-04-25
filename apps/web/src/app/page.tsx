@@ -27,7 +27,7 @@ export default async function Home() {
 
         <Testimonials />
 
-        <section className="border-border border-t bg-secondary/30 px-[32px] py-[120px] text-center">
+        <section className="border-border border-t bg-foreground px-[32px] py-[120px] text-center text-foreground">
           <div className="mx-auto max-w-[1000px]">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
