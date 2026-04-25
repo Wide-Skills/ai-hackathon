@@ -4,35 +4,30 @@ import { cn } from "@/lib/utils";
 import { Spinner } from "./spinner";
 
 export const buttonVariants = cva(
-  "group/button inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap rounded-full border border-transparent bg-clip-padding font-medium text-sm outline-none transition-all focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "group/button inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap bg-clip-padding font-medium outline-none transition-all active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        default:
+          "rounded-standard bg-primary font-medium font-sans text-white tracking-[-0.01em] shadow-none hover:-translate-y-[1px] hover:bg-primary-muted",
         outline:
-          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+          "rounded-standard border border-line bg-transparent font-normal font-sans text-ink-muted shadow-none hover:border-line-emphasis hover:text-ink-full",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+          "rounded-standard border border-line bg-transparent font-normal font-sans text-ink-muted shadow-none hover:border-line-emphasis hover:text-ink-full",
         ghost:
-          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
-        destructive:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 dark:hover:bg-destructive/30",
-        link: "text-primary underline-offset-4 hover:underline",
+          "rounded-standard bg-line font-normal font-sans text-ink-muted shadow-none hover:text-ink-full",
+        link: "text-primary underline-offset-4 shadow-none hover:underline",
       },
       size: {
-        default:
-          "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xl: "h-11 gap-2 px-8 font-bold text-[10px] uppercase tracking-widest",
-        "2xl":
-          "h-[52px] gap-2.5 px-10 font-bold text-[11px] uppercase tracking-[0.2em]",
-        icon: "size-8",
-        "icon-xs":
-          "size-6 in-data-[slot=button-group]:rounded-full [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm": "size-7 in-data-[slot=button-group]:rounded-full",
-        "icon-lg": "size-9",
+        default: "h-9 px-5 text-[13px]",
+        xs: "h-6 px-2 text-[11px]",
+        sm: "h-8 px-3 text-[12px]",
+        lg: "h-11 px-6 text-[14px]",
+        xl: "h-11 px-8 font-sans text-[13px] tracking-[-0.01em]",
+        "2xl": "h-[52px] px-10 font-sans text-[14px] tracking-[-0.01em]",
+        icon: "h-9 w-9",
+        "icon-sm": "h-8 w-8",
+        "icon-xs": "h-7 w-7",
       },
     },
     defaultVariants: {

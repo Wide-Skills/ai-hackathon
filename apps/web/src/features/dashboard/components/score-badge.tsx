@@ -18,12 +18,12 @@ export function ScoreBadge({ score }: ScoreBadgeProps) {
   return (
     <Badge
       variant={variant}
-      size="default"
+      size="sm"
       uppercase
-      className={cn("gap-2 px-3 py-1.5 leading-none shadow-md")}
+      className={cn("gap-1.5 px-2 py-1 leading-none")}
     >
-      <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-current opacity-40" />
-      <span className="translate-y-[0.5px]">{score}% Match</span>
+      <div className="h-1 w-1 shrink-0 rounded-full bg-current opacity-60" />
+      <span className="font-medium font-sans text-[10px]">{score}% Match</span>
     </Badge>
   );
 }

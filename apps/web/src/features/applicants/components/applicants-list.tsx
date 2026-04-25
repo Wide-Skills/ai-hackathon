@@ -193,35 +193,40 @@ export function ApplicantsList() {
   }
 
   return (
-    <div className="w-full space-y-12 pb-20">
+    <div className="w-full space-y-section-padding pb-section-padding">
       {/* Search & Filters */}
-      <div className="flex flex-wrap items-center gap-6 border-border/20 border-b pb-10">
+      <div className="flex flex-wrap items-center gap-base border-line border-b pb-section-gap">
         <div className="relative min-w-[320px] flex-1">
-          <InputGroup className="h-11 overflow-hidden rounded-full border-border/50 bg-foreground/[0.01] px-1 shadow-md focus-within:ring-info/20">
-            <InputGroupAddon align="inline-start" className="pl-5">
-              <RiSearch2Line className="h-4 w-4 text-muted-foreground/20" />
-            </InputGroupAddon>
-            <InputGroupInput
+          <div className="group flex h-10 items-center gap-3 rounded-standard border border-line bg-bg2/40 px-3.5 transition-all focus-within:border-primary/20 focus-within:bg-surface">
+            <RiSearch2Line className="size-4 text-ink-faint" />
+            <input
+              type="text"
               placeholder="Search candidates..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="font-medium text-[14px]"
+              className="flex-1 bg-transparent font-normal font-sans text-[13px] outline-none placeholder:text-ink-faint"
             />
-          </InputGroup>
+          </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-base">
           <Tabs
             value={view}
             onValueChange={(v) => setView(v as "grid" | "table")}
             className="hidden sm:block"
           >
-            <TabsList className={"rounded-full"}>
-              <TabsTrigger value="grid" className="rounded-full">
-                <RiLayoutGridLine className="h-4 w-4" />
+            <TabsList className="h-10 rounded-standard bg-bg2/50 p-1">
+              <TabsTrigger
+                value="grid"
+                className="h-8 rounded-micro border-none px-3 data-[state=active]:bg-surface data-[state=active]:shadow-none"
+              >
+                <RiLayoutGridLine className="size-3.5" />
               </TabsTrigger>
-              <TabsTrigger value="table" className="rounded-full">
-                <RiListCheck className="h-4 w-4" />
+              <TabsTrigger
+                value="table"
+                className="h-8 rounded-micro border-none px-3 data-[state=active]:bg-surface data-[state=active]:shadow-none"
+              >
+                <RiListCheck className="size-3.5" />
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -230,16 +235,10 @@ export function ApplicantsList() {
             value={jobFilter}
             onValueChange={(value) => setJobFilter(value ?? "all")}
           >
-            <SelectTrigger className="h-11 w-52 rounded-full border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-md">
-              <div className="flex items-center">
-                <SelectValue placeholder="Pipeline">
-                  {jobFilter === "all"
-                    ? "All Pipelines"
-                    : jobsData.find((j) => j.id === jobFilter)?.title}
-                </SelectValue>
-              </div>
+            <SelectTrigger className="h-10 w-52 rounded-standard border-line bg-bg2/40 font-medium font-sans text-[11px] text-ink-muted uppercase tracking-[0.06em] shadow-none">
+              <SelectValue placeholder="Pipeline" />
             </SelectTrigger>
-            <SelectContent className="border-border/50 shadow-lg">
+            <SelectContent className="border-line bg-surface shadow-none">
               <SelectItem value="all">All Pipelines</SelectItem>
               {jobsData.map((j) => (
                 <SelectItem key={j.id} value={j.id}>
@@ -255,16 +254,10 @@ export function ApplicantsList() {
               isStatusFilter(value ?? "all") && setStatusFilter(value ?? "all")
             }
           >
-            <SelectTrigger className="h-11 w-44 rounded-full border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-md">
-              <div className="flex items-center">
-                <SelectValue placeholder="Status">
-                  {statusFilter === "all"
-                    ? "All States"
-                    : statusConfig[statusFilter as ApplicationStatus]?.label}
-                </SelectValue>
-              </div>
+            <SelectTrigger className="h-10 w-44 rounded-standard border-line bg-bg2/40 font-medium font-sans text-[11px] text-ink-muted uppercase tracking-[0.06em] shadow-none">
+              <SelectValue placeholder="Status" />
             </SelectTrigger>
-            <SelectContent className="border-border/50 shadow-lg">
+            <SelectContent className="border-line bg-surface shadow-none">
               <SelectItem value="all">All States</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="screening">Analyzing</SelectItem>
@@ -279,30 +272,30 @@ export function ApplicantsList() {
 
       {/* Grid Headers & Sorting */}
       {view === "grid" && (
-        <div className="mb-4 flex items-center justify-between px-8">
-          <div className="flex items-center gap-12">
+        <div className="mb-small flex items-center justify-between px-comfortable">
+          <div className="flex items-center gap-comfortable">
             <button
               onClick={() => handleSort("name")}
-              className="flex items-center gap-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] transition-colors hover:text-foreground"
+              className="flex items-center gap-base font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em] transition-colors hover:text-primary"
             >
-              Candidate <RiArrowUpDownLine className="h-3 w-3 opacity-20" />
+              Candidate <RiArrowUpDownLine className="size-3 opacity-30" />
             </button>
             <button
               onClick={() => handleSort("score")}
-              className="flex items-center gap-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] transition-colors hover:text-foreground"
+              className="flex items-center gap-base font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em] transition-colors hover:text-primary"
             >
-              AI Match <RiArrowUpDownLine className="h-3 w-3 opacity-20" />
+              AI Match Score <RiArrowUpDownLine className="size-3 opacity-30" />
             </button>
           </div>
-          <div className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.2em]">
-            Showing {filtered.length} candidates
+          <div className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
+            {filtered.length} experts discovery
           </div>
         </div>
       )}
 
       {/* Candidate View */}
       {view === "grid" ? (
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-base">
           {filtered.map((applicant, i) => {
             const sc = statusConfig[applicant.status];
             const job = jobsData.find((j) => j.id === applicant.jobId);
@@ -316,43 +309,44 @@ export function ApplicantsList() {
               >
                 <Card
                   variant="default"
-                  className="group flex flex-row items-center justify-between p-6 hover:border-primary/20 hover:shadow-lg"
+                  className="group flex flex-row items-center justify-between border-line p-comfortable shadow-none transition-all hover:border-line-medium"
+                  size="none"
                 >
                   <Link
                     href={`/dashboard/applicants/${applicant.id}` as Route}
                     className="flex w-full items-center justify-between"
                   >
-                    <div className="flex min-w-0 flex-1 items-center gap-6">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border/20 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-md transition-transform group-hover:scale-[1.05]">
+                    <div className="flex min-w-0 flex-1 items-center gap-comfortable">
+                      <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 font-medium font-sans text-[13px] text-ink-faint uppercase transition-transform group-hover:scale-[1.05]">
                         {applicant.firstName[0]}
                         {applicant.lastName[0]}
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <p className="mb-1 font-medium text-[16px] text-foreground tracking-tight transition-colors group-hover:text-primary">
+                        <p className="mb-1 font-serif text-[18px] text-primary leading-tight transition-colors group-hover:text-primary-muted">
                           {applicant.firstName} {applicant.lastName}
                         </p>
-                        <div className="flex items-center gap-4">
-                          <p className="mt-1 truncate font-medium text-[12px] text-muted-foreground/50 tracking-tight">
+                        <div className="flex items-center gap-base">
+                          <p className="truncate font-light font-sans text-[12px] text-ink-muted">
                             {applicant.headline}
                           </p>
-                          <div className="h-0.5 w-0.5 shrink-0 rounded-full bg-border/40" />
-                          <div className="truncate font-bold text-[10px] text-info/40 uppercase tracking-[0.2em]">
+                          <div className="size-1 rounded-full bg-line" />
+                          <div className="truncate font-medium font-sans text-[10px] text-primary/40 uppercase tracking-wider">
                             {job?.title}
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="ml-8 flex items-center gap-12">
-                      <div className="hidden items-center gap-2 opacity-30 lg:flex">
-                        <span className="font-bold text-[11px] text-muted-foreground/60 uppercase tracking-widest">
+                    <div className="ml-8 flex items-center gap-hero">
+                      <div className="hidden items-center gap-base lg:flex">
+                        <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
                           {applicant.location}
                         </span>
                       </div>
 
-                      <div className="flex w-28 flex-col items-center gap-2">
-                        <div className="flex items-center gap-2">
+                      <div className="flex flex-col items-center gap-micro">
+                        <div className="flex items-center gap-base">
                           <ScoreBadge
                             score={applicant.screening?.matchScore ?? 0}
                           />
@@ -368,59 +362,32 @@ export function ApplicantsList() {
                                   });
                                 }}
                                 disabled={screenMutation.isPending}
-                                className="flex h-7 w-7 items-center justify-center rounded-full border border-border/50 bg-background transition-all hover:bg-secondary active:scale-95 disabled:opacity-50"
+                                className="flex h-7 w-7 items-center justify-center rounded-micro border border-line bg-bg transition-all hover:bg-bg-alt active:scale-95 disabled:opacity-50"
                               >
                                 {screenMutation.isPending &&
                                 screenMutation.variables?.applicantId ===
                                   applicant.id ? (
                                   <RiLoader2Line className="h-3 w-3 animate-spin text-primary" />
                                 ) : (
-                                  <RiBrainLine className="h-3 w-3 text-muted-foreground/60" />
+                                  <RiBrainLine className="h-3 w-3 text-ink-faint" />
                                 )}
                               </TooltipTrigger>
-                              <TooltipContent className="rounded-full px-3 py-1 font-bold text-[9px] uppercase tracking-widest">
-                                Run AI Analysis
+                              <TooltipContent className="rounded-standard border-line bg-surface px-3 py-1 font-medium font-sans text-[11px] text-primary">
+                                Refresh Neural Analysis
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         </div>
-                        {(!applicant.screening ||
-                          applicant.status === "failed" ||
-                          (screenMutation.isPending &&
-                            screenMutation.variables?.applicantId ===
-                              applicant.id)) && (
-                          <span
-                            className={cn(
-                              "animate-pulse font-bold text-[8px] uppercase tracking-[0.2em]",
-                              applicant.status === "failed"
-                                ? "animate-none text-destructive/60"
-                                : "text-muted-foreground/40",
-                            )}
-                          >
-                            {screenMutation.isPending &&
-                            screenMutation.variables?.applicantId ===
-                              applicant.id
-                              ? "Processing"
-                              : applicant.status === "failed"
-                                ? "Analysis Failed"
-                                : "Analyzing"}
-                          </span>
-                        )}
                       </div>
 
                       <div className="flex w-32 justify-end">
-                        <Badge
-                          variant={sc.variant}
-                          size="sm"
-                          uppercase
-                          className="shadow-md"
-                        >
+                        <Badge variant={sc.variant} size="sm" uppercase>
                           {sc.label}
                         </Badge>
                       </div>
 
-                      <div className="flex items-center gap-6 border-border/5 border-l pl-6">
-                        <span className="min-w-[70px] text-right font-bold text-[10px] text-muted-foreground/20 uppercase tracking-widest">
+                      <div className="flex items-center gap-comfortable border-line border-l pl-comfortable">
+                        <span className="min-w-[60px] text-right font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
                           {new Date(applicant.appliedAt).toLocaleDateString(
                             "en-US",
                             { month: "short", day: "numeric" },

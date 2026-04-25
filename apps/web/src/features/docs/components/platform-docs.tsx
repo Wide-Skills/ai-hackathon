@@ -122,24 +122,23 @@ export function PlatformDocs() {
         </section>
 
         {/* Feature Grid */}
-        <section className="grid gap-8 md:grid-cols-2">
+        <section className="grid gap-comfortable md:grid-cols-2">
           {features.map((feature) => (
             <article
               key={feature.title}
-              className="group relative rounded-[40px] border border-border/40 bg-background p-10 shadow-md transition-all hover:border-primary/20 hover:shadow-lg"
+              className="group relative rounded-card border border-line bg-surface p-comfortable shadow-none transition-all hover:border-line-medium hover:bg-bg-alt/20"
             >
               <div
                 className={cn(
-                  "mb-8 flex h-14 w-14 items-center justify-center rounded-2xl transition-transform group-hover:scale-110",
-                  feature.bg,
+                  "mb-comfortable flex h-11 w-11 items-center justify-center rounded-micro border border-line bg-bg2 shadow-none transition-transform group-hover:scale-110",
                 )}
               >
-                <feature.icon className={cn("h-6 w-6", feature.color)} />
+                <feature.icon className={cn("size-5", feature.color)} />
               </div>
-              <h3 className="mb-4 font-display font-medium text-[24px] tracking-tight">
+              <h3 className="mb-base font-serif text-[24px] text-primary tracking-tight">
                 {feature.title}
               </h3>
-              <p className="text-[15px] text-muted-foreground/70 leading-relaxed">
+              <p className="font-light font-sans text-[15px] text-ink-muted leading-relaxed">
                 {feature.description}
               </p>
             </article>
@@ -147,30 +146,30 @@ export function PlatformDocs() {
         </section>
 
         {/* Product Workflow */}
-        <section className="rounded-[48px] border border-border/40 bg-background p-10 shadow-md md:p-20">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 font-display font-light text-[32px] tracking-tight md:text-[42px]">
+        <section className="rounded-[40px] border border-line bg-surface p-10 shadow-none md:p-20">
+          <div className="mb-section-gap text-center">
+            <span className="mb-micro block font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.1em]">
+              Architecture
+            </span>
+            <h2 className="font-serif text-[42px] text-primary leading-tight">
               The Strategic Workflow
             </h2>
-            <p className="font-medium text-[14px] text-muted-foreground/60 uppercase tracking-[0.2em]">
-              From Raw Data to High-Resolution Matches
-            </p>
           </div>
 
-          <div className="relative grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+          <div className="relative grid gap-hero md:grid-cols-2 lg:grid-cols-4">
             {/* Connecting line for desktop */}
-            <div className="absolute top-10 left-0 -z-10 hidden h-[1px] w-full bg-border/20 lg:block" />
+            <div className="absolute top-10 left-0 -z-10 hidden h-[1px] w-full bg-line lg:block" />
 
             {workflow.map((w) => (
-              <div key={w.step} className="space-y-6">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-border/60 bg-background font-display font-light text-[24px] text-primary/40 shadow-md ring-8 ring-secondary/5">
+              <div key={w.step} className="space-y-base">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-line bg-surface font-serif text-[28px] text-primary/30 shadow-none ring-8 ring-bg-alt/40 transition-colors hover:text-primary">
                   {w.step}
                 </div>
                 <div>
-                  <h4 className="mb-3 font-semibold text-[18px] tracking-tight">
+                  <h4 className="mb-2 font-medium font-sans text-[16px] text-primary tracking-tight">
                     {w.title}
                   </h4>
-                  <p className="text-[14px] text-muted-foreground/70 leading-relaxed">
+                  <p className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
                     {w.description}
                   </p>
                 </div>

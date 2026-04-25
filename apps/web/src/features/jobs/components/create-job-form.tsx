@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 
 export function CreateJobForm() {
@@ -61,7 +62,6 @@ export function CreateJobForm() {
       status: "active" as const,
     },
     onSubmit: async ({ value }) => {
-      // Validate with zod manually since we are not using the adapter to avoid dependency issues
       const result = CreateJobSchema.safeParse(value);
       if (!result.success) {
         toast.error("Invalid form data");
@@ -87,59 +87,60 @@ export function CreateJobForm() {
       animate={{ opacity: 1, y: 0 }}
       className="mx-auto max-w-4xl pb-20"
     >
-      <div className="mb-10 flex items-center gap-4">
+      <div className="mb-section-gap flex items-center gap-base">
         <button
           onClick={() => router.back()}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-border/50 bg-background transition-all hover:bg-secondary"
+          className="flex h-10 w-10 items-center justify-center rounded-micro border border-line bg-surface shadow-none transition-all hover:bg-bg-alt active:scale-95"
         >
-          <RiArrowLeftLine className="h-4 w-4" />
+          <RiArrowLeftLine className="size-4 text-ink-faint" />
         </button>
         <div>
-          <h1 className="mb-1 font-display font-light text-[32px] text-foreground leading-none tracking-tight">
-            Create New Job
+          <span className="mb-micro block font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+            Job Setup
+          </span>
+          <h1 className="font-serif text-[32px] text-primary leading-tight">
+            Create Job
           </h1>
-          <p className="font-medium text-[13px] text-muted-foreground/60 tracking-tight">
-            AI will screen candidates against these requirements.
-          </p>
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-3xl border border-border/50 bg-background shadow-lg">
+      <div className="overflow-hidden rounded-card border border-line bg-surface shadow-none">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             e.stopPropagation();
             form.handleSubmit();
           }}
-          className="space-y-10 p-10"
+          className="space-y-section-gap p-comfortable"
         >
-          <div className="space-y-8">
-            <div className="border-border/10 border-b pb-4">
-              <h3 className="font-display font-light text-[18px] text-foreground uppercase tracking-[0.1em]">
-                Basic Information
+          <div className="space-y-base">
+            <div className="border-line border-b pb-base">
+              <h3 className="font-serif text-[22px] text-primary">
+                Job Details
               </h3>
             </div>
 
-            <div className="grid gap-8 sm:grid-cols-2">
+            <div className="grid gap-base sm:grid-cols-2">
               <form.Field
                 name="title"
                 validators={{
                   onChange: CreateJobSchema.shape.title,
                 }}
                 children={(field) => (
-                  <div className="space-y-2.5">
-                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                      Job Title <span className="text-destructive">*</span>
+                  <div className="space-y-micro">
+                    <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                      Job Title{" "}
+                      <span className="text-status-error-text">*</span>
                     </Label>
                     <Input
                       placeholder="e.g. Senior Backend Engineer"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      className={`h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md ${field.state.meta.errors.length ? "border-destructive/50" : ""}`}
+                      className={`h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] text-primary shadow-none transition-all focus:bg-surface ${field.state.meta.errors.length ? "border-status-error-text/50" : ""}`}
                     />
                     {field.state.meta.errors.length > 0 && (
-                      <p className="pl-1 font-bold text-[10px] text-destructive uppercase tracking-wider">
+                      <p className="pl-1 font-medium font-sans text-[10px] text-status-error-text uppercase tracking-wider">
                         {field.state.meta.errors[0]?.toString()}
                       </p>
                     )}
@@ -150,8 +151,8 @@ export function CreateJobForm() {
               <form.Field
                 name="department"
                 children={(field) => (
-                  <div className="space-y-2.5">
-                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
+                  <div className="space-y-micro">
+                    <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                       Department
                     </Label>
                     <Input
@@ -159,7 +160,7 @@ export function CreateJobForm() {
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
+                      className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] text-primary shadow-none transition-all focus:bg-surface"
                     />
                   </div>
                 )}
@@ -172,19 +173,20 @@ export function CreateJobForm() {
                 onChange: CreateJobSchema.shape.description,
               }}
               children={(field) => (
-                <div className="space-y-2.5">
-                  <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                    Description <span className="text-destructive">*</span>
+                <div className="space-y-micro">
+                  <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                    Job Description{" "}
+                    <span className="text-status-error-text">*</span>
                   </Label>
                   <Textarea
-                    placeholder="Describe the role, responsibilities, and ideal candidate profile..."
+                    placeholder="Describe the role and responsibilities..."
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    className={`min-h-40 resize-none rounded-2xl border-border/50 bg-secondary/30 p-5 font-medium text-[15px] leading-relaxed tracking-tight transition-all focus:bg-background focus:shadow-md ${field.state.meta.errors.length ? "border-destructive/50" : ""}`}
+                    className={`min-h-40 resize-none rounded-standard border-line bg-bg2 p-4 font-light font-sans text-[14px] text-primary leading-relaxed shadow-none transition-all focus:bg-surface ${field.state.meta.errors.length ? "border-status-error-text/50" : ""}`}
                   />
                   {field.state.meta.errors.length > 0 && (
-                    <p className="pl-1 font-bold text-[10px] text-destructive uppercase tracking-wider">
+                    <p className="pl-1 font-medium font-sans text-[10px] text-status-error-text uppercase tracking-wider">
                       {field.state.meta.errors[0]?.toString()}
                     </p>
                   )}
@@ -192,20 +194,20 @@ export function CreateJobForm() {
               )}
             />
 
-            <div className="grid gap-8 sm:grid-cols-3">
+            <div className="grid gap-base sm:grid-cols-3">
               <form.Field
                 name="location"
                 children={(field) => (
-                  <div className="space-y-2.5">
-                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
+                  <div className="space-y-micro">
+                    <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                       Location
                     </Label>
                     <Input
-                      placeholder="e.g. Kigali, Rwanda"
+                      placeholder="e.g. Remote"
                       value={field.state.value}
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
-                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
+                      className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] text-primary shadow-none transition-all focus:bg-surface"
                     />
                   </div>
                 )}
@@ -214,9 +216,9 @@ export function CreateJobForm() {
               <form.Field
                 name="type"
                 children={(field) => (
-                  <div className="space-y-2.5">
-                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                      Job Type
+                  <div className="space-y-micro">
+                    <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                      Employment Type
                     </Label>
                     <Select
                       value={field.state.value}
@@ -224,10 +226,10 @@ export function CreateJobForm() {
                         field.handleChange(value as any)
                       }
                     >
-                      <SelectTrigger className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md">
+                      <SelectTrigger className="h-10 rounded-standard border-line bg-bg2 font-medium font-sans text-[12px] text-primary shadow-none">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border-border/50 shadow-lg">
+                      <SelectContent className="border-line bg-surface shadow-none">
                         <SelectItem value="Full-time">Full-time</SelectItem>
                         <SelectItem value="Part-time">Part-time</SelectItem>
                         <SelectItem value="Contract">Contract</SelectItem>
@@ -241,9 +243,9 @@ export function CreateJobForm() {
               <form.Field
                 name="status"
                 children={(field) => (
-                  <div className="space-y-2.5">
-                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                      Status
+                  <div className="space-y-micro">
+                    <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                      Job Status
                     </Label>
                     <Select
                       value={field.state.value}
@@ -251,10 +253,10 @@ export function CreateJobForm() {
                         field.handleChange(value as any)
                       }
                     >
-                      <SelectTrigger className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md">
+                      <SelectTrigger className="h-10 rounded-standard border-line bg-bg2 font-medium font-sans text-[12px] text-primary shadow-none">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-xl border-border/50 shadow-lg">
+                      <SelectContent className="border-line bg-surface shadow-none">
                         <SelectItem value="active">Active</SelectItem>
                         <SelectItem value="draft">Draft</SelectItem>
                         <SelectItem value="closed">Closed</SelectItem>
@@ -266,10 +268,10 @@ export function CreateJobForm() {
             </div>
           </div>
 
-          <div className="space-y-8">
-            <div className="border-border/10 border-b pb-4">
-              <h3 className="font-display font-light text-[18px] text-foreground uppercase tracking-[0.1em]">
-                Detailed Criteria
+          <div className="space-y-base">
+            <div className="border-line border-b pb-base">
+              <h3 className="font-serif text-[22px] text-primary">
+                Requirements
               </h3>
             </div>
 
@@ -279,11 +281,12 @@ export function CreateJobForm() {
                 onChange: CreateJobSchema.shape.requirements,
               }}
               children={(field) => (
-                <div className="space-y-4">
-                  <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                    Requirements <span className="text-destructive">*</span>
+                <div className="space-y-base">
+                  <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                    Key Requirements{" "}
+                    <span className="text-status-error-text">*</span>
                   </Label>
-                  <div className="flex gap-4">
+                  <div className="flex gap-base">
                     <Input
                       placeholder="Add a requirement and press Enter..."
                       value={requirementInput}
@@ -299,7 +302,7 @@ export function CreateJobForm() {
                           }
                         })
                       }
-                      className={`h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md ${field.state.meta.errors.length ? "border-destructive/50" : ""}`}
+                      className={`h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] text-primary shadow-none transition-all focus:bg-surface ${field.state.meta.errors.length ? "border-status-error-text/50" : ""}`}
                     />
                     <Button
                       type="button"
@@ -313,23 +316,18 @@ export function CreateJobForm() {
                           setRequirementInput("");
                         }
                       }}
-                      className="h-12 rounded-xl border-border/50 px-6 shadow-md transition-all hover:bg-secondary active:scale-[0.98]"
+                      className="h-10 rounded-standard border-line px-4 shadow-none hover:bg-bg-alt"
                     >
-                      <RiAddLine className="h-4 w-4" />
+                      <RiAddLine className="size-4 text-ink-faint" />
                     </Button>
                   </div>
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="pl-1 font-bold text-[10px] text-destructive uppercase tracking-wider">
-                      {field.state.meta.errors[0]?.toString()}
-                    </p>
-                  )}
                   {field.state.value.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-2">
+                    <div className="mt-base flex flex-wrap gap-small">
                       {field.state.value.map((req, i) => (
                         <Badge
                           key={i}
                           variant="secondary"
-                          className="gap-2 rounded-lg border border-border/10 bg-secondary/50 py-2.5 pr-2.5 pl-4 font-bold text-[11px] uppercase tracking-widest"
+                          className="gap-base rounded-micro border border-line bg-bg2 py-1 pr-1.5 pl-3 font-medium font-sans text-[11px] text-primary uppercase"
                         >
                           {req}
                           <button
@@ -339,9 +337,9 @@ export function CreateJobForm() {
                                 field.state.value.filter((_, idx) => idx !== i),
                               )
                             }
-                            className="rounded-full p-0.5 transition-colors hover:bg-foreground/10"
+                            className="rounded-full p-0.5 transition-colors hover:bg-surface"
                           >
-                            <RiCloseLine className="h-3 w-3" />
+                            <RiCloseLine className="size-3 text-ink-faint" />
                           </button>
                         </Badge>
                       ))}
@@ -354,13 +352,13 @@ export function CreateJobForm() {
             <form.Field
               name="skills"
               children={(field) => (
-                <div className="space-y-4">
-                  <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                    Skills (tags)
+                <div className="space-y-base">
+                  <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                    Skill Tags
                   </Label>
-                  <div className="flex gap-4">
+                  <div className="flex gap-base">
                     <Input
-                      placeholder="Add a skill and press Enter..."
+                      placeholder="Add a skill tag..."
                       value={skillInput}
                       onChange={(e) => setSkillInput(e.target.value)}
                       onKeyDown={(e) =>
@@ -374,7 +372,7 @@ export function CreateJobForm() {
                           }
                         })
                       }
-                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
+                      className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] text-primary shadow-none transition-all focus:bg-surface"
                     />
                     <Button
                       type="button"
@@ -388,18 +386,18 @@ export function CreateJobForm() {
                           setSkillInput("");
                         }
                       }}
-                      className="h-12 rounded-xl border-border/50 px-6 shadow-md transition-all hover:bg-secondary active:scale-[0.98]"
+                      className="h-10 rounded-standard border-line px-4 shadow-none hover:bg-bg-alt"
                     >
-                      <RiAddLine className="h-4 w-4" />
+                      <RiAddLine className="size-4 text-ink-faint" />
                     </Button>
                   </div>
                   {field.state.value.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-2">
+                    <div className="mt-base flex flex-wrap gap-small">
                       {field.state.value.map((skill, i) => (
                         <Badge
                           key={i}
                           variant="outline"
-                          className="gap-2 rounded-lg border-primary/10 bg-primary/5 py-2.5 pr-2.5 pl-4 font-bold text-[11px] text-primary uppercase tracking-widest"
+                          className="gap-base rounded-micro border border-line bg-bg-deep py-1 pr-1.5 pl-3 font-medium font-sans text-[11px] text-primary uppercase"
                         >
                           {skill}
                           <button
@@ -409,9 +407,9 @@ export function CreateJobForm() {
                                 field.state.value.filter((_, idx) => idx !== i),
                               )
                             }
-                            className="rounded-full p-0.5 transition-colors hover:bg-primary/20"
+                            className="rounded-full p-0.5 transition-colors hover:bg-surface"
                           >
-                            <RiCloseLine className="h-3 w-3" />
+                            <RiCloseLine className="size-3 text-ink-faint" />
                           </button>
                         </Badge>
                       ))}
@@ -420,77 +418,14 @@ export function CreateJobForm() {
                 </div>
               )}
             />
-
-            <div className="grid gap-8 sm:grid-cols-3">
-              <form.Field
-                name="salaryMin"
-                children={(field) => (
-                  <div className="space-y-2.5">
-                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                      Min Salary
-                    </Label>
-                    <Input
-                      type="number"
-                      placeholder="50000"
-                      value={field.state.value ?? ""}
-                      onChange={(e) =>
-                        field.handleChange(
-                          e.target.value ? Number(e.target.value) : undefined,
-                        )
-                      }
-                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
-                    />
-                  </div>
-                )}
-              />
-
-              <form.Field
-                name="salaryMax"
-                children={(field) => (
-                  <div className="space-y-2.5">
-                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                      Max Salary
-                    </Label>
-                    <Input
-                      type="number"
-                      placeholder="120000"
-                      value={field.state.value ?? ""}
-                      onChange={(e) =>
-                        field.handleChange(
-                          e.target.value ? Number(e.target.value) : undefined,
-                        )
-                      }
-                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
-                    />
-                  </div>
-                )}
-              />
-
-              <form.Field
-                name="closingDate"
-                children={(field) => (
-                  <div className="space-y-2.5">
-                    <Label className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.25em]">
-                      Closing Date
-                    </Label>
-                    <Input
-                      type="date"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      className="h-12 rounded-xl border-border/50 bg-secondary/30 font-medium text-[15px] tracking-tight transition-all focus:bg-background focus:shadow-md"
-                    />
-                  </div>
-                )}
-              />
-            </div>
           </div>
 
-          <div className="flex justify-end gap-5 border-border/10 border-t pt-10">
+          <div className="flex justify-end gap-base border-line border-t pt-section-gap">
             <Button
               type="button"
               variant="outline"
               onClick={() => router.push("/dashboard/jobs")}
-              className="h-12 rounded-full border-border/50 px-10 font-bold text-[13px] uppercase tracking-[0.1em]"
+              className="h-10 rounded-standard border-line px-8 font-medium font-sans text-[13px]"
             >
               Discard Changes
             </Button>
@@ -501,17 +436,17 @@ export function CreateJobForm() {
                 <Button
                   type="submit"
                   disabled={!canSubmit || isSubmitting || createJob.isPending}
-                  className="h-12 rounded-full bg-primary px-12 font-bold text-[13px] text-white uppercase tracking-[0.15em] shadow-lg transition-all hover:shadow-xl"
+                  className="h-10 rounded-standard bg-primary px-10 font-medium font-sans text-[13px] text-white shadow-none"
                 >
                   {isSubmitting || createJob.isPending ? (
                     <>
-                      <RiLoader2Line className="mr-3 h-4 w-4 animate-spin" />
+                      <RiLoader2Line className="mr-base size-3.5 animate-spin" />
                       Creating...
                     </>
                   ) : (
                     <>
-                      <RiBriefcaseLine className="mr-3 h-4 w-4" />
-                      Publish Position
+                      <RiBriefcaseLine className="mr-base size-3.5" />
+                      Publish Job
                     </>
                   )}
                 </Button>

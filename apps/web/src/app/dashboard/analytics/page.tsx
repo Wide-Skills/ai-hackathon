@@ -4,6 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { QueryErrorState } from "@/components/data/query-state";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   InteractivePerformanceChart,
   StatCard,
 } from "@/features/dashboard/components";
@@ -89,8 +96,8 @@ export default function AnalyticsPage() {
   ];
 
   return (
-    <div className="w-full space-y-20 pb-24">
-      <section className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+    <div className="w-full space-y-section-padding pb-section-padding">
+      <section className="grid grid-cols-1 gap-comfortable md:grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -108,46 +115,50 @@ export default function AnalyticsPage() {
         ))}
       </section>
 
-      <section className="space-y-10">
-        <header className="px-2">
-          <h3 className="font-display font-light text-[20px] text-foreground uppercase tracking-[0.15em]">
-            Neural Processing Velocity
+      <section className="space-y-base">
+        <div className="mb-section-gap border-line border-b px-small pb-base">
+          <span className="mb-micro block font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+            Performance
+          </span>
+          <h3 className="font-serif text-[32px] text-primary leading-tight">
+            Screening Velocity
           </h3>
-          <p className="mt-1 font-medium text-[12px] text-muted-foreground uppercase tracking-widest opacity-60">
-            High-resolution throughput analysis (Last 14 Days)
-          </p>
-        </header>
+        </div>
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="overflow-hidden rounded-3xl border border-border/50 bg-background shadow-lg">
+          <Card
+            variant="default"
+            className="overflow-hidden shadow-none"
+            size="none"
+          >
             <InteractivePerformanceChart applicants={applicants} />
-          </div>
+          </Card>
         </motion.div>
       </section>
 
-      <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
+      <div className="grid grid-cols-1 items-start gap-comfortable lg:grid-cols-12">
         <motion.div
           className="lg:col-span-7"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <div className="h-full rounded-3xl border border-border/50 bg-background p-12 shadow-lg">
-            <header className="mb-12">
-              <h3 className="font-display font-light text-[18px] text-foreground uppercase tracking-[0.15em]">
-                Resonance Distribution
-              </h3>
-              <p className="mt-1 font-bold text-[11px] text-muted-foreground uppercase tracking-widest opacity-40">
-                Candidate match density mapping
-              </p>
-            </header>
-            <div className="h-[300px]">
+          <Card
+            variant="default"
+            className="h-full overflow-hidden shadow-none"
+            size="none"
+          >
+            <CardHeader>
+              <CardDescription>Candidates</CardDescription>
+              <CardTitle>Match Distribution</CardTitle>
+            </CardHeader>
+            <div className="h-[340px] bg-surface p-comfortable">
               <ScoreDistributionChart applicants={applicants} />
             </div>
-          </div>
+          </Card>
         </motion.div>
 
         <motion.div
@@ -156,19 +167,21 @@ export default function AnalyticsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <div className="h-full rounded-3xl border border-border/50 bg-background p-12 shadow-lg">
-            <header className="mb-12">
-              <h3 className="font-display font-light text-[18px] text-foreground uppercase tracking-[0.15em]">
-                Expertise Topology
-              </h3>
-              <p className="mt-1 font-bold text-[11px] text-muted-foreground uppercase tracking-widest opacity-40">
-                Aggregate cross-pipeline skill mapping
-              </p>
-            </header>
-            <div className="mx-auto h-[300px] max-w-[450px]">
-              <SkillsRadarChart applicants={applicants} />
+          <Card
+            variant="default"
+            className="h-full overflow-hidden shadow-none"
+            size="none"
+          >
+            <CardHeader>
+              <CardDescription>Proficiency</CardDescription>
+              <CardTitle>Skill Map</CardTitle>
+            </CardHeader>
+            <div className="flex h-[340px] items-center justify-center bg-surface p-comfortable">
+              <div className="w-full max-w-[340px]">
+                <SkillsRadarChart applicants={applicants} />
+              </div>
             </div>
-          </div>
+          </Card>
         </motion.div>
       </div>
     </div>

@@ -1,118 +1,96 @@
 "use client";
 
-import {
-  RiAddLine,
-  RiNotification3Line,
-  RiSearch2Line,
-} from "@remixicon/react";
+import { RiNotification3Line, RiSearch2Line } from "@remixicon/react";
 import type { Route } from "next";
 import { usePathname, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import React from "react";
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
 
-const pageInfo: Record<
-  string,
-  {
-    title: string;
-    description: string;
-    action?: { label: string; href: Route };
-  }
-> = {
-  "/dashboard": {
-    title: "Overview",
-    description: "Your recruitment pipeline at a glance",
-    action: { label: "Post a Job", href: "/dashboard/jobs/new" },
-  },
-  "/dashboard/jobs": {
-    title: "Job Postings",
-    description: "Manage your open positions",
-    action: { label: "New Job", href: "/dashboard/jobs/new" },
-  },
-  "/dashboard/applicants": {
-    title: "Applicants",
-    description: "All candidates across your pipeline",
-  },
-  "/dashboard/screening": {
-    title: "AI Screening",
-    description: "Automated AI-powered candidate analysis",
-  },
-  "/dashboard/analytics": {
-    title: "Talent Analytics",
-    description: "Deep insights into your recruitment performance",
-  },
-  "/dashboard/settings": {
-    title: "Settings",
-    description: "Configure your workspace",
-  },
+const getLabel = (p: string) => {
+  const map: Record<string, string> = {
+    dashboard: "Dashboard",
+    applicants: "Candidates",
+    jobs: "Jobs",
+    screening: "Screening",
+    settings: "Settings",
+    analytics: "Analytics",
+  };
+  return map[p] || p.charAt(0).toUpperCase() + p.slice(1);
 };
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const currentPage = Object.entries(pageInfo)
-    .sort((a, b) => b[0].length - a[0].length)
-    .find(([key]) => pathname.startsWith(key));
-
-  const info = currentPage?.[1] ?? { title: "Dashboard", description: "" };
+  const paths = pathname.split("/").filter(Boolean);
 
   return (
-    <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-border/50 border-b bg-background/60 px-8 backdrop-blur-md">
-      <div>
-        <h1 className="font-display font-light text-[20px] text-foreground leading-none tracking-tight">
-          {info.title}
-        </h1>
-        {info.description && (
-          <p className="mt-1.5 font-bold text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
-            {info.description}
-          </p>
-        )}
+    <header className="sticky top-0 z-30 flex h-20 w-full shrink-0 items-center justify-between border-line border-b bg-surface/80 px-8 backdrop-blur-md lg:px-10">
+      <div className="flex flex-col justify-center">
+        <Breadcrumb>
+          <BreadcrumbList>
+            {paths.map((p, i) => {
+              const href = `/${paths.slice(0, i + 1).join("/")}`;
+              const isLast = i === paths.length - 1;
+              const label = getLabel(p);
+
+              return (
+                <React.Fragment key={p}>
+                  <BreadcrumbItem>
+                    {isLast ? (
+                      <BreadcrumbPage className="font-serif text-[24px] text-primary tracking-tight">
+                        {label}
+                      </BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink
+                        render={
+                          <button onClick={() => router.push(href as Route)} />
+                        }
+                        className="cursor-pointer text-ink-faint transition-colors hover:text-primary"
+                      >
+                        {label}
+                      </BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                  {!isLast && <BreadcrumbSeparator />}
+                </React.Fragment>
+              );
+            })}
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
-      <div className="flex items-center gap-6">
-        <div className="relative hidden w-72 md:block">
-          <InputGroup className="flex h-10 items-center overflow-hidden rounded-full border-border/50 bg-foreground/[0.02] px-1 shadow-sm focus-within:ring-info/20">
-            <InputGroupAddon
-              align="inline-start"
-              className="flex items-center justify-center pl-4"
-            >
-              <RiSearch2Line className="h-4 w-4 text-muted-foreground/40" />
-            </InputGroupAddon>
-            <InputGroupInput
-              placeholder="Search talent pool..."
-              className="border-none font-medium text-[13px] focus-visible:ring-0"
+      <div className="flex items-center gap-base">
+        {/* Polished Search Bar */}
+        <div className="relative hidden w-80 md:block">
+          <div className="group flex h-10 items-center gap-3 rounded-standard border border-line bg-bg2/40 px-3.5 transition-all focus-within:border-primary/20 focus-within:bg-surface focus-within:ring-4 focus-within:ring-primary-alpha/5">
+            <RiSearch2Line className="size-4 text-ink-faint transition-colors group-focus-within:text-primary" />
+            <input
+              type="text"
+              placeholder="Search anything..."
+              className="flex-1 bg-transparent font-normal font-sans text-[13px] outline-none placeholder:text-ink-faint"
             />
-          </InputGroup>
+            <kbd className="pointer-events-none hidden rounded bg-bg-deep px-1.5 py-0.5 font-mono text-[9px] text-ink-faint md:inline-block">
+              ⌘K
+            </kbd>
+          </div>
         </div>
 
-        <Button
-          variant="outline"
-          size="icon"
-          className="relative rounded-full shadow-sm"
-        >
-          <RiNotification3Line className="h-4 w-4 text-muted-foreground" />
-          <span className="absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full bg-info" />
-        </Button>
-
-        {info.action && (
-          <Button
-            onClick={() => {
-              if (info.action?.href) {
-                router.push(info.action.href);
-              }
-            }}
-            variant="default"
-            size="xl"
-            className="h-10 px-6 shadow-sm"
-          >
-            <RiAddLine className="mr-2 h-4 w-4" />
-            {info.action.label}
-          </Button>
-        )}
+        {/* Action Tray */}
+        <div className="ml-small flex items-center gap-small border-line border-l pl-base">
+          <button className="relative flex h-10 w-10 items-center justify-center rounded-standard border border-line bg-surface text-ink-faint transition-all hover:bg-bg-alt active:scale-[0.95]">
+            <RiNotification3Line className="h-4 w-4" />
+            <span className="absolute top-2.5 right-2.5 size-1.5 rounded-full bg-status-success-text shadow-[0_0_8px_rgba(26,112,85,0.4)]" />
+          </button>
+        </div>
       </div>
     </header>
   );

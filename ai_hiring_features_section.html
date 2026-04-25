@@ -1,0 +1,254 @@
+
+<style>
+.fc{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:16px;overflow:hidden;position:relative;display:flex;flex-direction:column;justify-content:flex-end;height:100%;transition:border-color .22s ease;}
+.fc:hover{border-color:var(--color-border-secondary);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+.animate-in{animation:fadeUp .6s cubic-bezier(.16,1,.3,1) forwards;opacity:0}
+</style>
+
+<div id="root"></div>
+
+<script type="module">
+import { createElement as h, useEffect, useRef, useState } from "https://esm.sh/react@18";
+import { createRoot } from "https://esm.sh/react-dom@18/client";
+
+function useInView(t=.06){
+  const ref=useRef(null), [v,sv]=useState(false);
+  useEffect(()=>{
+    const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){sv(true);obs.disconnect();}},{threshold:t});
+    if(ref.current)obs.observe(ref.current);
+    return()=>obs.disconnect();
+  },[]);
+  return[ref,v];
+}
+
+function RankingPreview({inView}){
+  const items=[
+    {in:"SJ",name:"Sarah Jenkins",  score:98,v:"success"},
+    {in:"MC",name:"Michael Chen",   score:94,v:"info"},
+    {in:"ER",name:"Elena Rodriguez",score:89,v:"warning"},
+    {in:"AL",name:"Alex Liu",       score:81,v:"muted",dim:true},
+  ];
+  const col={
+    success:{bg:"var(--color-background-success)",tx:"var(--color-text-success)",bd:"var(--color-border-success)"},
+    info:   {bg:"var(--color-background-info)",   tx:"var(--color-text-info)",   bd:"var(--color-border-info)"},
+    warning:{bg:"var(--color-background-warning)",tx:"var(--color-text-warning)",bd:"var(--color-border-warning)"},
+    muted:  {bg:"var(--color-background-secondary)",tx:"var(--color-text-tertiary)",bd:"var(--color-border-tertiary)"},
+  };
+  return h("div",{style:{position:"absolute",top:22,right:20,width:208,display:"flex",flexDirection:"column",gap:5,pointerEvents:"none"}},
+    ...items.map((it,i)=>{
+      const c=col[it.v];
+      return h("div",{key:i,style:{
+        display:"flex",alignItems:"center",gap:7,
+        background:"var(--color-background-primary)",border:"0.5px solid var(--color-border-tertiary)",
+        borderRadius:10,padding:"7px 9px",
+        opacity:inView?(it.dim?.28:1):0,
+        transform:inView?"translateX(0)":"translateX(14px)",
+        transition:`opacity .45s ease ${.08+i*.07}s, transform .5s cubic-bezier(.16,1,.3,1) ${.08+i*.07}s`,
+      }},
+        h("span",{style:{width:12,textAlign:"center",fontSize:9,fontWeight:600,color:"var(--color-text-tertiary)"}},i+1),
+        h("div",{style:{width:25,height:25,borderRadius:"50%",flexShrink:0,background:c.bg,border:`0.5px solid ${c.bd}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:7.5,fontWeight:700,color:c.tx,letterSpacing:".03em"}},it.in),
+        h("span",{style:{flex:1,fontSize:11,fontWeight:500,color:"var(--color-text-primary)",letterSpacing:".005em"}},it.name),
+        h("div",{style:{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3}},
+          h("span",{style:{fontSize:12,color:"var(--color-text-primary)",letterSpacing:"-.01em",fontVariantNumeric:"tabular-nums"}},it.score+"%"),
+          h("div",{style:{width:34,height:2,borderRadius:99,background:"var(--color-border-tertiary)",overflow:"hidden"}},
+            h("div",{style:{height:"100%",borderRadius:99,background:c.tx,width:inView?`${it.score}%`:"0%",transition:`width .7s cubic-bezier(.16,1,.3,1) ${.35+i*.07}s`}})
+          )
+        )
+      );
+    }),
+    h("div",{style:{
+      background:"var(--color-background-primary)",border:"0.5px solid var(--color-border-tertiary)",borderRadius:10,padding:"9px 11px",
+      opacity:inView?1:0,transform:inView?"translateY(0)":"translateY(8px)",
+      transition:"opacity .45s ease .43s, transform .5s cubic-bezier(.16,1,.3,1) .43s"
+    }},
+      h("div",{style:{fontSize:7.5,fontWeight:600,color:"var(--color-text-tertiary)",letterSpacing:".09em",marginBottom:5}},"AI REASONING"),
+      h("p",{style:{margin:0,fontSize:10.5,color:"var(--color-text-secondary)",lineHeight:1.65}},
+        "\u201cStrong Python & ML background. 4 yrs relevant exp. Exceeds seniority threshold.\u201d"
+      )
+    )
+  );
+}
+
+function ModelPreview(){
+  const nodes=[
+    {cx:24,cy:24,label:"Resume",type:"n",lx:37,ly:34,rx:62,ry:55},
+    {cx:144,cy:24,label:"JD",type:"n",lx:131,ly:34,rx:106,ry:55},
+    {cx:24,cy:120,label:"Skills",type:"n",lx:37,ly:110,rx:62,ry:89},
+    {cx:144,cy:120,label:"Score",type:"s",lx:106,ly:89,rx:131,ry:110},
+  ];
+  return h("div",{style:{position:"absolute",inset:0,bottom:82,display:"flex",alignItems:"center",justifyContent:"center",opacity:.78,pointerEvents:"none"}},
+    h("svg",{width:170,height:148,viewBox:"0 0 170 148",fill:"none"},
+      h("circle",{cx:84,cy:72,r:32,stroke:"var(--color-border-info)",strokeWidth:.5,strokeDasharray:"5 4",fill:"none",opacity:.65}),
+      h("circle",{cx:84,cy:72,r:23,fill:"var(--color-background-info)",stroke:"var(--color-border-info)",strokeWidth:.5}),
+      h("text",{x:84,y:69,textAnchor:"middle",fontSize:9,fontWeight:600,fill:"var(--color-text-info)"},"AI"),
+      h("text",{x:84,y:80,textAnchor:"middle",fontSize:7,fill:"var(--color-text-secondary)"},"Screener"),
+      ...nodes.flatMap((n,i)=>[
+        h("line",{key:`l${i}`,x1:n.lx,y1:n.ly,x2:n.rx,y2:n.ry,stroke:n.type==="s"?"var(--color-border-success)":"var(--color-border-tertiary)",strokeWidth:n.type==="s"?.75:.5,strokeDasharray:n.type==="s"?"3 2":undefined}),
+        h("circle",{key:`c${i}`,cx:n.cx,cy:n.cy,r:15,fill:n.type==="s"?"var(--color-background-success)":"var(--color-background-secondary)",stroke:n.type==="s"?"var(--color-border-success)":"var(--color-border-tertiary)",strokeWidth:.5}),
+        h("text",{key:`t${i}`,x:n.cx,y:n.cy+3.5,textAnchor:"middle",fontSize:7.5,fontWeight:n.type==="s"?600:500,fill:n.type==="s"?"var(--color-text-success)":"var(--color-text-secondary)"},n.label),
+      ])
+    )
+  );
+}
+
+function ParsingPreview(){
+  const tags=[
+    {label:"Python · 5yr",t:"info",  y:30},
+    {label:"ML · Senior", t:"success",y:54},
+    {label:"AWS · GCP",   t:"warning",y:78},
+    {label:"Stanford · CS",t:"muted",y:102},
+  ];
+  const tagCol={
+    info:   {bg:"var(--color-background-info)",   tx:"var(--color-text-info)",   bd:"var(--color-border-info)"},
+    success:{bg:"var(--color-background-success)",tx:"var(--color-text-success)",bd:"var(--color-border-success)"},
+    warning:{bg:"var(--color-background-warning)",tx:"var(--color-text-warning)",bd:"var(--color-border-warning)"},
+    muted:  {bg:"var(--color-background-secondary)",tx:"var(--color-text-secondary)",bd:"var(--color-border-tertiary)"},
+  };
+  return h("div",{style:{position:"absolute",inset:0,bottom:82,display:"flex",alignItems:"center",justifyContent:"center",opacity:.8,pointerEvents:"none"}},
+    h("svg",{width:196,height:134,viewBox:"0 0 196 134",fill:"none"},
+      h("defs",null,
+        h("marker",{id:"ap",viewBox:"0 0 8 8",refX:6,refY:4,markerWidth:4,markerHeight:4,orient:"auto"},
+          h("path",{d:"M1 1L6 4L1 7",stroke:"var(--color-text-tertiary)",strokeWidth:1.2,strokeLinecap:"round",fill:"none"})
+        )
+      ),
+      h("rect",{x:4,y:8,width:78,height:112,rx:7,fill:"var(--color-background-secondary)",stroke:"var(--color-border-tertiary)",strokeWidth:.5}),
+      h("path",{d:"M64 8 L82 26 L64 26 Z",fill:"var(--color-background-primary)",stroke:"var(--color-border-tertiary)",strokeWidth:.5}),
+      h("rect",{x:14,y:18,width:38,height:2.5,rx:1.25,fill:"var(--color-text-tertiary)",opacity:.2}),
+      ...[
+        [50,"var(--color-text-info)",.7],[37,"var(--color-text-tertiary)",.14],
+        [46,"var(--color-text-success)",.7],[26,"var(--color-text-tertiary)",.14],
+        [52,"var(--color-text-warning)",.7],[35,"var(--color-text-tertiary)",.14],
+        [43,"var(--color-text-tertiary)",.12],[30,"var(--color-text-tertiary)",.12],
+        [47,"var(--color-text-tertiary)",.12],
+      ].map(([w,c,o],i)=>h("rect",{key:i,x:14,y:30+i*8,width:w,height:2.5,rx:1.25,fill:c,opacity:o})),
+      h("path",{d:"M86 68 L103 68",stroke:"var(--color-text-tertiary)",strokeWidth:.75,opacity:.45,fill:"none",markerEnd:"url(#ap)"}),
+      ...tags.flatMap((tg,i)=>{
+        const c=tagCol[tg.t];
+        return [
+          h("rect",{key:`tr${i}`,x:108,y:tg.y,width:76,height:18,rx:5,fill:c.bg,stroke:c.bd,strokeWidth:.5}),
+          h("text",{key:`tt${i}`,x:146,y:tg.y+11.5,textAnchor:"middle",fontSize:7.5,fontWeight:500,fill:c.tx},tg.label),
+        ];
+      })
+    )
+  );
+}
+
+function IngestionPreview(){
+  return h("div",{style:{position:"absolute",inset:0,bottom:82,display:"flex",alignItems:"center",justifyContent:"center",opacity:.8,pointerEvents:"none"}},
+    h("svg",{width:202,height:130,viewBox:"0 0 202 130",fill:"none"},
+      h("defs",null,
+        h("marker",{id:"ain",viewBox:"0 0 8 8",refX:6,refY:4,markerWidth:4,markerHeight:4,orient:"auto"},
+          h("path",{d:"M1 1L6 4L1 7",stroke:"var(--color-text-tertiary)",strokeWidth:1.2,strokeLinecap:"round",fill:"none"})
+        ),
+        h("marker",{id:"ais",viewBox:"0 0 8 8",refX:6,refY:4,markerWidth:4,markerHeight:4,orient:"auto"},
+          h("path",{d:"M1 1L6 4L1 7",stroke:"var(--color-text-success)",strokeWidth:1.2,strokeLinecap:"round",fill:"none"})
+        )
+      ),
+      ...[["ATS","Greenhouse",10],["CSV","Spreadsheet",47],["PDF",null,84]].flatMap(([t,s,y],i)=>[
+        h("rect",{key:`sb${i}`,x:2,y,width:54,height:s?28:22,rx:6,fill:"var(--color-background-secondary)",stroke:"var(--color-border-tertiary)",strokeWidth:.5}),
+        h("text",{key:`st${i}`,x:29,y:y+(s?12:13),textAnchor:"middle",fontSize:7.5,fontWeight:600,fill:"var(--color-text-primary)"},t),
+        s&&h("text",{key:`ss${i}`,x:29,y:y+23,textAnchor:"middle",fontSize:6.5,fill:"var(--color-text-tertiary)"},s),
+      ]).filter(Boolean),
+      h("path",{d:"M56 24 Q78 24 78 58",stroke:"var(--color-text-tertiary)",strokeWidth:.6,fill:"none",markerEnd:"url(#ain)",opacity:.4}),
+      h("path",{d:"M56 61 L74 65",stroke:"var(--color-text-tertiary)",strokeWidth:.6,fill:"none",markerEnd:"url(#ain)",opacity:.4}),
+      h("path",{d:"M56 95 Q78 95 78 76",stroke:"var(--color-text-tertiary)",strokeWidth:.6,fill:"none",markerEnd:"url(#ain)",opacity:.4}),
+      h("rect",{x:76,y:47,width:42,height:40,rx:8,fill:"var(--color-background-info)",stroke:"var(--color-border-info)",strokeWidth:.6}),
+      h("text",{x:97,y:65,textAnchor:"middle",fontSize:7,fontWeight:600,fill:"var(--color-text-info)"},"INGEST"),
+      h("text",{x:97,y:77,textAnchor:"middle",fontSize:6.5,fill:"var(--color-text-secondary)"},"Engine"),
+      h("path",{d:"M118 67 L136 67",stroke:"var(--color-text-success)",strokeWidth:.75,fill:"none",markerEnd:"url(#ais)",opacity:.7}),
+      h("rect",{x:138,y:50,width:56,height:38,rx:6,fill:"var(--color-background-success)",stroke:"var(--color-border-success)",strokeWidth:.6}),
+      h("ellipse",{cx:166,cy:50,rx:28,ry:5,fill:"var(--color-background-success)",stroke:"var(--color-border-success)",strokeWidth:.6}),
+      h("text",{x:166,y:71,textAnchor:"middle",fontSize:7.5,fontWeight:600,fill:"var(--color-text-success)"},"Unified"),
+      h("text",{x:166,y:81,textAnchor:"middle",fontSize:6.5,fill:"var(--color-text-secondary)"},"Database"),
+    )
+  );
+}
+
+function DashboardPreview({inView}){
+  const metrics=[
+    {label:"Screened",   value:"1,284",color:"var(--color-text-primary)"},
+    {label:"Shortlisted",value:"47",   color:"var(--color-text-success)"},
+    {label:"Avg. match", value:"87.4%",color:"var(--color-text-info)"},
+  ];
+  const bars=[
+    {d:"M",h:52},{d:"T",h:68},{d:"W",h:58},{d:"T",h:90,hi:true},
+    {d:"F",h:72},{d:"S",h:60},{d:"S",h:76},{d:"M",h:66},
+  ];
+  return h("div",{style:{position:"absolute",top:18,right:18,width:228,pointerEvents:"none"}},
+    h("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:8}},
+      ...metrics.map((m,i)=>h("div",{key:i,style:{background:"var(--color-background-primary)",border:"0.5px solid var(--color-border-tertiary)",borderRadius:8,padding:"6px 8px"}},
+        h("div",{style:{fontSize:7,color:"var(--color-text-tertiary)",fontWeight:500,marginBottom:3,letterSpacing:".03em"}},m.label),
+        h("div",{style:{fontSize:16,fontWeight:300,color:m.color,letterSpacing:"-.03em",lineHeight:1}},m.value)
+      ))
+    ),
+    h("div",{style:{background:"var(--color-background-primary)",border:"0.5px solid var(--color-border-tertiary)",borderRadius:8,padding:"8px 10px"}},
+      h("div",{style:{fontSize:7,color:"var(--color-text-tertiary)",fontWeight:500,marginBottom:7,letterSpacing:".03em"}},"Weekly applicants"),
+      h("div",{style:{display:"flex",gap:3.5,alignItems:"flex-end",height:60}},
+        ...bars.map((b,i)=>h("div",{key:i,style:{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:3,height:"100%"}},
+          h("div",{style:{flex:1,width:"100%",display:"flex",alignItems:"flex-end"}},
+            h("div",{style:{
+              width:"100%",height:inView?`${b.h}%`:"2px",minHeight:2,
+              borderRadius:"2px 2px 0 0",
+              background:b.hi?"var(--color-text-success)":"var(--color-text-info)",
+              opacity:b.hi?.55:.22,
+              transition:`height .65s cubic-bezier(.16,1,.3,1) ${.16+i*.05}s`,
+            }})
+          ),
+          h("span",{style:{fontSize:7,color:b.hi?"var(--color-text-success)":"var(--color-text-tertiary)",fontWeight:b.hi?600:400}},b.d)
+        ))
+      )
+    )
+  );
+}
+
+function Features(){
+  const [ref,inView]=useInView(.04);
+
+  const cards=[
+    {gCol:"1 / 3",gRow:"1 / 3",pad:36,Preview:RankingPreview,head:"Explainable AI ranking",body:"Natural-language justifications for every ranking. Understand the why behind every shortlist with full reasoning.",lg:true},
+    {gCol:"3",gRow:"1",pad:24,Preview:ModelPreview,head:"Multi-model analysis",body:"Analyzes candidate profiles against job requirements with deep contextual understanding.",lg:false},
+    {gCol:"3",gRow:"2",pad:24,Preview:ParsingPreview,head:"Unstructured parsing",body:"Extract and normalize skills from messy PDFs, spreadsheets, and external resumes automatically.",lg:false},
+    {gCol:"1",gRow:"3",pad:24,Preview:IngestionPreview,head:"Unified ingestion",body:"Sync from your ATS or upload external job board data in one click. One pipeline, every source.",lg:false},
+    {gCol:"2 / 4",gRow:"3",pad:32,Preview:DashboardPreview,head:"Recruiter dashboard",body:"A high-fidelity interface for decision-makers. Manage postings, track pipeline health, and visualize shortlists.",lg:true},
+  ];
+
+  return h("section",{ref,style:{fontFamily:"var(--font-sans)",padding:"72px 0",borderTop:"0.5px solid var(--color-border-tertiary)",borderBottom:"0.5px solid var(--color-border-tertiary)"}},
+    h("div",{style:{
+      marginBottom:52,
+      opacity:inView?1:0,transform:inView?"translateY(0)":"translateY(12px)",
+      transition:"opacity .7s ease, transform .7s ease"
+    }},
+      h("h2",{style:{fontSize:34,fontWeight:300,color:"var(--color-text-primary)",margin:"0 0 14px",lineHeight:1.1,letterSpacing:"-.03em"}},
+        "Precision screening for ",
+        h("span",{style:{color:"var(--color-text-secondary)"}},"modern recruiters.")
+      ),
+      h("p",{style:{fontSize:16,color:"var(--color-text-secondary)",margin:0,lineHeight:1.65,maxWidth:480,letterSpacing:".005em"}},
+        "Eliminate bias and manual overhead with an intelligent assistant that understands skill sets as deeply as you do."
+      )
+    ),
+    h("div",{style:{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gridAutoRows:280,gap:12}},
+      ...cards.map((card,i)=>{
+        const {gCol,gRow,pad,Preview,head,body,lg}=card;
+        const delay=i*.07;
+        return h("div",{key:i,style:{
+          gridColumn:gCol,gridRow:gRow,
+          opacity:inView?1:0,
+          transform:inView?"translateY(0) scale(1)":"translateY(18px) scale(.99)",
+          transition:`opacity .6s cubic-bezier(.16,1,.3,1) ${delay}s, transform .6s cubic-bezier(.16,1,.3,1) ${delay}s`,
+        }},
+          h("div",{className:"fc",style:{padding:pad}},
+            h(Preview,{inView}),
+            h("div",{style:{position:"relative",zIndex:1,maxWidth:lg?350:"100%"}},
+              h("h3",{style:{fontSize:lg?21:17,fontWeight:300,color:"var(--color-text-primary)",margin:"0 0 7px",letterSpacing:"-.02em",lineHeight:1.2}},head),
+              h("p",{style:{fontSize:lg?14:12.5,color:"var(--color-text-secondary)",margin:0,lineHeight:1.65,letterSpacing:".005em"}},body)
+            )
+          )
+        );
+      })
+    )
+  );
+}
+
+createRoot(document.getElementById("root")).render(h(Features,null));
+</script>

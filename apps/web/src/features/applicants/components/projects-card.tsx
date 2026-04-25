@@ -1,7 +1,12 @@
 import type { Project } from "@ai-hackathon/shared";
 import { RiCodeLine, RiExternalLinkLine } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface ProjectsCardProps {
   projects: Project[];
@@ -11,28 +16,24 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
   if (projects.length === 0) return null;
 
   return (
-    <Card className="border-border/50 p-8 shadow-lg">
-      <div className="mb-10 flex items-center gap-3 border-border/10 border-b pb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-md">
-          <RiCodeLine className="h-4.5 w-4.5" />
-        </div>
-        <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
-          Technical Portfolio
-        </h3>
-      </div>
+    <Card variant="default" className="overflow-hidden shadow-none" size="none">
+      <CardHeader>
+        <CardDescription>Portfolio</CardDescription>
+        <CardTitle>Technical Projects</CardTitle>
+      </CardHeader>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-comfortable p-comfortable md:grid-cols-2">
         {projects.map((proj, i) => (
           <div
             key={i}
-            className="group rounded-xl border border-border/10 bg-secondary/[0.03] p-6 shadow-md transition-all hover:bg-secondary/[0.05]"
+            className="group rounded-standard border border-line bg-bg2/30 p-comfortable transition-all hover:border-line-medium"
           >
-            <div className="mb-4 flex items-start justify-between">
+            <div className="mb-comfortable flex items-start justify-between">
               <div>
-                <p className="font-bold text-[15px] text-foreground/80 tracking-tight transition-colors group-hover:text-primary">
+                <p className="font-medium font-sans text-[15px] text-primary tracking-tight transition-colors">
                   {proj.name}
                 </p>
-                <p className="mt-1 font-bold text-[11px] text-muted-foreground/40 uppercase tracking-widest">
+                <p className="mt-0.5 font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
                   {proj.role}
                 </p>
               </div>
@@ -41,23 +42,22 @@ export function ProjectsCard({ projects }: ProjectsCardProps) {
                   href={proj.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-border/10 text-muted-foreground/30 transition-all hover:bg-background hover:text-foreground hover:shadow-md"
+                  className="flex h-7 w-7 items-center justify-center rounded-micro border border-line bg-surface text-ink-faint shadow-none transition-all hover:border-line-medium hover:text-primary active:scale-95"
                 >
-                  <RiExternalLinkLine className="h-4 w-4" />
+                  <RiExternalLinkLine className="size-3.5" />
                 </a>
               )}
             </div>
-            <p className="mt-4 font-medium text-[14px] text-muted-foreground/70 leading-relaxed tracking-tight">
+            <p className="mt-base font-light font-sans text-[14px] text-ink-muted leading-relaxed">
               {proj.description}
             </p>
-            <div className="mt-6 flex flex-wrap gap-2">
+            <div className="mt-comfortable flex flex-wrap gap-small">
               {proj.technologies.map((t) => (
                 <Badge
                   key={t}
-                  variant="outline"
-                  size="xs"
-                  uppercase
-                  className="border-border/5 bg-background text-muted-foreground/40 shadow-sm"
+                  variant="secondary"
+                  size="sm"
+                  className="border-line bg-surface"
                 >
                   {t}
                 </Badge>

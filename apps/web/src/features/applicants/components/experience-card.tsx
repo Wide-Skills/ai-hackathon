@@ -1,7 +1,12 @@
 import type { Experience } from "@ai-hackathon/shared";
 import { RiBriefcaseLine } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface ExperienceCardProps {
   experience: Experience[];
@@ -9,63 +14,48 @@ interface ExperienceCardProps {
 
 export function ExperienceCard({ experience }: ExperienceCardProps) {
   return (
-    <Card variant="premium" className="p-8" size="none">
-      <div className="mb-10 flex items-center gap-3 border-border/10 border-b pb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-md">
-          <RiBriefcaseLine className="h-4.5 w-4.5" />
-        </div>
-        <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
-          Career History
-        </h3>
-      </div>
+    <Card variant="default" className="overflow-hidden shadow-none" size="none">
+      <CardHeader>
+        <CardDescription>History</CardDescription>
+        <CardTitle>Career Journey</CardTitle>
+      </CardHeader>
 
-      <div className="space-y-10">
+      <div className="space-y-comfortable p-comfortable">
         {experience.map((exp, i) => (
-          <div key={i} className="group flex gap-6">
+          <div key={i} className="group flex gap-base">
             <div className="flex flex-col items-center">
-              <div className="mt-2 flex h-1.5 w-1.5 flex-shrink-0 items-center justify-center rounded-full bg-primary/40 shadow-md" />
+              <div className="mt-2 flex h-1.5 w-1.5 flex-shrink-0 items-center justify-center rounded-full bg-primary/20" />
               {i < experience.length - 1 && (
-                <div className="mt-4 w-px flex-1 bg-border/10" />
+                <div className="mt-4 w-px flex-1 bg-line" />
               )}
             </div>
             <div className="flex-1 pb-2">
-              <div className="mb-3 flex items-start justify-between">
+              <div className="flex items-start justify-between gap-base">
                 <div>
-                  <p className="font-bold text-[15px] text-foreground/80 tracking-tight transition-colors group-hover:text-primary">
+                  <p className="font-medium font-sans text-[15px] text-primary tracking-tight transition-colors">
                     {exp.role}
                   </p>
-                  <p className="mt-1 font-bold text-[13px] text-muted-foreground/40 uppercase tracking-widest">
+                  <p className="mt-0.5 font-medium font-sans text-[12px] text-ink-faint uppercase tracking-wider">
                     {exp.company}
                   </p>
                 </div>
-                <div className="flex-shrink-0 text-right opacity-30 transition-opacity group-hover:opacity-100">
-                  <p className="font-bold text-[11px] text-muted-foreground uppercase tracking-widest">
+                <div className="flex-shrink-0 space-y-1 text-right">
+                  <p className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                     {exp.startDate} – {exp.endDate}
                   </p>
                   {exp.isCurrent && (
-                    <Badge
-                      variant="success"
-                      size="xs"
-                      uppercase
-                      className="shadow-sm"
-                    >
+                    <Badge variant="success" size="sm" uppercase>
                       Active
                     </Badge>
                   )}
                 </div>
               </div>
-              <p className="mt-4 font-medium text-[14px] text-muted-foreground/70 leading-relaxed tracking-tight">
+              <p className="mt-comfortable max-w-[65ch] font-light font-sans text-[14px] text-ink-muted leading-relaxed">
                 {exp.description}
               </p>
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div className="mt-base flex flex-wrap gap-small">
                 {exp.technologies.map((t) => (
-                  <Badge
-                    key={t}
-                    variant="secondary"
-                    size="xs"
-                    uppercase
-                    className="shadow-md"
-                  >
+                  <Badge key={t} variant="secondary" size="sm">
                     {t}
                   </Badge>
                 ))}

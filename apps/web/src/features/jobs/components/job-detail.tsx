@@ -14,7 +14,12 @@ import { notFound, useRouter } from "next/navigation";
 import { QueryErrorState } from "@/components/data/query-state";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 import { ScoreBadge } from "../../dashboard/components/score-badge";
@@ -49,11 +54,11 @@ export function JobDetail({ id }: JobDetailProps) {
   if (jobQuery.isLoading || applicantsQuery.isLoading) {
     return (
       <div className="w-full animate-pulse space-y-12">
-        <div className="h-8 w-40 rounded-full bg-secondary/30" />
-        <div className="h-24 w-full rounded-3xl bg-secondary/30" />
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
-          <div className="h-[600px] rounded-3xl bg-secondary/30 lg:col-span-2" />
-          <div className="h-[600px] rounded-3xl bg-secondary/30" />
+        <div className="h-8 w-40 rounded-standard bg-bg2" />
+        <div className="h-24 w-full rounded-card bg-bg2" />
+        <div className="grid grid-cols-1 gap-comfortable lg:grid-cols-3">
+          <div className="h-[600px] rounded-card bg-bg2 lg:col-span-2" />
+          <div className="h-[600px] rounded-card bg-bg2" />
         </div>
       </div>
     );
@@ -102,89 +107,103 @@ export function JobDetail({ id }: JobDetailProps) {
   const sc = statusConfig[job.status || "active"];
 
   return (
-    <div className="w-full space-y-12 pb-20">
-      <div className="flex items-center justify-between px-2">
+    <div className="w-full space-y-section-padding pb-section-padding">
+      <div className="flex items-center justify-between">
         <button
           onClick={() => router.back()}
-          className="group flex items-center gap-2 font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] transition-all hover:text-foreground"
+          className="group flex items-center gap-base font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em] transition-all hover:text-primary"
         >
-          <RiArrowLeftLine className="h-3 w-3 transition-transform group-hover:-translate-x-1" />
-          Pipeline Overview
+          <RiArrowLeftLine className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-1" />
+          Operations Overview
         </button>
 
-        <div className="flex items-center gap-4">
-          <Badge
-            variant={sc.variant}
-            size="default"
-            uppercase
-            className="shadow-md"
-          >
+        <div className="flex items-center gap-base">
+          <Badge variant={sc.variant} size="default" uppercase>
             {sc.label}
           </Badge>
           <Button
             variant="outline"
             size="icon-sm"
-            className="h-9 w-9 rounded-full"
+            className="rounded-micro border-line"
           >
-            <RiMoreLine className="h-4 w-4 text-muted-foreground/40" />
+            <RiMoreLine className="h-4 w-4 text-ink-faint" />
           </Button>
         </div>
       </div>
 
-      <div className="flex flex-col justify-between gap-12 border-border/10 border-b px-2 pb-12 lg:flex-row lg:items-end">
+      <div className="flex flex-col justify-between gap-hero border-line border-b pb-section-gap lg:flex-row lg:items-end">
         <div className="flex-1">
-          <div className="mb-8 flex items-center gap-5">
-            <div className="h-px w-10 rounded-full bg-border/20" />
-            <span className="font-bold text-[10px] text-primary/40 uppercase tracking-[0.25em]">
-              Neural Analysis Active
+          <div className="mb-comfortable flex items-center gap-base">
+            <span className="font-medium font-sans text-[10px] text-primary/40 uppercase tracking-[0.1em]">
+              Neural Pipeline Active
             </span>
           </div>
 
-          <h1 className="mb-8 max-w-[900px] font-display font-light text-display-hero text-foreground leading-[1.05] tracking-tight">
+          <h1 className="mb-base max-w-[900px] font-serif text-[42px] text-primary leading-tight">
             {job.title}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-x-10 gap-y-4 font-medium text-[14px] tracking-tight opacity-40">
+          <div className="flex flex-wrap items-center gap-x-base gap-y-2 font-medium font-sans text-[13px] text-ink-muted uppercase tracking-wider">
             <span>{job.location}</span>
-            <div className="h-1 w-1 rounded-full bg-border/40" />
+            <div className="size-1 rounded-full bg-line" />
             <span>{job.type}</span>
-            <div className="h-1 w-1 rounded-full bg-border/40" />
+            <div className="size-1 rounded-full bg-line" />
             <span>{job.department}</span>
           </div>
         </div>
 
         <Link href="/dashboard/screening">
-          <Button variant="outline" size="lg">
+          <Button
+            variant="outline"
+            size="default"
+            className="h-10 px-6 font-medium font-sans"
+          >
             Neural Match Report
           </Button>
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-3">
-        <div className="space-y-12 lg:col-span-2">
+      <div className="grid grid-cols-1 items-start gap-hero lg:grid-cols-3">
+        <div className="space-y-section-gap lg:col-span-2">
           <section>
-            <h3 className="mb-8 px-2 font-display font-light text-[16px] text-foreground uppercase tracking-[0.15em] opacity-50">
-              Position Overview
-            </h3>
-            <Card className="border-border/50 p-10 shadow-lg">
-              <p className="whitespace-pre-wrap font-medium text-[16px] text-foreground/70 leading-relaxed tracking-tight">
+            <div className="mb-base">
+              <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+                Architecture
+              </span>
+              <h3 className="mt-micro font-serif text-[22px] text-primary">
+                Position Overview
+              </h3>
+            </div>
+            <Card
+              variant="default"
+              className="border-line bg-bg-alt/10 p-comfortable"
+            >
+              <p className="whitespace-pre-wrap font-light font-sans text-[15px] text-ink-muted leading-relaxed">
                 {job.description}
               </p>
             </Card>
           </section>
 
           <section>
-            <h3 className="mb-8 px-2 font-display font-light text-[16px] text-foreground uppercase tracking-[0.15em] opacity-50">
-              Strategic Requirements
-            </h3>
-            <Card className="border-border/50 p-10 shadow-lg">
-              <ul className="grid grid-cols-1 gap-x-16 gap-y-8 md:grid-cols-2">
+            <div className="mb-base">
+              <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+                Requirements
+              </span>
+              <h3 className="mt-micro font-serif text-[22px] text-primary">
+                Strategic Benchmarks
+              </h3>
+            </div>
+            <Card
+              variant="default"
+              className="border-line bg-bg-alt/10 p-comfortable"
+            >
+              <ul className="grid grid-cols-1 gap-x-12 gap-y-comfortable md:grid-cols-2">
                 {job.requirements.map((req, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-4 font-medium text-[15px] text-foreground/60 leading-relaxed tracking-tight"
+                    className="flex items-start gap-base font-light font-sans text-[14px] text-ink-muted leading-relaxed"
                   >
-                    <div className="mt-2.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-info/30 shadow-md" />
+                    <div className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-primary/30" />
                     {req}
                   </li>
                 ))}
@@ -193,19 +212,24 @@ export function JobDetail({ id }: JobDetailProps) {
           </section>
 
           <section>
-            <div className="mb-8 flex items-center justify-between px-2">
-              <h3 className="font-display font-light text-[16px] text-foreground uppercase tracking-[0.15em] opacity-50">
-                Expert Pipeline
-              </h3>
+            <div className="mb-base flex items-end justify-between border-line border-b pb-small">
+              <div>
+                <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+                  Channel
+                </span>
+                <h3 className="mt-micro font-serif text-[22px] text-primary">
+                  Expert Pipeline
+                </h3>
+              </div>
               <Link
                 href="/dashboard/applicants"
-                className="font-bold text-[10px] text-info/70 uppercase tracking-[0.2em] transition-colors hover:text-info"
+                className="flex items-center gap-micro font-medium font-sans text-[11px] text-primary/60 uppercase tracking-wider transition-colors hover:text-primary"
               >
-                View Analysis{" "}
-                <RiArrowRightSLine className="ml-1 inline-block h-3 w-3 opacity-40" />
+                View Full Analysis{" "}
+                <RiArrowRightSLine className="size-3.5 opacity-40" />
               </Link>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-base">
               {jobApplicants.length > 0 ? (
                 jobApplicants.slice(0, 10).map((applicant, i) => (
                   <motion.div
@@ -216,38 +240,38 @@ export function JobDetail({ id }: JobDetailProps) {
                   >
                     <Link
                       href={`/dashboard/applicants/${applicant.id}` as Route}
-                      className="group flex items-center justify-between rounded-xl border border-border/50 bg-background p-6 shadow-md transition-all hover:border-primary/20 hover:shadow-lg"
+                      className="group flex items-center justify-between rounded-standard border border-line bg-surface p-base transition-all hover:bg-bg2"
                     >
-                      <div className="flex items-center gap-6">
-                        <div className="relative flex h-12 w-12 items-center justify-center rounded-xl border border-border/30 bg-secondary/30 font-bold text-[13px] text-muted-foreground/40 uppercase shadow-md transition-transform group-hover:scale-[1.05]">
-                          <span className="absolute -top-2 -left-2 flex h-5 w-5 items-center justify-center rounded-full bg-foreground font-bold text-[9px] text-background shadow-lg">
+                      <div className="flex items-center gap-base">
+                        <div className="relative flex h-11 w-11 items-center justify-center rounded-micro border border-line bg-bg-alt/30 font-medium font-sans text-[13px] text-ink-faint uppercase transition-transform group-hover:scale-[1.05]">
+                          <span className="absolute -top-1.5 -left-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-primary font-mono text-[9px] text-white">
                             {i + 1}
                           </span>
                           {applicant.firstName[0]}
                           {applicant.lastName[0]}
                         </div>
                         <div>
-                          <p className="font-medium text-[15px] text-foreground tracking-tight transition-colors group-hover:text-primary">
+                          <p className="font-serif text-[18px] text-primary leading-tight transition-colors group-hover:text-primary-muted">
                             {applicant.firstName} {applicant.lastName}
                           </p>
-                          <p className="mt-0.5 font-medium text-[12px] text-muted-foreground/60 tracking-tight">
+                          <p className="mt-1 font-light font-sans text-[12px] text-ink-muted tracking-tight">
                             {applicant.headline}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-10">
+                      <div className="flex items-center gap-comfortable">
                         <ScoreBadge
                           score={applicant.screening?.matchScore ?? 0}
                         />
-                        <RiArrowRightSLine className="h-4 w-4 text-muted-foreground/10 transition-all group-hover:text-foreground" />
+                        <RiArrowRightSLine className="h-4 w-4 text-ink-faint opacity-20 transition-all group-hover:text-primary group-hover:opacity-100" />
                       </div>
                     </Link>
                   </motion.div>
                 ))
               ) : (
-                <div className="rounded-3xl border border-border/50 border-dashed bg-secondary/5 py-24 text-center">
-                  <p className="font-bold text-[11px] text-muted-foreground/30 uppercase tracking-[0.2em]">
-                    No applications recorded
+                <div className="rounded-card border border-line border-dashed bg-bg-alt/10 py-20 text-center">
+                  <p className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.1em]">
+                    Awaiting Signal Analysis
                   </p>
                 </div>
               )}
@@ -255,38 +279,39 @@ export function JobDetail({ id }: JobDetailProps) {
           </section>
         </div>
 
-        <div className="space-y-12">
-          <Card className="border-border/50 p-10 shadow-lg">
-            <h3 className="mb-10 border-border/10 border-b pb-6 font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
-              Neural Vitals
-            </h3>
-            <div className="space-y-8">
+        <div className="space-y-comfortable">
+          <Card variant="default" size="none" className="overflow-hidden">
+            <CardHeader>
+              <CardDescription>Metrics</CardDescription>
+              <CardTitle>Neural Vitals</CardTitle>
+            </CardHeader>
+            <div className="space-y-comfortable bg-surface p-comfortable">
               {[
                 { label: "Applicants", val: jobApplicants.length },
-                { label: "Screened", val: screenedApplicants.length },
+                { label: "Screened Today", val: screenedApplicants.length },
                 {
                   label: "Shortlisted",
                   val: jobApplicants.filter((a) => a.status === "shortlisted")
                     .length,
-                  color: "text-success/80",
+                  color: "text-status-success-text",
                 },
                 {
-                  label: "Match Index",
+                  label: "Quality Index",
                   val: `${avgScore}%`,
-                  color: "text-info/80",
+                  color: "text-primary",
                 },
               ].map((s, i) => (
                 <div
                   key={i}
-                  className="flex items-baseline justify-between border-border/5 border-b pb-6 last:border-0 last:pb-0"
+                  className="flex items-baseline justify-between border-line border-b pb-base last:border-0 last:pb-0"
                 >
-                  <span className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.2em]">
+                  <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
                     {s.label}
                   </span>
                   <span
                     className={cn(
-                      "font-display font-light text-[28px] leading-none tracking-tighter",
-                      s.color || "text-foreground",
+                      "font-serif text-[26px] leading-none",
+                      s.color || "text-primary",
                     )}
                   >
                     {s.val}
@@ -297,46 +322,54 @@ export function JobDetail({ id }: JobDetailProps) {
           </Card>
 
           {(job.salaryMin || job.salaryMax) && (
-            <Card className="border-border/50 bg-accent/[0.03] p-10 shadow-lg">
-              <h3 className="mb-8 border-border/10 border-b pb-6 font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
-                Compensation
-              </h3>
-              <div className="flex items-baseline gap-2 pt-2">
-                <span className="font-display font-light text-[32px] text-foreground leading-none tracking-tighter">
-                  {job.salaryMin?.toLocaleString()}
-                  {job.salaryMax ? ` – ${job.salaryMax.toLocaleString()}` : "+"}
-                </span>
-                <span className="ml-1 font-display font-light text-[13px] text-muted-foreground/30">
-                  {job.currency} /YR
-                </span>
+            <Card variant="default" size="none" className="overflow-hidden">
+              <CardHeader>
+                <CardDescription>Market Rate</CardDescription>
+                <CardTitle>Compensation</CardTitle>
+              </CardHeader>
+              <div className="bg-surface px-comfortable py-base">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-serif text-[28px] text-primary leading-none">
+                    {job.salaryMin?.toLocaleString()}
+                    {job.salaryMax
+                      ? ` – ${job.salaryMax.toLocaleString()}`
+                      : "+"}
+                  </span>
+                  <span className="font-medium font-sans text-[11px] text-ink-faint">
+                    {job.currency} / YR
+                  </span>
+                </div>
               </div>
             </Card>
           )}
 
           {screenedApplicants.length > 0 && (
-            <div className="group relative overflow-hidden rounded-3xl border border-border/50 bg-accent/10 p-10 shadow-md transition-all hover:shadow-lg">
-              <div className="relative z-10">
-                <div className="mb-10 flex items-center justify-between border-border/10 border-b pb-6">
-                  <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
-                    Intelligence
-                  </h3>
-                  <RiSparklingLine className="h-4 w-4 text-info/40" />
+            <Card
+              variant="default"
+              className="group relative overflow-hidden border-line bg-primary-alpha p-comfortable"
+              size="none"
+            >
+              <div className="relative z-10 space-y-base">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium font-sans text-[11px] text-primary/40 uppercase tracking-widest">
+                    Intelligence Summary
+                  </span>
+                  <RiSparklingLine className="size-4 text-primary/20" />
                 </div>
-                <div className="space-y-6 pt-2">
-                  <p className="font-medium text-[14px] text-foreground/70 leading-relaxed tracking-tight">
-                    Pool architecture is{" "}
-                    <span className="font-bold text-info">Optimal</span>.{" "}
-                    {screenedApplicants.length} experts analyzed with Gemini AI.
-                  </p>
-                  <div className="mt-10 h-1 w-full overflow-hidden rounded-full border border-border/10 bg-background/50 shadow-inset">
-                    <div
-                      className="h-full rounded-full bg-info/40 shadow-md"
-                      style={{ width: `${avgScore}%` }}
-                    />
-                  </div>
+                <p className="font-light font-sans text-[14px] text-primary leading-relaxed">
+                  The candidate pool is{" "}
+                  <span className="font-bold">Highly Qualified</span>.{" "}
+                  {screenedApplicants.length} experts analyzed with detailed
+                  reasoning.
+                </p>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/20">
+                  <div
+                    className="h-full bg-primary"
+                    style={{ width: `${avgScore}%` }}
+                  />
                 </div>
               </div>
-            </div>
+            </Card>
           )}
         </div>
       </div>

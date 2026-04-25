@@ -46,10 +46,10 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="mb-4 px-4 font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em]">
+      <SidebarGroupLabel className="mb-small px-3 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
         Platform
       </SidebarGroupLabel>
-      <SidebarMenu className="space-y-1">
+      <SidebarMenu className="space-y-micro">
         {items.map((item) => {
           const isItemActive =
             pathname === item.url ||
@@ -66,19 +66,18 @@ export function NavMain({
                   }}
                   isActive={isItemActive}
                   className={cn(
-                    "group relative mb-1 h-10 overflow-hidden rounded-lg px-4 transition-all duration-300",
-                    "hover:bg-secondary/30 active:scale-[0.98]",
+                    "group relative h-9 rounded-standard px-3 shadow-none transition-all duration-150",
                     isItemActive
-                      ? "bg-secondary/50 font-medium text-foreground shadow-sm"
-                      : "text-muted-foreground/50 hover:text-foreground/80",
+                      ? "bg-bg-deep font-medium text-primary"
+                      : "text-ink-muted hover:bg-bg-alt hover:text-ink-full",
                   )}
                 >
                   <div
                     className={cn(
-                      "mr-3 flex-shrink-0 transition-colors",
+                      "mr-2.5 flex-shrink-0 transition-colors",
                       isItemActive
                         ? "text-primary"
-                        : "text-muted-foreground/20 group-hover:text-muted-foreground/40",
+                        : "text-ink-faint group-hover:text-ink-muted",
                     )}
                   >
                     {React.isValidElement(item.icon)
@@ -88,12 +87,12 @@ export function NavMain({
                         )
                       : item.icon}
                   </div>
-                  <span className="text-[14px] tracking-tight">
+                  <span className="font-sans text-[13px] tracking-tight">
                     {item.title}
                   </span>
 
                   {isItemActive && (
-                    <div className="absolute top-1/2 left-0 h-3 w-1 -translate-y-1/2 rounded-r-full bg-primary/60" />
+                    <div className="absolute top-1/2 left-0 h-4 w-1 -translate-y-1/2 rounded-r-pill bg-primary" />
                   )}
                 </SidebarMenuButton>
               </SidebarMenuItem>

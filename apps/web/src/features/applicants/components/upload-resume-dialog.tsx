@@ -174,25 +174,24 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
           )
         }
       />
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+      <DialogContent className="max-h-[90vh] overflow-y-auto shadow-none sm:max-w-xl">
         <DialogHeader>
-          <div className="flex items-center gap-4">
-            <div>
-              <DialogTitle className="font-display font-light text-xl uppercase tracking-widest">
-                Import Profile
-              </DialogTitle>
-              <DialogDescription className="font-medium text-[13px] text-muted-foreground/60 leading-tight">
-                Upload or paste a resume to create a candidate profile.
-              </DialogDescription>
-            </div>
-          </div>
+          <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.06em]">
+            Single Import
+          </span>
+          <DialogTitle className="font-serif text-[28px] text-primary leading-tight">
+            Import Profile
+          </DialogTitle>
+          <DialogDescription className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
+            Upload or paste a resume to create a candidate profile.
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4 space-y-5">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2 space-y-1.5">
-              <Label className="font-bold text-[10px] text-muted-foreground/60 uppercase tracking-widest">
-                Target Position <span className="text-destructive">*</span>
+        <div className="space-y-comfortable p-comfortable">
+          <div className="grid grid-cols-2 gap-base">
+            <div className="col-span-2 space-y-base">
+              <Label className="ml-1 font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
+                Target Job <span className="text-status-error-text">*</span>
               </Label>
               {jobsQuery.isError ? (
                 <QueryErrorState
@@ -205,13 +204,10 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                   value={selectedJobId}
                   onValueChange={(val) => setSelectedJobId(val ?? "")}
                 >
-                  <SelectTrigger className="h-11 rounded-xl border-border/50 bg-secondary/30 font-medium text-[14px]">
-                    <SelectValue placeholder="Select a position...">
-                      {selectedJobId &&
-                        jobs.find((j) => j.id === selectedJobId)?.title}
-                    </SelectValue>
+                  <SelectTrigger className="h-10 rounded-standard border-line bg-bg2 font-medium font-sans text-[13px] text-primary shadow-none">
+                    <SelectValue placeholder="Select a job..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="border-line bg-surface shadow-none">
                     {jobs.map((j) => (
                       <SelectItem key={j.id} value={j.id}>
                         {j.title}
@@ -222,59 +218,60 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="font-bold text-[10px] text-muted-foreground/60 uppercase tracking-widest">
-                First Name <span className="text-destructive">*</span>
+            <div className="space-y-base">
+              <Label className="ml-1 font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
+                First Name <span className="text-status-error-text">*</span>
               </Label>
               <Input
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Jane"
-                className="h-11 rounded-xl border-border/50 bg-secondary/30"
+                placeholder="e.g. Jane"
+                className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] shadow-none"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label className="font-bold text-[10px] text-muted-foreground/60 uppercase tracking-widest">
-                Last Name <span className="text-destructive">*</span>
+            <div className="space-y-base">
+              <Label className="ml-1 font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
+                Last Name <span className="text-status-error-text">*</span>
               </Label>
               <Input
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder="Doe"
-                className="h-11 rounded-xl border-border/50 bg-secondary/30"
+                placeholder="e.g. Doe"
+                className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] shadow-none"
               />
             </div>
-            <div className="col-span-2 space-y-1.5">
-              <Label className="font-bold text-[10px] text-muted-foreground/60 uppercase tracking-widest">
-                Email <span className="text-destructive">*</span>
+            <div className="col-span-2 space-y-base">
+              <Label className="ml-1 font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
+                Professional Email{" "}
+                <span className="text-status-error-text">*</span>
               </Label>
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="jane@example.com"
-                className="h-11 rounded-xl border-border/50 bg-secondary/30"
+                placeholder="name@company.com"
+                className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] shadow-none"
               />
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-comfortable border-line border-t pt-base">
             <div className="flex items-center justify-between">
-              <Label>
-                Resume Content <span className="text-destructive">*</span>
+              <Label className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
+                Source Document
               </Label>
-              <div className="flex rounded-lg bg-muted/50 p-1">
+              <div className="flex rounded-micro bg-bg-deep p-1">
                 <button
-                  className={`rounded-md px-3 py-1 font-medium text-xs transition-colors ${mode === "file" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                  className={`rounded-micro px-3 py-1 font-medium font-sans text-[10px] uppercase tracking-wider transition-all ${mode === "file" ? "bg-surface text-primary shadow-none" : "text-ink-faint hover:text-ink-muted"}`}
                   onClick={() => setMode("file")}
                 >
-                  File Upload
+                  File
                 </button>
                 <button
-                  className={`rounded-md px-3 py-1 font-medium text-xs transition-colors ${mode === "paste" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                  className={`rounded-micro px-3 py-1 font-medium font-sans text-[10px] uppercase tracking-wider transition-all ${mode === "paste" ? "bg-surface text-primary shadow-none" : "text-ink-faint hover:text-ink-muted"}`}
                   onClick={() => setMode("paste")}
                 >
-                  Paste Text
+                  Text
                 </button>
               </div>
             </div>
@@ -289,24 +286,24 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                   }}
                   onDragLeave={() => setDragOver(false)}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 transition-all ${
+                  className={`flex cursor-pointer flex-col items-center justify-center rounded-standard border border-dashed p-10 transition-all ${
                     dragOver
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/40 hover:bg-muted/50"
+                      ? "border-primary bg-primary-alpha/10"
+                      : "border-line bg-bg2 hover:border-primary/20 hover:bg-bg-alt/40"
                   }`}
                 >
                   {parsingPdf ? (
-                    <RiLoader2Line className="mb-3 h-8 w-8 animate-spin text-primary" />
+                    <RiLoader2Line className="mb-comfortable size-6 animate-spin text-primary" />
                   ) : (
-                    <RiUploadCloud2Line className="mb-3 h-8 w-8 text-muted-foreground/50" />
+                    <RiUploadCloud2Line className="mb-comfortable size-6 text-ink-faint" />
                   )}
-                  <p className="font-medium text-foreground text-sm">
+                  <p className="font-medium font-sans text-[13px] text-primary">
                     {parsingPdf
-                      ? "Parsing PDF..."
-                      : "Drop PDF or TXT file here"}
+                      ? "Extracting info..."
+                      : "Drop PDF or TXT resume here"}
                   </p>
-                  <p className="mt-1 text-muted-foreground text-xs">
-                    or click to browse
+                  <p className="mt-1 font-light font-sans text-[11px] text-ink-faint">
+                    or click to browse your files
                   </p>
                   <input
                     ref={fileInputRef}
@@ -320,15 +317,18 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                   />
                 </div>
               ) : (
-                <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <RiFileLine className="h-5 w-5 text-primary" />
+                <div className="flex items-center justify-between rounded-standard border border-line bg-bg2/40 px-base py-base">
+                  <div className="flex items-center gap-base">
+                    <div className="flex size-8 items-center justify-center rounded-micro border border-line bg-bg2">
+                      <RiFileTextLine className="size-4 text-primary" />
+                    </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm">
+                      <p className="font-medium font-sans text-[13px] text-primary leading-none">
                         {fileName}
                       </p>
-                      <p className="text-muted-foreground text-xs">
-                        {resumeText.length} characters extracted
+                      <p className="mt-1 font-light font-sans text-[11px] text-ink-faint leading-none">
+                        {resumeText.length.toLocaleString()} characters
+                        extracted
                       </p>
                     </div>
                   </div>
@@ -337,61 +337,60 @@ export function UploadResumeDialog({ trigger }: UploadResumeDialogProps) {
                       setFileName("");
                       setResumeText("");
                     }}
-                    className="rounded-full p-1 hover:bg-muted"
+                    className="flex size-8 items-center justify-center rounded-micro transition-colors hover:bg-bg-alt"
                   >
-                    <RiCloseLine className="h-4 w-4 text-muted-foreground" />
+                    <RiCloseLine className="size-4 text-ink-faint" />
                   </button>
                 </div>
               )
             ) : (
               <Textarea
-                placeholder="Paste resume text here..."
-                className="min-h-[150px] resize-y text-sm"
+                placeholder="Paste raw resume text here for AI analysis..."
+                className="min-h-[180px] resize-none rounded-standard border-line bg-bg2 font-light font-sans text-[13px] outline-none transition-all focus:bg-surface focus:ring-Pa"
                 value={resumeText}
                 onChange={(e) => setResumeText(e.target.value)}
               />
             )}
           </div>
-
-          <DialogFooter className="mt-8 gap-3 border-border/10 border-t pt-8">
-            <DialogClose
-              render={
-                <Button
-                  variant="outline"
-                  className="rounded-full"
-                  size={"lg"}
-                />
-              }
-            >
-              Cancel
-            </DialogClose>
-            <Button
-              onClick={handleUpload}
-              disabled={
-                uploading ||
-                parsingPdf ||
-                !resumeText ||
-                !selectedJobId ||
-                !firstName ||
-                !email
-              }
-              className="rounded-full"
-              size={"lg"}
-            >
-              {uploading ? (
-                <>
-                  <RiLoader2Line className="h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <RiUploadCloud2Line className="h-4 w-4" />
-                  Import Candidate
-                </>
-              )}
-            </Button>
-          </DialogFooter>
         </div>
+
+        <DialogFooter>
+          <DialogClose
+            render={
+              <Button
+                variant="outline"
+                size="default"
+                className="h-9 rounded-standard border-line px-6 font-medium font-sans"
+              >
+                Cancel
+              </Button>
+            }
+          />
+          <Button
+            onClick={handleUpload}
+            disabled={
+              uploading ||
+              parsingPdf ||
+              !resumeText ||
+              !selectedJobId ||
+              !firstName ||
+              !email
+            }
+            className="h-9 rounded-standard px-6 font-medium font-sans"
+          >
+            {uploading ? (
+              <>
+                <RiLoader2Line className="mr-2 size-3.5 animate-spin" />
+                Importing...
+              </>
+            ) : (
+              <>
+                <RiUploadCloud2Line className="mr-2 size-3.5" />
+                Start Import
+              </>
+            )}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

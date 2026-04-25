@@ -2,64 +2,65 @@
 
 import { RiBuildingLine, RiCameraLine, RiSaveLine } from "@remixicon/react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export function ProfileSettings() {
-  const handleSave = () => toast.success("Settings saved successfully");
+  const handleSave = () => toast.success("Profile updated");
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-section-gap">
       <section>
-        <div className="mb-8 border-border/50 border-b pb-6">
-          <h3 className="font-display font-light text-[20px] text-foreground uppercase tracking-[0.1em]">
-            Organization Profile
+        <div className="mb-section-gap border-line border-b pb-base">
+          <span className="mb-micro block font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+            Organization
+          </span>
+          <h3 className="font-serif text-[28px] text-primary leading-tight">
+            Profile Details
           </h3>
-          <p className="mt-1 font-medium text-[12px] text-muted-foreground uppercase tracking-wider">
-            Manage your team and company details
-          </p>
         </div>
 
-        <div className="mb-10 flex items-center gap-8">
+        <div className="mb-section-gap flex items-center gap-base">
           <div className="group relative">
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-border bg-secondary shadow-sm">
-              <RiBuildingLine className="h-8 w-8 text-foreground/30" />
+            <div className="flex h-20 w-20 items-center justify-center rounded-micro border border-line bg-bg2 font-serif text-[24px] text-ink-faint shadow-none transition-all group-hover:bg-bg-alt/40">
+              UM
             </div>
-            <button className="absolute -right-2 -bottom-2 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background shadow-sm transition-colors hover:bg-secondary">
-              <RiCameraLine className="h-3.5 w-3.5 text-muted-foreground" />
+            <button className="absolute -right-2 -bottom-2 flex h-8 w-8 items-center justify-center rounded-full border border-line bg-surface shadow-none transition-all hover:bg-bg2 active:scale-90">
+              <RiCameraLine className="size-3.5 text-ink-faint" />
             </button>
           </div>
-          <div>
-            <p className="font-semibold text-[16px] text-foreground tracking-tight">
+          <div className="space-y-1">
+            <p className="font-serif text-[20px] text-primary leading-tight">
               Umurava Inc.
             </p>
-            <p className="font-medium text-[13px] text-muted-foreground">
-              Technology & AI Recruitment Solutions
+            <p className="font-light font-sans text-[13px] text-ink-muted">
+              Technology &amp; AI Recruitment Solutions
             </p>
-            <button className="mt-3 font-semibold text-[11px] text-info uppercase tracking-[0.1em] transition-colors hover:text-info/80">
+            <button className="pt-1 font-medium font-sans text-[11px] text-primary/60 uppercase tracking-[0.06em] transition-colors hover:text-primary">
               Update branding
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-10 gap-y-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-x-hero gap-y-base md:grid-cols-2">
           {[
             { label: "Account ID", val: "UM-90283", disabled: true },
-            { label: "Role", val: "Recruitment Manager" },
-            { label: "First Name", val: "HR" },
-            { label: "Last Name", val: "Manager" },
+            { label: "Operation Role", val: "Recruitment Manager" },
+            { label: "Lead First Name", val: "HR" },
+            { label: "Lead Last Name", val: "Manager" },
             { label: "Work Email", val: "recruiter@umurava.com" },
-            { label: "Timezone", val: "Eastern Time (GMT-5)" },
+            { label: "Regional Timezone", val: "Eastern Time (GMT-5)" },
           ].map((field, i) => (
-            <div key={i} className="space-y-2">
-              <label className="ml-1 font-semibold text-[10px] text-muted-foreground/60 uppercase tracking-[0.2em]">
+            <div key={i} className="space-y-micro">
+              <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                 {field.label}
               </label>
               <input
                 defaultValue={field.val}
                 disabled={field.disabled}
                 className={cn(
-                  "h-11 w-full rounded-lg border border-border bg-foreground/[0.01] px-4 font-medium text-[14px] text-foreground tracking-tight transition-all focus:border-info/30 focus:outline-none focus:ring-1 focus:ring-info/20",
+                  "focus:ring- Pa h-10 w-full rounded-standard border border-line bg-bg2 px-4 font-normal font-sans text-[13px] text-primary outline-none transition-all focus:bg-surface",
                   field.disabled &&
-                    "cursor-not-allowed bg-secondary/30 opacity-50",
+                    "cursor-not-allowed bg-bg-deep/50 opacity-40 grayscale",
                 )}
               />
             </div>
@@ -67,14 +68,13 @@ export function ProfileSettings() {
         </div>
       </section>
 
-      <div className="flex justify-end border-border/50 border-t pt-8">
-        <button
+      <div className="flex justify-end border-line border-t pt-section-gap">
+        <Button
           onClick={handleSave}
-          className="flex h-11 items-center gap-2 rounded-full bg-primary px-8 font-semibold text-[12px] text-primary-foreground uppercase tracking-[0.2em] shadow-[0_1px_3px_rgba(0,0,0,0.01)] transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="h-10 rounded-standard px-8 font-medium font-sans text-[13px]"
         >
-          <RiSaveLine className="h-4 w-4" />
-          Update Profile
-        </button>
+          Update Organization
+        </Button>
       </div>
     </div>
   );

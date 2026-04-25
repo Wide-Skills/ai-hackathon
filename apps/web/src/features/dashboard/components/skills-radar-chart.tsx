@@ -41,7 +41,7 @@ export function SkillsRadarChart({ applicants }: SkillsRadarChartProps) {
     return (
       <Empty className="h-full min-h-[300px] border-none bg-transparent">
         <EmptyHeader>
-          <EmptyTitle className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest">
+          <EmptyTitle className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-wider">
             Insufficient Neural Data
           </EmptyTitle>
         </EmptyHeader>
@@ -53,23 +53,22 @@ export function SkillsRadarChart({ applicants }: SkillsRadarChartProps) {
     <div className="h-full min-h-[300px] w-full">
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-          <PolarGrid stroke="rgba(0,0,0,0.05)" />
+          <PolarGrid stroke="var(--color-line)" />
           <PolarAngleAxis
             dataKey="skill"
             tick={{
               fontSize: 10,
-              fill: "var(--color-muted-foreground)",
-              fontWeight: 600,
-              letterSpacing: "0.05em",
-              opacity: 0.5,
+              fill: "var(--color-ink-faint)",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
             }}
           />
           <Radar
             name="Proficiency"
             dataKey="score"
-            stroke="var(--color-info)"
-            fill="var(--color-info)"
-            fillOpacity={0.3}
+            stroke="var(--color-primary)"
+            fill="var(--color-primary)"
+            fillOpacity={0.2}
           />
         </RadarChart>
       </ResponsiveContainer>

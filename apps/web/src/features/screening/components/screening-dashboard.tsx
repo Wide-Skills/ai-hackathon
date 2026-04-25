@@ -11,6 +11,12 @@ import {
 } from "@/components/data/query-state";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -137,9 +143,9 @@ export function ScreeningDashboard() {
   }
 
   return (
-    <div className="w-full space-y-12 pb-20">
+    <div className="w-full space-y-section-padding pb-section-padding">
       {/* Top Metrics row */}
-      <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-comfortable lg:grid-cols-4">
         <StatCard
           label="Total Screened"
           value={screened.length}
@@ -168,17 +174,18 @@ export function ScreeningDashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-4">
+      <div className="grid grid-cols-1 items-start gap-comfortable lg:grid-cols-4">
         {/* Control Sidebar */}
-        <div className="space-y-10 lg:col-span-1">
-          <div className="group overflow-hidden rounded-3xl border border-border/50 bg-background shadow-lg transition-all hover:shadow-xl">
-            <div className="flex items-center justify-between border-border/20 border-b bg-secondary/[0.02] px-8 py-5">
-              <h3 className="font-display font-light text-[15px] text-foreground uppercase tracking-[0.1em]">
-                Engine
-              </h3>
-            </div>
-            <div className="p-8">
-              <p className="mb-10 font-medium text-[13px] text-muted-foreground/50 leading-relaxed tracking-tight">
+        <div className="space-y-comfortable lg:col-span-1">
+          {/* Engine Card */}
+          <Card variant="default" size="none" className="overflow-hidden">
+            <CardHeader>
+              <CardDescription>Analysis</CardDescription>
+              <CardTitle>Screening Engine</CardTitle>
+            </CardHeader>
+
+            <div className="space-y-comfortable p-comfortable">
+              <p className="font-light font-sans text-[13px] text-ink-muted leading-relaxed">
                 Neural architecture analysis powered by Gemini AI.
               </p>
 
@@ -186,58 +193,58 @@ export function ScreeningDashboard() {
                 onClick={handleRunScreening}
                 disabled={running || pending.length === 0}
                 variant="default"
-                size="xl"
-                className="w-full shadow-lg"
+                size="default"
+                className="h-10 w-full"
               >
                 {running ? (
                   <>
-                    <RiLoader2Line className="h-3.5 w-3.5 animate-spin" />{" "}
+                    <RiLoader2Line className="mr-2 h-3.5 w-3.5 animate-spin" />{" "}
                     {progress}%
                   </>
                 ) : (
-                  "Initiate Analysis"
+                  "Run AI Screening"
                 )}
               </Button>
               {running && (
-                <div className="mt-8 h-1 w-full overflow-hidden rounded-full bg-secondary/50 shadow-inset">
+                <div className="h-1 w-full overflow-hidden rounded-pill bg-bg-deep">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${progress}%` }}
-                    className="h-full bg-primary shadow-md"
+                    className="h-full bg-primary"
                   />
                 </div>
               )}
             </div>
-          </div>
+          </Card>
 
-          <div className="overflow-hidden rounded-3xl border border-border/50 bg-background shadow-lg">
-            <div className="border-border/20 border-b bg-secondary/[0.02] px-8 py-5">
-              <h3 className="font-display font-light text-[15px] text-foreground uppercase tracking-[0.1em]">
-                Distribution
-              </h3>
-            </div>
-            <div className="space-y-7 p-8">
+          {/* Distribution Card */}
+          <Card variant="default" size="none" className="overflow-hidden">
+            <CardHeader>
+              <CardDescription>Analytics</CardDescription>
+              <CardTitle>Distribution</CardTitle>
+            </CardHeader>
+            <div className="space-y-base bg-bg-alt/10 p-comfortable">
               {Object.entries(distribution).map(([rec, count]) => {
                 const colors: Record<string, string> = {
-                  "Strongly Recommend": "bg-success/40",
-                  Recommend: "bg-info/40",
-                  Consider: "bg-warning/40",
-                  "Not Recommended": "bg-destructive/40",
+                  "Strongly Recommend": "bg-status-success-text",
+                  Recommend: "bg-primary/60",
+                  Consider: "bg-status-warning-text",
+                  "Not Recommended": "bg-status-error-text",
                 };
                 const pct =
                   filtered.length > 0
                     ? Math.round((count / filtered.length) * 100)
                     : 0;
                 return (
-                  <div key={rec} className="space-y-3">
-                    <div className="flex items-center justify-between font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.15em]">
+                  <div key={rec} className="space-y-2">
+                    <div className="flex items-center justify-between font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
                       <span>{rec.split(" ")[0]}</span>
-                      <span className="text-foreground/70">{count}</span>
+                      <span className="text-primary">{count}</span>
                     </div>
-                    <div className="h-1 w-full overflow-hidden rounded-full bg-secondary/50 shadow-inset">
+                    <div className="h-1 w-full overflow-hidden rounded-pill bg-bg-deep">
                       <div
                         className={cn(
-                          "h-full rounded-full shadow-md",
+                          "h-full rounded-full transition-all duration-500",
                           colors[rec],
                         )}
                         style={{ width: `${pct}%` }}
@@ -247,28 +254,24 @@ export function ScreeningDashboard() {
                 );
               })}
             </div>
-          </div>
+          </Card>
 
-          <div className="overflow-hidden rounded-3xl border border-border/50 bg-background shadow-lg">
-            <div className="border-border/20 border-b bg-secondary/[0.02] px-8 py-5">
-              <h3 className="font-display font-light text-[15px] text-foreground uppercase tracking-[0.1em]">
-                Pipeline
-              </h3>
-            </div>
-            <div className="p-8">
+          {/* Filter Card */}
+          <Card variant="default" size="none" className="overflow-hidden">
+            <CardHeader>
+              <CardDescription>Filter</CardDescription>
+              <CardTitle>Select Job</CardTitle>
+            </CardHeader>
+            <div className="p-comfortable">
               <Select
                 value={selectedJob}
                 onValueChange={(value) => setSelectedJob(value ?? "all")}
               >
-                <SelectTrigger className="h-11 rounded-full border-border/50 bg-background font-bold text-[10px] text-muted-foreground/50 uppercase tracking-[0.2em] shadow-md">
-                  <SelectValue placeholder="All Jobs">
-                    {selectedJob === "all"
-                      ? "All Pipelines"
-                      : jobs.find((j) => j.id === selectedJob)?.title}
-                  </SelectValue>
+                <SelectTrigger className="h-10 w-full rounded-standard border-line bg-bg2 font-medium font-sans text-[12px] text-primary shadow-none transition-all">
+                  <SelectValue placeholder="All Jobs" />
                 </SelectTrigger>
-                <SelectContent className="border-border/50 shadow-lg">
-                  <SelectItem value="all">All Pipelines</SelectItem>
+                <SelectContent className="border-line bg-surface shadow-none">
+                  <SelectItem value="all">All Jobs</SelectItem>
                   {jobs.map((j) => (
                     <SelectItem key={j.id} value={j.id}>
                       {j.title}
@@ -277,31 +280,31 @@ export function ScreeningDashboard() {
                 </SelectContent>
               </Select>
             </div>
-          </div>
+          </Card>
         </div>
 
         <div className="lg:col-span-3">
-          <div className="mb-5 flex items-end justify-between border-border/20 border-b px-2 pb-10">
+          <div className="mb-section-gap flex items-end justify-between border-line border-b pb-base">
             <div>
-              <h2 className="font-display font-light text-[24px] text-foreground uppercase tracking-[0.1em]">
-                Screening Report
+              <span className="mb-micro block font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+                Analysis
+              </span>
+              <h2 className="font-serif text-[32px] text-primary leading-tight">
+                Screening Results
               </h2>
-              <p className="mt-1 font-bold text-[12px] text-muted-foreground/30 uppercase tracking-widest">
-                {filtered.length} experts analyzed
-              </p>
             </div>
             <button
               onClick={() =>
                 queryClient.invalidateQueries({ queryKey: [["applicants"]] })
               }
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border/50 bg-background text-muted-foreground/20 shadow-md transition-all hover:bg-secondary active:scale-[0.95]"
+              className="flex h-9 w-9 items-center justify-center rounded-standard border border-line bg-surface text-ink-faint transition-all hover:bg-bg2 active:scale-[0.95]"
             >
               <RiRefreshLine className="h-4 w-4" />
             </button>
           </div>
 
           <div>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-base">
               {filtered.map((applicant) => {
                 const job = jobs.find((j) => j.id === applicant.jobId);
                 return (

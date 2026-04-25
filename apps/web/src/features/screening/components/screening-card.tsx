@@ -32,7 +32,7 @@ const recommendationConfig: Record<
   Consider: {
     label: "Consider",
     variant: "warning",
-    icon: RiErrorWarningLine,
+    icon: RiThumbUpLine,
   },
   "Not Recommended": {
     label: "Not Recommended",
@@ -54,95 +54,88 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
     recommendationConfig[
       screening.recommendation as keyof typeof recommendationConfig
     ];
-  const RecIcon = rec?.icon || RiErrorWarningLine;
+  const RecIcon = rec?.icon || RiThumbUpLine;
 
   const scoreColor =
     screening.matchScore >= 85
-      ? "text-success"
+      ? "text-status-success-text"
       : screening.matchScore >= 70
-        ? "text-info"
+        ? "text-primary"
         : screening.matchScore >= 55
-          ? "text-warning"
-          : "text-destructive";
+          ? "text-status-warning-text"
+          : "text-status-error-text";
 
   return (
     <Link href={`/dashboard/applicants/${applicant.id}`}>
-      <Card variant="premium" className="group relative flex flex-col p-6">
-        <div className="flex items-start gap-8">
+      <Card
+        variant="default"
+        className="group flex flex-col border-line p-comfortable shadow-none transition-all hover:border-line-medium"
+        size="none"
+      >
+        <div className="flex items-start gap-hero">
           {/* Score Side */}
-          <div className="flex w-20 shrink-0 flex-col items-center gap-2 border-border/10 border-r pr-6">
+          <div className="flex w-20 shrink-0 flex-col items-center gap-base border-line border-r py-1 pr-comfortable">
             <div
               className={cn(
-                "font-display font-light text-[32px] leading-none tracking-tighter",
+                "font-serif text-[36px] leading-none tracking-tight",
                 scoreColor,
               )}
             >
               {screening.matchScore}
             </div>
-            <span className="font-bold text-[9px] text-muted-foreground/30 uppercase tracking-[0.2em]">
+            <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
               % Rank
             </span>
           </div>
 
           <div className="min-w-0 flex-1">
-            <div className="mb-5 flex items-start justify-between gap-4">
+            <div className="mb-comfortable flex items-start justify-between gap-base">
               <div>
-                <p className="font-medium text-[16px] text-foreground tracking-tight transition-colors group-hover:text-primary">
+                <p className="font-serif text-[20px] text-primary leading-tight transition-colors group-hover:text-primary-muted">
                   {applicant.firstName} {applicant.lastName}
                 </p>
-                <div className="mt-1.5 flex items-center gap-3 opacity-40 transition-opacity group-hover:opacity-100">
-                  <p className="truncate font-medium text-[12px] text-foreground tracking-tight">
+                <div className="mt-1 flex items-center gap-base">
+                  <p className="truncate font-light font-sans text-[13px] text-ink-muted">
                     {applicant.headline}
                   </p>
-                  <div className="h-1 w-1 flex-shrink-0 rounded-full bg-foreground/30" />
-                  <p className="truncate font-bold text-[10px] text-muted-foreground uppercase tracking-widest">
+                  <div className="size-1 rounded-full bg-line" />
+                  <p className="truncate font-medium font-sans text-[10px] text-primary/40 uppercase tracking-wider">
                     {jobTitle}
                   </p>
                 </div>
               </div>
 
               {rec && (
-                <Badge
-                  variant={rec.variant}
-                  size="default"
-                  uppercase
-                  className="shadow-md"
-                >
-                  <RecIcon className="h-3 w-3 opacity-60" />
+                <Badge variant={rec.variant} size="sm" uppercase>
+                  <RecIcon className="mr-1 size-3 opacity-60" />
                   {rec.label}
                 </Badge>
               )}
             </div>
 
-            <p className="mb-6 line-clamp-2 max-w-[720px] font-medium text-[13px] text-muted-foreground/70 leading-relaxed tracking-tight">
+            <p className="mb-comfortable line-clamp-2 max-w-[720px] font-light font-sans text-[14px] text-ink-muted leading-relaxed">
               {screening.summary}
             </p>
 
-            <div className="flex flex-wrap items-center gap-6">
-              <div className="flex flex-wrap gap-2">
-                {screening.strengths.slice(0, 3).map((s) => (
-                  <Badge
-                    key={s}
-                    variant="secondary"
-                    size="xs"
-                    uppercase
-                    className="bg-secondary/30 text-muted-foreground/60 shadow-md"
-                  >
+            <div className="flex flex-wrap items-center gap-hero">
+              <div className="flex flex-wrap gap-small">
+                {screening.strengths.slice(0, 3).map((s: string) => (
+                  <Badge key={s} variant="secondary" size="sm">
                     {s}
                   </Badge>
                 ))}
               </div>
-              <div className="hidden h-4 w-px bg-border/10 sm:block" />
-              <div className="flex items-center gap-6">
-                <span className="font-bold text-[10px] text-muted-foreground/20 uppercase tracking-widest">
+              <div className="hidden h-4 w-px bg-line sm:block" />
+              <div className="flex items-center gap-hero">
+                <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
                   {new Date(applicant.appliedAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                   })}
                 </span>
-                <div className="flex items-center gap-2 font-bold text-[10px] text-info/70 uppercase tracking-[0.2em] transition-colors group-hover:text-info">
-                  Insight Report{" "}
-                  <RiArrowRightUpLine className="h-3 w-3 opacity-20 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
+                <div className="flex items-center gap-micro font-medium font-sans text-[11px] text-primary/60 uppercase tracking-wider transition-all group-hover:text-primary">
+                  Intelligence Report{" "}
+                  <RiArrowRightUpLine className="size-3 opacity-40 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
                 </div>
               </div>
             </div>

@@ -2,6 +2,7 @@
 
 import { DEMO_RECRUITER } from "@ai-hackathon/shared";
 import { RiAtLine, RiUserLine } from "@remixicon/react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AuthDivider } from "@/components/auth-divider";
@@ -90,21 +91,20 @@ export function AuthView() {
   };
 
   return (
-    <div className="space-y-10">
-      <div className="space-y-3">
-        <h1 className="font-display font-light text-[32px] text-foreground tracking-tight">
-          Sign in to the recruiter console.
+    <div className="space-y-comfortable">
+      <div className="space-y-base">
+        <h1 className="font-serif text-[32px] text-primary leading-tight">
+          Recruiter Console
         </h1>
-        <p className="text-[16px] text-muted-foreground leading-relaxed">
-          Use a magic link or continue with Google or GitHub. New users are
-          created automatically on first sign-in.
+        <p className="font-light font-sans text-[15px] text-ink-muted leading-relaxed">
+          Use a magic link or continue with your professional account.
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-base">
         <Button
           variant="outline"
-          className="h-11 w-full rounded-full border-border font-normal hover:bg-secondary/50"
+          className="h-10 w-full rounded-standard border-line bg-bg2 font-medium font-sans text-[13px] text-ink-full transition-all hover:bg-bg-deep"
           onClick={() => void handleSocial("google")}
         >
           <GoogleIcon className="mr-3 h-4 w-4" />
@@ -112,7 +112,7 @@ export function AuthView() {
         </Button>
         <Button
           variant="outline"
-          className="h-11 w-full rounded-full border-border font-normal hover:bg-secondary/50"
+          className="h-10 w-full rounded-standard border-line bg-bg2 font-medium font-sans text-[13px] text-ink-full transition-all hover:bg-bg-deep"
           onClick={() => void handleSocial("github")}
         >
           <GitHubIcon className="mr-3 h-4 w-4" />
@@ -120,40 +120,40 @@ export function AuthView() {
         </Button>
       </div>
 
-      <AuthDivider>or get a magic link</AuthDivider>
+      <AuthDivider>or secure access via email</AuthDivider>
 
-      <form className="space-y-4" onSubmit={handleMagicLink}>
-        <div className="space-y-2">
-          <p className="ml-1 font-medium text-[12px] text-muted-foreground">
+      <form className="space-y-comfortable" onSubmit={handleMagicLink}>
+        <div className="space-y-micro">
+          <p className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
             Full Name
           </p>
-          <InputGroup className="h-11 overflow-hidden rounded-full border-border bg-background px-1 shadow-[0_1px_3px_rgba(0,0,0,0.01)] focus-within:ring-info/20">
-            <InputGroupAddon align="inline-start" className="pl-4">
-              <RiUserLine className="h-3.5 w-3.5 text-muted-foreground" />
+          <InputGroup className="h-10 overflow-hidden rounded-standard border-line bg-bg2 px-1 shadow-none transition-all focus-within:border-primary/20 focus-within:ring-Pa">
+            <InputGroupAddon align="inline-start" className="pl-3">
+              <RiUserLine className="h-3.5 w-3.5 text-ink-faint" />
             </InputGroupAddon>
             <InputGroupInput
               placeholder="Your full name"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              className="text-[14px]"
+              className="bg-transparent font-normal font-sans text-[13px]"
             />
           </InputGroup>
         </div>
 
-        <div className="space-y-2">
-          <p className="ml-1 font-medium text-[12px] text-muted-foreground">
+        <div className="space-y-micro">
+          <p className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
             Work Email
           </p>
-          <InputGroup className="h-11 overflow-hidden rounded-full border-border bg-background px-1 shadow-[0_1px_3px_rgba(0,0,0,0.01)] focus-within:ring-info/20">
-            <InputGroupAddon align="inline-start" className="pl-4">
-              <RiAtLine className="h-3.5 w-3.5 text-muted-foreground" />
+          <InputGroup className="h-10 overflow-hidden rounded-standard border-line bg-bg2 px-1 shadow-none transition-all focus-within:border-primary/20 focus-within:ring-Pa">
+            <InputGroupAddon align="inline-start" className="pl-3">
+              <RiAtLine className="h-3.5 w-3.5 text-ink-faint" />
             </InputGroupAddon>
             <InputGroupInput
               placeholder="name@company.com"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="text-[14px]"
+              className="bg-transparent font-normal font-sans text-[13px]"
             />
           </InputGroup>
         </div>
@@ -161,18 +161,20 @@ export function AuthView() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="h-11 w-full rounded-full bg-primary font-normal text-primary-foreground transition-transform hover:scale-[1.01] active:scale-[0.98]"
+          className="h-10 w-full rounded-standard bg-primary font-medium font-sans text-[13px] text-white transition-all hover:-translate-y-px hover:bg-primary-muted active:scale-[0.98]"
         >
-          {isSubmitting ? "Sending link..." : "Email me a magic link"}
+          {isSubmitting ? "Generating link..." : "Request Magic Link"}
         </Button>
       </form>
 
-      <a
-        href="/docs"
-        className="inline-flex h-9 items-center px-0 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
-      >
-        Open the product docs
-      </a>
+      <div className="border-line border-t pt-base">
+        <Link
+          href="/docs"
+          className="inline-flex items-center font-normal font-sans text-[13px] text-ink-muted transition-colors hover:text-ink-full"
+        >
+          Open product documentation
+        </Link>
+      </div>
     </div>
   );
 }

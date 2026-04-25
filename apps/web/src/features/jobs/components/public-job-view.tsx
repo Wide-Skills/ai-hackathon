@@ -138,30 +138,30 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
 
   if (submitted) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-secondary/10">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-bg-alt/20">
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md space-y-6 rounded-3xl border border-border/50 bg-background p-10 text-center shadow-lg"
+          className="w-full max-w-md space-y-base rounded-card border border-line bg-surface p-comfortable text-center shadow-none"
         >
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-success/10">
-            <RiCheckboxCircleLine className="h-8 w-8 text-success" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-status-success-bg/20 bg-status-success-bg">
+            <RiCheckboxCircleLine className="size-8 text-status-success-text" />
           </div>
-          <h2 className="font-display font-light text-2xl">
-            Application Received!
+          <h2 className="font-serif text-[28px] text-primary leading-tight">
+            Application Received
           </h2>
-          <p className="text-muted-foreground">
+          <p className="font-light font-sans text-[15px] text-ink-muted leading-relaxed">
             Thank you for applying for the{" "}
-            <span className="font-semibold text-foreground">{job.title}</span>{" "}
-            position. Our AI-powered screening engine will review your profile
+            <span className="font-medium text-primary">{job.title}</span>{" "}
+            position. Our neural engine will review your profile resonance
             shortly.
           </p>
           <Button
             variant="outline"
-            className="rounded-full px-8"
+            className="h-10 rounded-standard border-line px-8 font-medium font-sans"
             onClick={() => (window.location.href = "/")}
           >
-            Back to Home
+            Return Home
           </Button>
         </motion.div>
       </div>
@@ -169,84 +169,94 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-canvas">
       <Navbar />
 
       <main className="container-tight pt-32 pb-24">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-hero lg:grid-cols-3">
           {/* Job Details */}
-          <div className="space-y-10 lg:col-span-2">
-            <div className="space-y-4">
+          <div className="space-y-section-gap lg:col-span-2">
+            <div className="space-y-base">
               <Badge
                 variant="secondary"
-                className="rounded-full border-primary/10 bg-primary/5 px-4 py-1 text-primary"
+                className="rounded-micro border-line bg-bg2 px-3 py-0.5 font-medium font-sans text-[10px] text-primary uppercase"
               >
                 {job.department}
               </Badge>
-              <h1 className="font-display font-light text-4xl leading-tight tracking-tight md:text-5xl">
+              <h1 className="font-serif text-[42px] text-primary leading-[1.1] tracking-tight md:text-[56px]">
                 {job.title}
               </h1>
-              <div className="flex flex-wrap gap-6 text-muted-foreground text-sm">
-                <div className="flex items-center gap-2">
-                  <RiMapPinLine className="h-4 w-4" />
+              <div className="flex flex-wrap gap-base font-medium font-sans text-[12px] text-ink-faint uppercase tracking-wider">
+                <div className="flex items-center gap-base">
+                  <RiMapPinLine className="size-4" />
                   {job.location}
                 </div>
-                <div className="flex items-center gap-2">
-                  <RiBriefcaseLine className="h-4 w-4" />
+                <div className="flex items-center gap-base">
+                  <RiBriefcaseLine className="size-4" />
                   {job.type}
                 </div>
               </div>
             </div>
 
-            <div className="prose prose-slate max-w-none">
-              <h3 className="border-border/50 border-b pb-4 font-display font-light text-foreground text-xl">
-                Description
-              </h3>
-              <p className="whitespace-pre-wrap pt-4 text-muted-foreground leading-relaxed">
-                {job.description}
-              </p>
+            <div className="space-y-section-gap">
+              <section>
+                <h3 className="border-line border-b pb-base font-serif text-[22px] text-primary">
+                  Description
+                </h3>
+                <p className="whitespace-pre-wrap pt-comfortable font-light font-sans text-[15px] text-ink-muted leading-relaxed">
+                  {job.description}
+                </p>
+              </section>
 
-              <h3 className="mt-10 border-border/50 border-b pb-4 font-display font-light text-foreground text-xl">
-                Requirements
-              </h3>
-              <ul className="grid grid-cols-1 gap-4 pt-4 md:grid-cols-2">
-                {job.requirements.map((req, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start gap-3 text-muted-foreground text-sm"
-                  >
-                    <div className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
-                    {req}
-                  </li>
-                ))}
-              </ul>
+              <section>
+                <h3 className="border-line border-b pb-base font-serif text-[22px] text-primary">
+                  Strategic Requirements
+                </h3>
+                <ul className="grid grid-cols-1 gap-base pt-comfortable md:grid-cols-2">
+                  {job.requirements.map((req, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-base font-light font-sans text-[14px] text-ink-muted leading-snug"
+                    >
+                      <div className="mt-1.5 size-1.5 flex-shrink-0 rounded-full bg-primary/30" />
+                      {req}
+                    </li>
+                  ))}
+                </ul>
+              </section>
 
-              <h3 className="mt-10 border-border/50 border-b pb-4 font-display font-light text-foreground text-xl">
-                Key Skills
-              </h3>
-              <div className="flex flex-wrap gap-2 pt-4">
-                {job.skills.map((skill, i) => (
-                  <Badge
-                    key={i}
-                    variant="outline"
-                    className="rounded-full border-border/50 bg-secondary/30 px-4 py-1"
-                  >
-                    {skill}
-                  </Badge>
-                ))}
-              </div>
+              <section>
+                <h3 className="border-line border-b pb-base font-serif text-[22px] text-primary">
+                  Key Expertise
+                </h3>
+                <div className="flex flex-wrap gap-small pt-comfortable">
+                  {job.skills.map((skill, i) => (
+                    <Badge
+                      key={i}
+                      variant="outline"
+                      className="rounded-micro border-line bg-bg2 px-4 py-1 font-medium font-sans text-[12px] text-primary shadow-none"
+                    >
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+              </section>
             </div>
           </div>
 
           {/* Application Form */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 space-y-6 rounded-3xl border border-border/50 bg-background p-8 shadow-lg">
-              <h3 className="font-display font-light text-xl">Apply Now</h3>
+            <div className="sticky top-24 space-y-comfortable rounded-card border border-line bg-surface p-comfortable shadow-none">
+              <div className="border-line border-b pb-base">
+                <h3 className="font-serif text-[24px] text-primary">
+                  Apply Now
+                </h3>
+              </div>
 
-              <form onSubmit={handleApply} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="font-bold text-muted-foreground/60 text-xs uppercase tracking-wider">
+              <form onSubmit={handleApply} className="space-y-base">
+                <div className="grid grid-cols-2 gap-base">
+                  <div className="space-y-micro">
+                    <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                       First Name
                     </label>
                     <Input
@@ -254,11 +264,11 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="Jane"
-                      className="h-11 rounded-xl border-border/50 bg-secondary/30"
+                      className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] shadow-none"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="font-bold text-muted-foreground/60 text-xs uppercase tracking-wider">
+                  <div className="space-y-micro">
+                    <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                       Last Name
                     </label>
                     <Input
@@ -266,13 +276,13 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder="Doe"
-                      className="h-11 rounded-xl border-border/50 bg-secondary/30"
+                      className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] shadow-none"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="font-bold text-muted-foreground/60 text-xs uppercase tracking-wider">
+                <div className="space-y-micro">
+                  <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                     Email Address
                   </label>
                   <Input
@@ -281,22 +291,22 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="jane.doe@example.com"
-                    className="h-11 rounded-xl border-border/50 bg-secondary/30"
+                    className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] shadow-none"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="font-bold text-muted-foreground/60 text-xs uppercase tracking-wider">
+                <div className="space-y-micro">
+                  <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
                     Resume (PDF)
                   </label>
                   <div
                     onClick={() =>
                       document.getElementById("file-upload")?.click()
                     }
-                    className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 transition-all ${
+                    className={`flex cursor-pointer flex-col items-center justify-center rounded-standard border border-dashed p-8 transition-all ${
                       resumeText
-                        ? "border-primary/40 bg-primary/5"
-                        : "border-border/50 hover:border-primary/20 hover:bg-secondary/20"
+                        ? "border-primary/20 bg-primary-alpha/5"
+                        : "border-line bg-bg2 hover:border-primary/20 hover:bg-bg-alt/40"
                     }`}
                   >
                     <input
@@ -307,26 +317,26 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                       onChange={handleFileChange}
                     />
                     {parsingPdf ? (
-                      <div className="flex flex-col items-center gap-2">
-                        <RiLoader2Line className="h-6 w-6 animate-spin text-primary" />
-                        <span className="font-medium text-sm">
-                          Parsing PDF...
+                      <div className="flex flex-col items-center gap-base">
+                        <RiLoader2Line className="size-6 animate-spin text-primary" />
+                        <span className="font-medium font-sans text-[13px] text-primary">
+                          Analyzing...
                         </span>
                       </div>
                     ) : resumeText ? (
-                      <div className="flex items-center gap-3">
-                        <RiFileTextLine className="h-6 w-6 text-primary" />
-                        <span className="max-w-[150px] truncate font-medium text-sm">
-                          {fileName || "Resume uploaded"}
+                      <div className="flex items-center gap-base">
+                        <RiFileTextLine className="size-6 text-primary" />
+                        <span className="max-w-[150px] truncate font-medium font-sans text-[13px] text-primary">
+                          {fileName || "Profile Ready"}
                         </span>
                       </div>
                     ) : (
                       <>
-                        <RiUploadCloud2Line className="mb-2 h-6 w-6 text-muted-foreground/40" />
-                        <span className="text-center text-muted-foreground text-sm">
-                          Click to upload your resume
+                        <RiUploadCloud2Line className="mb-base size-6 text-ink-faint" />
+                        <span className="text-center font-medium font-sans text-[13px] text-primary">
+                          Upload Document
                         </span>
-                        <span className="mt-1 text-[10px] text-muted-foreground/40">
+                        <span className="mt-1 font-light font-sans text-[11px] text-ink-faint">
                           PDF max 5MB
                         </span>
                       </>
@@ -337,22 +347,21 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                 <Button
                   type="submit"
                   disabled={submitting || parsingPdf}
-                  className="mt-4 h-12 w-full rounded-full bg-primary font-semibold text-[15px] text-white shadow-lg transition-all hover:shadow-xl"
+                  className="mt-base h-11 w-full rounded-standard bg-primary font-medium font-sans text-[14px] text-white shadow-none transition-all active:scale-[0.98]"
                 >
                   {submitting ? (
                     <>
-                      <RiLoader2Line className="mr-2 h-4 w-4 animate-spin" />
-                      Applying...
+                      <RiLoader2Line className="mr-base size-4 animate-spin" />
+                      Processing...
                     </>
                   ) : (
                     "Submit Application"
                   )}
                 </Button>
 
-                <p className="px-4 text-center text-[10px] text-muted-foreground/40 leading-relaxed">
-                  By applying, you agree to our Terms of Service and Privacy
-                  Policy. Our AI will analyze your data for recruitment purposes
-                  only.
+                <p className="px-base text-center font-light font-sans text-[10px] text-ink-faint italic leading-relaxed">
+                  By applying, you agree to our terms. Data is processed with
+                  neural analysis for organizational resonance.
                 </p>
               </form>
             </div>

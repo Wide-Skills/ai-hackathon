@@ -40,7 +40,7 @@ export function ScoreDistributionChart({
     return (
       <Empty className="h-full min-h-[300px] border-none bg-transparent">
         <EmptyHeader>
-          <EmptyTitle className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest">
+          <EmptyTitle className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-wider">
             No Distribution Data Available
           </EmptyTitle>
         </EmptyHeader>
@@ -59,16 +59,15 @@ export function ScoreDistributionChart({
           <CartesianGrid
             strokeDasharray="3 3"
             vertical={false}
-            stroke="rgba(0,0,0,0.03)"
+            stroke="var(--color-line)"
           />
           <XAxis
             dataKey="range"
             tick={{
               fontSize: 10,
-              fill: "var(--color-muted-foreground)",
-              fontWeight: 600,
-              letterSpacing: "0.05em",
-              opacity: 0.5,
+              fill: "var(--color-ink-faint)",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
             }}
             axisLine={false}
             tickLine={false}
@@ -77,10 +76,9 @@ export function ScoreDistributionChart({
           <YAxis
             tick={{
               fontSize: 10,
-              fill: "var(--color-muted-foreground)",
-              fontWeight: 600,
-              letterSpacing: "0.05em",
-              opacity: 0.5,
+              fill: "var(--color-ink-faint)",
+              fontWeight: 500,
+              letterSpacing: "0.06em",
             }}
             axisLine={false}
             tickLine={false}
@@ -88,22 +86,23 @@ export function ScoreDistributionChart({
           />
           <Tooltip
             contentStyle={{
-              background: "white",
-              border: "1px solid rgba(0,0,0,0.05)",
-              borderRadius: "12px",
+              background: "var(--color-surface)",
+              border: "1px solid var(--color-line)",
+              borderRadius: "7px",
               fontSize: "11px",
-              fontWeight: 700,
-              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+              fontWeight: 500,
+              boxShadow: "none",
               padding: "8px 12px",
+              color: "var(--color-ink-full)",
             }}
-            cursor={{ fill: "rgba(0,0,0,0.02)", radius: 6 }}
+            cursor={{ fill: "var(--color-bg-alt)", radius: 4 }}
           />
           <Bar
             dataKey="count"
-            fill="var(--color-info)"
-            fillOpacity={0.5}
-            radius={[4, 4, 0, 0]}
-            name="Candidates"
+            fill="var(--color-primary)"
+            fillOpacity={0.4}
+            radius={[2, 2, 0, 0]}
+            name="Experts"
           />
         </BarChart>
       </ResponsiveContainer>

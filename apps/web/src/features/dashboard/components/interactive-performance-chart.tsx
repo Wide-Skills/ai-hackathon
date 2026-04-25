@@ -82,29 +82,27 @@ export function InteractivePerformanceChart({
 
   return (
     <Card className="border-none bg-transparent py-0 shadow-none">
-      <CardHeader className="flex flex-col items-stretch border-border/5 border-b p-0 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-4 sm:py-6">
-          <CardTitle className="font-display font-light text-[18px] uppercase tracking-widest">
-            Recruitment Velocity
+      <CardHeader className="flex flex-col items-stretch border-line border-b bg-transparent p-0 sm:flex-row">
+        <div className="flex flex-1 flex-col justify-center gap-micro px-comfortable py-comfortable sm:py-6">
+          <CardDescription className="text-ink-faint">Velocity</CardDescription>
+          <CardTitle className="font-serif text-[20px] text-primary leading-tight">
+            Recruitment Throughput
           </CardTitle>
-          <CardDescription className="text-[12px] uppercase tracking-wider opacity-60">
-            Comparing incoming volume vs AI throughput (Last 14 days)
-          </CardDescription>
         </div>
-        <div className="flex">
+        <div className="flex border-line border-l">
           {["appliedCount", "screenedCount"].map((key) => {
             const chart = key as keyof typeof chartConfig;
             return (
               <button
                 key={chart}
                 data-active={activeChart === chart}
-                className="relative flex flex-1 flex-col justify-center gap-1 border-border/5 border-t px-6 py-4 text-left transition-all even:border-l data-[active=true]:bg-secondary/20 sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
+                className="relative flex flex-1 flex-col justify-center gap-micro border-line border-t px-comfortable py-4 text-left transition-all even:border-l data-[active=true]:bg-bg2 sm:border-t-0 sm:px-8 sm:py-6"
                 onClick={() => setActiveChart(chart)}
               >
-                <span className="font-bold text-[10px] text-muted-foreground/60 uppercase tracking-widest">
+                <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
                   {chartConfig[chart].label}
                 </span>
-                <span className="font-display font-light text-2xl leading-none sm:text-3xl">
+                <span className="font-serif text-[24px] text-primary leading-none sm:text-[28px]">
                   {total[key as keyof typeof total].toLocaleString()}
                 </span>
               </button>
@@ -112,7 +110,7 @@ export function InteractivePerformanceChart({
           })}
         </div>
       </CardHeader>
-      <CardContent className="px-2 sm:p-6">
+      <CardContent className="px-2 sm:p-comfortable">
         <ChartContainer
           config={chartConfig}
           className="aspect-auto h-[300px] w-full"
@@ -128,15 +126,19 @@ export function InteractivePerformanceChart({
             <CartesianGrid
               vertical={false}
               strokeDasharray="3 3"
-              stroke="rgba(0,0,0,0.05)"
+              stroke="var(--color-line)"
             />
             <XAxis
               dataKey="date"
               tickLine={false}
               axisLine={false}
-              tickMargin={8}
+              tickMargin={12}
               minTickGap={32}
-              tick={{ fontSize: 10, fontWeight: 500, opacity: 0.4 }}
+              tick={{
+                fontSize: 10,
+                fontWeight: 500,
+                fill: "var(--color-ink-faint)",
+              }}
               tickFormatter={(value) => {
                 const date = new Date(value);
                 return date.toLocaleDateString("en-US", {
@@ -148,7 +150,7 @@ export function InteractivePerformanceChart({
             <ChartTooltip
               content={
                 <ChartTooltipContent
-                  className="w-[150px] border-border/50 shadow-lg"
+                  className="w-[150px] border-line bg-surface shadow-none"
                   nameKey="applicants"
                   labelFormatter={(value) => {
                     return new Date(value).toLocaleDateString("en-US", {
@@ -164,11 +166,11 @@ export function InteractivePerformanceChart({
               dataKey={activeChart}
               fill={
                 activeChart === "appliedCount"
-                  ? "var(--color-info)"
-                  : "var(--color-success)"
+                  ? "var(--color-primary)"
+                  : "var(--color-success-text)"
               }
-              radius={[4, 4, 0, 0]}
-              fillOpacity={0.6}
+              radius={[2, 2, 0, 0]}
+              fillOpacity={0.8}
             />
           </BarChart>
         </ChartContainer>

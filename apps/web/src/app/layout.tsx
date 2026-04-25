@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 
 import "../index.css";
 import Providers from "@/components/providers";
 import { cn } from "@/lib/utils";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: "400",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,8 +23,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ai-hackathon",
-  description: "ai-hackathon",
+  title: "Umurava AI | High-Fidelity Talent Screening",
+  description:
+    "The world's first recruitment platform that justifies its choices.",
 };
 
 export default function RootLayout({
@@ -32,13 +37,16 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("font-sans", inter.variable)}
+      className={cn(
+        "antialiased",
+        instrumentSerif.variable,
+        geistSans.variable,
+        geistMono.variable,
+      )}
     >
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="min-h-screen font-sans">
         <Providers>
-          <div className="h-svh">{children}</div>
+          <div className="relative flex h-svh flex-col">{children}</div>
         </Providers>
       </body>
     </html>

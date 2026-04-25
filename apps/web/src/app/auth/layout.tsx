@@ -25,15 +25,14 @@ export default async function AuthLayout({
       <AuthVisuals />
 
       {/* Main Form Content */}
-      <div className="relative flex min-h-screen flex-col justify-center bg-[#fafafa]/30 px-8 lg:px-24 xl:px-32">
-        <Button
-          render={<Link href="/" />}
-          className="absolute top-8 left-8 h-9 px-4 font-normal text-[13px] hover:bg-background/80"
-          variant="ghost"
+      <div className="relative flex min-h-screen flex-col justify-center bg-bg px-8 lg:px-24 xl:px-32">
+        <Link
+          href="/"
+          className="group absolute top-10 left-10 flex items-center gap-base font-medium font-sans text-[13px] text-ink-muted transition-colors hover:text-ink-full"
         >
-          <RiArrowLeftSLine className="mr-2 h-3.5 w-3.5" />
-          Back to Home
-        </Button>
+          <RiArrowLeftSLine className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+          Back to home
+        </Link>
 
         <div className="mx-auto w-full max-w-[400px]">
           <AuthContentWrapper>{children}</AuthContentWrapper>

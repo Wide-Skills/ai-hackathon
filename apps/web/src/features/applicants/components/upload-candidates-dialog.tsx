@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 
 interface ParsedCandidate {
@@ -54,26 +55,17 @@ function parseCSV(text: string): ParsedCandidate[] {
     .split(",")
     .map((h) => h.trim().toLowerCase().replace(/['"]/g, ""));
 
+  const emailIdx = headers.findIndex((h) =>
+    ["email", "email_address", "e-mail"].includes(h),
+  );
+  const nameIdx = headers.findIndex((h) =>
+    ["name", "full_name", "fullname", "full name"].includes(h),
+  );
   const firstNameIdx = headers.findIndex((h) =>
     ["firstname", "first_name", "first name", "fname"].includes(h),
   );
   const lastNameIdx = headers.findIndex((h) =>
     ["lastname", "last_name", "last name", "lname"].includes(h),
-  );
-  const nameIdx = headers.findIndex((h) =>
-    ["name", "full_name", "fullname", "full name"].includes(h),
-  );
-  const emailIdx = headers.findIndex((h) =>
-    ["email", "email_address", "e-mail"].includes(h),
-  );
-  const headlineIdx = headers.findIndex((h) =>
-    ["headline", "title", "job_title", "position", "role"].includes(h),
-  );
-  const locationIdx = headers.findIndex((h) =>
-    ["location", "city", "country", "address"].includes(h),
-  );
-  const skillsIdx = headers.findIndex((h) =>
-    ["skills", "technologies", "tech_stack"].includes(h),
   );
 
   if (emailIdx === -1) return [];
@@ -101,26 +93,11 @@ function parseCSV(text: string): ParsedCandidate[] {
     const email = values[emailIdx] || "";
     if (!email || !firstName) continue;
 
-    const candidate: ParsedCandidate = {
+    candidates.push({
       firstName,
       lastName: lastName || "Unknown",
       email,
-    };
-
-    if (headlineIdx >= 0 && values[headlineIdx]) {
-      candidate.headline = values[headlineIdx];
-    }
-    if (locationIdx >= 0 && values[locationIdx]) {
-      candidate.location = values[locationIdx];
-    }
-    if (skillsIdx >= 0 && values[skillsIdx]) {
-      candidate.skills = values[skillsIdx]
-        .split(/[;|]/)
-        .map((s) => s.trim())
-        .filter(Boolean);
-    }
-
-    candidates.push(candidate);
+    });
   }
 
   return candidates;
@@ -157,13 +134,11 @@ export function UploadCandidatesDialog({
       const text = e.target?.result as string;
       const parsed = parseCSV(text);
       if (parsed.length === 0) {
-        toast.error(
-          "Could not parse candidates. Ensure your CSV has columns: first_name, last_name (or name), email",
-        );
+        toast.error("Could not parse candidates. Check your CSV headers.");
         return;
       }
       setCandidates(parsed);
-      toast.success(`Found ${parsed.length} candidates in ${file.name}`);
+      toast.success(`Parsed ${parsed.length} candidates.`);
     };
     reader.readAsText(file);
   }, []);
@@ -179,120 +154,66 @@ export function UploadCandidatesDialog({
   );
 
   const handleUpload = async () => {
-    if (!selectedJobId) {
-      toast.error("Please select a job position");
-      return;
-    }
-    if (candidates.length === 0) {
-      toast.error("No candidates to upload");
-      return;
-    }
+    if (!selectedJobId || candidates.length === 0) return;
 
     setUploading(true);
-    let success = 0;
-    let failed = 0;
-
     try {
-      const result = await ingestBatch.mutateAsync({
+      await ingestBatch.mutateAsync({
         jobId: selectedJobId,
         candidates: candidates.map((c) => ({
           firstName: c.firstName,
           lastName: c.lastName,
           email: c.email,
-          headline: c.headline,
-          location: c.location,
-          skills: c.skills,
         })),
       });
-      success = result.successCount;
-      failed = result.failedCount;
+      await invalidateHiringData(queryClient);
+      toast.success(`Successfully imported ${candidates.length} candidates!`);
+      setOpen(false);
+      setCandidates([]);
+      setFileName("");
     } catch (e) {
-      console.error("Batch upload failed:", e);
-      failed = candidates.length;
+      toast.error("Batch upload failed");
+    } finally {
+      setUploading(false);
     }
-
-    await invalidateHiringData(queryClient);
-
-    setUploading(false);
-
-    if (failed > 0) {
-      toast.warning(`Uploaded ${success} candidates. ${failed} failed.`);
-    } else {
-      toast.success(`Successfully uploaded ${success} candidates!`);
-    }
-
-    setOpen(false);
-    setCandidates([]);
-    setFileName("");
-    setSelectedJobId("");
-  };
-
-  const reset = () => {
-    setCandidates([]);
-    setFileName("");
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={
-          (trigger as React.ReactElement) || (
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-10 gap-2 rounded-full border-border/50 font-bold text-[11px] uppercase tracking-widest shadow-md hover:bg-secondary"
-            >
-              <RiUploadCloud2Line className="h-4 w-4" />
-              Upload CSV
-            </Button>
-          )
-        }
-      />
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+      <DialogTrigger render={trigger} />
+      <DialogContent className="max-h-[90vh] overflow-y-auto shadow-none sm:max-w-xl">
         <DialogHeader>
-          <div className="flex items-center gap-4">
-            <div>
-              <DialogTitle className="font-display font-light text-xl uppercase tracking-widest">
-                Ingestion Node
-              </DialogTitle>
-              <DialogDescription className="font-medium text-[13px] text-muted-foreground/60 leading-tight">
-                Import talent architectures from structured CSV data.
-              </DialogDescription>
-            </div>
-          </div>
+          <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.06em]">
+            Bulk Import
+          </span>
+          <DialogTitle className="font-serif text-[28px] text-primary leading-tight">
+            Batch Import
+          </DialogTitle>
+          <DialogDescription className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
+            Import multiple candidate profiles from a CSV file.
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4 space-y-5">
-          <div className="space-y-1.5">
-            <label className="font-medium text-sm">
-              Target Position <span className="text-destructive">*</span>
+        <div className="space-y-comfortable p-comfortable">
+          <div className="space-y-base">
+            <label className="ml-1 font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
+              Target Job <span className="text-status-error-text">*</span>
             </label>
-            {jobsQuery.isError ? (
-              <QueryErrorState
-                error={jobsQuery.error}
-                title="Jobs couldn't be loaded"
-                onRetry={() => jobsQuery.refetch()}
-              />
-            ) : (
-              <Select
-                value={selectedJobId}
-                onValueChange={(val) => setSelectedJobId(val ?? "")}
-              >
-                <SelectTrigger className="h-11 rounded-xl border-border/50 bg-secondary/30 font-medium text-[14px]">
-                  <SelectValue placeholder="Select position architecture...">
-                    {selectedJobId &&
-                      jobs.find((j) => j.id === selectedJobId)?.title}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {jobs.map((j) => (
-                    <SelectItem key={j.id} value={j.id}>
-                      {j.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+            <Select
+              value={selectedJobId}
+              onValueChange={(val) => setSelectedJobId(val ?? "")}
+            >
+              <SelectTrigger className="h-10 rounded-standard border-line bg-bg2 font-medium font-sans text-[13px] text-primary shadow-none">
+                <SelectValue placeholder="Select a job..." />
+              </SelectTrigger>
+              <SelectContent className="border-line bg-surface shadow-none">
+                {jobs.map((j) => (
+                  <SelectItem key={j.id} value={j.id}>
+                    {j.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {candidates.length === 0 ? (
@@ -304,24 +225,19 @@ export function UploadCandidatesDialog({
               }}
               onDragLeave={() => setDragOver(false)}
               onClick={() => fileInputRef.current?.click()}
-              className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-10 transition-all ${
+              className={cn(
+                "flex cursor-pointer flex-col items-center justify-center rounded-standard border border-dashed p-12 transition-all",
                 dragOver
-                  ? "border-primary bg-primary/5"
-                  : "border-border hover:border-primary/40 hover:bg-muted/50"
-              }`}
+                  ? "border-primary bg-primary-alpha/10"
+                  : "border-line bg-bg2 hover:border-primary/20 hover:bg-bg-alt/40",
+              )}
             >
-              <RiUploadCloud2Line className="mb-3 h-8 w-8 text-muted-foreground/50" />
-              <p className="font-medium text-foreground text-sm">
-                Drop your CSV file here
+              <RiUploadCloud2Line className="mb-comfortable size-8 text-ink-faint" />
+              <p className="font-medium font-sans text-[13px] text-primary">
+                Drop CSV dataset here
               </p>
-              <p className="mt-1 text-muted-foreground text-xs">
-                or click to browse · Supports .csv files
-              </p>
-              <p className="mt-3 rounded-lg bg-muted px-3 py-1.5 text-muted-foreground text-xs">
-                Required columns:{" "}
-                <span className="font-semibold">
-                  first_name, last_name, email
-                </span>
+              <p className="mt-1 font-light font-sans text-[11px] text-ink-faint">
+                or click to browse local storage
               </p>
               <input
                 ref={fileInputRef}
@@ -335,142 +251,85 @@ export function UploadCandidatesDialog({
               />
             </div>
           ) : (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
-                <div className="flex items-center gap-3">
-                  <RiFileExcel2Line className="h-5 w-5 text-primary" />
+            <div className="space-y-base">
+              <div className="flex items-center justify-between rounded-standard border border-line bg-bg2/40 px-base py-base">
+                <div className="flex items-center gap-base">
+                  <div className="flex size-8 items-center justify-center rounded-micro border border-line bg-bg2">
+                    <RiFileExcel2Line className="size-4 text-primary" />
+                  </div>
                   <div>
-                    <p className="font-medium text-foreground text-sm">
+                    <p className="font-medium font-sans text-[13px] text-primary leading-none">
                       {fileName}
                     </p>
-                    <p className="text-muted-foreground text-xs">
+                    <p className="mt-1 font-light font-sans text-[11px] text-ink-faint leading-none">
                       {candidates.length} candidates parsed
                     </p>
                   </div>
                 </div>
                 <button
-                  onClick={reset}
-                  className="rounded-full p-1 hover:bg-muted"
+                  onClick={() => setCandidates([])}
+                  className="flex size-8 items-center justify-center rounded-micro transition-colors hover:bg-bg-alt"
                 >
-                  <RiCloseLine className="h-4 w-4 text-muted-foreground" />
+                  <RiCloseLine className="size-4 text-ink-faint" />
                 </button>
               </div>
 
-              <div className="max-h-52 overflow-y-auto rounded-lg border border-border">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-border border-b bg-muted/30">
-                      <th className="px-3 py-2 text-left font-semibold text-muted-foreground text-xs">
+              <div className="max-h-40 overflow-y-auto rounded-standard border border-line bg-surface">
+                <table className="w-full text-left">
+                  <thead className="sticky top-0 border-line border-b bg-bg-alt/40">
+                    <tr>
+                      <th className="px-base py-2 font-medium font-sans text-[10px] text-ink-faint uppercase">
                         Name
                       </th>
-                      <th className="px-3 py-2 text-left font-semibold text-muted-foreground text-xs">
+                      <th className="px-base py-2 font-medium font-sans text-[10px] text-ink-faint uppercase">
                         Email
-                      </th>
-                      <th className="hidden px-3 py-2 text-left font-semibold text-muted-foreground text-xs sm:table-cell">
-                        Skills
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border/50">
-                    {candidates.slice(0, 20).map((c, i) => (
+                  <tbody className="divide-y divide-line">
+                    {candidates.slice(0, 10).map((c, i) => (
                       <tr key={i}>
-                        <td className="px-3 py-2 font-medium text-foreground text-xs">
+                        <td className="px-base py-2 font-medium font-sans text-[12px] text-primary">
                           {c.firstName} {c.lastName}
                         </td>
-                        <td className="px-3 py-2 text-muted-foreground text-xs">
+                        <td className="px-base py-2 font-light font-sans text-[11px] text-ink-muted">
                           {c.email}
-                        </td>
-                        <td className="hidden px-3 py-2 sm:table-cell">
-                          <div className="flex flex-wrap gap-1">
-                            {(c.skills || []).slice(0, 3).map((s) => (
-                              <Badge
-                                key={s}
-                                variant="outline"
-                                className="border-primary/20 bg-primary/10 px-1.5 py-0 text-[10px] text-primary"
-                              >
-                                {s}
-                              </Badge>
-                            ))}
-                          </div>
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-                {candidates.length > 20 && (
-                  <p className="px-3 py-2 text-center text-muted-foreground text-xs">
-                    ... and {candidates.length - 20} more
-                  </p>
-                )}
-              </div>
-
-              <div className="flex items-center gap-2 rounded-lg bg-success/10 px-3 py-2">
-                <RiCheckboxCircleLine className="h-4 w-4 text-success" />
-                <p className="font-medium text-sm text-success">
-                  {candidates.length} candidates ready to import
-                </p>
               </div>
             </div>
           )}
 
-          <DialogFooter className="mt-8 gap-3 border-border/10 border-t pt-8">
-            <DialogClose
-              render={
-                <Button
-                  variant="outline"
-                  className="rounded-full"
-                  size={"lg"}
-                />
-              }
-            >
-              Cancel Protocol
-            </DialogClose>
-            <Button
-              onClick={handleUpload}
-              disabled={uploading || candidates.length === 0 || !selectedJobId}
-              className="rounded-full"
-              size={"lg"}
-            >
-              {uploading ? (
-                <>
-                  <RiLoader2Line className="h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <RiUploadCloud2Line className="h-4 w-4" />
-                  Initialize Batch Import
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-
-          <div className="mt-4 flex items-start gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2">
-            <RiAlertLine className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground/50" />
-            <p className="text-muted-foreground text-xs leading-relaxed">
-              Your CSV should have headers like{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">
-                first_name
-              </code>
-              ,{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">
-                last_name
-              </code>
-              , <code className="rounded bg-muted px-1 text-[10px]">email</code>
-              . Optional:{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">
-                headline
-              </code>
-              ,{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">
-                location
-              </code>
-              ,{" "}
-              <code className="rounded bg-muted px-1 text-[10px]">skills</code>{" "}
-              (semicolon-separated).
+          <div className="flex items-center gap-base rounded-micro border border-status-success-bg/20 bg-status-success-bg p-base">
+            <RiCheckboxCircleLine className="size-4 text-status-success-text" />
+            <p className="font-medium font-sans text-[11px] text-status-success-text uppercase tracking-wider">
+              Ready for AI screening
             </p>
           </div>
         </div>
+
+        <DialogFooter>
+          <DialogClose
+            render={
+              <Button
+                variant="outline"
+                className="h-9 rounded-standard border-line font-medium font-sans text-[12px]"
+              >
+                Cancel
+              </Button>
+            }
+          />
+          <Button
+            onClick={handleUpload}
+            disabled={uploading || candidates.length === 0 || !selectedJobId}
+            className="h-9 rounded-standard font-medium font-sans text-[12px]"
+          >
+            {uploading ? "Importing..." : "Start Import"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
@@ -61,118 +61,27 @@ export function JobCard({ job }: JobCardProps) {
   return (
     <Card
       onClick={() => router.push(`/dashboard/jobs/${job.id}` as Route)}
-      className="group cursor-pointer rounded-3xl border border-border/40 bg-background shadow-md transition-all hover:border-primary/20 hover:shadow-lg"
+      variant="default"
+      className="group cursor-pointer overflow-hidden border-line transition-all duration-200 hover:border-line-medium"
       size="none"
     >
       {/* SECTION 1: Identity & Primary Info */}
-      <div className="p-10 pb-8">
-        <div className="mb-6 flex items-center gap-4">
-          <Badge variant={sc.variant} size="xs" uppercase className="shadow-sm">
-            <div className="h-1 w-1 rounded-full bg-current opacity-60" />
-            <span className="translate-y-[0.5px]">{sc.label}</span>
-          </Badge>
-          <span className="font-bold text-[9px] text-muted-foreground/20 uppercase tracking-[0.2em]">
-            ID: {job.id.slice(-8).toUpperCase()}
-          </span>
-        </div>
-
-        <h3 className="max-w-[650px] font-display font-light text-[28px] text-foreground leading-tight tracking-tight transition-colors group-hover:text-primary">
-          {job.title}
-        </h3>
-      </div>
-
-      {/* SECTION 2: Hierarchal Metadata Band (Separated by subtle border) */}
-      <div className="flex flex-wrap items-center gap-x-8 gap-y-2 border-border/5 border-y bg-secondary/[0.01] px-10 py-5 font-bold text-[9px] text-muted-foreground uppercase tracking-widest opacity-60">
-        <span className="flex items-center gap-2">
-          <RiBuildingLine className="h-3 w-3 opacity-40" />
-          {job.department}
-        </span>
-        <div className="hidden h-3 w-px bg-border/20 sm:block" />
-        <span className="flex items-center gap-2">
-          <RiMapPinLine className="h-3 w-3 opacity-40" />
-          {job.location}
-        </span>
-        <div className="hidden h-3 w-px bg-border/20 sm:block" />
-        <span className="flex items-center gap-2">
-          <RiBriefcaseLine className="h-3 w-3 opacity-40" />
-          {job.type}
-        </span>
-      </div>
-
-      {/* SECTION 3: Content & Context */}
-      <div className="space-y-8 p-10 pt-8 pb-10">
-        <p className="line-clamp-2 max-w-[700px] font-medium text-[14px] text-foreground/50 leading-relaxed tracking-tight">
-          {job.description}
-        </p>
-
-        <div className="flex flex-wrap gap-2">
-          {job.skills.slice(0, 5).map((skill) => (
-            <Badge
-              key={skill}
-              variant="secondary"
-              size="xs"
-              uppercase
-              className="px-3 py-1.5 shadow-md"
-            >
-              {skill}
+      <CardHeader className="flex flex-row items-center justify-between bg-bg-alt/20 px-comfortable py-base">
+        <div className="flex flex-col gap-micro">
+          <div className="flex items-center gap-base">
+            <Badge variant={sc.variant} size="sm" uppercase>
+              <div className="mr-1.5 h-1 w-1 rounded-full bg-current opacity-60" />
+              {sc.label}
             </Badge>
-          ))}
-          {job.skills.length > 5 && (
-            <span className="ml-1 self-center font-bold text-[9px] text-muted-foreground/20 uppercase tracking-widest">
-              + {job.skills.length - 5} More
+            <span className="font-mono text-[10px] text-ink-faint uppercase tracking-widest">
+              ID: {job.id.slice(-8)}
             </span>
-          )}
-        </div>
-      </div>
-
-      {/* SECTION 4: Performance & Action Band (Stronger separation for transition to metrics) */}
-      <div className="flex flex-col items-center justify-between gap-10 border-border/10 border-t bg-secondary/[0.01] px-10 py-8 lg:flex-row">
-        <div className="flex w-full items-center gap-12 lg:w-auto">
-          {/* Main Metrics Group */}
-          <div className="flex items-center gap-10">
-            <div className="space-y-1">
-              <p className="font-display font-light text-[28px] text-foreground leading-none tracking-tighter">
-                {job.applicantsCount}
-              </p>
-              <p className="font-bold text-[9px] text-muted-foreground/30 uppercase tracking-widest">
-                Applicants
-              </p>
-            </div>
-            <div className="h-8 w-px bg-border/10" />
-            <div className="space-y-1">
-              <p className="font-display font-light text-[28px] text-success/60 leading-none tracking-tighter">
-                {job.shortlistedCount}
-              </p>
-              <p className="font-bold text-[9px] text-muted-foreground/30 uppercase tracking-widest">
-                Shortlisted
-              </p>
-            </div>
           </div>
-
-          {/* Progress Indicator */}
-          <div className="flex min-w-[180px] flex-1 flex-col gap-2.5 border-border/5 lg:flex-none lg:border-l lg:pl-10">
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-[9px] text-muted-foreground/40 uppercase tracking-widest">
-                AI Analysis
-              </span>
-              <span className="font-bold text-[10px] text-info/50 tracking-widest">
-                {screenedPct}%
-              </span>
-            </div>
-            <div className="h-1 w-full overflow-hidden rounded-full bg-secondary/50 shadow-inset">
-              <div
-                className={cn(
-                  "h-full transition-all duration-1000",
-                  screenedPct > 80 ? "bg-success/40" : "bg-info/30",
-                )}
-                style={{ width: `${screenedPct}%` }}
-              />
-            </div>
-          </div>
+          <CardTitle className="mt-1 font-serif text-[28px] text-primary transition-colors group-hover:text-primary-muted">
+            {job.title}
+          </CardTitle>
         </div>
-
-        {/* Global Actions */}
-        <div className="flex w-full shrink-0 items-center justify-between gap-4 border-border/5 border-t pt-6 lg:w-auto lg:justify-end lg:border-t-0 lg:pt-0">
+        <div className="flex items-center gap-base">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger
@@ -180,19 +89,100 @@ export function JobCard({ job }: JobCardProps) {
                   <Button
                     onClick={copyToClipboard}
                     variant="outline"
-                    size="icon-lg"
-                    className="rounded-full text-muted-foreground/60 shadow-md hover:border-primary/20 hover:text-primary"
+                    size="icon-sm"
+                    className="rounded-micro border-line text-ink-faint transition-all hover:border-line-medium hover:text-primary"
                   />
                 }
               >
-                <RiLink className="h-4 w-4" />
+                <RiLink className="size-3.5" />
               </TooltipTrigger>
-              <TooltipContent className="rounded-full px-4 py-1.5 font-bold text-[10px] uppercase tracking-widest">
-                Copy Link
+              <TooltipContent className="rounded-standard border-line bg-surface px-3 py-1 font-medium font-sans text-[11px] text-primary">
+                Copy Public Link
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+        </div>
+      </CardHeader>
 
+      {/* SECTION 2: Hierarchal Metadata Band */}
+      <div className="flex flex-wrap items-center gap-x-base gap-y-2 border-line border-b bg-bg/10 px-comfortable py-3">
+        <div className="flex items-center gap-small font-medium font-sans text-[11px] text-ink-muted uppercase tracking-wider">
+          <RiBuildingLine className="size-3.5 opacity-40" />
+          {job.department}
+        </div>
+        <div className="size-1 rounded-full bg-line" />
+        <div className="flex items-center gap-small font-medium font-sans text-[11px] text-ink-muted uppercase tracking-wider">
+          <RiMapPinLine className="size-3.5 opacity-40" />
+          {job.location}
+        </div>
+        <div className="size-1 rounded-full bg-line" />
+        <div className="flex items-center gap-small font-medium font-sans text-[11px] text-ink-muted uppercase tracking-wider">
+          <RiBriefcaseLine className="size-3.5 opacity-40" />
+          {job.type}
+        </div>
+      </div>
+
+      {/* SECTION 3: Content & Context */}
+      <div className="flex flex-col justify-between gap-hero space-y-medium p-comfortable md:flex-row md:items-start">
+        <div className="flex-1 space-y-base">
+          <p className="line-clamp-2 max-w-[70ch] font-light font-sans text-[15px] text-ink-muted leading-relaxed">
+            {job.description}
+          </p>
+          <div className="flex flex-wrap gap-small">
+            {job.skills.slice(0, 5).map((skill) => (
+              <Badge key={skill} variant="secondary" size="sm">
+                {skill}
+              </Badge>
+            ))}
+            {job.skills.length > 5 && (
+              <span className="self-center pl-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
+                + {job.skills.length - 5} More
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* SECTION 4: Performance Metrics */}
+        <div className="flex shrink-0 items-center gap-hero border-line border-l py-1 pl-comfortable">
+          <div className="flex min-w-[80px] flex-col">
+            <span className="font-serif text-[26px] text-primary leading-none">
+              {job.applicantsCount}
+            </span>
+            <span className="mt-1.5 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
+              Applicants
+            </span>
+          </div>
+          <div className="flex min-w-[80px] flex-col">
+            <span className="font-serif text-[26px] text-status-success-text leading-none">
+              {job.shortlistedCount}
+            </span>
+            <span className="mt-1.5 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
+              Shortlisted
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* SECTION 5: Footer Progress & Action */}
+      <div className="flex flex-col items-center justify-between gap-base border-line border-t bg-bg-alt/10 px-comfortable py-base lg:flex-row">
+        <div className="flex w-full flex-1 items-center gap-base lg:w-auto">
+          <div className="flex w-full max-w-[300px] items-center gap-base">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-pill border border-line bg-bg-deep">
+              <div
+                className={cn(
+                  "h-full transition-all duration-1000",
+                  screenedPct > 80 ? "bg-status-success-text" : "bg-primary/40",
+                )}
+                style={{ width: `${screenedPct}%` }}
+              />
+            </div>
+            <span className="shrink-0 font-bold font-sans text-[11px] text-primary/60">
+              {screenedPct}% AI Coverage
+            </span>
+          </div>
+        </div>
+
+        <div className="flex w-full items-center gap-base lg:w-auto lg:justify-end">
           <Button
             render={
               <Link
@@ -201,8 +191,8 @@ export function JobCard({ job }: JobCardProps) {
               />
             }
             variant="default"
-            size="xl"
-            className="shadow-lg"
+            size="sm"
+            className="h-9 px-6 font-medium font-sans text-[13px]"
           >
             Manage Pipeline
           </Button>

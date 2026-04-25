@@ -1,7 +1,7 @@
 "use client";
 
-import type { Applicant, ApplicationStatus } from "@ai-hackathon/shared";
-import { RiArrowRightSLine, RiArrowUpDownLine } from "@remixicon/react";
+import type { Job, JobStatus } from "@ai-hackathon/shared";
+import { RiArrowRightSLine, RiArrowUpDownLine, RiLink } from "@remixicon/react";
 import {
   type ColumnDef,
   flexRender,
@@ -13,7 +13,9 @@ import {
 import type { Route } from "next";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Table,
@@ -23,93 +25,110 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ScoreBadge } from "@/features/dashboard/components/score-badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
-interface ApplicantsTableProps {
-  data: Applicant[];
-}
 const statusConfig: Record<
-  ApplicationStatus,
-  { label: string; variant: "secondary" | "info" | "success" | "destructive" }
+  JobStatus,
+  { label: string; variant: "success" | "warning" | "secondary" }
 > = {
-  pending: {
-    label: "Pending",
-    variant: "secondary",
-  },
-  screening: {
-    label: "Analyzing",
-    variant: "info",
-  },
-  shortlisted: {
-    label: "Shortlisted",
+  active: {
+    label: "Active",
     variant: "success",
   },
-  rejected: {
-    label: "Rejected",
-    variant: "destructive",
+  draft: {
+    label: "Draft",
+    variant: "warning",
   },
-  hired: {
-    label: "Hired",
-    variant: "info",
-  },
-  failed: {
-    label: "Failed",
-    variant: "destructive",
+  closed: {
+    label: "Closed",
+    variant: "secondary",
   },
 };
 
-export const columns: ColumnDef<Applicant>[] = [
+interface JobsTableProps {
+  data: Job[];
+}
+
+export const columns: ColumnDef<Job>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "title",
     header: ({ column }) => {
       return (
         <button
           className="flex items-center gap-small font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em] transition-colors hover:text-primary"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Candidate <RiArrowUpDownLine className="size-3 opacity-30" />
+          Pipeline <RiArrowUpDownLine className="size-3 opacity-30" />
         </button>
       );
     },
     cell: ({ row }) => {
-      const applicant = row.original;
+      const job = row.original;
       return (
-        <div className="flex items-center gap-base py-1">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 font-medium font-sans text-[11px] text-ink-faint shadow-none">
-            <span className="translate-y-[0.5px]">
-              {applicant.firstName[0]}
-              {applicant.lastName[0]}
-            </span>
+        <div className="flex flex-col justify-center py-1">
+          <div className="font-serif text-[15px] text-primary leading-tight tracking-tight">
+            {job.title}
           </div>
-          <div className="flex min-w-0 flex-col justify-center">
-            <div className="font-serif text-[15px] text-primary leading-tight tracking-tight">
-              {applicant.firstName} {applicant.lastName}
-            </div>
-            <div className="mt-0.5 truncate font-light font-sans text-[11px] text-ink-muted leading-none">
-              {applicant.email}
-            </div>
+          <div className="mt-0.5 font-light font-sans text-[11px] text-ink-muted uppercase tracking-wider">
+            {job.department} · {job.location}
           </div>
         </div>
       );
     },
   },
   {
-    accessorKey: "screening.matchScore",
+    accessorKey: "applicantsCount",
     header: ({ column }) => {
       return (
         <button
           className="flex items-center gap-small font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em] transition-colors hover:text-primary"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          AI Match <RiArrowUpDownLine className="size-3 opacity-30" />
+          Applicants <RiArrowUpDownLine className="size-3 opacity-30" />
         </button>
       );
     },
     cell: ({ row }) => {
-      const score = row.original.screening?.matchScore ?? 0;
       return (
-        <div className="flex h-full items-center py-1">
-          <ScoreBadge score={score} />
+        <div className="font-serif text-[18px] text-primary">
+          {row.original.applicantsCount}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "screenedCount",
+    header: () => (
+      <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
+        AI Coverage
+      </span>
+    ),
+    cell: ({ row }) => {
+      const job = row.original;
+      const pct =
+        job.applicantsCount > 0
+          ? Math.round((job.screenedCount / job.applicantsCount) * 100)
+          : 0;
+      return (
+        <div className="flex w-24 flex-col gap-1.5">
+          <div className="flex items-center justify-between font-medium font-sans text-[10px] text-primary/60">
+            <span>{pct}%</span>
+          </div>
+          <div className="h-1 w-full overflow-hidden rounded-pill border border-line/30 bg-bg-deep">
+            <div
+              className={cn(
+                "h-full transition-all",
+                pct > 80 ? "bg-status-success-text" : "bg-primary/40",
+              )}
+              style={{ width: `${pct}%` }}
+            />
+          </div>
         </div>
       );
     },
@@ -122,8 +141,8 @@ export const columns: ColumnDef<Applicant>[] = [
       </span>
     ),
     cell: ({ row }) => {
-      const status = row.getValue("status") as ApplicationStatus;
-      const config = statusConfig[status] || statusConfig.pending;
+      const status = row.getValue("status") as JobStatus;
+      const config = statusConfig[status];
       return (
         <div className="flex h-full items-center py-1">
           <Badge
@@ -139,31 +158,39 @@ export const columns: ColumnDef<Applicant>[] = [
     },
   },
   {
-    accessorKey: "appliedAt",
-    header: () => (
-      <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
-        Applied
-      </span>
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex h-full items-center py-1 font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
-          {new Date(row.getValue("appliedAt")).toLocaleDateString([], {
-            month: "short",
-            day: "numeric",
-          })}
-        </div>
-      );
-    },
-  },
-  {
     id: "actions",
     cell: ({ row }) => {
-      const applicant = row.original;
+      const job = row.original;
+      const copyToClipboard = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const url = `${window.location.origin}/jobs/${job.id}`;
+        navigator.clipboard.writeText(url);
+        toast.success("Public link copied!");
+      };
+
       return (
-        <div className="flex h-full items-center justify-end py-1">
+        <div className="flex h-full items-center justify-end gap-base py-1">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <button
+                    onClick={copyToClipboard}
+                    className="flex h-8 w-8 items-center justify-center rounded-micro border border-line bg-surface text-ink-faint transition-all hover:border-line-medium hover:text-primary active:scale-95"
+                  >
+                    <RiLink className="size-3.5" />
+                  </button>
+                }
+              />
+              <TooltipContent className="rounded-standard border-line bg-surface px-3 py-1 font-medium font-sans text-[11px] text-primary">
+                Copy Link
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
           <Link
-            href={`/dashboard/applicants/${applicant.id}` as Route}
+            href={`/dashboard/jobs/${job.id}` as Route}
             className="group flex h-8 w-8 items-center justify-center rounded-micro border border-line bg-surface text-ink-faint transition-all hover:border-line-medium hover:text-primary active:scale-95"
           >
             <RiArrowRightSLine className="size-4 opacity-40 transition-opacity group-hover:opacity-100" />
@@ -174,9 +201,9 @@ export const columns: ColumnDef<Applicant>[] = [
   },
 ];
 
-export function ApplicantsTable({ data }: ApplicantsTableProps) {
+export function JobsTable({ data }: JobsTableProps) {
   const [sorting, setSorting] = useState<SortingState>([
-    { id: "screening_matchScore", desc: true },
+    { id: "applicantsCount", desc: true },
   ]);
 
   const table = useReactTable({
@@ -237,7 +264,7 @@ export function ApplicantsTable({ data }: ApplicantsTableProps) {
                 colSpan={columns.length}
                 className="h-32 text-center font-light font-sans text-[13px] text-ink-faint"
               >
-                No experts discovery match the current filter range.
+                No pipelines match the current operational filter.
               </TableCell>
             </TableRow>
           )}

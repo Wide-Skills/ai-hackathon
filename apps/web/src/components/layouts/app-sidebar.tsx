@@ -80,32 +80,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-border border-r bg-background"
+      className="border-line border-r bg-bg"
       {...props}
     >
-      <SidebarHeader className="px-4 pt-6 pb-8">
+      <SidebarHeader className="px-5 pt-8 pb-10">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
               className="hover:bg-transparent active:bg-transparent"
             >
-              <div className="ml-2 grid flex-1 text-left leading-tight">
-                <span className="truncate font-display font-light text-[15px] text-foreground uppercase tracking-[0.2em]">
-                  Umurava{" "}
-                  <span className="text-muted-foreground/40 normal-case italic tracking-tight">
-                    AI
-                  </span>
+              <div className="flex items-center gap-[6px]">
+                <div className="size-[16px] shrink-0 rounded-micro bg-primary" />
+                <span className="truncate font-medium font-sans text-[15px] text-primary tracking-[-0.3px]">
+                  Umurava AI
                 </span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent className="px-2">
+      <SidebarContent className="px-3">
         <NavMain items={navItems} />
       </SidebarContent>
-      <SidebarFooter className="mt-auto border-border/50 border-t p-4">
+      <SidebarFooter className="mt-auto border-line border-t bg-surface/50 p-comfortable">
         {session?.user && <NavUser user={user} />}
       </SidebarFooter>
       <SidebarRail />

@@ -10,30 +10,30 @@ interface StatCardProps {
 export function StatCard({ label, value, sublabel, trend }: StatCardProps) {
   return (
     <Card
-      variant="premium"
-      className="flex h-full flex-col justify-between p-8"
+      variant="default"
+      className="flex h-full flex-col justify-between p-comfortable"
       size="none"
     >
-      <div className="space-y-4">
-        <p className="font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em]">
+      <div className="space-y-base">
+        <p className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
           {label}
         </p>
-        <div className="flex items-baseline gap-1">
-          <span className="font-display font-light text-[42px] text-foreground leading-none tracking-tighter">
+        <div className="flex items-baseline gap-micro">
+          <span className="font-serif text-[32px] text-primary leading-none">
             {value}
           </span>
         </div>
-        <p className="font-medium text-[12px] text-muted-foreground/60 leading-snug tracking-tight">
+        <p className="font-light font-sans text-[13px] text-ink-muted leading-tight">
           {sublabel}
         </p>
       </div>
 
       {trend && (
-        <div className="mt-8 flex items-center gap-2.5 border-border/10 border-t pt-6">
-          <div className="flex items-center gap-1 font-bold text-[11px] text-success/80 uppercase tracking-widest">
+        <div className="mt-comfortable flex items-center gap-small border-line border-t pt-medium">
+          <div className="flex items-center gap-micro font-medium font-sans text-[11px] text-success-text uppercase tracking-[0.01em]">
             {trend}
           </div>
-          <span className="translate-y-[0.5px] font-medium text-[10px] text-muted-foreground/30 uppercase tracking-wider">
+          <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
             Index
           </span>
         </div>

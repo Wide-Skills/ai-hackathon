@@ -17,12 +17,12 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-secondary/10">
+      <div className="flex min-h-screen w-full bg-bg">
         <AppSidebar />
-        <SidebarInset className="flex flex-col bg-transparent">
+        <SidebarInset className="flex flex-col bg-bg">
           <Header />
-          <main className="flex-1 px-8 py-10 lg:px-12">
-            <div className="mx-auto w-full">{children}</div>
+          <main className="flex-1 px-8 py-comfortable lg:px-10">
+            {children}
           </main>
         </SidebarInset>
       </div>

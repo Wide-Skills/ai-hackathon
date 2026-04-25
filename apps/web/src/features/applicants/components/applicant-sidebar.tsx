@@ -39,39 +39,45 @@ export function ApplicantSidebar({
   };
 
   return (
-    <div className="space-y-10 lg:col-span-1">
-      <Card className="group relative overflow-hidden border-border/50 p-10 text-center shadow-lg">
-        <div className="absolute inset-x-0 top-0 -z-10 h-32 bg-secondary/30" />
+    <div className="space-y-comfortable lg:col-span-1">
+      <Card
+        variant="default"
+        className="relative overflow-hidden p-comfortable text-center shadow-none"
+        size="none"
+      >
+        <div className="absolute inset-x-0 top-0 -z-10 h-24 bg-bg2/40" />
 
-        <div className="relative pt-4">
+        <div className="relative pt-2">
           {applicant.avatarUrl ? (
             <img
               src={applicant.avatarUrl}
               alt={`${applicant.firstName} ${applicant.lastName}`}
-              className="mx-auto h-32 w-32 rounded-2xl border-4 border-background object-cover shadow-lg grayscale transition-all hover:grayscale-0"
+              className="mx-auto h-24 w-24 rounded-micro border-2 border-surface object-cover grayscale transition-all hover:grayscale-0"
             />
           ) : (
-            <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-2xl border-4 border-background bg-secondary/30 font-display font-light text-[32px] text-muted-foreground/30 uppercase shadow-md">
+            <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-micro border-2 border-surface bg-bg2 font-serif text-[28px] text-ink-faint uppercase">
               {applicant.firstName[0]}
               {applicant.lastName[0]}
             </div>
           )}
-          <h2 className="mt-10 font-display font-light text-[24px] text-foreground uppercase leading-tight tracking-tight tracking-widest">
-            {applicant.firstName} {applicant.lastName}
+          <h2 className="mt-base font-serif text-[24px] text-primary leading-tight">
+            {applicant.firstName} <br /> {applicant.lastName}
           </h2>
-          <p className="mt-2.5 font-medium text-[14px] text-muted-foreground/60 leading-relaxed tracking-tight">
+          <p className="mt-micro font-medium font-sans text-[13px] text-ink-muted leading-tight">
             {applicant.headline}
           </p>
-          <div className="mt-6 flex items-center justify-center gap-2 font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.25em]">
-            {applicant.location}
+          <div className="mt-base flex items-center justify-center">
+            <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+              {applicant.location}
+            </span>
           </div>
 
-          <div className="mt-12 flex items-center justify-center gap-3">
+          <div className="mt-base flex flex-wrap items-center justify-center gap-base">
             {[
-              { label: "LinkedIn", href: applicant.socialLinks.linkedin },
-              { label: "GitHub", href: applicant.socialLinks.github },
-              { label: "Portfolio", href: applicant.socialLinks.portfolio },
-              { label: "Email", href: `mailto:${applicant.email}` },
+              { label: "LI", href: applicant.socialLinks.linkedin },
+              { label: "GH", href: applicant.socialLinks.github },
+              { label: "Port", href: applicant.socialLinks.portfolio },
+              { label: "Mail", href: `mailto:${applicant.email}` },
             ].map(
               (link, i) =>
                 link.href && (
@@ -80,7 +86,7 @@ export function ApplicantSidebar({
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-lg border border-border/40 bg-background px-3 py-2 font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest shadow-md transition-all hover:border-primary/20 hover:text-foreground active:scale-[0.95]"
+                    className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider transition-colors hover:text-primary"
                   >
                     {link.label}
                   </a>
@@ -88,44 +94,44 @@ export function ApplicantSidebar({
             )}
           </div>
 
-          <div className="mt-14 space-y-3.5 border-border/10 border-t pt-12">
+          <div className="mt-comfortable space-y-base border-line border-t pt-comfortable">
             <Button
               onClick={handleRunAnalysis}
               disabled={screenMutation.isPending}
               variant="default"
-              className="flex h-11 w-full items-center justify-center gap-2 rounded-full font-bold text-[11px] uppercase tracking-[0.2em] shadow-lg disabled:opacity-50"
+              className="h-9 w-full rounded-standard font-medium font-sans text-[12px] shadow-none"
             >
               {screenMutation.isPending ? (
                 <>
-                  <RiLoader2Line className="h-4 w-4 animate-spin" />
+                  <RiLoader2Line className="mr-2 h-3.5 w-3.5 animate-spin" />
                   Analyzing...
                 </>
               ) : (
                 <>
-                  <RiBrainLine className="h-4 w-4" />
-                  {applicant.screening ? "Re-Run Analysis" : "Process Analysis"}
+                  <RiBrainLine className="mr-2 h-3.5 w-3.5" />
+                  {applicant.screening ? "Refresh Logic" : "Analyze Fit"}
                 </>
               )}
             </Button>
-            <Button
-              render={<Link href="/dashboard/applicants">Decline Profile</Link>}
-              variant="outline"
-              className="rounded-full"
-              size="lg"
-            />
           </div>
         </div>
       </Card>
 
-      <Card className="border-border/50 p-8 shadow-lg">
-        <h3 className="mb-10 border-border/5 border-b pb-6 font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.25em]">
-          System Metadata
-        </h3>
-        <div className="space-y-6">
+      <Card
+        variant="default"
+        size="none"
+        className="space-y-comfortable p-comfortable shadow-none"
+      >
+        <header className="border-line border-b pb-small">
+          <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
+            System Context
+          </span>
+        </header>
+        <div className="space-y-base">
           {[
-            { label: "Target Architecture", val: jobTitle },
+            { label: "Target Job", val: jobTitle },
             {
-              label: "Applied On",
+              label: "Applied",
               val: new Date(applicant.appliedAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -136,18 +142,18 @@ export function ApplicantSidebar({
           ].map((item, i) => (
             <div
               key={i}
-              className="flex items-baseline justify-between gap-6 border-border/5 border-b pb-5 last:border-0 last:pb-0"
+              className="flex flex-col gap-micro border-line border-b pb-base last:border-0 last:pb-0"
             >
-              <span className="whitespace-nowrap font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.2em]">
+              <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
                 {item.label}
               </span>
-              <span className="truncate text-right font-bold text-[13px] text-foreground/60 tracking-tight">
+              <span className="font-serif text-[16px] text-primary">
                 {item.val}
               </span>
             </div>
           ))}
-          <div className="flex items-center justify-between pt-2">
-            <span className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.2em]">
+          <div className="flex items-center justify-between pt-base">
+            <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
               Current State
             </span>
             <Badge
@@ -160,37 +166,12 @@ export function ApplicantSidebar({
                       ? "destructive"
                       : "secondary"
               }
-              className="shadow-md"
+              size="sm"
+              uppercase
             >
               {applicant.status}
             </Badge>
           </div>
-        </div>
-      </Card>
-
-      <Card className="border-border/50 p-8 shadow-lg">
-        <h3 className="mb-8 border-border/5 border-b pb-6 font-bold text-[10px] text-muted-foreground/30 uppercase tracking-[0.25em]">
-          Linguistic Mapping
-        </h3>
-        <div className="space-y-5">
-          {applicant.languages.map((lang) => (
-            <div
-              key={lang.name}
-              className="flex items-center justify-between border-border/5 border-b pb-4 last:border-0 last:pb-0"
-            >
-              <span className="font-bold text-[13px] text-foreground/60 tracking-tight">
-                {lang.name}
-              </span>
-              <Badge
-                variant="secondary"
-                size="xs"
-                uppercase
-                className="border-border/5 bg-secondary/20 px-2.5 py-1 text-muted-foreground/30 shadow-sm"
-              >
-                {lang.proficiency}
-              </Badge>
-            </div>
-          ))}
         </div>
       </Card>
     </div>

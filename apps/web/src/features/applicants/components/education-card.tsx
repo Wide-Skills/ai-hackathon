@@ -1,6 +1,11 @@
 import type { Education } from "@ai-hackathon/shared";
 import { RiGraduationCapLine } from "@remixicon/react";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface EducationCardProps {
   education: Education[];
@@ -8,30 +13,26 @@ interface EducationCardProps {
 
 export function EducationCard({ education }: EducationCardProps) {
   return (
-    <Card variant="premium" className="p-8">
-      <div className="mb-10 flex items-center gap-3 border-border/10 border-b pb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-md">
-          <RiGraduationCapLine className="h-4.5 w-4.5" />
-        </div>
-        <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
-          Academic Background
-        </h3>
-      </div>
+    <Card variant="default" className="overflow-hidden shadow-none" size="none">
+      <CardHeader>
+        <CardDescription>Academic</CardDescription>
+        <CardTitle>Education</CardTitle>
+      </CardHeader>
 
-      <div className="space-y-8">
+      <div className="space-y-comfortable p-comfortable">
         {education.map((edu, i) => (
-          <div key={i} className="group flex gap-5">
-            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-border/5 bg-secondary/30 text-muted-foreground/30 shadow-md transition-all group-hover:scale-[1.05]">
-              <RiGraduationCapLine className="h-4.5 w-4.5" />
+          <div key={i} className="group flex gap-base">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 text-ink-faint transition-transform group-hover:scale-[1.05]">
+              <RiGraduationCapLine className="size-4.5" />
             </div>
             <div>
-              <p className="font-bold text-[15px] text-foreground/80 tracking-tight transition-colors group-hover:text-primary">
+              <p className="font-medium font-sans text-[15px] text-primary tracking-tight transition-colors">
                 {edu.degree} in {edu.fieldOfStudy}
               </p>
-              <p className="mt-1 font-bold text-[12px] text-muted-foreground/40 uppercase tracking-widest">
+              <p className="mt-0.5 font-medium font-sans text-[12px] text-ink-muted uppercase tracking-wider">
                 {edu.institution}
               </p>
-              <p className="mt-2.5 font-bold text-[11px] text-muted-foreground/20 uppercase tracking-[0.2em]">
+              <p className="mt-2 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.15em]">
                 {edu.startYear} – {edu.endYear}
               </p>
             </div>

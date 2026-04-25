@@ -39,7 +39,7 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
     return (
       <Empty className="mt-6 h-48 border-none bg-transparent">
         <EmptyHeader>
-          <EmptyTitle className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-widest">
+          <EmptyTitle className="font-bold text-[10px] text-muted-foreground/30 uppercase tracking-wider">
             No Screening Data Available
           </EmptyTitle>
         </EmptyHeader>

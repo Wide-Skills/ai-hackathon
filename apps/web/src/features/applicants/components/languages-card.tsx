@@ -1,7 +1,12 @@
 import type { Language } from "@ai-hackathon/shared";
 import { RiTranslate2 } from "@remixicon/react";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface LanguagesCardProps {
@@ -12,32 +17,31 @@ export function LanguagesCard({ languages }: LanguagesCardProps) {
   if (!languages || languages.length === 0) return null;
 
   return (
-    <Card className="border-border/50 p-8 shadow-lg">
-      <div className="mb-10 flex items-center gap-3 border-border/10 border-b pb-6">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/20 bg-secondary/30 text-foreground/30 shadow-md">
-          <RiTranslate2 className="h-4.5 w-4.5" />
-        </div>
-        <h3 className="font-display font-light text-[14px] text-foreground uppercase tracking-[0.2em] opacity-60">
-          Linguistic Mapping
-        </h3>
-      </div>
+    <Card variant="default" className="overflow-hidden shadow-none" size="none">
+      <CardHeader>
+        <CardDescription>Mapping</CardDescription>
+        <CardTitle>Linguistic Mastery</CardTitle>
+      </CardHeader>
 
-      <div className="grid grid-cols-1 gap-x-12 gap-y-6 pt-2 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-x-hero gap-y-base p-comfortable sm:grid-cols-2">
         {languages.map((lang) => (
-          <div key={lang.name} className="flex items-center justify-between">
-            <span className="font-bold text-[13px] text-foreground/60 tracking-tight">
+          <div
+            key={lang.name}
+            className="flex items-center justify-between border-line border-b pb-base last:border-0 last:pb-0"
+          >
+            <span className="font-medium font-sans text-[13px] text-primary">
               {lang.name}
             </span>
             <Badge
               variant="outline"
-              size="xs"
+              size="sm"
               uppercase
               className={cn(
-                "px-3 py-1 font-bold",
+                "px-2 py-0.5 font-medium font-sans shadow-none",
                 lang.proficiency.includes("Native") ||
                   lang.proficiency.includes("Fluent")
-                  ? "border-success/10 bg-success/5 text-success"
-                  : "border-border/50 bg-secondary text-muted-foreground",
+                  ? "border-status-success-bg bg-status-success-bg text-status-success-text"
+                  : "border-line bg-bg2 text-ink-faint",
               )}
             >
               {lang.proficiency}
