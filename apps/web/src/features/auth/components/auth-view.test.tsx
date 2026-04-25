@@ -46,6 +46,13 @@ describe("AuthView", () => {
 
     render(<AuthView />);
 
+    fireEvent.change(screen.getByPlaceholderText(/your full name/i), {
+      target: { value: "Saddy Nkurunziza" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/name@company.com/i), {
+      target: { value: "saddynkurunziza8@gmail.com" },
+    });
+
     fireEvent.click(
       screen.getByRole("button", { name: /email me a magic link/i }),
     );
