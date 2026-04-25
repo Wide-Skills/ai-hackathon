@@ -32,13 +32,13 @@ export const TrustStats: React.FC = () => {
               }}
               className="text-center"
             >
-              <p className="mb-2 font-bold text-[10px] text-muted-black/50 uppercase tracking-[0.25em]">
+              <p className="mb-2 font-bold text-[10px] text-black/50 uppercase tracking-[0.25em]">
                 {stat.label}
               </p>
               <h3 className="mb-3 font-display font-light text-[42px] text-black leading-none tracking-tighter">
                 {stat.value}
               </h3>
-              <p className="mx-auto max-w-[120px] font-medium text-[12px] text-muted-black leading-snug tracking-tight">
+              <p className="mx-auto max-w-[120px] font-medium text-[12px] text-black/70 leading-snug tracking-tight">
                 {stat.description}
               </p>
             </motion.div>

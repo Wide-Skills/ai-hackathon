@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  RiArrowRightLine,
   RiMoreLine,
   RiSearchLine,
   RiUserLine,
@@ -10,7 +9,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import type React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
 const AppPreview = () => {
   const { scrollYProgress } = useScroll();
@@ -168,7 +166,7 @@ const AppPreview = () => {
 
 export const Hero: React.FC = () => {
   return (
-    <section className="relative flex min-h-screen flex-col items-center overflow-hidden bg-[#2f7bf6] pt-48 pb-24 text-white">
+    <section className="relative flex min-h-screen flex-col items-center overflow-hidden bg-white pt-52 pb-24 text-foreground">
       <div className="container-tight relative z-20">
         <div className="mx-auto max-w-[800px] text-center">
           <motion.div
@@ -177,9 +175,9 @@ export const Hero: React.FC = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="mb-8"
           >
-            <h1 className="font-display font-light text-[48px] text-white leading-[1.02] tracking-[-0.03em] md:text-display-hero">
+            <h1 className="font-display font-light text-[48px] text-primary leading-[1.02] tracking-[-0.03em] md:text-display-hero">
               Screening with <br />
-              <span className="text-white/85">Explainable Intent.</span>
+              <span className="text-primary">Explainable Intent.</span>
             </h1>
           </motion.div>
 
@@ -187,7 +185,7 @@ export const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 10, scale: 0.99 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.15, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto mb-12 max-w-[580px] font-normal text-[18px] text-white/85 leading-[1.55] tracking-[0.1px] antialiased"
+            className="mx-auto mb-12 max-w-[580px] font-normal text-[18px] text-black leading-[1.55] tracking-[0.1px] antialiased"
           >
             The world's first recruitment platform that justifies its choices.
             Built for recruiters who value precision over the black box.
@@ -199,24 +197,17 @@ export const Hero: React.FC = () => {
             transition={{ delay: 0.25, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-wrap items-center justify-center gap-5"
           >
-            <Button
-              render={<Link href="/auth" />}
-              variant="default"
-              size="2xl"
-              className="shadow-xl"
-            >
-              <span>Start Screening Now</span>
-              <RiArrowRightLine className="ml-2 h-4 w-4 opacity-40 transition-transform group-hover:translate-x-1" />
-            </Button>
+            <Link href="/auth">
+              <button className="h-[48px] rounded-full border border-primary bg-primary px-7 text-[15px] text-white shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl">
+                Start Screening Now
+              </button>
+            </Link>
 
-            <Button
-              render={<Link href="/dashboard" />}
-              variant="outline"
-              size="2xl"
-              className="shadow-sm"
-            >
-              <span>View Product Showcase</span>
-            </Button>
+            <Link href="/dashboard">
+              <button className="h-[48px] rounded-full border border-primary bg-white px-7 text-[15px] text-primary shadow-sm transition-all hover:scale-[1.02] hover:shadow-md">
+                View Product Showcase
+              </button>
+            </Link>
           </motion.div>
         </div>
 
@@ -233,17 +224,17 @@ export const Hero: React.FC = () => {
               {
                 label: "Precision",
                 val: "98.2% Accurate Parsing",
-                color: "text-white/80",
+                color: "text-primary",
               },
               {
                 label: "Intelligence",
                 val: "Gemini 1.5 Pro Powered",
-                color: "text-white/80",
+                color: "text-primary",
               },
               {
                 label: "Trust",
                 val: "Explainable Reasoning",
-                color: "text-white/80",
+                color: "text-primary",
               },
             ].map((m, i) => (
               <div key={i} className="flex flex-col items-center gap-1">
@@ -252,7 +243,7 @@ export const Hero: React.FC = () => {
                 >
                   {m.label}
                 </span>
-                <span className="font-display font-light text-[16px] text-white">
+                <span className="font-display font-light text-[16px] text-black">
                   {m.val}
                 </span>
               </div>

@@ -999,14 +999,14 @@ export const Features: React.FC = () => {
   });
 
   return (
-    <section className="border-border border-y bg-secondary/20 py-[100px] text-foreground">
+    <section className="border-border border-y bg-white py-[100px] text-foreground">
       <div className="container-tight">
         <div className="mb-16 max-w-[800px]">
-          <h2 className="mb-5 font-display font-light text-[32px] text-foreground leading-[1.1] tracking-[-0.03em] md:text-display-section">
+          <h2 className="mb-5 font-display font-light text-[32px] text-primary leading-[1.1] tracking-[-0.03em] md:text-display-section">
             Precision Screening for <br />
-            <span className="text-muted-foreground">modern recruiters.</span>
+            <span className="text-primary">modern recruiters.</span>
           </h2>
-          <p className="max-w-[500px] text-[17px] text-muted-foreground leading-[1.6] tracking-[0.1px]">
+          <p className="max-w-[500px] text-[17px] text-black/70 leading-[1.6] tracking-[0.1px]">
             Eliminate bias and manual overhead with an intelligent assistant
             that understands skill sets as deeply as you do.
           </p>

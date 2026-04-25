@@ -1,17 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 
 const Logo = ({ className }: { className?: string }) => (
-  <Link href="/" className={`flex items-center gap-2 ${className}`}>
-    <span className="truncate font-display font-light text-[16px] text-white uppercase tracking-[0.2em]">
-      Umurava{" "}
-      <span className="text-white/70 normal-case italic tracking-tight">
-        AI
-      </span>
-    </span>
+  <Link href="/" className={`flex items-center ${className}`}>
+    <Image
+      src="/favicon/logo.png"
+      alt="Umurava Talent"
+      width={180}
+      height={48}
+      className="h-12 w-auto object-contain"
+    />
   </Link>
 );
 

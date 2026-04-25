@@ -12,7 +12,9 @@ const testimonials = [
     author: "Sarah Jenkins",
     role: "Head of Talent at Techflow",
     avatar: "SJ",
-    color: "text-primary bg-primary/5 border-primary/10",
+    avatarColor: "text-primary font-semibold bg-primary/10 border-primary/30",
+    nameColor: "text-black",
+    roleColor: "text-primary",
   },
   {
     quote:
@@ -20,7 +22,9 @@ const testimonials = [
     author: "Michael Chen",
     role: "Engineering Manager",
     avatar: "MC",
-    color: "text-info bg-info/5 border-info/10",
+    avatarColor: "text-primary font-semibold bg-primary/10 border-primary/30",
+    nameColor: "text-black",
+    roleColor: "text-primary",
   },
   {
     quote:
@@ -28,7 +32,9 @@ const testimonials = [
     author: "Elena Rodriguez",
     role: "Senior Recruiter",
     avatar: "ER",
-    color: "text-success bg-success/5 border-success/10",
+    avatarColor: "text-primary font-semibold bg-primary/10 border-primary/30",
+    nameColor: "text-black",
+    roleColor: "text-primary",
   },
 ];
 
@@ -45,7 +51,7 @@ export const Testimonials: React.FC = () => {
           >
             <h2 className="mb-5 font-display font-light text-[32px] text-foreground leading-[1.1] tracking-[-0.03em] md:text-display-section">
               Loved by <br />
-              <span className="text-muted-foreground">
+              <span className="text-primary">
                 forward-thinking teams.
               </span>
             </h2>
@@ -67,25 +73,25 @@ export const Testimonials: React.FC = () => {
             >
               <Card
                 variant="premium"
-                className="flex h-full flex-col justify-between p-8"
+                className="flex h-full flex-col justify-between border border-primary/20 bg-white p-8 shadow-sm"
               >
                 <div>
-                  <RiDoubleQuotesL className="mb-6 h-8 w-8 text-primary/20" />
-                  <p className="mb-10 text-[17px] text-foreground/80 italic leading-relaxed tracking-tight">
+                  <RiDoubleQuotesL className="mb-6 h-8 w-8 text-primary" />
+                  <p className="mb-10 text-[17px] text-black italic leading-relaxed tracking-tight">
                     {t.quote}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
                   <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-[11px] ${t.color}`}
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-[11px] ${t.avatarColor}`}
                   >
                     {t.avatar}
                   </div>
                   <div>
-                    <p className="font-medium text-[14px] text-foreground tracking-tight">
+                    <p className={`font-semibold text-[14px] tracking-tight ${t.nameColor}`}>
                       {t.author}
                     </p>
-                    <p className="text-[12px] text-muted-foreground/60">
+                    <p className={`text-[12px] ${t.roleColor}`}>
                       {t.role}
                     </p>
                   </div>
