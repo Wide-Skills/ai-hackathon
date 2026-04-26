@@ -18,7 +18,9 @@ import { SkillsRadarChart } from "@/features/dashboard/components/skills-radar-c
 import { trpc } from "@/utils/trpc";
 
 export default function AnalyticsPage() {
-  const applicantsQuery = useQuery(trpc.applicants.list.queryOptions());
+  const applicantsQuery = useQuery(
+    trpc.applicants.list.queryOptions({ page: 1, limit: 100 }),
+  );
   const statsQuery = useQuery(trpc.jobs.stats.queryOptions());
 
   const isLoading = applicantsQuery.isLoading || statsQuery.isLoading;
@@ -53,7 +55,7 @@ export default function AnalyticsPage() {
     );
   }
 
-  const applicants = applicantsQuery.data ?? [];
+  const applicants = applicantsQuery.data?.items ?? [];
   const stats = statsQuery.data;
 
   const shortlistedCount = applicants.filter(

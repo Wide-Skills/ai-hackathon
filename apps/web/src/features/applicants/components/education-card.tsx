@@ -22,7 +22,7 @@ export function EducationCard({ education }: EducationCardProps) {
       <div className="space-y-comfortable p-comfortable">
         {education.map((edu, i) => (
           <div key={i} className="group flex gap-comfortable">
-            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 text-primary transition-all group-hover:bg-bg-alt/40 group-hover:scale-[1.05]">
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 text-primary transition-all group-hover:scale-[1.05] group-hover:bg-bg-alt/40">
               <RiGraduationCapLine className="size-5" />
             </div>
             <div>

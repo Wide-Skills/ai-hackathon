@@ -153,8 +153,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
           <p className="font-light font-sans text-[15px] text-ink-muted leading-relaxed">
             Thank you for applying for the{" "}
             <span className="font-medium text-primary">{job.title}</span>{" "}
-            position. Our AI system will review your match score
-            shortly.
+            position. Our AI system will review your match score shortly.
           </p>
           <Button
             variant="outline"

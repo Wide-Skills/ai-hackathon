@@ -66,7 +66,7 @@ export function NavMain({
                   }}
                   isActive={isItemActive}
                   className={cn(
-                    "group relative h-9 rounded-standard px-3 shadow-none transition-all duration-150 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center",
+                    "group relative h-9 rounded-standard px-3 shadow-none transition-all duration-150 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0",
                     isItemActive
                       ? "bg-bg-deep font-medium text-primary shadow-none"
                       : "text-ink-muted hover:bg-bg-alt hover:text-ink-full",
@@ -76,7 +76,8 @@ export function NavMain({
                     className={cn(
                       "flex-shrink-0 transition-colors group-data-[collapsible=icon]:mr-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center",
                       !isItemActive && "mr-2.5",
-                      isItemActive && "mr-2.5 group-data-[collapsible=icon]:mr-0",
+                      isItemActive &&
+                        "mr-2.5 group-data-[collapsible=icon]:mr-0",
                       isItemActive
                         ? "text-primary"
                         : "text-ink-faint group-hover:text-ink-muted",

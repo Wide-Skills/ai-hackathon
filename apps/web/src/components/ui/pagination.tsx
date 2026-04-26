@@ -1,130 +1,109 @@
-import {
-  RiArrowLeftSLine,
-  RiArrowRightSLine,
-  RiMoreLine,
-} from "@remixicon/react";
-import type * as React from "react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { RiArrowLeftSLine, RiArrowRightSLine } from "@remixicon/react";
+import { Button } from "./button";
 
-function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  hasMore: boolean;
+  onPageChange: (page: number) => void;
+  isLoading?: boolean;
+}
+
+export function Pagination({
+  currentPage,
+  totalPages,
+  hasMore,
+  onPageChange,
+  isLoading,
+}: PaginationProps) {
+  if (totalPages <= 1) return null;
+
   return (
-    <nav
-      aria-label="pagination"
-      data-slot="pagination"
-      className={cn("mx-auto flex w-full justify-center", className)}
-      {...props}
-    />
+    <div className="flex items-center justify-between px-2 py-4">
+      <div className="flex flex-1 items-center justify-between sm:hidden">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1 || isLoading}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={!hasMore || isLoading}
+        >
+          Next
+        </Button>
+      </div>
+      <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+        <div>
+          <p className="font-sans text-[12px] text-ink-faint">
+            Page <span className="font-bold text-primary">{currentPage}</span>{" "}
+            of <span className="font-bold text-primary">{totalPages}</span>
+          </p>
+        </div>
+        <div>
+          <nav
+            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+            aria-label="Pagination"
+          >
+            <Button
+              variant="outline"
+              size="icon-sm"
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage === 1 || isLoading}
+              className="rounded-l-md border-line"
+            >
+              <span className="sr-only">Previous</span>
+              <RiArrowLeftSLine className="h-4 w-4" />
+            </Button>
+
+            {/* Simple range logic */}
+            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+              // This is a simple version, for real production we'd want more complex logic
+              let pageNum = currentPage;
+              if (currentPage <= 3) {
+                pageNum = i + 1;
+              } else if (currentPage >= totalPages - 2) {
+                pageNum = totalPages - 4 + i;
+              } else {
+                pageNum = currentPage - 2 + i;
+              }
+
+              if (pageNum < 1 || pageNum > totalPages) return null;
+
+              return (
+                <Button
+                  key={pageNum}
+                  variant={currentPage === pageNum ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onPageChange(pageNum)}
+                  disabled={isLoading}
+                  className={`min-w-[40px] border-line font-sans text-[12px] ${
+                    currentPage === pageNum ? "z-10" : ""
+                  }`}
+                >
+                  {pageNum}
+                </Button>
+              );
+            })}
+
+            <Button
+              variant="outline"
+              size="icon-sm"
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={!hasMore || isLoading}
+              className="rounded-r-md border-line"
+            >
+              <span className="sr-only">Next</span>
+              <RiArrowRightSLine className="h-4 w-4" />
+            </Button>
+          </nav>
+        </div>
+      </div>
+    </div>
   );
 }
-
-function PaginationContent({
-  className,
-  ...props
-}: React.ComponentProps<"ul">) {
-  return (
-    <ul
-      data-slot="pagination-content"
-      className={cn("flex items-center gap-0.5", className)}
-      {...props}
-    />
-  );
-}
-
-function PaginationItem({ ...props }: React.ComponentProps<"li">) {
-  return <li data-slot="pagination-item" {...props} />;
-}
-
-type PaginationLinkProps = {
-  isActive?: boolean;
-} & Pick<React.ComponentProps<typeof Button>, "size"> &
-  React.ComponentProps<"a">;
-
-function PaginationLink({
-  className,
-  isActive,
-  size = "icon",
-  ...props
-}: PaginationLinkProps) {
-  return (
-    <Button
-      variant={isActive ? "outline" : "ghost"}
-      size={size}
-      className={cn(className)}
-      render={
-        <a
-          aria-current={isActive ? "page" : undefined}
-          data-slot="pagination-link"
-          data-active={isActive}
-          {...props}
-        />
-      }
-    />
-  );
-}
-
-function PaginationPrevious({
-  className,
-  text = "Previous",
-  ...props
-}: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
-  return (
-    <PaginationLink
-      aria-label="Go to previous page"
-      size="default"
-      className={cn("pl-1.5!", className)}
-      {...props}
-    >
-      <RiArrowLeftSLine data-icon="inline-start" />
-      <span className="hidden sm:block">{text}</span>
-    </PaginationLink>
-  );
-}
-
-function PaginationNext({
-  className,
-  text = "Next",
-  ...props
-}: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
-  return (
-    <PaginationLink
-      aria-label="Go to next page"
-      size="default"
-      className={cn("pr-1.5!", className)}
-      {...props}
-    >
-      <span className="hidden sm:block">{text}</span>
-      <RiArrowRightSLine data-icon="inline-end" />
-    </PaginationLink>
-  );
-}
-
-function PaginationEllipsis({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
-  return (
-    <span
-      aria-hidden
-      data-slot="pagination-ellipsis"
-      className={cn(
-        "flex size-8 items-center justify-center [&_svg:not([class*='size-'])]:size-4",
-        className,
-      )}
-      {...props}
-    >
-      <RiMoreLine />
-      <span className="sr-only">More pages</span>
-    </span>
-  );
-}
-
-export {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-};

@@ -1,6 +1,11 @@
 import { createHash } from "node:crypto";
 import { sendScreeningCompletedEmail } from "@ai-hackathon/auth/email";
-import { Applicant, ScreeningCache, ScreeningResult } from "@ai-hackathon/db";
+import {
+  Applicant,
+  Job,
+  ScreeningCache,
+  ScreeningResult,
+} from "@ai-hackathon/db";
 import { env } from "@ai-hackathon/env/server";
 import {
   LANGUAGE_PROFICIENCIES,
@@ -19,14 +24,21 @@ const google = createGoogleGenerativeAI({
   apiKey: env.GEMINI_API_KEY,
 });
 
-const SHORTLIST_THRESHOLD = 85;
 const CACHE_TTL_DAYS = 7;
 export const SYSTEM_USER_ID = "usr_automated_system";
 
-const WORKING_MODEL = "gemini-2.5-flash";
+const WORKING_MODEL = "gemini-2.0-flash";
 
-export function buildApplicantStatus(matchScore: number) {
-  return matchScore >= SHORTLIST_THRESHOLD ? "shortlisted" : "screening";
+export function buildApplicantStatus(
+  matchScore: number,
+  thresholds?: { autoReject: number; needsReview: number },
+) {
+  const { autoReject = 50, needsReview = 70 } = thresholds || {};
+
+  if (matchScore >= 85) return "shortlisted";
+  if (matchScore >= needsReview) return "screening";
+  if (matchScore < autoReject) return "rejected";
+  return "pending";
 }
 
 function buildScreeningPrompt(
@@ -35,6 +47,10 @@ function buildScreeningPrompt(
     description: string;
     requirements: string[];
     skills: string[];
+    techStack: string[];
+    minExperience: number;
+    educationLevel: string;
+    screeningFocus?: string;
   },
   applicant: {
     firstName: string;
@@ -51,6 +67,11 @@ Title: ${job.title}
 Description: ${job.description}
 Requirements: ${job.requirements.join(", ")}
 Target Skills: ${job.skills.join(", ")}
+Primary Tech Stack: ${job.techStack.join(", ")}
+Minimum Experience Required: ${job.minExperience} years
+Required Education Level: ${job.educationLevel}
+
+${job.screeningFocus ? `### RECRUITER FOCUS AREA\n${job.screeningFocus}\n` : ""}
 
 ### APPLICANT DATA
 Current Name: ${applicant.firstName} ${applicant.lastName}
@@ -60,8 +81,16 @@ ${applicant.resumeText || "No resume text provided."}
 
 ### YOUR MISSION
 1. **Screening Evaluation**: Provide a match score (0-100), strategic strengths, critical gaps, a formal recommendation, and a concise summary.
-2. **Skill Mapping**: Score the applicant's proficiency in each of the "Target Skills" listed above.
-3. **Profile Extraction**: Extract the following data points FROM THE RESUME TEXT to build a structured profile:
+   - Strongly penalize if they don't meet the Minimum Experience or Education Level.
+   - Heavily weight their proficiency in the Primary Tech Stack.
+   - If a Custom Screening Focus is provided, prioritize those attributes in your summary and score.
+2. **Score Justification (XAI)**: Provide a structured breakdown of the score (0-100 each) across:
+   - technicalSkills: How well their tech stack matches.
+   - experience: Relevance of their past roles and years of experience.
+   - education: Academic background relevance.
+   - culturalFit: Based on their bio, projects, and communication style in the resume.
+3. **Skill Mapping**: Score the applicant's proficiency in each of the "Target Skills" listed above.
+4. **Profile Extraction**: Extract the following data points FROM THE RESUME TEXT to build a structured profile:
    - Personal Info: headline, detailed bio, location.
    - Career History: Extract all work experience (company, role, dates, description, technologies).
    - Education: Extract all degrees (institution, degree, field, years).
@@ -100,6 +129,12 @@ export async function createOrUpdateScreening(
 
 export const AIScreeningOutputSchema = z.object({
   matchScore: z.number().min(0).max(100),
+  scoreBreakdown: z.object({
+    technicalSkills: z.number().min(0).max(100),
+    experience: z.number().min(0).max(100),
+    education: z.number().min(0).max(100),
+    culturalFit: z.number().min(0).max(100),
+  }),
   strengths: z.array(z.string()),
   gaps: z.array(z.string()),
   recommendation: z.string(),
@@ -188,6 +223,10 @@ export async function evaluateAndExtractProfile(
     description: string;
     requirements: string[];
     skills: string[];
+    techStack: string[];
+    minExperience: number;
+    educationLevel: string;
+    screeningFocus?: string;
   },
   applicant: {
     firstName: string;
@@ -283,7 +322,13 @@ export async function runAIInternal(params: {
         `[Screening] AI Analysis Complete for Applicant ${applicantId}. Match Score: ${validatedData.matchScore}`,
       );
 
-      const screeningPayload = { ...validatedData, applicantId, jobId };
+      const screeningPayload = {
+        ...validatedData,
+        applicantId,
+        jobId,
+        jobVersion: job.version || 1,
+        isOutdated: false,
+      };
 
       const [savedRecord] = await Promise.all([
         createOrUpdateScreening(
@@ -295,6 +340,7 @@ export async function runAIInternal(params: {
         Applicant.findByIdAndUpdate(applicantId, {
           screening: {
             ...validatedData,
+            scoreBreakdown: validatedData.scoreBreakdown,
             languages: validatedData.languages,
             experience: validatedData.experience,
             education: validatedData.education,
@@ -329,7 +375,10 @@ export async function runAIInternal(params: {
             validatedData.projects.length > 0
               ? validatedData.projects
               : applicant.projects,
-          status: buildApplicantStatus(validatedData.matchScore),
+          status: buildApplicantStatus(validatedData.matchScore, {
+            autoReject: job.autoRejectThreshold,
+            needsReview: job.needsReviewThreshold,
+          }),
         }),
         syncJobMetrics(jobId),
       ]);
@@ -409,6 +458,7 @@ export const screeningRouter = router({
       z.object({
         applicantId: z.string(),
         jobId: z.string(),
+        skipCache: z.boolean().optional(),
       }),
     )
     .output(ScreeningResultSchema)
@@ -420,6 +470,117 @@ export const screeningRouter = router({
         triggererEmail: ctx.session.user.email,
         triggererName: ctx.session.user.name ?? undefined,
       });
+    }),
+
+  batchGenerate: protectedProcedure
+    .input(
+      z.object({
+        jobId: z.string(),
+        applicantIds: z.array(z.string()),
+      }),
+    )
+    .output(z.object({ successCount: z.number(), failedCount: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      let successCount = 0;
+      let failedCount = 0;
+
+      // We process these in sequence to avoid rate limiting issues with Gemini free tier if applicable,
+      // but runAIInternal has retries. Let's do them in small batches or sequence.
+      for (const applicantId of input.applicantIds) {
+        try {
+          await runAIInternal({
+            applicantId,
+            jobId: input.jobId,
+            triggeredByUserId: ctx.session.user.id,
+            triggererEmail: ctx.session.user.email,
+            triggererName: ctx.session.user.name ?? undefined,
+          });
+          successCount++;
+        } catch (error) {
+          console.error(`Batch screening failed for ${applicantId}:`, error);
+          failedCount++;
+        }
+      }
+
+      return { successCount, failedCount };
+    }),
+
+  rescreen: protectedProcedure
+    .input(z.object({ applicantId: z.string(), jobId: z.string() }))
+    .output(ScreeningResultSchema)
+    .mutation(async ({ input, ctx }) => {
+      // Logic for rescreening usually involves bypassing cache.
+      // We can extend evaluateAndExtractProfile to take a bypassCache flag if needed.
+      // For now, let's just trigger it.
+      return runAIInternal({
+        applicantId: input.applicantId,
+        jobId: input.jobId,
+        triggeredByUserId: ctx.session.user.id,
+        triggererEmail: ctx.session.user.email,
+        triggererName: ctx.session.user.name ?? undefined,
+      });
+    }),
+
+  updateFeedback: protectedProcedure
+    .input(
+      z.object({
+        applicantId: z.string(),
+        manualScore: z.number().min(0).max(100).optional(),
+        recruiterNotes: z.string().optional(),
+      }),
+    )
+    .output(ScreeningResultSchema)
+    .mutation(async ({ input }) => {
+      const screening = await ScreeningResult.findOneAndUpdate(
+        { applicantId: input.applicantId },
+        {
+          $set: {
+            manualScore: input.manualScore,
+            recruiterNotes: input.recruiterNotes,
+          },
+        },
+        { new: true },
+      );
+
+      if (!screening) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Screening result not found",
+        });
+      }
+
+      // If manual score is provided, we might want to update the applicant status too.
+      if (input.manualScore !== undefined) {
+        const job = await Job.findById(screening.jobId);
+        if (job) {
+          const status = buildApplicantStatus(input.manualScore, {
+            autoReject: job.autoRejectThreshold,
+            needsReview: job.needsReviewThreshold,
+          });
+          await Applicant.findByIdAndUpdate(input.applicantId, { status });
+        }
+      }
+
+      return serializeScreening(screening);
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ input }) => {
+      const screening = await ScreeningResult.findById(input.id);
+      if (!screening) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Screening result not found",
+        });
+      }
+
+      const jobId = screening.jobId.toString();
+      await ScreeningResult.findByIdAndDelete(input.id);
+      await syncJobMetrics(jobId);
+
+      return { success: true };
     }),
 
   getByApplicant: protectedProcedure

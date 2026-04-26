@@ -1,7 +1,17 @@
 "use client";
 
 import type { Applicant, ApplicationStatus } from "@ai-hackathon/shared";
-import { RiArrowRightSLine, RiArrowUpDownLine } from "@remixicon/react";
+import {
+  RiAlertLine,
+  RiArrowUpDownLine,
+  RiBrainLine,
+  RiDeleteBin7Line,
+  RiLoader2Line,
+  RiMore2Line,
+  RiSparklingLine,
+  RiUser3Line,
+} from "@remixicon/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   type ColumnDef,
   flexRender,
@@ -10,11 +20,37 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { AnimatePresence, motion } from "framer-motion";
 import type { Route } from "next";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -24,10 +60,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ScoreBadge } from "@/features/dashboard/components/score-badge";
+import { invalidateHiringData, trpc } from "@/utils/trpc";
 
 interface ApplicantsTableProps {
   data: Applicant[];
 }
+
 const statusConfig: Record<
   ApplicationStatus,
   { label: string; variant: "secondary" | "info" | "success" | "destructive" }
@@ -58,7 +96,185 @@ const statusConfig: Record<
   },
 };
 
+function RowActions({ applicant }: { applicant: Applicant }) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+  const deleteMutation = useMutation(
+    trpc.applicants.delete.mutationOptions({
+      onSuccess: () => {
+        toast.success("Applicant deleted successfully");
+        void invalidateHiringData(queryClient);
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to delete applicant");
+      },
+    }),
+  );
+
+  const generateMutation = useMutation(
+    trpc.screenings.generate.mutationOptions({
+      onSuccess: () => {
+        toast.success("AI Screening completed");
+        void invalidateHiringData(queryClient);
+      },
+      onError: (error) => {
+        toast.error(error.message || "Screening failed");
+      },
+    }),
+  );
+
+  const updateStatusMutation = useMutation(
+    trpc.applicants.update.mutationOptions({
+      onSuccess: () => {
+        toast.success("Status updated");
+        void invalidateHiringData(queryClient);
+      },
+    }),
+  );
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="outline"
+              size="icon-xs"
+              className="rounded-micro border-line text-ink-faint shadow-none hover:border-line-medium hover:text-primary active:scale-95"
+              onClick={(e) => e.stopPropagation()}
+            />
+          }
+        >
+          <RiMore2Line className="size-3.5" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48 outline-none">
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Management</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/dashboard/applicants/${applicant.id}` as Route);
+              }}
+            >
+              <RiUser3Line className="mr-base size-3.5" />
+              View Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={generateMutation.isPending}
+              onClick={(e) => {
+                e.stopPropagation();
+                generateMutation.mutate({
+                  applicantId: applicant.id,
+                  jobId: applicant.jobId,
+                });
+              }}
+            >
+              <RiBrainLine className="mr-base size-3.5" />
+              {generateMutation.isPending ? "Analyzing..." : "Run AI Analysis"}
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger inset>
+                Change Status
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent className="w-40 outline-none">
+                {(
+                  [
+                    "pending",
+                    "screening",
+                    "shortlisted",
+                    "rejected",
+                    "hired",
+                  ] as const
+                ).map((status) => (
+                  <DropdownMenuItem
+                    key={status}
+                    className="capitalize"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      updateStatusMutation.mutate({
+                        id: applicant.id,
+                        data: { status },
+                      });
+                    }}
+                  >
+                    {status}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsAlertOpen(true);
+              }}
+            >
+              <RiDeleteBin7Line className="mr-base size-3.5" />
+              Delete Candidate
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Candidate</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this applicant? This will
+              permanently remove their profile and all associated screening
+              data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsAlertOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-status-error-bg text-status-error-text hover:bg-status-error-bg/80"
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteMutation.mutate({ id: applicant.id });
+                setIsAlertOpen(false);
+              }}
+            >
+              Delete Permanently
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
+
 export const columns: ColumnDef<Applicant>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "name",
     header: ({ column }) => {
@@ -107,9 +323,20 @@ export const columns: ColumnDef<Applicant>[] = [
     },
     cell: ({ row }) => {
       const score = row.original.screening?.matchScore ?? 0;
+      const isOutdated = row.original.screening?.isOutdated;
       return (
-        <div className="flex h-full items-center py-1">
+        <div className="flex h-full items-center gap-base py-1">
           <ScoreBadge score={score} />
+          {isOutdated && (
+            <Badge
+              variant="warning"
+              size="sm"
+              className="h-5 px-1 font-mono text-[9px] uppercase"
+            >
+              <RiAlertLine className="mr-0.5 size-2.5" />
+              Outdated
+            </Badge>
+          )}
         </div>
       );
     },
@@ -158,26 +385,37 @@ export const columns: ColumnDef<Applicant>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const applicant = row.original;
-      return (
-        <div className="flex h-full items-center justify-end py-1">
-          <Link
-            href={`/dashboard/applicants/${applicant.id}` as Route}
-            className="group flex h-8 w-8 items-center justify-center rounded-micro border border-line bg-surface text-ink-faint transition-all hover:border-line-medium hover:text-primary active:scale-95"
-          >
-            <RiArrowRightSLine className="size-4 opacity-40 transition-opacity group-hover:opacity-100" />
-          </Link>
-        </div>
-      );
-    },
+    header: () => (
+      <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
+        Management
+      </span>
+    ),
+    cell: ({ row }) => <RowActions applicant={row.original} />,
   },
 ];
 
 export function ApplicantsTable({ data }: ApplicantsTableProps) {
+  const router = useRouter();
   const [sorting, setSorting] = useState<SortingState>([
     { id: "screening_matchScore", desc: true },
   ]);
+  const [rowSelection, setRowSelection] = useState({});
+  const queryClient = useQueryClient();
+
+  const batchScreen = useMutation(
+    trpc.screenings.batchGenerate.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(
+          `Batch screening complete: ${data.successCount} succeeded, ${data.failedCount} failed.`,
+        );
+        void invalidateHiringData(queryClient);
+        setRowSelection({});
+      },
+      onError: (error) => {
+        toast.error(error.message || "Batch screening failed");
+      },
+    }),
+  );
 
   const table = useReactTable({
     data,
@@ -185,66 +423,125 @@ export function ApplicantsTable({ data }: ApplicantsTableProps) {
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
+      rowSelection,
     },
   });
 
+  const selectedRows = table.getSelectedRowModel().rows;
+  const selectedCount = selectedRows.length;
+
   return (
-    <Card
-      variant="default"
-      className="overflow-hidden border-line shadow-none"
-      size="none"
-    >
-      <div className="overflow-x-auto">
-        <Table className="min-w-[800px] md:min-w-full">
-          <TableHeader className="bg-bg-alt/20">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="border-line hover:bg-transparent"
+    <div className="space-y-base">
+      <AnimatePresence mode="popLayout">
+        {selectedCount > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.98 }}
+            transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+            className="sticky top-4 z-30 flex items-center justify-between rounded-xl border border-primary/20 bg-surface/80 px-comfortable py-3 shadow-primary/5 shadow-xl backdrop-blur-md"
+          >
+            <div className="flex items-center gap-comfortable">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary font-bold font-mono text-[10px] text-white">
+                {selectedCount}
+              </div>
+              <span className="font-medium font-sans text-[13px] text-primary tracking-tight">
+                Candidates selected for bulk action
+              </span>
+            </div>
+            <Button
+              size="sm"
+              disabled={batchScreen.isPending}
+              onClick={() => {
+                const applicantIds = selectedRows.map((r) => r.original.id);
+                const jobId = selectedRows[0]?.original.jobId;
+                if (jobId) {
+                  batchScreen.mutate({ jobId, applicantIds });
+                }
+              }}
+              className="h-9 gap-base rounded-standard bg-primary px-6 font-medium font-sans text-[12px] text-white shadow-lg shadow-primary/20 transition-all hover:translate-y-[-1px] active:scale-[0.97]"
             >
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} className="h-10 px-base">
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHead>
+              {batchScreen.isPending ? (
+                <>
+                  <RiLoader2Line className="mr-1 size-3.5 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <RiSparklingLine className="size-4" />
+                  Run AI Screening
+                </>
+              )}
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <Card
+        variant="default"
+        className="overflow-hidden border-line shadow-none"
+        size="none"
+      >
+        <div className="overflow-x-auto">
+          <Table className="min-w-[800px] md:min-w-full">
+            <TableHeader className="bg-bg-alt/20">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow
+                  key={headerGroup.id}
+                  className="border-line hover:bg-transparent"
+                >
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id} className="h-10 px-base">
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  ))}
+                </TableRow>
               ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="group border-line transition-colors hover:bg-bg-alt/10"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="h-16 px-base">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    className="group cursor-pointer border-line transition-colors hover:bg-bg-alt/10"
+                    onClick={() =>
+                      router.push(
+                        `/dashboard/applicants/${row.original.id}` as Route,
+                      )
+                    }
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="h-16 px-base">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-32 text-center font-light font-sans text-[13px] text-ink-faint"
+                  >
+                    No candidates match the current filter range.
                   </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-32 text-center font-light font-sans text-[13px] text-ink-faint"
-              >
-                No candidates match the current filter range.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      </div>
-    </Card>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </Card>
+    </div>
   );
 }

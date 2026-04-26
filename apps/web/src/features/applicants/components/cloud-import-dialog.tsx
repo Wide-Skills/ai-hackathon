@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  RiCheckboxCircleLine,
-  RiLoader2Line,
-  RiGlobeLine,
-} from "@remixicon/react";
+import { RiGlobeLine, RiLoader2Line } from "@remixicon/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -41,8 +37,10 @@ export function SimulateCandidatesDialog({
   const [generating, setGenerating] = useState(false);
   const queryClient = useQueryClient();
 
-  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
-  const jobs = jobsQuery.data ?? [];
+  const jobsQuery = useQuery(
+    trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
+  );
+  const jobs = jobsQuery.data?.items ?? [];
 
   const generateDummy = useMutation(
     trpc.applicants.generateDummy.mutationOptions(),
@@ -58,7 +56,9 @@ export function SimulateCandidatesDialog({
         count,
       });
       await invalidateHiringData(queryClient);
-      toast.success(`Cloud sync complete. AI is now analyzing ${count} new profiles in the background.`);
+      toast.success(
+        `Cloud sync complete. AI is now analyzing ${count} new profiles in the background.`,
+      );
       setOpen(false);
     } catch (_e) {
       toast.error("Cloud synchronization failed");
@@ -79,7 +79,8 @@ export function SimulateCandidatesDialog({
             Cloud Talent Import
           </DialogTitle>
           <DialogDescription className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
-            Sync verified candidate profiles directly from our secure talent cloud into your recruitment pipeline.
+            Sync verified candidate profiles directly from our secure talent
+            cloud into your recruitment pipeline.
           </DialogDescription>
         </DialogHeader>
 
@@ -115,7 +116,7 @@ export function SimulateCandidatesDialog({
               {[5, 10, 20].map((c) => (
                 <button
                   key={c}
-                  className={`flex-1 rounded-micro py-1.5 font-sans font-medium text-[10px] uppercase transition-all ${count === c ? "bg-surface text-primary shadow-none" : "text-ink-faint hover:text-ink-muted"}`}
+                  className={`flex-1 rounded-micro py-1.5 font-medium font-sans text-[10px] uppercase transition-all ${count === c ? "bg-surface text-primary shadow-none" : "text-ink-faint hover:text-ink-muted"}`}
                   onClick={() => setCount(c)}
                 >
                   {c} Profiles
@@ -127,7 +128,8 @@ export function SimulateCandidatesDialog({
           <div className="flex items-center gap-base rounded-micro border border-line bg-bg-alt/30 p-base">
             <RiGlobeLine className="size-4 text-primary/40" />
             <p className="font-light font-sans text-[12px] text-ink-muted italic">
-              AI screening and profile extraction will run automatically upon sync.
+              AI screening and profile extraction will run automatically upon
+              sync.
             </p>
           </div>
         </div>
@@ -150,12 +152,12 @@ export function SimulateCandidatesDialog({
           >
             {generating ? (
               <>
-                <RiLoader2Line className="size-3.5 animate-spin mr-2" />
+                <RiLoader2Line className="mr-2 size-3.5 animate-spin" />
                 Syncing...
               </>
             ) : (
               <>
-                <RiGlobeLine className="size-3.5 mr-2" />
+                <RiGlobeLine className="mr-2 size-3.5" />
                 Initialize Import
               </>
             )}

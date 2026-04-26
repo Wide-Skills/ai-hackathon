@@ -57,7 +57,9 @@ export default function Header() {
                       ) : (
                         <BreadcrumbLink
                           render={
-                            <button onClick={() => router.push(href as Route)} />
+                            <button
+                              onClick={() => router.push(href as Route)}
+                            />
                           }
                           className="cursor-pointer text-ink-faint transition-colors hover:text-primary"
                         >

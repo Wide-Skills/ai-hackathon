@@ -47,7 +47,8 @@ export function SecuritySettings() {
         <div className="mt-section-gap rounded-standard border border-line bg-bg-alt/30 p-comfortable">
           <p className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
             Regularly updating your password ensures the security of your
-            candidate pool and prevents unauthorized access to your recruitment data.
+            candidate pool and prevents unauthorized access to your recruitment
+            data.
           </p>
         </div>
       </section>

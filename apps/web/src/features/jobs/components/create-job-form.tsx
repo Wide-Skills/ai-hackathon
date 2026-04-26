@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateJobSchema } from "@ai-hackathon/shared";
+import { CreateJobSchema, type Job } from "@ai-hackathon/shared";
 import {
   RiAddLine,
   RiArrowLeftLine,
@@ -28,7 +28,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 
-export function CreateJobForm() {
+export function CreateJobForm({ initialData }: { initialData?: Job }) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -45,20 +45,39 @@ export function CreateJobForm() {
     }),
   );
 
+  const updateJob = useMutation(
+    trpc.jobs.update.mutationOptions({
+      onSuccess: () => {
+        toast.success("Job updated successfully!");
+        void invalidateHiringData(queryClient);
+        router.push(`/dashboard/jobs/${initialData?.id}`);
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to update job");
+      },
+    }),
+  );
+
   const form = useForm({
     defaultValues: {
-      title: "",
-      description: "",
-      department: "",
-      location: "",
-      type: "Full-time" as const,
-      requirements: [] as string[],
-      skills: [] as string[],
-      salaryMin: undefined as number | undefined,
-      salaryMax: undefined as number | undefined,
-      currency: "USD",
-      closingDate: "",
-      status: "active" as const,
+      title: initialData?.title || "",
+      description: initialData?.description || "",
+      department: initialData?.department || "",
+      location: initialData?.location || "",
+      type: (initialData?.type as any) || "Full-time",
+      requirements: initialData?.requirements || ([] as string[]),
+      skills: initialData?.skills || ([] as string[]),
+      techStack: initialData?.techStack || ([] as string[]),
+      minExperience: initialData?.minExperience ?? 0,
+      educationLevel: (initialData?.educationLevel as any) || "Bachelor's",
+      screeningFocus: initialData?.screeningFocus || "",
+      salaryMin: initialData?.salaryMin as number | undefined,
+      salaryMax: initialData?.salaryMax as number | undefined,
+      currency: initialData?.currency || "USD",
+      closingDate: initialData?.closingDate || "",
+      status: (initialData?.status as any) || "active",
+      autoRejectThreshold: initialData?.autoRejectThreshold ?? 50,
+      needsReviewThreshold: initialData?.needsReviewThreshold ?? 70,
     },
     onSubmit: async ({ value }) => {
       const result = CreateJobSchema.safeParse(value);
@@ -66,12 +85,18 @@ export function CreateJobForm() {
         toast.error("Invalid form data");
         return;
       }
-      createJob.mutate(result.data as any);
+
+      if (initialData) {
+        updateJob.mutate({ id: initialData.id, data: result.data as any });
+      } else {
+        createJob.mutate(result.data as any);
+      }
     },
   });
 
   const [requirementInput, setRequirementInput] = useState("");
   const [skillInput, setSkillInput] = useState("");
+  const [techStackInput, setTechStackInput] = useState("");
 
   const handleKeyDown = (e: React.KeyboardEvent, action: () => void) => {
     if (e.key === "Enter") {
@@ -98,7 +123,7 @@ export function CreateJobForm() {
             Job Setup
           </span>
           <h1 className="font-serif text-[32px] text-primary leading-tight">
-            Create Job
+            {initialData ? "Edit Job" : "Create Job"}
           </h1>
         </div>
       </div>
@@ -226,9 +251,7 @@ export function CreateJobForm() {
                       }
                     >
                       <SelectTrigger className="h-10 rounded-standard border-line bg-bg2 font-medium font-sans text-[12px] text-primary shadow-none">
-                        <SelectValue>
-                          {field.state.value}
-                        </SelectValue>
+                        <SelectValue>{field.state.value}</SelectValue>
                       </SelectTrigger>
                       <SelectContent className="border-line bg-surface shadow-none">
                         <SelectItem value="Full-time">Full-time</SelectItem>
@@ -256,7 +279,8 @@ export function CreateJobForm() {
                     >
                       <SelectTrigger className="h-10 rounded-standard border-line bg-bg2 font-medium font-sans text-[12px] text-primary shadow-none">
                         <SelectValue>
-                          {field.state.value.charAt(0).toUpperCase() + field.state.value.slice(1)}
+                          {field.state.value.charAt(0).toUpperCase() +
+                            field.state.value.slice(1)}
                         </SelectValue>
                       </SelectTrigger>
                       <SelectContent className="border-line bg-surface shadow-none">
@@ -265,6 +289,162 @@ export function CreateJobForm() {
                         <SelectItem value="closed">Closed</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                )}
+              />
+            </div>
+
+            <div className="space-y-base rounded-xl border border-primary/10 bg-primary-alpha/5 p-comfortable">
+              <div>
+                <h4 className="font-medium font-sans text-[11px] text-primary uppercase tracking-widest">
+                  AI Screening Parameters
+                </h4>
+                <p className="font-sans text-[10px] text-ink-muted/60">
+                  Configure how the AI should evaluate candidates.
+                </p>
+              </div>
+
+              <form.Field
+                name="screeningFocus"
+                children={(field) => (
+                  <div className="space-y-micro">
+                    <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                      Custom Screening Focus
+                    </Label>
+                    <Textarea
+                      placeholder="e.g. Prioritize architectural experience, leadership skills, or specific industry knowledge."
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      className="min-h-20 resize-none rounded-standard border-line bg-surface/50 p-3 font-sans text-[13px] text-primary shadow-none focus:bg-surface focus:ring-4 focus:ring-primary-alpha/5"
+                    />
+                  </div>
+                )}
+              />
+
+              <div className="grid gap-base sm:grid-cols-2">
+                <form.Field
+                  name="minExperience"
+                  children={(field) => (
+                    <div className="space-y-micro">
+                      <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                        Min. Experience (Years)
+                      </Label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) =>
+                          field.handleChange(Number(e.target.value))
+                        }
+                        className="h-10 rounded-standard border-line bg-surface/50 font-normal font-sans text-[13px] text-primary shadow-none transition-all focus:bg-surface"
+                      />
+                    </div>
+                  )}
+                />
+
+                <form.Field
+                  name="educationLevel"
+                  children={(field) => (
+                    <div className="space-y-micro">
+                      <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                        Required Education
+                      </Label>
+                      <Select
+                        value={field.state.value}
+                        onValueChange={field.handleChange}
+                      >
+                        <SelectTrigger className="h-10 w-full rounded-standard border-line bg-surface/50 shadow-none">
+                          <SelectValue placeholder="Select level" />
+                        </SelectTrigger>
+                        <SelectContent className="border-line bg-surface shadow-none">
+                          <SelectItem value="Any">Any Level</SelectItem>
+                          <SelectItem value="High School">
+                            High School
+                          </SelectItem>
+                          <SelectItem value="Bachelor's">
+                            Bachelor's Degree
+                          </SelectItem>
+                          <SelectItem value="Master's">
+                            Master's Degree
+                          </SelectItem>
+                          <SelectItem value="PhD">Doctorate (PhD)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-base sm:grid-cols-2">
+              <form.Field
+                name="autoRejectThreshold"
+                children={(field) => (
+                  <div className="group/field relative space-y-base rounded-xl border border-line bg-bg-alt/5 p-comfortable transition-all hover:bg-bg-alt/10">
+                    <div className="flex items-center justify-between">
+                      <Label className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                        Auto-Reject Bar
+                      </Label>
+                      <Badge variant="warning" size="xs" className="font-mono">
+                        {field.state.value}%
+                      </Badge>
+                    </div>
+                    <div className="flex flex-col gap-small">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={field.state.value}
+                        onChange={(e) =>
+                          field.handleChange(Number(e.target.value))
+                        }
+                        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-line accent-primary transition-all active:scale-[0.98]"
+                      />
+                      <p className="font-sans text-[10px] text-ink-muted/60 leading-tight">
+                        Candidates scoring below this will be{" "}
+                        <span className="font-bold text-status-error-text">
+                          auto-rejected
+                        </span>
+                        .
+                      </p>
+                    </div>
+                  </div>
+                )}
+              />
+
+              <form.Field
+                name="needsReviewThreshold"
+                children={(field) => (
+                  <div className="group/field relative space-y-base rounded-xl border border-line bg-bg-alt/5 p-comfortable transition-all hover:bg-bg-alt/10">
+                    <div className="flex items-center justify-between">
+                      <Label className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                        Review Bar
+                      </Label>
+                      <Badge variant="info" size="xs" className="font-mono">
+                        {field.state.value}%
+                      </Badge>
+                    </div>
+                    <div className="flex flex-col gap-small">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        value={field.state.value}
+                        onChange={(e) =>
+                          field.handleChange(Number(e.target.value))
+                        }
+                        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-line accent-primary transition-all active:scale-[0.98]"
+                      />
+                      <p className="font-sans text-[10px] text-ink-muted/60 leading-tight">
+                        Scores below this will require{" "}
+                        <span className="font-bold text-primary">
+                          manual oversight
+                        </span>
+                        .
+                      </p>
+                    </div>
                   </div>
                 )}
               />
@@ -352,20 +532,36 @@ export function CreateJobForm() {
               )}
             />
 
-            <form.Field
-              name="skills"
-              children={(field) => (
-                <div className="space-y-base">
-                  <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
-                    Skill Tags
-                  </Label>
-                  <div className="flex gap-base">
-                    <Input
-                      placeholder="Add a skill tag..."
-                      value={skillInput}
-                      onChange={(e) => setSkillInput(e.target.value)}
-                      onKeyDown={(e) =>
-                        handleKeyDown(e, () => {
+            <div className="grid gap-base sm:grid-cols-2">
+              <form.Field
+                name="skills"
+                children={(field) => (
+                  <div className="space-y-micro">
+                    <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                      Skill Tags
+                    </Label>
+                    <div className="flex gap-base">
+                      <Input
+                        placeholder="Add a skill tag..."
+                        value={skillInput}
+                        onChange={(e) => setSkillInput(e.target.value)}
+                        onKeyDown={(e) =>
+                          handleKeyDown(e, () => {
+                            if (skillInput.trim()) {
+                              field.handleChange([
+                                ...field.state.value,
+                                skillInput.trim(),
+                              ]);
+                              setSkillInput("");
+                            }
+                          })
+                        }
+                        className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] text-primary shadow-none transition-all focus:bg-surface"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
                           if (skillInput.trim()) {
                             field.handleChange([
                               ...field.state.value,
@@ -373,54 +569,114 @@ export function CreateJobForm() {
                             ]);
                             setSkillInput("");
                           }
-                        })
-                      }
-                      className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] text-primary shadow-none transition-all focus:bg-surface"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        if (skillInput.trim()) {
-                          field.handleChange([
-                            ...field.state.value,
-                            skillInput.trim(),
-                          ]);
-                          setSkillInput("");
-                        }
-                      }}
-                      className="h-10 rounded-standard border-line px-4 shadow-none hover:bg-bg-alt"
-                    >
-                      <RiAddLine className="size-4 text-ink-faint" />
-                    </Button>
-                  </div>
-                  {field.state.value.length > 0 && (
-                    <div className="mt-base flex flex-wrap gap-small">
-                      {field.state.value.map((skill, i) => (
-                        <Badge
-                          key={i}
-                          variant="outline"
-                          className="gap-base rounded-micro border border-line bg-bg-deep py-1 pr-1.5 pl-3 font-medium font-sans text-[11px] text-primary uppercase"
-                        >
-                          {skill}
-                          <button
-                            type="button"
-                            onClick={() =>
-                              field.handleChange(
-                                field.state.value.filter((_, idx) => idx !== i),
-                              )
-                            }
-                            className="rounded-full p-0.5 transition-colors hover:bg-surface"
-                          >
-                            <RiCloseLine className="size-3 text-ink-faint" />
-                          </button>
-                        </Badge>
-                      ))}
+                        }}
+                        className="h-10 rounded-standard border-line px-4 shadow-none hover:bg-bg-alt"
+                      >
+                        <RiAddLine className="size-4 text-ink-faint" />
+                      </Button>
                     </div>
-                  )}
-                </div>
-              )}
-            />
+                    {field.state.value.length > 0 && (
+                      <div className="mt-base flex flex-wrap gap-small">
+                        {field.state.value.map((skill: string, i: number) => (
+                          <Badge
+                            key={i}
+                            variant="outline"
+                            className="gap-base rounded-micro border border-line bg-bg-deep py-1 pr-1.5 pl-3 font-medium font-sans text-[11px] text-primary uppercase"
+                          >
+                            {skill}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                field.handleChange(
+                                  field.state.value.filter(
+                                    (_, idx) => idx !== i,
+                                  ),
+                                )
+                              }
+                              className="rounded-full p-0.5 transition-colors hover:bg-surface"
+                            >
+                              <RiCloseLine className="size-3 text-ink-faint" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              />
+
+              <form.Field
+                name="techStack"
+                children={(field) => (
+                  <div className="space-y-micro">
+                    <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                      Primary Tech Stack
+                    </Label>
+                    <div className="flex gap-base">
+                      <Input
+                        placeholder="Add a technology..."
+                        value={techStackInput}
+                        onChange={(e) => setTechStackInput(e.target.value)}
+                        onKeyDown={(e) =>
+                          handleKeyDown(e, () => {
+                            if (techStackInput.trim()) {
+                              field.handleChange([
+                                ...field.state.value,
+                                techStackInput.trim(),
+                              ]);
+                              setTechStackInput("");
+                            }
+                          })
+                        }
+                        className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] text-primary shadow-none transition-all focus:bg-surface"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          if (techStackInput.trim()) {
+                            field.handleChange([
+                              ...field.state.value,
+                              techStackInput.trim(),
+                            ]);
+                            setTechStackInput("");
+                          }
+                        }}
+                        className="h-10 rounded-standard border-line px-4 shadow-none hover:bg-bg-alt"
+                      >
+                        <RiAddLine className="size-4 text-ink-faint" />
+                      </Button>
+                    </div>
+                    {field.state.value.length > 0 && (
+                      <div className="mt-base flex flex-wrap gap-small">
+                        {field.state.value.map((tech: string, i: number) => (
+                          <Badge
+                            key={i}
+                            variant="success"
+                            className="gap-base rounded-micro border border-line py-1 pr-1.5 pl-3 font-medium font-sans text-[11px] uppercase shadow-none"
+                          >
+                            {tech}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                field.handleChange(
+                                  field.state.value.filter(
+                                    (_, idx) => idx !== i,
+                                  ),
+                                )
+                              }
+                              className="rounded-full p-0.5 transition-colors hover:bg-surface"
+                            >
+                              <RiCloseLine className="size-3" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
           </div>
 
           <div className="flex justify-end gap-base border-line border-t pt-section-gap">
@@ -438,18 +694,25 @@ export function CreateJobForm() {
               children={([canSubmit, isSubmitting]) => (
                 <Button
                   type="submit"
-                  disabled={!canSubmit || isSubmitting || createJob.isPending}
+                  disabled={
+                    !canSubmit ||
+                    isSubmitting ||
+                    createJob.isPending ||
+                    updateJob.isPending
+                  }
                   className="h-10 rounded-standard bg-primary px-10 font-medium font-sans text-[13px] text-white shadow-none"
                 >
-                  {isSubmitting || createJob.isPending ? (
+                  {isSubmitting ||
+                  createJob.isPending ||
+                  updateJob.isPending ? (
                     <>
                       <RiLoader2Line className="mr-base size-3.5 animate-spin" />
-                      Creating...
+                      {initialData ? "Saving..." : "Creating..."}
                     </>
                   ) : (
                     <>
                       <RiBriefcaseLine className="mr-base size-3.5" />
-                      Publish Job
+                      {initialData ? "Save Changes" : "Publish Job"}
                     </>
                   )}
                 </Button>

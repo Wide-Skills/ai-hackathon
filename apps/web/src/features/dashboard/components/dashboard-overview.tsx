@@ -32,8 +32,12 @@ import { StatCard } from "./stat-card";
 
 export function DashboardOverview() {
   const statsQuery = useQuery(trpc.jobs.stats.queryOptions());
-  const applicantsQuery = useQuery(trpc.applicants.list.queryOptions());
-  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
+  const applicantsQuery = useQuery(
+    trpc.applicants.list.queryOptions({ page: 1, limit: 100 }),
+  );
+  const jobsQuery = useQuery(
+    trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
+  );
 
   if (
     statsQuery.isLoading ||
@@ -70,8 +74,8 @@ export function DashboardOverview() {
   }
 
   const stats = statsQuery.data;
-  const allApplicants = applicantsQuery.data ?? [];
-  const allJobs = jobsQuery.data ?? [];
+  const allApplicants = applicantsQuery.data?.items ?? [];
+  const allJobs = jobsQuery.data?.items ?? [];
 
   const topApplicants = [...allApplicants]
     .filter((a) => a.status === "shortlisted")

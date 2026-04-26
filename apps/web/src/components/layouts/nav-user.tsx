@@ -53,7 +53,7 @@ export function NavUser({
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <SidebarMenuButton className="rounded-standard transition-colors hover:bg-bg-alt/30 active:bg-bg-alt/50 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center" />
+              <SidebarMenuButton className="rounded-standard transition-colors hover:bg-bg-alt/30 active:bg-bg-alt/50 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0" />
             }
           >
             <Avatar className="h-7 w-7 shrink-0 rounded-micro border border-line group-data-[collapsible=icon]:mx-auto">

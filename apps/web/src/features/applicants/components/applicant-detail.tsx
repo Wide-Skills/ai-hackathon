@@ -84,7 +84,7 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
         <div className="space-y-section-gap lg:col-span-3">
           {applicant.screening && (
             <section className="space-y-base">
-              <div className="mb-comfortable border-line border-b pb-base px-1">
+              <div className="mb-comfortable border-line border-b px-1 pb-base">
                 <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.06em]">
                   Intelligence Evaluation
                 </span>
@@ -92,12 +92,16 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
                   AI Fit Summary
                 </h3>
               </div>
-              <AIAnalysisCard screening={applicant.screening} />
+              <AIAnalysisCard
+                applicantId={applicant.id}
+                jobId={applicant.jobId}
+                screening={applicant.screening}
+              />
             </section>
           )}
 
           <section className="space-y-base">
-            <div className="mb-comfortable border-line border-b pb-base px-1">
+            <div className="mb-comfortable border-line border-b px-1 pb-base">
               <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.06em]">
                 Background
               </span>
@@ -115,7 +119,7 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
           </section>
 
           <section className="space-y-base">
-            <div className="mb-comfortable border-line border-b pb-base px-1">
+            <div className="mb-comfortable border-line border-b px-1 pb-base">
               <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.06em]">
                 Credentials
               </span>
@@ -130,7 +134,7 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
           </section>
 
           <section className="space-y-base">
-            <div className="mb-comfortable border-line border-b pb-base px-1">
+            <div className="mb-comfortable border-line border-b px-1 pb-base">
               <span className="mb-micro block font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.06em]">
                 Evidence
               </span>

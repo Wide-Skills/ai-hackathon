@@ -111,8 +111,10 @@ export function UploadCandidatesDialog({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
 
-  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
-  const jobs = jobsQuery.data ?? [];
+  const jobsQuery = useQuery(
+    trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
+  );
+  const jobs = jobsQuery.data?.items ?? [];
 
   const ingestBatch = useMutation(
     trpc.applicants.ingestBatch.mutationOptions(),

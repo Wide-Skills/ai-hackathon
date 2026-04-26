@@ -1,16 +1,30 @@
+"use client";
 import type { ApplicantScreening } from "@ai-hackathon/shared";
 import {
   RiBrainLine,
   RiCheckboxCircleLine,
   RiCloseCircleLine,
+  RiHistoryLine,
+  RiLoader2Line,
+  RiSaveLine,
   RiThumbUpLine,
 } from "@remixicon/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { invalidateHiringData, trpc } from "@/utils/trpc";
 
 interface AIAnalysisCardProps {
+  applicantId: string;
+  jobId: string;
   screening: ApplicantScreening;
 }
 
@@ -35,7 +49,40 @@ const recommendationConfig = {
   },
 };
 
-export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
+export function AIAnalysisCard({
+  applicantId,
+  jobId,
+  screening,
+}: AIAnalysisCardProps) {
+  const queryClient = useQueryClient();
+  const [manualScore, setManualScore] = useState<string>(
+    screening.manualScore?.toString() || "",
+  );
+  const [recruiterNotes, setRecruiterNotes] = useState<string>(
+    screening.recruiterNotes || "",
+  );
+
+  const updateFeedback = useMutation(
+    trpc.screenings.updateFeedback.mutationOptions({
+      onSuccess: () => {
+        toast.success("Feedback saved successfully");
+        void invalidateHiringData(queryClient);
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to save feedback");
+      },
+    }),
+  );
+
+  const rescreen = useMutation(
+    trpc.screenings.rescreen.mutationOptions({
+      onSuccess: () => {
+        toast.success("Rescreening initiated");
+        void invalidateHiringData(queryClient);
+      },
+    }),
+  );
+
   const recConfig =
     recommendationConfig[
       screening.recommendation as keyof typeof recommendationConfig
@@ -78,19 +125,39 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
                 <p className="mb-2 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
                   Recommendation
                 </p>
-                {recConfig && (
-                  <Badge
-                    variant="outline"
-                    size="default"
-                    uppercase
-                    className={cn(
-                      "px-4 py-1 font-medium font-sans",
-                      recConfig.color,
-                    )}
-                  >
-                    {screening.recommendation}
-                  </Badge>
-                )}
+                <div className="flex flex-wrap items-center gap-base">
+                  {recConfig && (
+                    <Badge
+                      variant="outline"
+                      size="default"
+                      uppercase
+                      className={cn(
+                        "px-4 py-1 font-medium font-sans",
+                        recConfig.color,
+                      )}
+                    >
+                      {screening.recommendation}
+                    </Badge>
+                  )}
+                  {screening.isOutdated && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => rescreen.mutate({ applicantId, jobId })}
+                      disabled={rescreen.isPending}
+                      className="h-8 gap-base border-status-warning-text/30 bg-status-warning-bg font-medium font-sans text-[10px] text-status-warning-text uppercase tracking-wider hover:bg-status-warning-bg/80"
+                    >
+                      {rescreen.isPending ? (
+                        "Analyzing..."
+                      ) : (
+                        <>
+                          <RiHistoryLine className="size-3" />
+                          Outdated - Rescreen
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -167,6 +234,133 @@ export function AIAnalysisCard({ screening }: AIAnalysisCardProps) {
               </li>
             ))}
           </ul>
+        </div>
+      </div>
+
+      <div className="p-comfortable">
+        <div className="grid grid-cols-1 gap-hero lg:grid-cols-2">
+          <div>
+            <div className="mb-comfortable flex items-center gap-base">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-bg-alt/20">
+                <RiBrainLine className="size-3 text-primary" />
+              </div>
+              <h4 className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
+                Score Justification (XAI)
+              </h4>
+            </div>
+            <div className="grid grid-cols-2 gap-small rounded-xl border border-line bg-bg-alt/5 p-base">
+              {[
+                {
+                  label: "Technical Stack",
+                  value: screening.scoreBreakdown?.technicalSkills ?? 0,
+                },
+                {
+                  label: "Domain Experience",
+                  value: screening.scoreBreakdown?.experience ?? 0,
+                },
+                {
+                  label: "Education Fit",
+                  value: screening.scoreBreakdown?.education ?? 0,
+                },
+                {
+                  label: "Cultural Persona",
+                  value: screening.scoreBreakdown?.culturalFit ?? 0,
+                },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="space-y-1.5 rounded-micro bg-surface/50 p-base shadow-sm"
+                >
+                  <div className="flex items-center justify-between font-medium font-sans text-[10px] text-ink-faint uppercase">
+                    <span>{item.label}</span>
+                  </div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="font-serif text-[20px] text-primary leading-none">
+                      {item.value}
+                    </span>
+                    <span className="font-sans text-[10px] text-ink-faint">
+                      %
+                    </span>
+                  </div>
+                  <div className="h-1 w-full overflow-hidden rounded-full bg-bg-alt/20">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${item.value}%` }}
+                      transition={{
+                        type: "spring",
+                        duration: 1.5,
+                        bounce: 0,
+                        delay: 0.1,
+                      }}
+                      className="h-full bg-primary/30"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col">
+            <div className="mb-comfortable flex items-center gap-base">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-bg-alt/20">
+                <RiThumbUpLine className="size-3 text-primary" />
+              </div>
+              <h4 className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
+                Human Oversight
+              </h4>
+            </div>
+            <div className="flex flex-1 flex-col gap-base rounded-xl border border-line p-comfortable shadow-sm">
+              <div className="grid grid-cols-1 gap-base sm:grid-cols-3">
+                <div className="space-y-micro sm:col-span-1">
+                  <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                    Manual Score
+                  </Label>
+                  <Input
+                    type="number"
+                    placeholder="0-100"
+                    value={manualScore}
+                    onChange={(e) => setManualScore(e.target.value)}
+                    className="h-10 border-line bg-transparent font-serif text-[18px] text-primary shadow-none focus:ring-primary/5"
+                  />
+                </div>
+                <div className="space-y-micro sm:col-span-2">
+                  <Label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                    Evaluation Notes
+                  </Label>
+                  <Textarea
+                    placeholder="Record internal reasoning..."
+                    value={recruiterNotes}
+                    onChange={(e) => setRecruiterNotes(e.target.value)}
+                    className="h-10 min-h-[40px] resize-none border-line bg-transparent p-2.5 font-sans text-[13px] leading-tight shadow-none focus:ring-primary/5"
+                  />
+                </div>
+              </div>
+              <Button
+                size="sm"
+                onClick={() =>
+                  updateFeedback.mutate({
+                    applicantId,
+                    manualScore: manualScore ? Number(manualScore) : undefined,
+                    recruiterNotes,
+                  })
+                }
+                disabled={updateFeedback.isPending}
+                className="w-full gap-base rounded-standard bg-primary font-medium font-sans text-[11px] text-white uppercase tracking-wider shadow-md shadow-primary/10 transition-all hover:translate-y-[-1px] active:scale-[0.97]"
+              >
+                {updateFeedback.isPending ? (
+                  <>
+                    <RiLoader2Line className="size-3.5 animate-spin" />
+                    Syncing...
+                  </>
+                ) : (
+                  <>
+                    <RiSaveLine className="size-3.5" />
+                    Update Decision
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 

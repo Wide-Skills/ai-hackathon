@@ -1,6 +1,9 @@
+"use client";
 import type { Applicant } from "@ai-hackathon/shared";
-import { RiBrainLine, RiLoader2Line } from "@remixicon/react";
+import { RiBrainLine, RiDeleteBin7Line, RiLoader2Line } from "@remixicon/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 
@@ -9,6 +12,17 @@ interface ApplicantSidebarProps {
   jobTitle?: string;
 }
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -17,7 +31,10 @@ export function ApplicantSidebar({
   applicant,
   jobTitle,
 }: ApplicantSidebarProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const screenMutation = useMutation(
     trpc.screenings.generate.mutationOptions({
       onSuccess: () => {
@@ -26,6 +43,20 @@ export function ApplicantSidebar({
       },
       onError: (error) => {
         toast.error(error.message || "AI Analysis failed");
+      },
+    }),
+  );
+
+  const deleteMutation = useMutation(
+    trpc.applicants.delete.mutationOptions({
+      onSuccess: () => {
+        toast.success("Applicant deleted successfully");
+        void invalidateHiringData(queryClient);
+        router.push("/dashboard/applicants");
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to delete applicant");
+        setIsDeleting(false);
       },
     }),
   );
@@ -112,6 +143,51 @@ export function ApplicantSidebar({
                 </>
               )}
             </Button>
+
+            <AlertDialog>
+              <AlertDialogTrigger
+                render={
+                  <Button
+                    disabled={isDeleting}
+                    variant="outline"
+                    className="h-9 w-full rounded-standard border-line bg-transparent font-medium font-sans text-[12px] text-ink-faint shadow-none hover:border-status-error-text/30 hover:bg-status-error-bg hover:text-status-error-text"
+                  />
+                }
+              >
+                {isDeleting ? (
+                  <>
+                    <RiLoader2Line className="mr-2 h-3.5 w-3.5 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <RiDeleteBin7Line className="mr-2 h-3.5 w-3.5" />
+                    Delete Profile
+                  </>
+                )}
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Applicant Profile</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete this applicant? This action
+                    cannot be undone and all screening data will be lost.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      setIsDeleting(true);
+                      deleteMutation.mutate({ id: applicant.id });
+                    }}
+                    className="bg-status-error-bg text-status-error-text hover:bg-status-error-bg/80"
+                  >
+                    Delete Permanently
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </Card>

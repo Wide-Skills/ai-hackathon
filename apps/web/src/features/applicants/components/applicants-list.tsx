@@ -22,6 +22,7 @@ import {
 } from "@/components/data/query-state";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -96,11 +97,28 @@ export function ApplicantsList() {
   const [sortField, setSortField] = useState<SortField>("score");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [view, setView] = useState<"grid" | "table">("grid");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
 
-  const applicantsQuery = useQuery(trpc.applicants.list.queryOptions());
-  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
-  const applicantsData = applicantsQuery.data ?? [];
-  const jobsData = jobsQuery.data ?? [];
+  const applicantsQuery = useQuery(
+    trpc.applicants.list.queryOptions({
+      page,
+      limit,
+      search: search || undefined,
+      status: statusFilter !== "all" ? statusFilter : undefined,
+      jobId: jobFilter !== "all" ? jobFilter : undefined,
+      sortBy: sortField,
+      sortOrder: sortDir,
+    }),
+  );
+
+  const jobsQuery = useQuery(
+    trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
+  );
+
+  const applicantsData = applicantsQuery.data?.items ?? [];
+  const pagination = applicantsQuery.data;
+  const jobsData = jobsQuery.data?.items ?? [];
   const queryClient = useQueryClient();
 
   const screenMutation = useMutation(
@@ -122,6 +140,11 @@ export function ApplicantsList() {
     }
   }, [searchParams]);
 
+  // Reset to first page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [search, statusFilter, jobFilter]);
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDir(sortDir === "asc" ? "desc" : "asc");
@@ -129,29 +152,8 @@ export function ApplicantsList() {
       setSortField(field);
       setSortDir("desc");
     }
+    setPage(1); // Reset to first page on sort change
   };
-
-  const filtered = applicantsData
-    .filter((a) => {
-      const name = `${a.firstName} ${a.lastName}`.toLowerCase();
-      const matchesSearch =
-        name.includes(search.toLowerCase()) ||
-        a.email.includes(search.toLowerCase());
-      const matchesStatus = statusFilter === "all" || a.status === statusFilter;
-      const matchesJob = jobFilter === "all" || a.jobId === jobFilter;
-      return matchesSearch && matchesStatus && matchesJob;
-    })
-    .sort((a, b) => {
-      let cmp = 0;
-      if (sortField === "score") {
-        cmp = (a.screening?.matchScore ?? 0) - (b.screening?.matchScore ?? 0);
-      } else if (sortField === "name") {
-        cmp = a.firstName.localeCompare(b.firstName);
-      } else if (sortField === "applied") {
-        cmp = new Date(a.appliedAt).getTime() - new Date(b.appliedAt).getTime();
-      }
-      return sortDir === "asc" ? cmp : -cmp;
-    });
 
   if (applicantsQuery.isLoading || jobsQuery.isLoading) {
     return (
@@ -297,17 +299,16 @@ export function ApplicantsList() {
               AI Match Score <RiArrowUpDownLine className="size-3 opacity-30" />
             </button>
           </div>
-          <div className="font-sans font-medium text-[10px] text-ink-faint uppercase tracking-[0.06em]">
-            {filtered.length} candidates found
+          <div className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
+            {pagination?.totalCount ?? 0} candidates found
           </div>
-
         </div>
       )}
 
       {/* Candidate View */}
       {view === "grid" ? (
         <div className="grid grid-cols-1 gap-base">
-          {filtered.map((applicant, i) => {
+          {applicantsData.map((applicant, i) => {
             const sc = statusConfig[applicant.status];
             const job = jobsData.find((j) => j.id === applicant.jobId);
 
@@ -342,7 +343,7 @@ export function ApplicantsList() {
                             {applicant.headline}
                           </p>
                           <div className="hidden size-1 rounded-full bg-line sm:block" />
-                          <div className="max-w-[180px] truncate font-medium font-sans text-[10px] text-primary/40 uppercase tracking-wider leading-none">
+                          <div className="max-w-[180px] truncate font-medium font-sans text-[10px] text-primary/40 uppercase leading-none tracking-wider">
                             {job?.title}
                           </div>
                         </div>
@@ -410,7 +411,7 @@ export function ApplicantsList() {
             );
           })}
 
-          {filtered.length === 0 ? (
+          {applicantsData.length === 0 ? (
             <QueryEmptyState
               title="No applicants match the current filters"
               description="Adjust the search or import candidates into one of your active pipelines."
@@ -418,7 +419,17 @@ export function ApplicantsList() {
           ) : null}
         </div>
       ) : (
-        <ApplicantsTable data={filtered} />
+        <ApplicantsTable data={applicantsData} />
+      )}
+
+      {pagination && (
+        <Pagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          hasMore={pagination.hasMore}
+          onPageChange={setPage}
+          isLoading={applicantsQuery.isFetching}
+        />
       )}
     </div>
   );

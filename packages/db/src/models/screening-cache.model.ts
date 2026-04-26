@@ -11,9 +11,6 @@ const screeningCacheSchema = new Schema(
   { timestamps: true },
 );
 
-// Index to automatically delete expired cache entries
-// The 'expires' value of 0 means it will use the date in the 'expiresAt' field
-
 export interface ScreeningCacheDocument extends mongoose.Document {
   promptHash: string;
   output: any;

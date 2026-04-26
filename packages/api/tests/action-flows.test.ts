@@ -127,7 +127,7 @@ describe("action flows", () => {
   it("rejects protected job listing without a session", async () => {
     const caller = jobRouter.createCaller({ session: null });
 
-    await expect(caller.list()).rejects.toMatchObject({
+    await expect(caller.list({ page: 1, limit: 10 })).rejects.toMatchObject({
       code: "UNAUTHORIZED",
     });
   });

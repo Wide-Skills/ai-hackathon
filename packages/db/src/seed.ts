@@ -12,14 +12,16 @@ const recruiterSeedUsers = [
     id: "usr-system",
     name: "Umurava AI Core",
     email: "system@umurava.ai",
-    image: "https://ui-avatars.com/api/?name=Umurava+AI&background=192840&color=fff",
+    image:
+      "https://ui-avatars.com/api/?name=Umurava+AI&background=192840&color=fff",
     password: "SystemSeed123!",
   },
   {
     id: DEMO_RECRUITER.id,
     name: DEMO_RECRUITER.name,
     email: DEMO_RECRUITER.email,
-    image: "https://ui-avatars.com/api/?name=Recruiter&background=eeedea&color=192840",
+    image:
+      "https://ui-avatars.com/api/?name=Recruiter&background=eeedea&color=192840",
     password: DEMO_RECRUITER.password,
   },
   {
@@ -66,7 +68,8 @@ const mockJobs = [
     department: "Engineering",
     location: "Kigali, Rwanda",
     type: "Full-time",
-    description: "Join Irembo's core engineering team to build high-performance public services. You will be responsible for technical architecture, mentoring junior devs, and ensuring 99.9% uptime for critical national infrastructure.",
+    description:
+      "Join Irembo's core engineering team to build high-performance public services. You will be responsible for technical architecture, mentoring junior devs, and ensuring 99.9% uptime for critical national infrastructure.",
     requirements: [
       "Expertise in Node.js and TypeScript",
       "Proven experience with React and Next.js",
@@ -87,7 +90,8 @@ const mockJobs = [
     department: "Design",
     location: "Kigali (On-site)",
     type: "Full-time",
-    description: "Mara is looking for a Product Designer who lives and breathes AI-driven interfaces. You will lead the design system for our next-gen fintech suite, focusing on high-fidelity user experiences and intuitive data viz.",
+    description:
+      "Mara is looking for a Product Designer who lives and breathes AI-driven interfaces. You will lead the design system for our next-gen fintech suite, focusing on high-fidelity user experiences and intuitive data viz.",
     requirements: [
       "Portfolio showcasing B2B SaaS products",
       "Expert Figma and Framer skills",
@@ -108,7 +112,8 @@ const mockJobs = [
     department: "Platform",
     location: "Remote (Rwanda TZ)",
     type: "Contract",
-    description: "Manage and scale BK Group's digital banking infrastructure. We are moving towards a fully automated cloud-native stack and need an expert to lead the transition.",
+    description:
+      "Manage and scale BK Group's digital banking infrastructure. We are moving towards a fully automated cloud-native stack and need an expert to lead the transition.",
     requirements: [
       "Advanced AWS or Azure certifications",
       "Expertise in Terraform and Ansible",
@@ -156,7 +161,8 @@ const mockApplicants = [
         role: "Senior Backend Engineer",
         startDate: "2021-01",
         endDate: "Present",
-        description: "Leading the core services team, maintaining 50+ government endpoints with zero downtime.",
+        description:
+          "Leading the core services team, maintaining 50+ government endpoints with zero downtime.",
         technologies: ["Node.js", "TypeScript", "PostgreSQL", "Redis"],
         isCurrent: true,
       },
@@ -165,7 +171,8 @@ const mockApplicants = [
         role: "Software Engineer",
         startDate: "2018-06",
         endDate: "2020-12",
-        description: "Developed large-scale APIs for international clients in the healthcare and logistics sectors.",
+        description:
+          "Developed large-scale APIs for international clients in the healthcare and logistics sectors.",
         technologies: ["JavaScript", "Express", "MongoDB"],
         isCurrent: false,
       },
@@ -180,12 +187,17 @@ const mockApplicants = [
       },
     ],
     certifications: [
-      { name: "AWS Solutions Architect", issuer: "Amazon", issueDate: "2023-05" },
+      {
+        name: "AWS Solutions Architect",
+        issuer: "Amazon",
+        issueDate: "2023-05",
+      },
     ],
     projects: [
       {
         name: "GovTech Gateway",
-        description: "A centralized auth provider for all Rwandan public services.",
+        description:
+          "A centralized auth provider for all Rwandan public services.",
         technologies: ["OAuth 2.0", "Node.js", "Redis"],
         role: "Lead Architect",
         startDate: "2023-01",
@@ -195,6 +207,12 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 94,
+      scoreBreakdown: {
+        technicalSkills: 98,
+        experience: 92,
+        education: 95,
+        culturalFit: 88,
+      },
       strengths: [
         "Deep local ecosystem context",
         "Exceptional Node.js architectural skills",
@@ -203,7 +221,8 @@ const mockApplicants = [
       ],
       gaps: ["Limited frontend experience for full-stack role"],
       recommendation: "Strongly Recommend",
-      summary: "Marie-Claire is a phenomenal match. Her background at Irembo and academic rigor from CMU Africa makes her a high-authority candidate for this senior position.",
+      summary:
+        "Marie-Claire is a phenomenal match. Her background at Irembo and academic rigor from CMU Africa makes her a high-authority candidate for this senior position.",
       skillBreakdown: [
         { skill: "Node.js", score: 98 },
         { skill: "TypeScript", score: 92 },
@@ -239,7 +258,8 @@ const mockApplicants = [
         role: "Senior UX Designer",
         startDate: "2020-03",
         endDate: "Present",
-        description: "Designing the driver dashboard and battery swapping management interface.",
+        description:
+          "Designing the driver dashboard and battery swapping management interface.",
         technologies: ["Figma", "User Interviews", "Flutter"],
         isCurrent: true,
       },
@@ -257,6 +277,12 @@ const mockApplicants = [
     socialLinks: { portfolio: "https://samuel.design" },
     screening: {
       matchScore: 82,
+      scoreBreakdown: {
+        technicalSkills: 85,
+        experience: 80,
+        education: 75,
+        culturalFit: 88,
+      },
       strengths: [
         "Strong B2B SaaS background",
         "Expert Figma skills",
@@ -264,7 +290,8 @@ const mockApplicants = [
       ],
       gaps: ["No direct AI/LLM interface experience", "Limited Framer skills"],
       recommendation: "Recommend",
-      summary: "Samuel brings great operational design experience. While he lacks specific AI exposure, his work at Ampersand shows he can handle complex logistical interfaces.",
+      summary:
+        "Samuel brings great operational design experience. While he lacks specific AI exposure, his work at Ampersand shows he can handle complex logistical interfaces.",
       skillBreakdown: [
         { skill: "Figma", score: 95 },
         { skill: "Systems", score: 80 },
@@ -313,6 +340,12 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 91,
+      scoreBreakdown: {
+        technicalSkills: 94,
+        experience: 88,
+        education: 85,
+        culturalFit: 92,
+      },
       strengths: [
         "Direct FinTech experience in Rwanda",
         "Expert-level Terraform skills",
@@ -320,7 +353,8 @@ const mockApplicants = [
       ],
       gaps: ["Limited experience with Azure or GCP"],
       recommendation: "Strongly Recommend",
-      summary: "Aline is a top-tier infrastructure candidate. Her current work at Bank of Kigali ensures she understands the exact regulatory and technical environment we operate in.",
+      summary:
+        "Aline is a top-tier infrastructure candidate. Her current work at Bank of Kigali ensures she understands the exact regulatory and technical environment we operate in.",
       skillBreakdown: [
         { skill: "Cloud", score: 90 },
         { skill: "Automation", score: 95 },
@@ -369,10 +403,24 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 76,
-      strengths: ["Solid React skills", "Local startup experience", "Good fundamentals"],
-      gaps: ["Lacks Kubernetes experience", "No Redis or large-scale architecture experience"],
+      scoreBreakdown: {
+        technicalSkills: 80,
+        experience: 70,
+        education: 75,
+        culturalFit: 85,
+      },
+      strengths: [
+        "Solid React skills",
+        "Local startup experience",
+        "Good fundamentals",
+      ],
+      gaps: [
+        "Lacks Kubernetes experience",
+        "No Redis or large-scale architecture experience",
+      ],
       recommendation: "Recommend",
-      summary: "Jean-Claude is a competent developer but may need significant upskilling to handle the critical infrastructure scale of Irembo.",
+      summary:
+        "Jean-Claude is a competent developer but may need significant upskilling to handle the critical infrastructure scale of Irembo.",
       skillBreakdown: [
         { skill: "Node.js", score: 70 },
         { skill: "React", score: 85 },
@@ -421,10 +469,25 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 68,
-      strengths: ["Excellent Tailwind skills", "Clean UI implementation", "Good communication"],
-      gaps: ["Lacks backend depth", "No experience with PostgreSQL/Redis", "Limited Next.js"],
+      scoreBreakdown: {
+        technicalSkills: 75,
+        experience: 60,
+        education: 65,
+        culturalFit: 80,
+      },
+      strengths: [
+        "Excellent Tailwind skills",
+        "Clean UI implementation",
+        "Good communication",
+      ],
+      gaps: [
+        "Lacks backend depth",
+        "No experience with PostgreSQL/Redis",
+        "Limited Next.js",
+      ],
       recommendation: "Consider",
-      summary: "Esperance has strong frontend visual skills but her profile is too specialized in UI to meet the Senior Full-Stack requirements at this stage.",
+      summary:
+        "Esperance has strong frontend visual skills but her profile is too specialized in UI to meet the Senior Full-Stack requirements at this stage.",
       skillBreakdown: [
         { skill: "React", score: 75 },
         { skill: "Tailwind", score: 95 },
@@ -473,10 +536,24 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 85,
-      strengths: ["Strong AWS foundation", "Focus on security", "Good Terraform skills"],
-      gaps: ["Limited Kubernetes production scale", "Needs more Ansible experience"],
+      scoreBreakdown: {
+        technicalSkills: 88,
+        experience: 82,
+        education: 80,
+        culturalFit: 85,
+      },
+      strengths: [
+        "Strong AWS foundation",
+        "Focus on security",
+        "Good Terraform skills",
+      ],
+      gaps: [
+        "Limited Kubernetes production scale",
+        "Needs more Ansible experience",
+      ],
       recommendation: "Recommend",
-      summary: "Eric is a strong candidate for the Cloud Lead role with a solid foundation in AWS and security, though he may need support on massive data migrations.",
+      summary:
+        "Eric is a strong candidate for the Cloud Lead role with a solid foundation in AWS and security, though he may need support on massive data migrations.",
       skillBreakdown: [
         { skill: "AWS", score: 90 },
         { skill: "Security", score: 85 },
@@ -525,10 +602,17 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 62,
+      scoreBreakdown: {
+        technicalSkills: 65,
+        experience: 55,
+        education: 60,
+        culturalFit: 70,
+      },
       strengths: ["Great visual design skills", "Public sector experience"],
       gaps: ["Lacks B2B SaaS experience", "Weak design system knowledge"],
       recommendation: "Not Recommended",
-      summary: "Grace has strong graphic design skills but lacks the specific Product Design and Design Systems experience Mara requires for their fintech suite.",
+      summary:
+        "Grace has strong graphic design skills but lacks the specific Product Design and Design Systems experience Mara requires for their fintech suite.",
       skillBreakdown: [
         { skill: "Figma", score: 70 },
         { skill: "UX Research", score: 50 },
@@ -577,10 +661,21 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 84,
-      strengths: ["Strong Node.js knowledge", "Payment systems context", "Reliable engineer"],
+      scoreBreakdown: {
+        technicalSkills: 88,
+        experience: 80,
+        education: 78,
+        culturalFit: 90,
+      },
+      strengths: [
+        "Strong Node.js knowledge",
+        "Payment systems context",
+        "Reliable engineer",
+      ],
       gaps: ["Needs more Next.js and Kubernetes experience"],
       recommendation: "Recommend",
-      summary: "David is a solid backend engineer with relevant local experience. He is a very good cultural and technical fit for the Irembo team.",
+      summary:
+        "David is a solid backend engineer with relevant local experience. He is a very good cultural and technical fit for the Irembo team.",
       skillBreakdown: [
         { skill: "Node.js", score: 90 },
         { skill: "PostgreSQL", score: 85 },
@@ -629,10 +724,21 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 88,
-      strengths: ["Exceptional research depth", "Strong psychology background", "Team leadership"],
+      scoreBreakdown: {
+        technicalSkills: 80,
+        experience: 90,
+        education: 85,
+        culturalFit: 95,
+      },
+      strengths: [
+        "Exceptional research depth",
+        "Strong psychology background",
+        "Team leadership",
+      ],
       gaps: ["Lacks UI/Framer design depth"],
       recommendation: "Recommend",
-      summary: "Sophie is an excellent strategic researcher. While not a UI specialist, her research depth would be a massive asset for Mara's fintech suite.",
+      summary:
+        "Sophie is an excellent strategic researcher. While not a UI specialist, her research depth would be a massive asset for Mara's fintech suite.",
       skillBreakdown: [
         { skill: "UX Research", score: 98 },
         { skill: "Figma", score: 65 },
@@ -681,10 +787,21 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 95,
-      strengths: ["Direct Kubernetes expertise", "MTN enterprise context", "Strong automation focus"],
+      scoreBreakdown: {
+        technicalSkills: 98,
+        experience: 94,
+        education: 90,
+        culturalFit: 96,
+      },
+      strengths: [
+        "Direct Kubernetes expertise",
+        "MTN enterprise context",
+        "Strong automation focus",
+      ],
       gaps: ["None identified"],
       recommendation: "Strongly Recommend",
-      summary: "Theophile is a perfect technical match. His experience at MTN handling enterprise scale with Kubernetes aligns 1:1 with BK Group's needs.",
+      summary:
+        "Theophile is a perfect technical match. His experience at MTN handling enterprise scale with Kubernetes aligns 1:1 with BK Group's needs.",
       skillBreakdown: [
         { skill: "Kubernetes", score: 98 },
         { skill: "AWS", score: 92 },
@@ -732,10 +849,20 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 42,
+      scoreBreakdown: {
+        technicalSkills: 40,
+        experience: 35,
+        education: 50,
+        culturalFit: 45,
+      },
       strengths: ["High potential", "Local ecosystem familiarity"],
-      gaps: ["Insufficient technical depth for senior role", "Limited experience with Node.js/PostgreSQL"],
+      gaps: [
+        "Insufficient technical depth for senior role",
+        "Limited experience with Node.js/PostgreSQL",
+      ],
       recommendation: "Not Recommended",
-      summary: "Angelique is a promising junior talent, but this senior role requires significantly more architectural and production experience.",
+      summary:
+        "Angelique is a promising junior talent, but this senior role requires significantly more architectural and production experience.",
       skillBreakdown: [
         { skill: "Node.js", score: 30 },
         { skill: "TypeScript", score: 25 },
@@ -766,7 +893,8 @@ const mockApplicants = [
         role: "Security Analyst",
         startDate: "2020-06",
         endDate: "Present",
-        description: "Conducting vulnerability assessments for national systems.",
+        description:
+          "Conducting vulnerability assessments for national systems.",
         technologies: ["Kali Linux", "Burp Suite", "Python"],
         isCurrent: true,
       },
@@ -783,10 +911,21 @@ const mockApplicants = [
     availability: { status: "Available", type: "Full-time" },
     screening: {
       matchScore: 78,
-      strengths: ["Deep security expertise", "Government sector background", "Solid Python"],
+      scoreBreakdown: {
+        technicalSkills: 82,
+        experience: 70,
+        education: 75,
+        culturalFit: 85,
+      },
+      strengths: [
+        "Deep security expertise",
+        "Government sector background",
+        "Solid Python",
+      ],
       gaps: ["Limited infrastructure automation (Terraform) experience"],
       recommendation: "Recommend",
-      summary: "Patrick is an excellent security specialist. For a Cloud Lead role, he would need to pair with an automation expert, but his security depth is invaluable.",
+      summary:
+        "Patrick is an excellent security specialist. For a Cloud Lead role, he would need to pair with an automation expert, but his security depth is invaluable.",
       skillBreakdown: [
         { skill: "Security", score: 98 },
         { skill: "Python", score: 80 },
@@ -843,7 +982,7 @@ async function seed() {
       createdAt: user.createdAt,
       updatedAt: user.createdAt,
     }));
-    await User.collection.insertMany(userDocs);
+    await User.collection.insertMany(userDocs as any);
 
     const accountDocs = authUsers.map((user) => ({
       _id: `acc-${user.id}`,
@@ -854,7 +993,7 @@ async function seed() {
       createdAt: user.createdAt,
       updatedAt: user.createdAt,
     }));
-    await Account.collection.insertMany(accountDocs);
+    await Account.collection.insertMany(accountDocs as any);
 
     const recruiterSessions = recruiterSeedUsers.map((user, index) => ({
       _id: `ses-${user.id}`,
@@ -867,7 +1006,7 @@ async function seed() {
       userId: user.id,
     }));
 
-    await Session.collection.insertMany(recruiterSessions);
+    await Session.collection.insertMany(recruiterSessions as any);
     console.log(
       `Created ${authUsers.length} users, ${authUsers.length} accounts, and ${recruiterSessions.length} recruiter sessions.`,
     );
@@ -881,7 +1020,7 @@ async function seed() {
     for (const [index, mockJob] of mockJobs.entries()) {
       const owner = recruiterOwners[index % recruiterOwners.length];
       if (!owner) throw new Error("No recruiter owner available.");
-      
+
       const job = await Job.create({
         ...mockJob,
         createdByUserId: owner.id,
@@ -896,7 +1035,10 @@ async function seed() {
     console.log(`Inserted ${mockJobs.length} jobs.`);
 
     console.log("Creating applicants and screening results...");
-    const applicantStats = new Map<string, { a: number; s: number; sl: number }>();
+    const applicantStats = new Map<
+      string,
+      { a: number; s: number; sl: number }
+    >();
 
     for (const mockApplicant of mockApplicants) {
       const { id, jobId, screening, ...applicantData } = mockApplicant;
@@ -908,6 +1050,7 @@ async function seed() {
         name: `${mockApplicant.firstName} ${mockApplicant.lastName}`,
         jobId: realJobId,
         userId: `usr-${id}`,
+        screening: screening,
         createdAt: toDate(mockApplicant.appliedAt),
         updatedAt: toDate(mockApplicant.appliedAt),
       });
@@ -916,13 +1059,15 @@ async function seed() {
       current.a += 1;
       if (screening) {
         current.s += 1;
-        if (["shortlisted", "hired"].includes(mockApplicant.status)) current.sl += 1;
-        
+        if (["shortlisted", "hired"].includes(mockApplicant.status))
+          current.sl += 1;
+
         await ScreeningResult.create({
           applicantId: applicant._id,
           jobId: realJobId,
           createdByUserId: "usr-system",
           matchScore: screening.matchScore,
+          scoreBreakdown: (screening as any).scoreBreakdown,
           strengths: screening.strengths,
           gaps: screening.gaps,
           recommendation: screening.recommendation,
@@ -943,7 +1088,9 @@ async function seed() {
       });
     }
 
-    console.log(`Seeding complete. Inserted ${mockApplicants.length} applicants.`);
+    console.log(
+      `Seeding complete. Inserted ${mockApplicants.length} applicants.`,
+    );
   } catch (error) {
     console.error("Error seeding database:", error);
     process.exitCode = 1;

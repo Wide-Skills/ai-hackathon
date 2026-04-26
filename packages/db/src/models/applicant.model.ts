@@ -99,6 +99,12 @@ const applicantSchema = new Schema(
     screening: {
       type: {
         matchScore: Number,
+        scoreBreakdown: {
+          technicalSkills: Number,
+          experience: Number,
+          education: Number,
+          culturalFit: Number,
+        },
         strengths: [String],
         gaps: [String],
         recommendation: String,

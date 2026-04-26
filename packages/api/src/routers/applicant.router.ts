@@ -1,10 +1,14 @@
 import { sendApplicationReceivedEmail } from "@ai-hackathon/auth/email";
-import { Applicant } from "@ai-hackathon/db";
+import { Applicant, ScreeningResult } from "@ai-hackathon/db";
 import {
   ApplicantSchema,
+  ApplicationStatusSchema,
   CreateApplicantSchema,
+  createPaginatedResponseSchema,
+  PaginationInputSchema,
   PublicApplySchema,
 } from "@ai-hackathon/shared";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { ensureJobExists, syncJobMetrics } from "../router-helpers/job-metrics";
 import { serializeApplicant } from "../serializers";
@@ -102,7 +106,10 @@ export const applicantRouter = router({
               ],
         availability: { status: "Available", type: "Full-time" },
         status: extractedData
-          ? buildApplicantStatus(extractedData.matchScore)
+          ? buildApplicantStatus(extractedData.matchScore, {
+              autoReject: job.autoRejectThreshold,
+              needsReview: job.needsReviewThreshold,
+            })
           : "pending",
         screening: extractedData
           ? {
@@ -254,7 +261,10 @@ export const applicantRouter = router({
                   role: "Unknown",
                 },
               ],
-        status: buildApplicantStatus(validatedData.matchScore),
+        status: buildApplicantStatus(validatedData.matchScore, {
+          autoReject: job.autoRejectThreshold,
+          needsReview: job.needsReviewThreshold,
+        }),
         availability: { status: "Available", type: "Full-time" }, // Default
         screening: {
           ...validatedData,
@@ -389,21 +399,100 @@ export const applicantRouter = router({
     }),
 
   list: protectedProcedure
-    .input(z.void())
-    .output(z.array(ApplicantSchema))
-    .query(async () => {
-      const applicants = await Applicant.find().sort({ createdAt: -1 });
-      return applicants.map(serializeApplicant);
+    .input(PaginationInputSchema.optional())
+    .output(createPaginatedResponseSchema(ApplicantSchema))
+    .query(async ({ input }) => {
+      const {
+        page = 1,
+        limit = 10,
+        search,
+        status,
+        jobId,
+        sortBy,
+        sortOrder = "desc",
+      } = input || {};
+      const skip = (page - 1) * limit;
+
+      const query: any = {};
+      if (search) {
+        query.$or = [
+          { name: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+          { headline: { $regex: search, $options: "i" } },
+        ];
+      }
+      if (status && status !== "all") {
+        query.status = status;
+      }
+      if (jobId && jobId !== "all") {
+        query.jobId = jobId;
+      }
+
+      const sort: any = {};
+      if (sortBy) {
+        if (sortBy === "score") {
+          sort["screening.matchScore"] = sortOrder === "asc" ? 1 : -1;
+        } else if (sortBy === "name") {
+          sort.name = sortOrder === "asc" ? 1 : -1;
+        } else if (sortBy === "applied") {
+          sort.appliedAt = sortOrder === "asc" ? 1 : -1;
+        } else {
+          sort[sortBy] = sortOrder === "asc" ? 1 : -1;
+        }
+      } else {
+        sort.createdAt = -1;
+      }
+
+      const [applicants, totalCount] = await Promise.all([
+        Applicant.find(query).sort(sort).skip(skip).limit(limit),
+        Applicant.countDocuments(query),
+      ]);
+
+      const totalPages = Math.ceil(totalCount / limit);
+
+      return {
+        items: applicants.map(serializeApplicant),
+        totalCount,
+        totalPages,
+        currentPage: page,
+        hasMore: page < totalPages,
+      };
     }),
 
   listByJob: protectedProcedure
-    .input(z.object({ jobId: z.string() }))
-    .output(z.array(ApplicantSchema))
+    .input(
+      PaginationInputSchema.extend({
+        jobId: z.string(),
+      }),
+    )
+    .output(createPaginatedResponseSchema(ApplicantSchema))
     .query(async ({ input }) => {
-      const applicants = await Applicant.find({ jobId: input.jobId }).sort({
-        createdAt: -1,
-      });
-      return applicants.map(serializeApplicant);
+      const { page, limit, search, jobId } = input;
+      const skip = (page - 1) * limit;
+
+      const query: any = { jobId };
+      if (search) {
+        query.$or = [
+          { name: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+          { headline: { $regex: search, $options: "i" } },
+        ];
+      }
+
+      const [applicants, totalCount] = await Promise.all([
+        Applicant.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+        Applicant.countDocuments(query),
+      ]);
+
+      const totalPages = Math.ceil(totalCount / limit);
+
+      return {
+        items: applicants.map(serializeApplicant),
+        totalCount,
+        totalPages,
+        currentPage: page,
+        hasMore: page < totalPages,
+      };
     }),
 
   getById: protectedProcedure
@@ -412,6 +501,68 @@ export const applicantRouter = router({
     .query(async ({ input }) => {
       const applicant = await Applicant.findById(input.id);
       return applicant ? serializeApplicant(applicant) : null;
+    }),
+
+  update: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        data: CreateApplicantSchema.partial().extend({
+          status: ApplicationStatusSchema.optional(),
+        }),
+      }),
+    )
+    .output(ApplicantSchema)
+    .mutation(async ({ input }) => {
+      const existing = await Applicant.findById(input.id);
+      if (!existing) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Applicant not found",
+        });
+      }
+
+      const resumeChanged =
+        input.data.resumeText && input.data.resumeText !== existing.resumeText;
+
+      const applicant = await Applicant.findByIdAndUpdate(
+        input.id,
+        { $set: input.data },
+        { new: true },
+      );
+
+      if (resumeChanged) {
+        await ScreeningResult.updateOne(
+          { applicantId: input.id },
+          { $set: { isOutdated: true } },
+        );
+      }
+
+      await syncJobMetrics(applicant!.jobId.toString());
+      return serializeApplicant(applicant!);
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ input }) => {
+      const applicant = await Applicant.findById(input.id);
+      if (!applicant) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Applicant not found",
+        });
+      }
+
+      const jobId = applicant.jobId.toString();
+
+      await Promise.all([
+        Applicant.findByIdAndDelete(input.id),
+        ScreeningResult.deleteMany({ applicantId: input.id }),
+      ]);
+
+      await syncJobMetrics(jobId);
+      return { success: true };
     }),
 
   generateDummy: protectedProcedure
@@ -426,33 +577,86 @@ export const applicantRouter = router({
       const job = await ensureJobExists(input.jobId);
 
       const firstNames = [
-        "James", "Mary", "Robert", "Patricia", "John", "Jennifer", "Michael",
-        "Linda", "William", "Elizabeth", "David", "Barbara", "Richard", "Susan",
-        "Joseph", "Jessica", "Thomas", "Sarah", "Charles", "Karen"
+        "James",
+        "Mary",
+        "Robert",
+        "Patricia",
+        "John",
+        "Jennifer",
+        "Michael",
+        "Linda",
+        "William",
+        "Elizabeth",
+        "David",
+        "Barbara",
+        "Richard",
+        "Susan",
+        "Joseph",
+        "Jessica",
+        "Thomas",
+        "Sarah",
+        "Charles",
+        "Karen",
       ];
       const lastNames = [
-        "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller",
-        "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez",
-        "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin"
+        "Smith",
+        "Johnson",
+        "Williams",
+        "Brown",
+        "Jones",
+        "Garcia",
+        "Miller",
+        "Davis",
+        "Rodriguez",
+        "Martinez",
+        "Hernandez",
+        "Lopez",
+        "Gonzalez",
+        "Wilson",
+        "Anderson",
+        "Thomas",
+        "Taylor",
+        "Moore",
+        "Jackson",
+        "Martin",
       ];
       const headlines = [
-        "Senior Frontend Engineer", "Full Stack Developer", "Backend Specialist",
-        "Cloud Architect", "DevOps Engineer", "Mobile App Developer",
-        "UI/UX Designer", "Machine Learning Engineer", "Data Scientist",
-        "Security Analyst", "Systems Engineer", "Product Manager"
+        "Senior Frontend Engineer",
+        "Full Stack Developer",
+        "Backend Specialist",
+        "Cloud Architect",
+        "DevOps Engineer",
+        "Mobile App Developer",
+        "UI/UX Designer",
+        "Machine Learning Engineer",
+        "Data Scientist",
+        "Security Analyst",
+        "Systems Engineer",
+        "Product Manager",
       ];
       const locations = [
-        "San Francisco, CA", "New York, NY", "London, UK", "Berlin, Germany",
-        "Toronto, Canada", "Sydney, Australia", "Remote", "Austin, TX",
-        "Seattle, WA", "Amsterdam, Netherlands"
+        "San Francisco, CA",
+        "New York, NY",
+        "London, UK",
+        "Berlin, Germany",
+        "Toronto, Canada",
+        "Sydney, Australia",
+        "Remote",
+        "Austin, TX",
+        "Seattle, WA",
+        "Amsterdam, Netherlands",
       ];
 
       let generated = 0;
       for (let i = 0; i < input.count; i++) {
-        const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-        const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-        const headline = headlines[Math.floor(Math.random() * headlines.length)];
-        const location = locations[Math.floor(Math.random() * locations.length)];
+        const firstName =
+          firstNames[Math.floor(Math.random() * firstNames.length)];
+        const lastName =
+          lastNames[Math.floor(Math.random() * lastNames.length)];
+        const headline =
+          headlines[Math.floor(Math.random() * headlines.length)];
+        const location =
+          locations[Math.floor(Math.random() * locations.length)];
         const email = `${firstName?.toLowerCase() || ""}.${lastName?.toLowerCase() || ""}.${Math.floor(Math.random() * 1000)}@example.com`;
 
         const dummyResumeText = `
@@ -484,7 +688,11 @@ export const applicantRouter = router({
           location,
           resumeText: dummyResumeText,
           status: "pending",
-          skills: job.skills.map(s => ({ name: s, level: "Intermediate", yearsOfExperience: 3 })),
+          skills: job.skills.map((s) => ({
+            name: s,
+            level: "Intermediate",
+            yearsOfExperience: 3,
+          })),
           availability: { status: "Available", type: "Full-time" },
         });
 
@@ -496,7 +704,9 @@ export const applicantRouter = router({
           applicantId: applicant.id,
           jobId: job.id,
           triggeredByUserId: ctx.session.user.id,
-        }).catch((err) => console.error("Background AI screening failed:", err));
+        }).catch((err) =>
+          console.error("Background AI screening failed:", err),
+        );
       }
 
       await syncJobMetrics(input.jobId);

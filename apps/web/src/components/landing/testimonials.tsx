@@ -61,8 +61,12 @@ export const Testimonials: React.FC = () => {
               <div className="flex flex-wrap items-center justify-center gap-comfortable opacity-30 mix-blend-multiply grayscale">
                 <span className="font-bold font-sans text-[14px]">Irembo</span>
                 <span className="font-bold font-sans text-[14px]">HeHe</span>
-                <span className="font-bold font-sans text-[14px]">AC Group</span>
-                <span className="font-bold font-sans text-[14px]">Ampersand</span>
+                <span className="font-bold font-sans text-[14px]">
+                  AC Group
+                </span>
+                <span className="font-bold font-sans text-[14px]">
+                  Ampersand
+                </span>
               </div>
             </div>
           </div>

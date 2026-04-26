@@ -16,13 +16,18 @@ export function MatchScore({ score }: MatchScoreProps) {
 
   return (
     <div className="flex items-center gap-small">
-      <div className="h-1 w-12 shrink-0 overflow-hidden rounded-pill bg-bg-deep border border-line/30">
+      <div className="h-1 w-12 shrink-0 overflow-hidden rounded-pill border border-line/30 bg-bg-deep">
         <div
           className={cn("h-full transition-all duration-700", bar)}
           style={{ width: `${score}%` }}
         />
       </div>
-      <span className={cn("font-medium font-sans text-[11px] tabular-nums tracking-tight", text)}>
+      <span
+        className={cn(
+          "font-medium font-sans text-[11px] tabular-nums tracking-tight",
+          text,
+        )}
+      >
         {score}%
       </span>
     </div>

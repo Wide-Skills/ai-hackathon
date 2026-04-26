@@ -11,9 +11,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { SimulateCandidatesDialog } from "./cloud-import-dialog";
 import { UploadCandidatesDialog } from "./upload-candidates-dialog";
 import { UploadResumeDialog } from "./upload-resume-dialog";
-import { SimulateCandidatesDialog } from "./cloud-import-dialog";
 
 export function IngestCandidatesDialog() {
   const [open, setOpen] = useState(false);
@@ -74,7 +74,8 @@ export function IngestCandidatesDialog() {
                 Import Center
               </h2>
               <p className="font-light font-sans text-[15px] text-ink-muted leading-relaxed">
-                Add talent pools from multiple sources. Our system summarizes candidate skills and experience automatically.
+                Add talent pools from multiple sources. Our system summarizes
+                candidate skills and experience automatically.
               </p>
             </div>
 

@@ -34,15 +34,19 @@ export function ScreeningDashboard() {
   const [progress, setProgress] = useState(0);
   const queryClient = useQueryClient();
 
-  const applicantsQuery = useQuery(trpc.applicants.list.queryOptions());
-  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
+  const applicantsQuery = useQuery(
+    trpc.applicants.list.queryOptions({ page: 1, limit: 100 }),
+  );
+  const jobsQuery = useQuery(
+    trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
+  );
 
   const screenMutation = useMutation(
     trpc.screenings.generate.mutationOptions(),
   );
 
-  const applicants = applicantsQuery.data ?? [];
-  const jobs = jobsQuery.data ?? [];
+  const applicants = applicantsQuery.data?.items ?? [];
+  const jobs = jobsQuery.data?.items ?? [];
 
   const screened = applicants.filter((a) => a.screening);
   const pending = applicants.filter((a) => !a.screening);

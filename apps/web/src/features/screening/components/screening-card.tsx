@@ -1,5 +1,6 @@
 import type { Applicant } from "@ai-hackathon/shared";
 import {
+  RiAlertLine,
   RiArrowRightUpLine,
   RiCheckboxCircleLine,
   RiCloseCircleLine,
@@ -73,7 +74,7 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
       >
         <div className="flex flex-col gap-base sm:flex-row sm:items-start sm:gap-hero">
           {/* Score Side */}
-          <div className="flex shrink-0 flex-row items-center justify-between gap-base border-line border-b pb-base sm:w-20 sm:flex-col sm:border-b-0 sm:border-r sm:pb-0 sm:py-1 sm:pr-comfortable">
+          <div className="flex shrink-0 flex-row items-center justify-between gap-base border-line border-b pb-base sm:w-20 sm:flex-col sm:border-r sm:border-b-0 sm:py-1 sm:pr-comfortable sm:pb-0">
             <div className="flex items-baseline gap-1">
               <div
                 className={cn(
@@ -83,9 +84,21 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
               >
                 {screening.matchScore}
               </div>
-              <span className="font-serif text-[18px] text-ink-faint sm:hidden">%</span>
+              <span className="font-serif text-[18px] text-ink-faint sm:hidden">
+                %
+              </span>
             </div>
-            <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
+            {screening.isOutdated && (
+              <Badge
+                variant="warning"
+                size="sm"
+                className="mt-1 h-5 px-1 font-mono text-[9px] uppercase"
+              >
+                <RiAlertLine className="mr-0.5 size-2.5" />
+                Outdated
+              </Badge>
+            )}
+            <span className="mt-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
               % Rank
             </span>
           </div>

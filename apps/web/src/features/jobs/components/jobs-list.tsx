@@ -3,12 +3,14 @@
 import { RiLayoutGridLine, RiListCheck, RiSearch2Line } from "@remixicon/react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   QueryEmptyState,
   QueryErrorState,
 } from "@/components/data/query-state";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -20,15 +22,30 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/utils/trpc";
 import { JobCard } from "./job-card";
 import { JobsTable } from "./jobs-table";
-import Link from "next/link";
 
 export function JobsList() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("active");
   const [view, setView] = useState<"grid" | "table">("grid");
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
 
-  const jobsQuery = useQuery(trpc.jobs.list.queryOptions());
-  const jobs = jobsQuery.data ?? [];
+  // Reset to first page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [search, statusFilter]);
+
+  const jobsQuery = useQuery(
+    trpc.jobs.list.queryOptions({
+      page,
+      limit,
+      search: search || undefined,
+      status: statusFilter !== "all" ? statusFilter : undefined,
+    }),
+  );
+
+  const jobsData = jobsQuery.data?.items ?? [];
+  const pagination = jobsQuery.data;
 
   if (jobsQuery.isLoading) {
     return (
@@ -52,14 +69,6 @@ export function JobsList() {
       />
     );
   }
-
-  const filtered = jobs.filter((job) => {
-    const matchesSearch =
-      job.title.toLowerCase().includes(search.toLowerCase()) ||
-      (job.department?.toLowerCase() || "").includes(search.toLowerCase());
-    const matchesStatus = statusFilter === "all" || job.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
 
   return (
     <div className="w-full space-y-section-padding pb-section-padding">
@@ -124,7 +133,10 @@ export function JobsList() {
           </Select>
 
           <div className="w-full sm:w-auto">
-            <Button className="w-full h-10 px-6 font-medium font-sans text-[13px]" render={<Link href="/dashboard/jobs/new"/>}>
+            <Button
+              className="h-10 w-full px-6 font-medium font-sans text-[13px]"
+              render={<Link href="/dashboard/jobs/new" />}
+            >
               New Job
             </Button>
           </div>
@@ -137,14 +149,14 @@ export function JobsList() {
             Active Jobs
           </div>
           <div className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]">
-            {filtered.length} positions open
+            {pagination?.totalCount ?? 0} positions open
           </div>
         </div>
 
         {view === "grid" ? (
           <div className="grid grid-cols-1 gap-comfortable">
-            {filtered.length > 0 ? (
-              filtered.map((job, i) => (
+            {jobsData.length > 0 ? (
+              jobsData.map((job, i) => (
                 <motion.div
                   key={job.id}
                   initial={{ opacity: 0, y: 10 }}
@@ -162,7 +174,19 @@ export function JobsList() {
             )}
           </div>
         ) : (
-          <JobsTable data={filtered} />
+          <JobsTable data={jobsData} />
+        )}
+
+        {pagination && (
+          <div className="mt-8">
+            <Pagination
+              currentPage={pagination.currentPage}
+              totalPages={pagination.totalPages}
+              hasMore={pagination.hasMore}
+              onPageChange={setPage}
+              isLoading={jobsQuery.isFetching}
+            />
+          </div>
         )}
       </section>
     </div>

@@ -83,18 +83,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       className="border-line border-r bg-bg"
       {...props}
     >
-      <SidebarHeader className="h-20 flex flex-col justify-center px-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:items-center">
+      <SidebarHeader className="flex h-20 flex-col justify-center px-3 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0">
         <SidebarMenu className="group-data-[collapsible=icon]:items-center">
           <SidebarMenuItem className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
             <SidebarMenuButton
               size="lg"
-              className="hover:bg-transparent active:bg-transparent transition-none group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center"
+              className="transition-none hover:bg-transparent active:bg-transparent group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0"
             >
-              <div className="flex items-center gap-[10px] group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:justify-center">
-                <div className="size-[22px] shrink-0 rounded-micro bg-primary flex items-center justify-center font-serif text-[13px] text-white italic group-data-[collapsible=icon]:mx-auto">
-                   U
+              <div className="flex items-center gap-[10px] group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0">
+                <div className="flex size-[22px] shrink-0 items-center justify-center rounded-micro bg-primary font-serif text-[13px] text-white italic group-data-[collapsible=icon]:mx-auto">
+                  U
                 </div>
-                <span className="truncate font-serif font-medium text-[18px] text-primary tracking-tight group-data-[collapsible=icon]:hidden">
+                <span className="truncate font-medium font-serif text-[18px] text-primary tracking-tight group-data-[collapsible=icon]:hidden">
                   Umurava
                 </span>
               </div>
@@ -105,7 +105,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent className="px-3">
         <NavMain items={navItems} />
       </SidebarContent>
-      <SidebarFooter className="mt-auto border-line border-t bg-bg px-3 py-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-4 group-data-[collapsible=icon]:items-center">
+      <SidebarFooter className="mt-auto border-line border-t bg-bg px-3 py-3 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-4">
         {session?.user && <NavUser user={user} />}
       </SidebarFooter>
       <SidebarRail />

@@ -13,10 +13,20 @@ const screeningSchema = new Schema(
     jobId: { type: Schema.Types.ObjectId, ref: "Job", required: true },
     createdByUserId: { type: String, ref: "User" },
     matchScore: { type: Number, min: 0, max: 100, required: true },
+    scoreBreakdown: {
+      technicalSkills: { type: Number, min: 0, max: 100 },
+      experience: { type: Number, min: 0, max: 100 },
+      education: { type: Number, min: 0, max: 100 },
+      culturalFit: { type: Number, min: 0, max: 100 },
+    },
     strengths: { type: [String], default: [] },
     gaps: { type: [String], default: [] },
     recommendation: { type: String, required: true },
     summary: { type: String },
+    manualScore: { type: Number, min: 0, max: 100 },
+    recruiterNotes: { type: String },
+    isOutdated: { type: Boolean, default: false },
+    jobVersion: { type: Number, default: 1 },
     skillBreakdown: [
       {
         skill: { type: String, required: true },

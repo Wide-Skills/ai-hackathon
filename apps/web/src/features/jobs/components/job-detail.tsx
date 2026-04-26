@@ -6,12 +6,25 @@ import {
   RiMoreLine,
   RiSparklingLine,
 } from "@remixicon/react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import { QueryErrorState } from "@/components/data/query-state";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,8 +34,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { trpc } from "@/utils/trpc";
+import { invalidateHiringData, trpc } from "@/utils/trpc";
 import { ScoreBadge } from "../../dashboard/components/score-badge";
+import { CandidateComparison } from "./candidate-comparison";
+import { JobAnalytics } from "./job-analytics";
 
 const statusConfig: Record<
   string,
@@ -48,8 +63,28 @@ interface JobDetailProps {
 
 export function JobDetail({ id }: JobDetailProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const jobQuery = useQuery(trpc.jobs.getById.queryOptions({ id }));
-  const applicantsQuery = useQuery(trpc.applicants.list.queryOptions());
+  const applicantsQuery = useQuery(
+    trpc.applicants.list.queryOptions({ page: 1, limit: 100 }),
+  );
+  const applicants = applicantsQuery.data?.items ?? [];
+
+  const deleteMutation = useMutation(
+    trpc.jobs.delete.mutationOptions({
+      onSuccess: () => {
+        toast.success("Job and related data deleted successfully");
+        void invalidateHiringData(queryClient);
+        router.push("/dashboard/jobs");
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to delete job");
+        setIsDeleting(false);
+      },
+    }),
+  );
 
   if (jobQuery.isLoading || applicantsQuery.isLoading) {
     return (
@@ -85,20 +120,26 @@ export function JobDetail({ id }: JobDetailProps) {
   }
 
   const job = jobQuery.data;
-  const applicants = applicantsQuery.data;
 
   if (!job) notFound();
 
-  const jobApplicants = (applicants || [])
+  const jobApplicants = (applicantsQuery.data?.items || [])
     .filter((a) => a.jobId === id)
     .sort(
-      (a, b) => (b.screening?.matchScore ?? 0) - (a.screening?.matchScore ?? 0),
+      (a, b) =>
+        (b.screening?.manualScore ?? b.screening?.matchScore ?? 0) -
+        (a.screening?.manualScore ?? a.screening?.matchScore ?? 0),
     );
+  const topApplicantIds = jobApplicants
+    .filter((a) => a.screening)
+    .slice(0, 3)
+    .map((a) => a.id);
   const screenedApplicants = jobApplicants.filter((a) => a.screening);
   const avgScore = screenedApplicants.length
     ? Math.round(
         screenedApplicants.reduce(
-          (acc, a) => acc + (a.screening?.matchScore ?? 0),
+          (acc, a) =>
+            acc + (a.screening?.manualScore ?? a.screening?.matchScore ?? 0),
           0,
         ) / screenedApplicants.length,
       )
@@ -121,6 +162,51 @@ export function JobDetail({ id }: JobDetailProps) {
           <Badge variant={sc.variant} size="default" uppercase>
             {sc.label}
           </Badge>
+          <Link href={`/dashboard/jobs/${id}/edit` as Route}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-micro border-line font-medium font-sans text-[11px] uppercase tracking-wider"
+            >
+              Edit Details
+            </Button>
+          </Link>
+          <AlertDialog>
+            <AlertDialogTrigger
+              render={
+                <Button
+                  disabled={isDeleting}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-micro border-line font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider hover:border-status-error-text/30 hover:bg-status-error-bg hover:text-status-error-text"
+                />
+              }
+            >
+              {isDeleting ? "Deleting..." : "Delete Job"}
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Job Posting</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete this job? All related
+                  applicants and screenings will be permanently removed. This
+                  action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    setIsDeleting(true);
+                    deleteMutation.mutate({ id });
+                  }}
+                  className="bg-status-error-bg text-status-error-text hover:bg-status-error-bg/80"
+                >
+                  Delete Job & Related Data
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button
             variant="outline"
             size="icon-sm"
@@ -165,6 +251,47 @@ export function JobDetail({ id }: JobDetailProps) {
 
       <div className="grid grid-cols-1 items-start gap-hero lg:grid-cols-3">
         <div className="space-y-section-gap lg:col-span-2">
+          <section>
+            <div className="mb-base flex items-center justify-between border-line border-b pb-small">
+              <div>
+                <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+                  Performance
+                </span>
+                <h3 className="mt-micro font-serif text-[22px] text-primary">
+                  Intelligence Overview
+                </h3>
+              </div>
+            </div>
+            {job.screeningFocus && (
+              <div className="mb-comfortable rounded-standard border border-primary/20 bg-primary-alpha/5 p-base">
+                <div className="flex items-center gap-base">
+                  <RiSparklingLine className="size-3.5 text-primary/60" />
+                  <span className="font-medium font-sans text-[10px] text-primary uppercase tracking-widest">
+                    AI Custom Focus
+                  </span>
+                </div>
+                <p className="mt-1 pl-7 font-sans text-[13px] text-ink-muted italic">
+                  "{job.screeningFocus}"
+                </p>
+              </div>
+            )}
+            <JobAnalytics jobId={id} />
+          </section>
+
+          <section>
+            <div className="mb-base flex items-center justify-between border-line border-b pb-small">
+              <div>
+                <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+                  Benchmarking
+                </span>
+                <h3 className="mt-micro font-serif text-[22px] text-primary">
+                  Top Candidate Comparison
+                </h3>
+              </div>
+            </div>
+            <CandidateComparison jobId={id} applicantIds={topApplicantIds} />
+          </section>
+
           <section>
             <div className="mb-base">
               <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
@@ -321,6 +448,54 @@ export function JobDetail({ id }: JobDetailProps) {
             </div>
           </Card>
 
+          <Card
+            variant="default"
+            size="none"
+            className="overflow-hidden border-primary/10"
+          >
+            <CardHeader className="bg-primary-alpha/5">
+              <CardDescription>AI Target</CardDescription>
+              <CardTitle className="text-primary">Benchmarks</CardTitle>
+            </CardHeader>
+            <div className="space-y-base bg-surface p-comfortable">
+              <div className="flex items-center justify-between border-line border-b pb-base">
+                <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
+                  Min. Experience
+                </span>
+                <span className="font-serif text-[20px] text-primary">
+                  {job.minExperience} Years
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
+                  Required Education
+                </span>
+                <span className="font-serif text-[20px] text-primary">
+                  {job.educationLevel}
+                </span>
+              </div>
+              {job.techStack.length > 0 && (
+                <div className="mt-base space-y-2 border-line border-t pt-base">
+                  <span className="block font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
+                    Core Stack
+                  </span>
+                  <div className="flex flex-wrap gap-small">
+                    {job.techStack.map((tech, i) => (
+                      <Badge
+                        key={i}
+                        variant="success"
+                        size="xs"
+                        className="px-2 py-0"
+                      >
+                        {tech}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </Card>
+
           {(job.salaryMin || job.salaryMax) && (
             <Card variant="default" size="none" className="overflow-hidden">
               <CardHeader>
@@ -358,8 +533,14 @@ export function JobDetail({ id }: JobDetailProps) {
                 </div>
                 <p className="font-light font-sans text-[14px] text-primary leading-relaxed">
                   The candidate pool is{" "}
-                  <span className="font-bold">Highly Qualified</span>.{" "}
-                  {screenedApplicants.length} experts analyzed with detailed
+                  <span className="font-bold">
+                    {avgScore >= 85
+                      ? "Highly Qualified"
+                      : avgScore >= 70
+                        ? "Well Qualified"
+                        : "Developing"}
+                  </span>
+                  . {screenedApplicants.length} experts analyzed with detailed
                   reasoning.
                 </p>
                 <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/20">

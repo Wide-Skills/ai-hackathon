@@ -26,7 +26,7 @@ export function CertificationsCard({
       <div className="space-y-comfortable p-comfortable">
         {certifications.map((cert, i) => (
           <div key={i} className="group flex gap-comfortable">
-            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 text-primary transition-all group-hover:bg-bg-alt/40 group-hover:scale-[1.05]">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 text-primary transition-all group-hover:scale-[1.05] group-hover:bg-bg-alt/40">
               <RiAwardLine className="size-5" />
             </div>
             <div className="flex flex-col justify-center">

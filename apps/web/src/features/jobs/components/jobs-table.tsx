@@ -225,51 +225,54 @@ export function JobsTable({ data }: JobsTableProps) {
       <div className="overflow-x-auto">
         <Table className="min-w-[800px] md:min-w-full">
           <TableHeader className="bg-bg-alt/20">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="border-line hover:bg-transparent"
-            >
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} className="h-10 px-base">
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+            {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="group border-line transition-colors hover:bg-bg-alt/10"
+                key={headerGroup.id}
+                className="border-line hover:bg-transparent"
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="h-16 px-base">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="h-10 px-base">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
                 ))}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-32 text-center font-light font-sans text-[13px] text-ink-faint"
-              >
-                No jobs match the current filter.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="group border-line transition-colors hover:bg-bg-alt/10"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="h-16 px-base">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-32 text-center font-light font-sans text-[13px] text-ink-faint"
+                >
+                  No jobs match the current filter.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </Card>
   );

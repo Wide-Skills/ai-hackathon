@@ -38,6 +38,7 @@ export function serializeApplicant(doc: MongoDocument<ApplicantDocument>) {
       applicant.screening && typeof applicant.screening.matchScore === "number"
         ? {
             ...applicant.screening,
+            scoreBreakdown: applicant.screening.scoreBreakdown,
             strengths: applicant.screening.strengths ?? [],
             gaps: applicant.screening.gaps ?? [],
             skillBreakdown: applicant.screening.skillBreakdown ?? [],

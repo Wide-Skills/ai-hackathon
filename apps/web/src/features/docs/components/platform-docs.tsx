@@ -86,11 +86,9 @@ export function PlatformDocs() {
             </p>
             <h1 className="font-serif text-[48px] text-primary leading-[1.1] tracking-tight md:text-[72px] lg:text-[84px]">
               Intelligence at the core of{" "}
-              <span className="text-ink-faint">
-                Talent Discovery.
-              </span>
+              <span className="text-ink-faint">Talent Discovery.</span>
             </h1>
-            <p className="mt-8 font-light font-sans text-[18px] text-ink-muted leading-relaxed max-w-[55ch]">
+            <p className="mt-8 max-w-[55ch] font-light font-sans text-[18px] text-ink-muted leading-relaxed">
               A high-performance screening ecosystem designed to bridge the gap
               between massive talent pools and precise organizational needs
               through deep AI analysis and standardized data.
@@ -100,7 +98,7 @@ export function PlatformDocs() {
                 render={<Link href="/auth" />}
                 variant="default"
                 size="xl"
-                className="h-12 px-10 rounded-standard"
+                className="h-12 rounded-standard px-10"
               >
                 Launch Console
               </Button>
@@ -108,7 +106,7 @@ export function PlatformDocs() {
                 render={<Link href="/dashboard" />}
                 variant="outline"
                 size="xl"
-                className="h-12 px-10 rounded-standard border-line bg-bg2/40"
+                className="h-12 rounded-standard border-line bg-bg2/40 px-10"
               >
                 Explore Dashboard
               </Button>
@@ -148,7 +146,7 @@ export function PlatformDocs() {
         <section className="rounded-card border border-line bg-surface p-10 shadow-none md:p-20">
           <div className="mb-section-gap text-center">
             <span className="mb-micro block font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.1em]">
-               Architecture
+              Architecture
             </span>
             <h2 className="font-serif text-[42px] text-primary leading-tight">
               The Strategic Workflow
@@ -160,8 +158,11 @@ export function PlatformDocs() {
             <div className="absolute top-10 left-0 -z-10 hidden h-[1px] w-full bg-line lg:block" />
 
             {workflow.map((w) => (
-              <div key={w.step} className="space-y-base text-center lg:text-left">
-                <div className="mx-auto lg:mx-0 flex h-20 w-20 items-center justify-center rounded-full border border-line bg-bg px-1 font-serif text-[28px] text-primary/30 shadow-none ring-8 ring-bg-alt/40 transition-colors hover:text-primary">
+              <div
+                key={w.step}
+                className="space-y-base text-center lg:text-left"
+              >
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-line bg-bg px-1 font-serif text-[28px] text-primary/30 shadow-none ring-8 ring-bg-alt/40 transition-colors hover:text-primary lg:mx-0">
                   {w.step}
                 </div>
                 <div>
@@ -238,8 +239,8 @@ export function PlatformDocs() {
                   Intelligence Layer
                 </h5>
                 <p className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
-                  Integrated with Gemini AI for deep analysis and
-                  automated candidate profile extraction.
+                  Integrated with Gemini AI for deep analysis and automated
+                  candidate profile extraction.
                 </p>
               </div>
               <div className="rounded-standard border border-line bg-bg2/30 p-base transition-colors hover:bg-bg2/50">
@@ -247,8 +248,8 @@ export function PlatformDocs() {
                   Data Core
                 </h5>
                 <p className="font-light font-sans text-[14px] text-ink-muted leading-relaxed">
-                  Standardized Candidate Schema on MongoDB, ensuring high-fidelity
-                  profiles across the ecosystem.
+                  Standardized Candidate Schema on MongoDB, ensuring
+                  high-fidelity profiles across the ecosystem.
                 </p>
               </div>
               <div className="rounded-standard border border-line bg-bg2/30 p-base transition-colors hover:bg-bg2/50">

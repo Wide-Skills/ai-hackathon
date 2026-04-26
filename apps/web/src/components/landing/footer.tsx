@@ -16,8 +16,8 @@ export const Footer: React.FC = () => {
               </span>
             </div>
             <p className="max-w-[200px] font-light font-sans text-[13px] text-white/40 leading-relaxed">
-              The new standard in high-fidelity talent screening and
-              advanced recruitment tech.
+              The new standard in high-fidelity talent screening and advanced
+              recruitment tech.
             </p>
           </div>
 
@@ -26,18 +26,16 @@ export const Footer: React.FC = () => {
               Product
             </p>
             <ul className="space-y-small">
-              {["AI Scoring", "Smart Import", "Analytics Hub"].map(
-                (l) => (
-                  <li key={l}>
-                    <Link
-                      href="#"
-                      className="font-normal font-sans text-[13px] text-white/40 transition-colors hover:text-white"
-                    >
-                      {l}
-                    </Link>
-                  </li>
-                ),
-              )}
+              {["AI Scoring", "Smart Import", "Analytics Hub"].map((l) => (
+                <li key={l}>
+                  <Link
+                    href="#"
+                    className="font-normal font-sans text-[13px] text-white/40 transition-colors hover:text-white"
+                  >
+                    {l}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

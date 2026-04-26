@@ -42,7 +42,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex w-fit select-none items-center justify-between gap-base whitespace-nowrap rounded-standard border border-line bg-bg2 py-2 pr-2 pl-2.5 font-normal font-sans text-sm text-primary outline-none transition-all focus:bg-surface focus:ring-4 focus:ring-primary-alpha/5 disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 data-placeholder:text-ink-faint *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-base [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "flex w-fit select-none items-center justify-between gap-base whitespace-nowrap rounded-standard border border-line bg-bg2 py-2 pr-2 pl-2.5 font-normal font-sans text-primary text-sm outline-none transition-all focus:bg-surface focus:ring-4 focus:ring-primary-alpha/5 disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 data-placeholder:text-ink-faint *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-base [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
         className,
       )}
       {...props}
@@ -91,7 +91,9 @@ function SelectContent({
           {...props}
         >
           <SelectScrollUpButton />
-          <SelectPrimitive.List className="p-1">{children}</SelectPrimitive.List>
+          <SelectPrimitive.List className="p-1">
+            {children}
+          </SelectPrimitive.List>
           <SelectScrollDownButton />
         </SelectPrimitive.Popup>
       </SelectPrimitive.Positioner>
@@ -106,7 +108,10 @@ function SelectLabel({
   return (
     <SelectPrimitive.GroupLabel
       data-slot="select-label"
-      className={cn("px-2 py-1.5 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]", className)}
+      className={cn(
+        "px-2 py-1.5 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.06em]",
+        className,
+      )}
       {...props}
     />
   );

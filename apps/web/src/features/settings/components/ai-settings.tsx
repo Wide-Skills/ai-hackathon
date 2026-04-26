@@ -107,7 +107,7 @@ export function AISettings() {
                 team review.
               </p>
             </div>
-            <div className="flex items-center gap-base rounded-standard border border-line bg-bg2 p-2 focus-within:border-primary/20 transition-all">
+            <div className="flex items-center gap-base rounded-standard border border-line bg-bg2 p-2 transition-all focus-within:border-primary/20">
               <input
                 type="number"
                 defaultValue="75"
