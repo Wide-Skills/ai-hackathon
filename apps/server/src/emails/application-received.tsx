@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React from "react";
+// biome-ignore lint/correctness/noUnusedImports: needed for jsx runtime
 
 /* @jsxImportSource react*/
 import {
@@ -11,6 +11,7 @@ import {
   Preview,
   Text,
 } from "@react-email/components";
+import React from "react";
 
 interface ApplicationReceivedEmailProps {
   firstName: string;
