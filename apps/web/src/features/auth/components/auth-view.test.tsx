@@ -47,7 +47,7 @@ describe("AuthView", () => {
     render(<AuthView />);
 
     fireEvent.click(
-      screen.getByRole("button", { name: /email me a magic link/i }),
+      screen.getByRole("button", { name: /request magic link/i }),
     );
 
     await waitFor(() => {
