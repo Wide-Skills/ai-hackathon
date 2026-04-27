@@ -983,7 +983,10 @@ async function seed() {
     console.log(`Inserted ${mockJobs.length} jobs.`);
 
     console.log("Creating applicants and screening results...");
-    const applicantStats = new Map<string, { a: number; s: number; sl: number }>();
+    const applicantStats = new Map<
+      string,
+      { a: number; s: number; sl: number }
+    >();
 
     for (const mockApplicant of mockApplicants) {
       const { id, jobId, screening } = mockApplicant;
@@ -1051,7 +1054,9 @@ async function seed() {
       });
     }
 
-    console.log(`Seeding complete. Inserted ${mockApplicants.length} applicants.`);
+    console.log(
+      `Seeding complete. Inserted ${mockApplicants.length} applicants.`,
+    );
   } catch (error) {
     console.error("Error seeding database:", error);
     process.exitCode = 1;

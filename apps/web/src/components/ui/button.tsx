@@ -15,7 +15,7 @@ export const buttonVariants = cva(
         secondary:
           "rounded-standard border border-line bg-transparent font-normal font-sans text-ink-muted shadow-none hover:border-line-emphasis hover:text-ink-full",
         destructive:
-          "rounded-standard bg-destructive font-medium font-sans text-destructive-foreground shadow-none hover:bg-destructive/90 hover:-translate-y-[1px]",
+          "rounded-standard bg-destructive font-medium font-sans text-destructive-foreground shadow-none hover:-translate-y-[1px] hover:bg-destructive/90",
         ghost:
           "rounded-standard bg-line font-normal font-sans text-ink-muted shadow-none hover:text-ink-full",
         link: "text-primary underline-offset-4 shadow-none hover:underline",

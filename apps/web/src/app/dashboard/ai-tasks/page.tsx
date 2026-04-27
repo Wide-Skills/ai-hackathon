@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  RiBrainLine,
   RiCheckLine,
   RiErrorWarningLine,
   RiInformationLine,

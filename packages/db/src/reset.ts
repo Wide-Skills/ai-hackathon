@@ -35,12 +35,7 @@ async function reset() {
     throw new Error("Database connection not established");
   }
 
-  const authCollections = [
-    "users",
-    "sessions",
-    "accounts",
-    "verifications",
-  ];
+  const authCollections = ["users", "sessions", "accounts", "verifications"];
 
   for (const name of authCollections) {
     try {

@@ -47,7 +47,7 @@ export function Pagination({
         </div>
         <div>
           <nav
-            className="isolate inline-flex -space-x-px rounded-md gap-1.5"
+            className="isolate inline-flex gap-1.5 -space-x-px rounded-md"
             aria-label="Pagination"
           >
             <Button

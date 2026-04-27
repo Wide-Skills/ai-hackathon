@@ -1,5 +1,4 @@
 import { createHash } from "node:crypto";
-import mongoose from "mongoose";
 import { sendScreeningCompletedEmail } from "@ai-hackathon/auth/email";
 import {
   Applicant,
@@ -8,6 +7,7 @@ import {
   ScreeningResult,
   TaskLog,
 } from "@ai-hackathon/db";
+import mongoose from "mongoose";
 
 export async function logTaskStep(params: {
   taskId: string;
@@ -21,7 +21,9 @@ export async function logTaskStep(params: {
   startTime?: number;
 }) {
   try {
-    const duration = params.startTime ? Date.now() - params.startTime : undefined;
+    const duration = params.startTime
+      ? Date.now() - params.startTime
+      : undefined;
 
     await TaskLog.create({
       taskId: params.taskId,
@@ -192,9 +194,7 @@ export const AIScreeningOutputSchema = z.object({
       .number()
       .min(0)
       .max(100)
-      .describe(
-        "Score for soft skills, communication, and values alignment.",
-      ),
+      .describe("Score for soft skills, communication, and values alignment."),
   }),
   strengths: z
     .array(z.string())
@@ -232,16 +232,15 @@ export const AIScreeningOutputSchema = z.object({
     .string()
     .optional()
     .describe("A short professional bio extracted or summarized."),
-  location: z
-    .string()
-    .optional()
-    .describe("Current location (City, Country)."),
+  location: z.string().optional().describe("Current location (City, Country)."),
   skills: z
     .array(
       z.object({
         name: z.string().describe("Name of the skill."),
         level: z.enum(SKILL_LEVELS).describe("Proficiency level."),
-        yearsOfExperience: z.number().describe("Estimated years using this skill."),
+        yearsOfExperience: z
+          .number()
+          .describe("Estimated years using this skill."),
       }),
     )
     .default([])
@@ -336,9 +335,16 @@ export async function evaluateAndExtractProfile(
 
   // safety: truncate extremely large resumes to prevent token bloat
   const MAX_RESUME_CHARS = 15000;
-  if (applicantData.resumeText && applicantData.resumeText.length > MAX_RESUME_CHARS) {
-    console.warn(`[Screening] Truncating resume for ${applicantData.firstName} (Original: ${applicantData.resumeText.length} chars)`);
-    applicantData.resumeText = applicantData.resumeText.substring(0, MAX_RESUME_CHARS) + "... [Truncated for screening]";
+  if (
+    applicantData.resumeText &&
+    applicantData.resumeText.length > MAX_RESUME_CHARS
+  ) {
+    console.warn(
+      `[Screening] Truncating resume for ${applicantData.firstName} (Original: ${applicantData.resumeText.length} chars)`,
+    );
+    applicantData.resumeText =
+      applicantData.resumeText.substring(0, MAX_RESUME_CHARS) +
+      "... [Truncated for screening]";
   }
 
   const prompt = buildScreeningPrompt(jobData, {
@@ -483,7 +489,6 @@ export async function runAIInternal(params: {
           summary: validatedData.summary,
         },
       });
-
 
       console.log(
         `[Screening] AI Analysis Complete for Applicant ${applicantId}. Match Score: ${validatedData.matchScore}`,

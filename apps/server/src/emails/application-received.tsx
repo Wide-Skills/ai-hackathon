@@ -1,5 +1,5 @@
-// @ts-ignore
-import * as React from "react";
+// @ts-expect-error
+
 /* @jsxImportSource react*/
 import {
   Body,

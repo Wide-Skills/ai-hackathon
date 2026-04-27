@@ -390,8 +390,10 @@ export const columns: ColumnDef<Applicant>[] = [
     ),
     cell: ({ row }) => {
       const appliedAt = row.getValue("appliedAt");
-      const date = appliedAt ? new Date(appliedAt as string | number | Date) : null;
-      const isValidDate = date && !isNaN(date.getTime());
+      const date = appliedAt
+        ? new Date(appliedAt as string | number | Date)
+        : null;
+      const isValidDate = date && !Number.isNaN(date.getTime());
 
       return (
         <div className="flex h-full items-center py-1 font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">

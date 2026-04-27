@@ -1,6 +1,6 @@
 import { env } from "@ai-hackathon/env/server";
-import nodemailer from "nodemailer";
 import { render } from "@react-email/components";
+import nodemailer from "nodemailer";
 import type React from "react";
 
 // brevo smtp transporter

@@ -7,9 +7,9 @@ import { writeAuditLog } from "./audit";
 import { sendMagicLinkEmail, sendWelcomeEmail } from "./email";
 
 export const auth = betterAuth({
-database: mongodbAdapter(client, {
-  client: mongoClient,
-}),
+  database: mongodbAdapter(client, {
+    client: mongoClient,
+  }),
   experimental: {
     joins: true,
   },
@@ -19,10 +19,10 @@ database: mongodbAdapter(client, {
     enabled: false,
   },
   advanced: {
-  database: {
-    generateId: () => crypto.randomUUID(),
+    database: {
+      generateId: () => crypto.randomUUID(),
+    },
   },
-},
   socialProviders: {
     ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
       ? {

@@ -126,7 +126,11 @@ const applicantSchema = new Schema(
 applicantSchema.index({ jobId: 1 });
 applicantSchema.index({ status: 1 });
 applicantSchema.index({ email: 1 });
-applicantSchema.index({ firstName: "text", lastName: "text", headline: "text" });
+applicantSchema.index({
+  firstName: "text",
+  lastName: "text",
+  headline: "text",
+});
 
 export interface ApplicantDocument
   extends Omit<ApplicantRecord, "id" | "jobId" | "createdAt" | "updatedAt"> {
