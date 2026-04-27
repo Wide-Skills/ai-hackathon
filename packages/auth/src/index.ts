@@ -22,6 +22,9 @@ export const auth = betterAuth({
     database: {
       generateId: () => crypto.randomUUID(),
     },
+    // fix state_mismatch on cross-domain production environments (render/vercel)
+    crossAndOrigin: true,
+    useSecureCookies: env.NODE_ENV === "production",
   },
   socialProviders: {
     ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET

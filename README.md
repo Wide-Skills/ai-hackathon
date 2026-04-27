@@ -1,115 +1,97 @@
-# AI-Powered Talent Screening Platform
+# Umurava AI: Next-Gen Talent Screening Platform
 
-A next-generation recruitment ecosystem built for the Umurava AI Hackathon. Our platform leverages deep semantic analysis to bridge the gap between massive talent pools and precise organizational needs.
+![Umurava AI Banner](https://umurava.africa/wp-content/uploads/2023/07/Umurava-Logo-01.png)
 
-[**View the Product Pitch & Platform Docs**](http://localhost:3001/docs)
+A sophisticated recruitment ecosystem built for the **Umurava AI Hackathon**. Our platform leverages deep semantic analysis and generative AI to bridge the gap between massive talent pools and precise organizational requirements.
 
-## Stack
+## 🚀 Key Features
 
-- Frontend: Next.js, React, React Query, Redux, Tailwind CSS, shadcn/ui
-- Backend: NestJS host app + shared tRPC router
-- Database: MongoDB + Mongoose
-- Auth: better-auth
-- AI layer: Gemini via Vercel AI SDK
+- **AI-Driven Screening**: Automated resume analysis using Gemini 2.5 Flash for high-fidelity candidate matching.
+- **Strategic Pipeline**: Visual candidate ranking with "Strongly Recommended", "Recommend", and "Consider" tiers.
+- **Smart Ingestion**: Bulk candidate processing via CSV/PDF with client-side text extraction.
+- **Intelligence Dashboard**: Comprehensive metrics for recruiters, including match scores, skills gap analysis, and screening logs.
+- **Unified Auth**: Secure sign-in via Magic Links, Google, and GitHub powered by `better-auth`.
+- **Studio Aesthetic**: A refined, minimal "Studio" design language implemented with Tailwind CSS and shadcn/ui.
 
-## Local Setup
+## 🛠 Tech Stack
 
-1. Install dependencies:
+| Layer | Technologies |
+|---|---|
+| **Frontend** | Next.js 16 (App Router), React 19, Tailwind CSS, shadcn/ui, Redux Toolkit, Framer Motion |
+| **Backend** | NestJS, tRPC (Shared Router), Hono (Lightweight Server Wrapper), BullMQ (Background Workers) |
+| **Database** | MongoDB Atlas, Upstash Redis (Queue & Caching) |
+| **Authentication** | Better-Auth with MongoDB Adapter |
+| **AI/ML** | Google Gemini (via Vercel AI SDK) |
+| **Messaging** | Brevo (Nodemailer SMTP Integration) |
+| **DevOps** | Docker, Turborepo, Biome (Linting/Formatting) |
 
+## 🏗 Project Structure
+
+```text
+├── apps/
+│   ├── server/       # NestJS/Hono entry point & background workers
+│   └── web/          # Next.js recruiter dashboard & public apply page
+├── packages/
+│   ├── api/          # Core tRPC router & business logic
+│   ├── auth/         # better-auth configuration & audit logging
+│   ├── db/           # Mongoose models, schemas, and seeding engine
+│   ├── env/          # Type-safe environment variable validation (Zod)
+│   ├── queue/        # BullMQ queue definitions & Redis connection
+│   └── shared/       # Common types, constants, and demo credentials
+```
+
+## 🏁 Getting Started
+
+### Prerequisites
+- Node.js 20+
+- pnpm 9+
+- Docker (optional, for local container testing)
+
+### 1. Installation
 ```bash
 pnpm install
 ```
 
-2. Configure environment variables:
+### 2. Environment Configuration
+Create `.env` files in `apps/server/` and `apps/web/` using the provided `.env.example` templates.
 
-- `apps/server/.env`
-- `apps/web/.env`
+**Critical Keys:**
+- `DATABASE_URL`: MongoDB connection string.
+- `UPSTASH_REDIS_REST_URL` & `TOKEN`: For background job processing.
+- `BETTER_AUTH_URL`: Backend URL (e.g., `http://localhost:3000/api/auth`).
+- `CORS_ORIGIN`: Frontend URL (e.g., `http://localhost:3001`).
+- `GEMINI_API_KEY`: For AI screening features.
 
-At minimum, set:
-
-- `DATABASE_URL`
-- `BETTER_AUTH_URL`
-- `CORS_ORIGIN`
-- `NEXT_PUBLIC_SERVER_URL`
-- `NEXT_PUBLIC_BASE_URL`
-- `GEMINI_API_KEY`
-
-3. Seed the database:
-
+### 3. Database Seeding
+Initialize your local environment with high-fidelity mock data:
 ```bash
 pnpm seed
 ```
 
-4. Start the app:
-
+### 4. Development
+Start both frontend and backend concurrently:
 ```bash
 pnpm dev
 ```
 
-Frontend: `http://localhost:3001`
-Backend: `http://localhost:3000`
-Product Pitch & Strategy: `http://localhost:3001/docs`
+- **Frontend**: `http://localhost:3001`
+- **Backend API**: `http://localhost:3000`
+- **Docs/Pitch**: `http://localhost:3001/docs`
 
-## Seeded Recruiter Login
+## 🔑 Demo Access
 
-After running `pnpm seed`, use:
+**Seeded Recruiter Account:**
+- **Email**: `saddynkurunziza8@gmail.com`
+- **Access**: Magic Link (sent via Brevo/SMTP) or Social Login.
 
-- Email: `saddynkurunziza8@gmail.com`
-- Auth: magic link, Google, or GitHub
+## 🧪 Quality Control
 
-The sign-in page is available at `http://localhost:3001/auth`.
+We maintain high standards through comprehensive testing and linting:
 
-## Commands
+- **All Tests**: `pnpm test`
+- **Type Check**: `pnpm check-types`
+- **Lint & Format**: `pnpm check`
 
-```bash
-pnpm dev
-pnpm build
-pnpm check-types
-pnpm test
-pnpm test:api
-pnpm test:web
-pnpm seed
-```
+---
 
-## Product Flow
-
-1. Sign in with the seeded recruiter account.
-2. Open the dashboard to review seeded jobs, applicants, analytics, and screening results.
-3. Create a new job from the jobs page.
-4. Upload candidates from CSV on the applicants page.
-5. Run screening from the screening page.
-6. Review rankings, applicant details, and job metrics.
-
-## Testing
-
-This repo uses Vitest for both the backend and frontend.
-
-- Backend tests live in `packages/api/tests`
-- Frontend tests live under `apps/web/src/**/*.test.tsx`
-
-Run everything:
-
-```bash
-pnpm test
-```
-
-Run individual parts:
-
-```bash
-pnpm test:api
-pnpm test:web
-```
-
-## Project Structure
-
-```text
-apps/
-  server/  NestJS host app
-  web/     Next.js recruiter dashboard
-packages/
-  api/     Shared tRPC router
-  auth/    better-auth config
-  db/      Mongoose models and seed script
-  env/     Environment validation
-  shared/  Shared schemas and demo credentials
-```
+Built with ❤️ by Saddy Nkurunziza for the Umurava AI Hackathon.
