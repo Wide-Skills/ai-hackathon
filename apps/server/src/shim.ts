@@ -1,6 +1,6 @@
+// @ts-nocheck
 // shim for libraries that expect a browser environment (like some pdf parsers)
 if (typeof globalThis.DOMMatrix === "undefined") {
-  // @ts-ignore
   globalThis.DOMMatrix = class DOMMatrix {
     constructor() {
       this.m11 = 1; this.m12 = 0; this.m13 = 0; this.m14 = 0;
@@ -13,10 +13,8 @@ if (typeof globalThis.DOMMatrix === "undefined") {
 
 // prevent other common browser-only reference errors
 if (typeof globalThis.ImageData === "undefined") {
-  // @ts-ignore
   globalThis.ImageData = class ImageData {};
 }
 if (typeof globalThis.Path2D === "undefined") {
-  // @ts-ignore
   globalThis.Path2D = class Path2D {};
 }
