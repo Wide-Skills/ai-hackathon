@@ -16,7 +16,13 @@ import { timing } from "hono/timing";
 import { PDFParse } from "pdf-parse";
 import logger from "./lib/logger";
 
-const app = new Hono();
+type Env = {
+  Variables: {
+    requestId: string;
+  };
+};
+
+const app = new Hono<Env>();
 
 app.use("*", requestId());
 app.use("*", timing());
@@ -165,8 +171,13 @@ serve({
   fetch: app.fetch,
   port: Number(port),
 });
-
+// Start workers
 logger.info("Starting background queue workers...");
-startWorkers().catch((err) => {
-  logger.error({ err }, "Failed to start workers");
-});
+startWorkers()
+  .then(() => {
+    logger.info("Background queue workers started successfully");
+  })
+  .catch((err) => {
+    logger.error({ err }, "Failed to start background workers");
+  });
+

@@ -13,6 +13,7 @@ COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml ./
 
 # Copy all package.json files to allow pnpm to resolve the workspace
 COPY apps/server/package.json ./apps/server/
+COPY apps/web/package.json ./apps/web/
 COPY packages/api/package.json ./packages/api/
 COPY packages/auth/package.json ./packages/auth/
 COPY packages/config/package.json ./packages/config/

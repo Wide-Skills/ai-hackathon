@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@ai-hackathon/server",
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
@@ -34,8 +34,6 @@
   },
   "devDependencies": {
     "@ai-hackathon/config": "workspace:*",
-    "@types/express": "^5.0.6",
-    "@types/multer": "^2.1.0",
     "@types/node": "catalog:",
     "@types/nodemailer": "^8.0.0",
     "@types/react": "catalog:",
