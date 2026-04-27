@@ -22,7 +22,7 @@ async function reset() {
 
   for (const col of collections) {
     try {
-      const result = await col.model.deleteMany({});
+      const result = await (col.model as any).deleteMany({});
       console.log(`✓ Deleted ${result.deletedCount} ${col.name}`);
     } catch (error: any) {
       console.error(`✗ Failed ${col.name}:`, error.message);
@@ -31,6 +31,9 @@ async function reset() {
 
   // ✅ 2. clear better auth collections (no mongoose models)
   const db = mongoose.connection.db;
+  if (!db) {
+    throw new Error("Database connection not established");
+  }
 
   const authCollections = [
     "users",

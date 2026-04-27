@@ -942,7 +942,7 @@ async function seed() {
     };
 
     await db.collection("users").insertOne({
-      _id: recruiter.id,
+      _id: recruiter.id as any,
       id: recruiter.id,
       name: recruiter.name,
       email: recruiter.email,
@@ -953,7 +953,7 @@ async function seed() {
     });
 
     await db.collection("accounts").insertOne({
-      _id: `acc-${recruiter.id}`,
+      _id: `acc-${recruiter.id}` as any,
       id: `acc-${recruiter.id}`,
       accountId: recruiter.email,
       providerId: "credential",
