@@ -22,8 +22,9 @@ export function ScoreBadge({ score }: ScoreBadgeProps) {
       uppercase
       className={cn("gap-1.5 px-2 py-1 leading-none")}
     >
-      <div className="h-1 w-1 shrink-0 rounded-full bg-current opacity-60" />
-      <span className="font-medium font-sans text-[10px]">{score}% Match</span>
+      <span className="whitespace-nowrap font-medium font-sans text-[10px]">
+        {score}% Match
+      </span>
     </Badge>
   );
 }

@@ -13,7 +13,8 @@ import {
   Text,
 } from "@react-email/components";
 import React from "react";
-// @ts-ignore
+
+// @ts-expect-error
 const _react = React;
 
 interface ScreeningCompletedEmailProps {
