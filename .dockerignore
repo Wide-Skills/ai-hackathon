@@ -1,0 +1,22 @@
+node_modules
+.next
+.turbo
+dist
+build
+.git
+.gitignore
+*.log
+.env
+.env.*
+!.env.example
+README.md
+docs
+guide
+.codex
+packages/**/node_modules
+apps/**/node_modules
+apps/web/node_modules
+apps/server/node_modules
+# pnpm-lock.yaml is required for frozen-lockfile build
+# pnpm-lock.yaml
+

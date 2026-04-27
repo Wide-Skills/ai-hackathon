@@ -1,5 +1,3 @@
-import "./shim";
-
 import { startWorkers } from "@ai-hackathon/api";
 import { createContext } from "@ai-hackathon/api/context";
 import { appRouter } from "@ai-hackathon/api/routers/index";
@@ -9,14 +7,11 @@ import { serve } from "@hono/node-server";
 import { getConnInfo } from "@hono/node-server/conninfo";
 import { trpcServer } from "@hono/trpc-server";
 import { Hono } from "hono";
-import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
 import { logger as honoLogger } from "hono/logger";
 import { poweredBy } from "hono/powered-by";
 import { requestId } from "hono/request-id";
 import { timing } from "hono/timing";
-// @ts-ignore
-import pdf from "pdf-parse";
 import logger from "./lib/logger";
 
 const app = new Hono();
@@ -99,64 +94,6 @@ app.use(
         req: { headers: Object.fromEntries(c.req.raw.headers) },
       }),
   }) as any,
-);
-
-app.post(
-  "/applicants/upload-resume",
-  bodyLimit({
-    maxSize: 10 * 1024 * 1024,
-    onError: (c) =>
-      c.json(
-        { error: "File too large", message: "Maximum upload size is 10MB" },
-        413,
-      ),
-  }),
-  async (c) => {
-    try {
-      const body = await c.req.parseBody();
-      const file = body.file as File | undefined;
-
-      if (!file) {
-        return c.json({ error: "No file uploaded" }, 400);
-      }
-
-      logger.info(
-        {
-          filename: file.name,
-          type: file.type,
-          size: file.size,
-        },
-        "Starting PDF extraction",
-      );
-
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-
-      const data = await pdf(buffer);
-
-      logger.info(
-        {
-          pages: data.numpages,
-          textLength: data.text?.length,
-        },
-        "Extraction complete",
-      );
-
-      return c.json({
-        text: data.text,
-        numpages: data.numpages,
-      });
-    } catch (error: any) {
-      logger.error({ err: error }, "PDF Parsing Error");
-      return c.json(
-        {
-          error: "Failed to parse PDF",
-          message: error.message,
-        },
-        500,
-      );
-    }
-  },
 );
 
 const port = env.PORT || 3000;
