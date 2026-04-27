@@ -1,5 +1,4 @@
 // @ts-nocheck
-// biome-ignore lint/correctness/noUnusedImports: needed for jsx runtime
 
 /* @jsxImportSource react*/
 import {
@@ -14,6 +13,8 @@ import {
   Text,
 } from "@react-email/components";
 import React from "react";
+// @ts-ignore
+const _react = React;
 
 interface WelcomeEmailProps {
   username?: string;
