@@ -2,6 +2,7 @@ import { env } from "@ai-hackathon/env/server";
 import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
 import type React from "react";
+import logger from "./logger";
 
 // brevo smtp transporter
 const transporter = nodemailer.createTransport({
@@ -48,10 +49,10 @@ export async function sendEmail(options: SendEmailOptions) {
       replyTo,
     });
 
-    console.log("email sent: %s", info.messageId);
+    logger.info({ messageId: info.messageId, to, subject }, "Email sent successfully");
     return { success: true, data: info };
   } catch (error) {
-    console.error("email sending error:", error);
+    logger.error({ error, to, subject }, "Email sending error");
     throw error;
   }
 }
