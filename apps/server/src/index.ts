@@ -83,8 +83,9 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000);
-  logger.info("Server is running on http://localhost:3000");
+  const port = env.PORT || 3000;
+  await app.listen(port, "0.0.0.0");
+  logger.info(`Server is running on http://localhost:${port}`);
 
   logger.info("Starting background queue workers...");
   await startWorkers();

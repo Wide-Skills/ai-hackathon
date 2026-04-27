@@ -17,16 +17,18 @@
   "dependencies": {
     "@ai-hackathon/db": "workspace:*",
     "@ai-hackathon/env": "workspace:*",
-    "@react-email/components": "^1.0.11",
     "@better-auth/mongo-adapter": "^1.6.9",
+    "@react-email/components": "^1.0.11",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
+    "nodemailer": "^8.0.7",
     "react": "catalog:",
     "resend": "^6.12.2",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@ai-hackathon/config": "workspace:*",
+    "@types/nodemailer": "^8.0.0",
     "@types/react": "catalog:",
     "typescript": "catalog:"
   }

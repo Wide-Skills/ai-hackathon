@@ -1,5 +1,5 @@
 import { env } from "@ai-hackathon/env/server";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { writeAuditLog } from "./audit";
 import {
   buildApplicationReceivedEmail,
@@ -8,7 +8,16 @@ import {
   buildWelcomeEmail,
 } from "./email-templates";
 
-const resend = new Resend(env.RESEND_API_KEY);
+// Initialize Nodemailer transporter with Brevo SMTP
+const transporter = nodemailer.createTransport({
+  host: env.SMTP_HOST,
+  port: env.SMTP_PORT,
+  secure: env.SMTP_PORT === 465,
+  auth: {
+    user: env.SMTP_USER,
+    pass: env.SMTP_PASSWORD,
+  },
+});
 
 export async function sendMagicLinkEmail(options: {
   email: string;
@@ -17,14 +26,27 @@ export async function sendMagicLinkEmail(options: {
 }) {
   const { email, url, requestId } = options;
 
-  const response = await resend.emails.send({
-    from: env.RESEND_FROM_EMAIL,
-    to: [email],
-    subject: "Your Umurava AI sign-in link",
-    html: buildMagicLinkEmail({ email, url }),
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: env.SMTP_FROM_EMAIL,
+      to: email,
+      subject: "Your Umurava AI sign-in link",
+      html: buildMagicLinkEmail({ email, url }),
+    });
 
-  if (response.error) {
+    await writeAuditLog({
+      level: "info",
+      action: "auth.magic_link.send",
+      source: "auth",
+      status: "success",
+      message: "Magic link email sent",
+      actorEmail: email,
+      requestId,
+      metadata: {
+        messageId: info.messageId,
+      },
+    });
+  } catch (error: any) {
     await writeAuditLog({
       level: "error",
       action: "auth.magic_link.send",
@@ -34,24 +56,11 @@ export async function sendMagicLinkEmail(options: {
       actorEmail: email,
       requestId,
       metadata: {
-        error: response.error.message,
+        error: error.message,
       },
     });
-    throw new Error(response.error.message);
+    throw error;
   }
-
-  await writeAuditLog({
-    level: "info",
-    action: "auth.magic_link.send",
-    source: "auth",
-    status: "success",
-    message: "Magic link email sent",
-    actorEmail: email,
-    requestId,
-    metadata: {
-      resendId: response.data?.id,
-    },
-  });
 }
 
 export async function sendWelcomeEmail(options: {
@@ -61,17 +70,30 @@ export async function sendWelcomeEmail(options: {
 }) {
   const { email, name, requestId } = options;
 
-  const response = await resend.emails.send({
-    from: env.RESEND_FROM_EMAIL,
-    to: [email],
-    subject: "Welcome to Umurava AI",
-    html: buildWelcomeEmail({
-      name,
-      url: `${env.CORS_ORIGIN}/dashboard`,
-    }),
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: env.SMTP_FROM_EMAIL,
+      to: email,
+      subject: "Welcome to Umurava AI",
+      html: buildWelcomeEmail({
+        name,
+        url: `${env.CORS_ORIGIN}/dashboard`,
+      }),
+    });
 
-  if (response.error) {
+    await writeAuditLog({
+      level: "info",
+      action: "auth.welcome_email.send",
+      source: "auth",
+      status: "success",
+      message: "Welcome email sent",
+      actorEmail: email,
+      requestId,
+      metadata: {
+        messageId: info.messageId,
+      },
+    });
+  } catch (error: any) {
     await writeAuditLog({
       level: "error",
       action: "auth.welcome_email.send",
@@ -81,24 +103,11 @@ export async function sendWelcomeEmail(options: {
       actorEmail: email,
       requestId,
       metadata: {
-        error: response.error.message,
+        error: error.message,
       },
     });
-    throw new Error(response.error.message);
+    throw error;
   }
-
-  await writeAuditLog({
-    level: "info",
-    action: "auth.welcome_email.send",
-    source: "auth",
-    status: "success",
-    message: "Welcome email sent",
-    actorEmail: email,
-    requestId,
-    metadata: {
-      resendId: response.data?.id,
-    },
-  });
 }
 
 export async function sendApplicationReceivedEmail(options: {
@@ -109,14 +118,14 @@ export async function sendApplicationReceivedEmail(options: {
 }) {
   const { email, firstName, jobTitle, requestId } = options;
 
-  const response = await resend.emails.send({
-    from: env.RESEND_FROM_EMAIL,
-    to: [email],
-    subject: `Application Received: ${jobTitle}`,
-    html: buildApplicationReceivedEmail({ firstName, jobTitle }),
-  });
-
-  if (response.error) {
+  try {
+    await transporter.sendMail({
+      from: env.SMTP_FROM_EMAIL,
+      to: email,
+      subject: `Application Received: ${jobTitle}`,
+      html: buildApplicationReceivedEmail({ firstName, jobTitle }),
+    });
+  } catch (error: any) {
     await writeAuditLog({
       level: "error",
       action: "notification.application_received.send",
@@ -125,7 +134,7 @@ export async function sendApplicationReceivedEmail(options: {
       message: "Failed to send application confirmation email",
       actorEmail: email,
       requestId,
-      metadata: { error: response.error.message },
+      metadata: { error: error.message },
     });
   }
 }
@@ -149,20 +158,20 @@ export async function sendScreeningCompletedEmail(options: {
     requestId,
   } = options;
 
-  const response = await resend.emails.send({
-    from: env.RESEND_FROM_EMAIL,
-    to: [email],
-    subject: `AI Screening Complete: ${applicantName}`,
-    html: buildScreeningCompletedEmail({
-      recruiterName,
-      applicantName,
-      jobTitle,
-      matchScore,
-      url: `${env.CORS_ORIGIN}/dashboard/applicants/${applicantId}`,
-    }),
-  });
-
-  if (response.error) {
+  try {
+    await transporter.sendMail({
+      from: env.SMTP_FROM_EMAIL,
+      to: email,
+      subject: `AI Screening Complete: ${applicantName}`,
+      html: buildScreeningCompletedEmail({
+        recruiterName,
+        applicantName,
+        jobTitle,
+        matchScore,
+        url: `${env.CORS_ORIGIN}/dashboard/applicants/${applicantId}`,
+      }),
+    });
+  } catch (error: any) {
     await writeAuditLog({
       level: "error",
       action: "notification.screening_completed.send",
@@ -171,7 +180,7 @@ export async function sendScreeningCompletedEmail(options: {
       message: "Failed to send screening completion email",
       actorEmail: email,
       requestId,
-      metadata: { error: response.error.message },
+      metadata: { error: error.message },
     });
   }
 }

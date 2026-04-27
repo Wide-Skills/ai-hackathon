@@ -12,7 +12,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
@@ -185,9 +185,9 @@ export function JobDetail({ id }: JobDetailProps) {
               render={
                 <Button
                   disabled={isDeleting}
-                  variant="outline"
+                  variant="destructive"
                   size="sm"
-                  className="rounded-micro border-line font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider hover:border-status-error-text/30 hover:bg-status-error-bg hover:text-status-error-text"
+                  className="rounded-micro font-medium font-sans text-[11px] uppercase tracking-wider"
                 />
               }
             >
@@ -205,11 +205,11 @@ export function JobDetail({ id }: JobDetailProps) {
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
+                  variant="destructive"
                   onClick={() => {
                     setIsDeleting(true);
                     deleteMutation.mutate({ id });
                   }}
-                  className="bg-status-error-bg text-status-error-text hover:bg-status-error-bg/80"
                 >
                   Delete Job & Related Data
                 </AlertDialogAction>

@@ -1,8 +1,18 @@
 import { env } from "@ai-hackathon/env/server";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
+import { render } from "@react-email/components";
+import type React from "react";
 
-// Initialize Resend client
-const resend = new Resend(env.RESEND_API_KEY);
+// Initialize Nodemailer transporter with Brevo SMTP
+const transporter = nodemailer.createTransport({
+  host: env.SMTP_HOST,
+  port: env.SMTP_PORT,
+  secure: env.SMTP_PORT === 465, // true for 465, false for other ports
+  auth: {
+    user: env.SMTP_USER,
+    pass: env.SMTP_PASSWORD,
+  },
+});
 
 export interface SendEmailOptions {
   to: string | string[];
@@ -15,31 +25,34 @@ export interface SendEmailOptions {
 }
 
 /**
- * Send an email using Resend
- * @see https://resend.com/docs/send-with-nodejs
+ * Send an email using Nodemailer (Brevo SMTP)
  */
 export async function sendEmail(options: SendEmailOptions) {
   const { to, subject, html, text, react, from, replyTo } = options;
 
-  const fromAddress = from || env.RESEND_FROM_EMAIL;
+  const fromAddress = from || env.SMTP_FROM_EMAIL;
 
   try {
-    const { data, error } = await resend.emails.send({
+    let emailHtml = html;
+    let emailText = text;
+
+    // If react element is provided, render it to HTML and Text
+    if (react) {
+      emailHtml = await render(react);
+      emailText = await render(react, { plainText: true });
+    }
+
+    const info = await transporter.sendMail({
       from: fromAddress,
-      to: Array.isArray(to) ? to : [to],
+      to: Array.isArray(to) ? to.join(", ") : to,
       subject,
-      html,
-      text,
-      react,
+      html: emailHtml,
+      text: emailText,
       replyTo,
     });
 
-    if (error) {
-      console.error("Failed to send email:", error);
-      throw new Error(`Failed to send email: ${error.message}`);
-    }
-
-    return { success: true, data };
+    console.log("Email sent: %s", info.messageId);
+    return { success: true, data: info };
   } catch (error) {
     console.error("Email sending error:", error);
     throw error;
@@ -47,10 +60,10 @@ export async function sendEmail(options: SendEmailOptions) {
 }
 
 /**
- * Get the Resend client instance for advanced usage
+ * Get the transporter instance for advanced usage
  */
-export function getResendClient() {
-  return resend;
+export function getTransporter() {
+  return transporter;
 }
 
-export { resend };
+export { transporter };

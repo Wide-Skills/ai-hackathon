@@ -127,17 +127,9 @@ export default function AITasksPage() {
           className="overflow-hidden border-line shadow-none"
           size="none"
         >
-          <CardHeader className="border-line border-b bg-primary-alpha/5 px-comfortable py-base">
+          <CardHeader className="border-line border-b bg-primary-alpha/5 py-base">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-base">
-                <div
-                  className={cn(
-                    "size-2 rounded-full",
-                    healthQuery.data.status === "healthy"
-                      ? "animate-pulse bg-status-success-text"
-                      : "bg-status-error-text",
-                  )}
-                />
                 <div>
                   <CardDescription className="text-[10px] uppercase tracking-wider">
                     Infrastructure
@@ -213,16 +205,13 @@ export default function AITasksPage() {
 
       <Card
         variant="default"
-        className="overflow-hidden border-line shadow-none"
+        className="w-full overflow-hidden border-line shadow-none"
         size="none"
       >
-        <CardHeader className="border-line border-b bg-bg-alt/5 px-comfortable py-base">
-          <div className="flex items-center gap-base">
-            <RiBrainLine className="size-4 text-primary" />
-            <div>
-              <CardDescription>Real-time Reasoning</CardDescription>
-              <CardTitle className="text-[18px]">Task Execution Logs</CardTitle>
-            </div>
+        <CardHeader className="border-line border-b bg-bg-alt/5 py-base">
+          <div>
+            <CardDescription>Real-time Reasoning</CardDescription>
+            <CardTitle className="text-[18px]">Task Execution Logs</CardTitle>
           </div>
         </CardHeader>
         <div className="divide-y divide-line overflow-hidden">
@@ -230,14 +219,14 @@ export default function AITasksPage() {
             logs.map((log) => (
               <div
                 key={log.id}
-                className="group flex items-start gap-comfortable px-comfortable py-base transition-colors hover:bg-bg-alt/5"
+                className="group grid grid-cols-[24px_minmax(0,1fr)] items-start gap-comfortable overflow-hidden px-comfortable py-base transition-colors hover:bg-bg-alt/5"
               >
                 <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-bg2">
                   {getStatusIcon(log.status)}
                 </div>
-                <div className="min-w-0 flex-1 space-y-1">
-                  <div className="flex items-center gap-base">
-                    <span className="font-mono text-[10px] text-ink-faint">
+                <div className="space-y-1 overflow-hidden">
+                  <div className="flex flex-wrap items-center gap-base">
+                    <span className="shrink-0 font-mono text-[10px] text-ink-faint">
                       {log.taskId.split("-")[0]}...
                     </span>
                     <Badge
@@ -247,10 +236,10 @@ export default function AITasksPage() {
                     >
                       {log.type}
                     </Badge>
-                    <span className="font-medium font-sans text-[11px] text-primary uppercase tracking-widest">
+                    <span className="shrink-0 font-medium font-sans text-[11px] text-primary uppercase tracking-widest">
                       {log.step}
                     </span>
-                    <div className="flex items-center gap-1 text-[10px] text-ink-faint">
+                    <div className="flex shrink-0 items-center gap-1 text-[10px] text-ink-faint">
                       <RiTimeLine className="size-3" />
                       {log.createdAt
                         ? formatDistanceToNow(new Date(log.createdAt), {
@@ -259,13 +248,15 @@ export default function AITasksPage() {
                         : "just now"}
                     </div>
                   </div>
-                  <p className="font-sans text-[13px] text-primary leading-snug">
+                  <p className="break-words font-sans text-[13px] text-primary leading-snug">
                     {log.message}
                   </p>
                   {log.details && (
-                    <pre className="mt-2 overflow-x-auto rounded-micro bg-bg-deep p-2 font-mono text-[10px] text-ink-muted">
-                      {JSON.stringify(log.details, null, 2)}
-                    </pre>
+                    <div className="mt-2 w-full overflow-hidden rounded-micro bg-bg-deep">
+                      <pre className="max-w-full overflow-x-auto p-2 font-mono text-[10px] text-ink-muted">
+                        {JSON.stringify(log.details, null, 2)}
+                      </pre>
+                    </div>
                   )}
                 </div>
               </div>

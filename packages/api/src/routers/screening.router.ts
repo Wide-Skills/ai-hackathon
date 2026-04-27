@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import mongoose from "mongoose";
 import { sendScreeningCompletedEmail } from "@ai-hackathon/auth/email";
 import {
   Applicant,
@@ -94,19 +95,22 @@ function buildScreeningPrompt(
 ### JOB CONTEXT
 Title: ${job.title}
 Description: ${job.description}
-Requirements: ${job.requirements.join(", ")}
-Target Skills: ${job.skills.join(", ")}
-Primary Tech Stack: ${job.techStack.join(", ")}
-Minimum Experience Required: ${job.minExperience} years
-Required Education Level: ${job.educationLevel}
+Requirements: ${(job.requirements || []).join(", ")}
+Target Skills: ${(job.skills || []).join(", ")}
+Primary Tech Stack: ${(job.techStack || []).join(", ")}
+Minimum Experience Required: ${job.minExperience || 0} years
+Required Education Level: ${job.educationLevel || "Bachelor's"}
 
 ${job.screeningFocus ? `### RECRUITER FOCUS AREA\n${job.screeningFocus}\n` : ""}
 
 ### APPLICANT DATA
 Current Name: ${applicant.firstName} ${applicant.lastName}
 Provided Bio: ${applicant.bio || "N/A"}
-Resume Source Text:
+
+### RESUME SOURCE TEXT
+[[START_RESUME]]
 ${applicant.resumeText || "No resume text provided."}
+[[END_RESUME]]
 
 ### YOUR MISSION
 1. **Screening Evaluation**: Provide a match score (0-100), strategic strengths, critical gaps, a formal recommendation, and a concise summary.
@@ -157,50 +161,105 @@ export async function createOrUpdateScreening(
 }
 
 export const AIScreeningOutputSchema = z.object({
-  matchScore: z.number().min(0).max(100),
+  matchScore: z
+    .number()
+    .min(0)
+    .max(100)
+    .describe(
+      "Overall match percentage (0-100) of the applicant against the job requirements.",
+    ),
   scoreBreakdown: z.object({
-    technicalSkills: z.number().min(0).max(100),
-    experience: z.number().min(0).max(100),
-    education: z.number().min(0).max(100),
-    culturalFit: z.number().min(0).max(100),
+    technicalSkills: z
+      .number()
+      .min(0)
+      .max(100)
+      .describe("Score for technical expertise and tech stack alignment."),
+    experience: z
+      .number()
+      .min(0)
+      .max(100)
+      .describe("Score for relevance and depth of professional history."),
+    education: z
+      .number()
+      .min(0)
+      .max(100)
+      .describe("Score for academic background and certification relevance."),
+    culturalFit: z
+      .number()
+      .min(0)
+      .max(100)
+      .describe(
+        "Score for soft skills, communication, and values alignment.",
+      ),
   }),
-  strengths: z.array(z.string()),
-  gaps: z.array(z.string()),
-  recommendation: z.string(),
-  summary: z.string(),
-  skillBreakdown: z.array(
-    z.object({
-      skill: z.string(),
-      score: z.number(),
-    }),
-  ),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  headline: z.string().optional(),
-  bio: z.string().optional(),
-  location: z.string().optional(),
+  strengths: z
+    .array(z.string())
+    .describe("List of 3-5 specific technical or professional strengths."),
+  gaps: z
+    .array(z.string())
+    .describe("List of critical skill gaps or missing requirements."),
+  recommendation: z
+    .string()
+    .describe(
+      "One of: Strongly Recommend, Recommend, Consider, or Not Recommended.",
+    ),
+  summary: z
+    .string()
+    .describe(
+      "A 2-3 sentence executive summary of the candidate's suitability.",
+    ),
+  skillBreakdown: z
+    .array(
+      z.object({
+        skill: z.string(),
+        score: z.number().min(0).max(100),
+      }),
+    )
+    .describe(
+      "A detailed score for each specific target skill requested in the job.",
+    ),
+  firstName: z.string().optional().describe("Applicant's first name."),
+  lastName: z.string().optional().describe("Applicant's last name."),
+  headline: z
+    .string()
+    .optional()
+    .describe("A professional headline (e.g., Senior Software Engineer)."),
+  bio: z
+    .string()
+    .optional()
+    .describe("A short professional bio extracted or summarized."),
+  location: z
+    .string()
+    .optional()
+    .describe("Current location (City, Country)."),
   skills: z
     .array(
       z.object({
-        name: z.string(),
-        level: z.enum(SKILL_LEVELS),
-        yearsOfExperience: z.number(),
+        name: z.string().describe("Name of the skill."),
+        level: z.enum(SKILL_LEVELS).describe("Proficiency level."),
+        yearsOfExperience: z.number().describe("Estimated years using this skill."),
       }),
     )
-    .default([]),
+    .default([])
+    .describe("Comprehensive list of technical skills found in the resume."),
   experience: z
     .array(
       z.object({
         company: z.string(),
         role: z.string(),
-        startDate: z.string(),
-        endDate: z.string(),
-        description: z.string(),
+        startDate: z.string().describe("Format: MMM YYYY or YYYY-MM."),
+        endDate: z
+          .string()
+          .describe("Format: MMM YYYY, YYYY-MM, or 'Present'."),
+        description: z
+          .string()
+          .describe("2-3 bullet points of key achievements."),
         technologies: z.array(z.string()),
         isCurrent: z.boolean(),
       }),
     )
-    .default([]),
+    .default([])
+    .describe("Chronological work history."),
   education: z
     .array(
       z.object({
@@ -208,10 +267,11 @@ export const AIScreeningOutputSchema = z.object({
         degree: z.string(),
         fieldOfStudy: z.string(),
         startYear: z.number(),
-        endYear: z.number(),
+        endYear: z.number().describe("Year of completion or expected."),
       }),
     )
-    .default([]),
+    .default([])
+    .describe("Academic history."),
   languages: z
     .array(
       z.object({
@@ -225,7 +285,7 @@ export const AIScreeningOutputSchema = z.object({
       z.object({
         name: z.string(),
         issuer: z.string(),
-        issueDate: z.string(),
+        issueDate: z.string().describe("Format: YYYY or MMM YYYY."),
       }),
     )
     .default([]),
@@ -264,26 +324,48 @@ export async function evaluateAndExtractProfile(
     skills?: { name: string }[];
     resumeText?: string;
   },
+  options: { skipCache?: boolean } = {},
 ): Promise<AIScreeningOutput> {
-  const prompt = buildScreeningPrompt(job, {
-    ...applicant,
-    skills: applicant.skills || [],
-  });
+  const applicantData =
+    applicant instanceof mongoose.Document ? applicant.toObject() : applicant;
+  const jobData = job instanceof mongoose.Document ? job.toObject() : job;
 
-  // Calculate hash of the prompt to use as cache key
-  const promptHash = createHash("md5").update(prompt).digest("hex");
-
-  // Check cache first
-  const cachedResult = await ScreeningCache.findOne({ promptHash });
-  if (cachedResult) {
-    console.log("[Screening] Cache HIT for promptHash:", promptHash);
-    return cachedResult.output as AIScreeningOutput;
+  // Safety: Truncate extremely large resumes to prevent token bloat
+  const MAX_RESUME_CHARS = 15000;
+  if (applicantData.resumeText && applicantData.resumeText.length > MAX_RESUME_CHARS) {
+    console.warn(`[Screening] Truncating resume for ${applicantData.firstName} (Original: ${applicantData.resumeText.length} chars)`);
+    applicantData.resumeText = applicantData.resumeText.substring(0, MAX_RESUME_CHARS) + "... [Truncated for screening]";
   }
 
-  console.log("[Screening] Cache MISS for promptHash:", promptHash);
+  const prompt = buildScreeningPrompt(jobData, {
+    ...applicantData,
+    skills: applicantData.skills || [],
+  });
+
+  // Calculate hash of the prompt and model to use as cache key
+  const promptHash = createHash("md5")
+    .update(`${WORKING_MODEL}:${prompt}`)
+    .digest("hex");
+
+  // Check cache first
+  if (!options.skipCache) {
+    const cachedResult = await ScreeningCache.findOne({ promptHash });
+    if (cachedResult) {
+      console.log("[Screening] Cache HIT for promptHash:", promptHash);
+      return cachedResult.output as AIScreeningOutput;
+    }
+    console.log("[Screening] Cache MISS for promptHash:", promptHash);
+  } else {
+    console.log("[Screening] Skipping cache as requested");
+  }
 
   const systemPrompt =
-    "You are an expert technical recruiter and data extractor. Provide structured, objective evaluations and extract accurate profile data from the provided resume text.";
+    "You are a Senior Technical Recruiter with 20+ years of experience in talent acquisition and specialized technical screening. " +
+    "Your objective is to provide a brutal, honest, and data-driven evaluation of candidates against job requirements. " +
+    "Do not be overly lenient; prioritize candidates who demonstrate clear, verifiable evidence of the required skills and experience. " +
+    "You are also a meticulous data extractor, ensuring that every professional detail from the resume is mapped into a structured profile with high accuracy.";
+
+  console.log(`[Screening] Calling Gemini with model: ${WORKING_MODEL}`);
 
   const { output } = await generateText({
     model: google(WORKING_MODEL) as any,
@@ -292,6 +374,11 @@ export async function evaluateAndExtractProfile(
     output: Output.object({ schema: AIScreeningOutputSchema }),
     temperature: 0,
   });
+
+  if (!output || output.matchScore === undefined) {
+    console.error("[Screening] AI returned invalid or empty output:", output);
+    throw new Error("AI failed to generate a valid screening result");
+  }
 
   // Store in cache for future use
   const expiresAt = new Date();
@@ -317,6 +404,7 @@ export async function runAIInternal(params: {
   triggererName?: string;
   maxRetries?: number;
   taskId?: string;
+  skipCache?: boolean;
 }) {
   const {
     applicantId,
@@ -326,6 +414,7 @@ export async function runAIInternal(params: {
     triggererName,
     maxRetries = 3,
     taskId = `manual-${Date.now()}`,
+    skipCache = false,
   } = params;
 
   await logTaskStep({
@@ -370,7 +459,9 @@ export async function runAIInternal(params: {
         applicantId,
       });
 
-      const validatedData = await evaluateAndExtractProfile(job, applicant);
+      const validatedData = await evaluateAndExtractProfile(job, applicant, {
+        skipCache,
+      });
 
       await logTaskStep({
         taskId,
@@ -380,8 +471,13 @@ export async function runAIInternal(params: {
         status: "success",
         jobId,
         applicantId,
-        details: { matchScore: validatedData.matchScore },
+        details: {
+          matchScore: validatedData.matchScore,
+          recommendation: validatedData.recommendation,
+          summary: validatedData.summary,
+        },
       });
+
 
       console.log(
         `[Screening] AI Analysis Complete for Applicant ${applicantId}. Match Score: ${validatedData.matchScore}`,
@@ -544,6 +640,7 @@ export const screeningRouter = router({
         triggeredByUserId: ctx.session.user.id,
         triggererEmail: ctx.session.user.email,
         triggererName: ctx.session.user.name ?? undefined,
+        skipCache: input.skipCache,
       });
     }),
 
@@ -586,15 +683,13 @@ export const screeningRouter = router({
     .input(z.object({ applicantId: z.string(), jobId: z.string() }))
     .output(ScreeningResultSchema)
     .mutation(async ({ input, ctx }) => {
-      // Logic for rescreening usually involves bypassing cache.
-      // We can extend evaluateAndExtractProfile to take a bypassCache flag if needed.
-      // For now, let's just trigger it.
       return runAIInternal({
         applicantId: input.applicantId,
         jobId: input.jobId,
         triggeredByUserId: ctx.session.user.id,
         triggererEmail: ctx.session.user.email,
         triggererName: ctx.session.user.name ?? undefined,
+        skipCache: true, // Rescreening should ALWAYS bypass cache
       });
     }),
 

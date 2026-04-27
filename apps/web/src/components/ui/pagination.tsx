@@ -47,7 +47,7 @@ export function Pagination({
         </div>
         <div>
           <nav
-            className="isolate inline-flex -space-x-px rounded-md shadow-sm"
+            className="isolate inline-flex -space-x-px rounded-md gap-1.5"
             aria-label="Pagination"
           >
             <Button
@@ -61,9 +61,7 @@ export function Pagination({
               <RiArrowLeftSLine className="h-4 w-4" />
             </Button>
 
-            {/* Simple range logic */}
             {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              // This is a simple version, for real production we'd want more complex logic
               let pageNum = currentPage;
               if (currentPage <= 3) {
                 pageNum = i + 1;

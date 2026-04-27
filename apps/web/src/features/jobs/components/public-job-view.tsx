@@ -9,7 +9,7 @@ import {
   RiUploadCloud2Line,
 } from "@remixicon/react";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { Footer } from "@/components/landing/footer";

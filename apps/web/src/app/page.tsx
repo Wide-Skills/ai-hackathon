@@ -1,4 +1,4 @@
-import * as motion from "framer-motion/client";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { AppPreview } from "@/components/landing/app-preview";
 import { Features } from "@/components/landing/features";

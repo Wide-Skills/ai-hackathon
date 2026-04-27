@@ -11,13 +11,17 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "production", "test"])
       .default("development"),
+    PORT: z.coerce.number().default(3000),
     GEMINI_API_KEY: z.string().min(1),
     GOOGLE_CLIENT_ID: z.string().min(1).optional(),
     GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
     GITHUB_CLIENT_ID: z.string().min(1).optional(),
     GITHUB_CLIENT_SECRET: z.string().min(1).optional(),
-    RESEND_API_KEY: z.string().min(1),
-    RESEND_FROM_EMAIL: z.string().email().default("onboarding@resend.dev"),
+    SMTP_HOST: z.string().min(1).default("smtp-relay.brevo.com"),
+    SMTP_PORT: z.coerce.number().default(587),
+    SMTP_USER: z.string().min(1),
+    SMTP_PASSWORD: z.string().min(1),
+    SMTP_FROM_EMAIL: z.string().email(),
     UPSTASH_REDIS_REST_URL: z.url(),
     UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
     LOG_LEVEL: z

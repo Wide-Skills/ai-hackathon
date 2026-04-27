@@ -5,11 +5,17 @@ import {
   RiAlertLine,
   RiArrowUpDownLine,
   RiBrainLine,
+  RiCheckDoubleLine,
+  RiCloseCircleLine,
   RiDeleteBin7Line,
   RiLoader2Line,
   RiMore2Line,
+  RiRefreshLine,
+  RiSearch2Line,
   RiSparklingLine,
+  RiTimeLine,
   RiUser3Line,
+  RiVerifiedBadgeLine,
 } from "@remixicon/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -20,7 +26,7 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -178,19 +184,20 @@ function RowActions({ applicant }: { applicant: Applicant }) {
             <DropdownMenuSeparator />
 
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger inset>
+              <DropdownMenuSubTrigger>
+                <RiRefreshLine className="mr-base size-3.5" />
                 Change Status
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="w-40 outline-none">
                 {(
                   [
-                    "pending",
-                    "screening",
-                    "shortlisted",
-                    "rejected",
-                    "hired",
+                    { status: "pending", icon: RiTimeLine },
+                    { status: "screening", icon: RiSearch2Line },
+                    { status: "shortlisted", icon: RiCheckDoubleLine },
+                    { status: "rejected", icon: RiCloseCircleLine },
+                    { status: "hired", icon: RiVerifiedBadgeLine },
                   ] as const
-                ).map((status) => (
+                ).map(({ status, icon: StatusIcon }) => (
                   <DropdownMenuItem
                     key={status}
                     className="capitalize"
@@ -202,6 +209,7 @@ function RowActions({ applicant }: { applicant: Applicant }) {
                       });
                     }}
                   >
+                    <StatusIcon className="mr-base size-3.5" />
                     {status}
                   </DropdownMenuItem>
                 ))}
@@ -239,7 +247,7 @@ function RowActions({ applicant }: { applicant: Applicant }) {
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-status-error-bg text-status-error-text hover:bg-status-error-bg/80"
+              variant="destructive"
               onClick={(e) => {
                 e.stopPropagation();
                 deleteMutation.mutate({ id: applicant.id });
@@ -373,12 +381,18 @@ export const columns: ColumnDef<Applicant>[] = [
       </span>
     ),
     cell: ({ row }) => {
+      const appliedAt = row.getValue("appliedAt");
+      const date = appliedAt ? new Date(appliedAt as string | number | Date) : null;
+      const isValidDate = date && !isNaN(date.getTime());
+
       return (
         <div className="flex h-full items-center py-1 font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
-          {new Date(row.getValue("appliedAt")).toLocaleDateString([], {
-            month: "short",
-            day: "numeric",
-          })}
+          {isValidDate
+            ? date.toLocaleDateString([], {
+                month: "short",
+                day: "numeric",
+              })
+            : "N/A"}
         </div>
       );
     },

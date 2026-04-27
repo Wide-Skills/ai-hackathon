@@ -7,7 +7,7 @@ import {
   RiSparklingLine,
 } from "@remixicon/react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useMemo } from "react";

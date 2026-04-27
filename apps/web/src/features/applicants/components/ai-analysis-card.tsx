@@ -10,7 +10,7 @@ import {
   RiThumbUpLine,
 } from "@remixicon/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -30,21 +30,19 @@ interface AIAnalysisCardProps {
 
 const recommendationConfig = {
   "Strongly Recommend": {
-    color:
-      "text-status-success-text bg-status-success-bg border-status-success-bg",
+    variant: "success-subtle" as const,
     icon: RiCheckboxCircleLine,
   },
   Recommend: {
-    color: "text-primary bg-primary-alpha border-primary-alpha",
+    variant: "ghost" as const,
     icon: RiThumbUpLine,
   },
   Consider: {
-    color:
-      "text-status-warning-text bg-status-warning-bg border-status-warning-bg",
+    variant: "warning-subtle" as const,
     icon: RiThumbUpLine,
   },
   "Not Recommended": {
-    color: "text-status-error-text bg-status-error-bg border-status-error-bg",
+    variant: "destructive" as const,
     icon: RiCloseCircleLine,
   },
 };
@@ -137,13 +135,10 @@ export function AIAnalysisCard({
                 <div className="flex flex-wrap items-center gap-base">
                   {recConfig && (
                     <Badge
-                      variant="outline"
+                      variant={recConfig.variant}
                       size="default"
                       uppercase
-                      className={cn(
-                        "px-4 py-1 font-medium font-sans",
-                        recConfig.color,
-                      )}
+                      className="px-4 py-1 font-medium font-sans"
                     >
                       {screening.recommendation}
                     </Badge>

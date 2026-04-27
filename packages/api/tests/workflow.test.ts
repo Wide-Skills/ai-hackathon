@@ -55,8 +55,14 @@ const ScreeningCache = {
 // Mocks for External Services
 vi.mock("@ai-hackathon/env/server", () => ({
   env: {
-    GEMINI_API_KEY: "test-key",
     DATABASE_URL: "mongodb://localhost:27017/test",
+    BETTER_AUTH_SECRET: "test_secret_at_least_32_characters_long",
+    BETTER_AUTH_URL: "http://localhost:3000",
+    CORS_ORIGIN: "http://localhost:3000",
+    GEMINI_API_KEY: "test-key",
+    RESEND_API_KEY: "re_test",
+    UPSTASH_REDIS_REST_URL: "https://test.upstash.io",
+    UPSTASH_REDIS_REST_TOKEN: "test_token",
   },
 }));
 
@@ -65,6 +71,7 @@ vi.mock("@ai-hackathon/db", () => ({
   Job,
   ScreeningResult,
   ScreeningCache,
+  TaskLog: { create: vi.fn().mockResolvedValue({}) },
 }));
 
 vi.mock("@ai-hackathon/auth/email", () => ({

@@ -68,18 +68,42 @@
   --color-foreground: var(--text-primary);
 
   --color-bg: var(--bg-primary);
+  --color-bg2: var(--bg-secondary);
   --color-bg-alt: var(--bg-secondary);
   --color-bg-deep: var(--bg-tertiary);
   --color-surface: var(--bg-surface);
   --color-canvas: var(--canvas);
 
+  /* Standard shadcn mappings */
+  --color-popover: var(--bg-surface);
+  --color-popover-foreground: var(--text-primary);
+  --color-muted: var(--bg-secondary);
+  --color-muted-foreground: var(--text-secondary);
+  --color-accent: var(--bg-secondary);
+  --color-accent-foreground: var(--text-primary);
+  --color-card: var(--bg-surface);
+  --color-card-foreground: var(--text-primary);
+  --color-border: var(--border-subtle);
+  --color-input: var(--border-subtle);
+  --color-ring: var(--ring);
+
+  --color-destructive: #cc2c2c;
+  --color-destructive-foreground: #ffffff;
+
+  --color-success: var(--status-success-bg);
+  --color-success-foreground: var(--status-success-text);
+  --color-warning: var(--status-warning-bg);
+  --color-warning-foreground: var(--status-warning-text);
+
   --color-ink: var(--text-primary);
+  --color-ink-full: var(--text-primary);
   --color-ink-muted: var(--text-secondary);
   --color-ink-faint: var(--text-tertiary);
 
   --color-primary: var(--brand-primary);
   --color-primary-alpha: var(--brand-alpha);
   --color-primary-muted: var(--brand-muted);
+  --color-Pa: var(--brand-alpha);
 
   --color-success-bg: var(--status-success-bg);
   --color-success-text: var(--status-success-text);

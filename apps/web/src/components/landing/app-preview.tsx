@@ -1,7 +1,7 @@
 "use client";
 
 import { RiMoreLine, RiSearchLine } from "@remixicon/react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import type React from "react";
 
 export const AppPreview: React.FC = () => {

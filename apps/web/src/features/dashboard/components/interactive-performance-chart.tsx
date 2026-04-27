@@ -84,10 +84,12 @@ export function InteractivePerformanceChart({
   return (
     <Card className="border-none bg-transparent py-0 shadow-none">
       <CardHeader className="flex flex-col items-stretch border-line border-b bg-transparent p-0 sm:flex-row">
+        <div className="flex flex-1 flex-col justify-center gap-micro px-4 py-4 sm:px-comfortable sm:py-6">
           <CardDescription className="text-ink-faint">Velocity</CardDescription>
           <CardTitle className="font-serif text-[18px] text-primary leading-tight sm:text-[20px]">
             Screening Activity
           </CardTitle>
+        </div>
         <div className="flex border-line border-l">
           {["appliedCount", "screenedCount"].map((key) => {
             const chart = key as keyof typeof chartConfig;
