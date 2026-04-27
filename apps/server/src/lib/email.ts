@@ -49,7 +49,10 @@ export async function sendEmail(options: SendEmailOptions) {
       replyTo,
     });
 
-    logger.info({ messageId: info.messageId, to, subject }, "Email sent successfully");
+    logger.info(
+      { messageId: info.messageId, to, subject },
+      "Email sent successfully",
+    );
     return { success: true, data: info };
   } catch (error) {
     logger.error({ error, to, subject }, "Email sending error");

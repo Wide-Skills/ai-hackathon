@@ -74,7 +74,7 @@ app.notFound((c) => {
   );
 });
 
-app.get("/", (c) => c.text("AI Hackathon API (Hono) is running"));
+app.get("/", (c) => c.text("Screening Hackathon API is running"));
 app.get("/health", (c) =>
   c.json({ status: "ok", timestamp: new Date().toISOString() }),
 );

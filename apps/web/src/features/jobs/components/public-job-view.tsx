@@ -467,12 +467,6 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                       )}
                     </Button>
                   </div>
-
-                  <div className="flex items-center justify-center gap-small text-center opacity-40">
-                    <div className="h-px w-8 bg-line" />
-
-                    <div className="h-px w-8 bg-line" />
-                  </div>
                 </form>
               </motion.div>
             </div>
