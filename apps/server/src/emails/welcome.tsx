@@ -1,4 +1,5 @@
-// @ts-expect-error
+// @ts-nocheck
+import React from "react";
 
 /* @jsxImportSource react*/
 import {
