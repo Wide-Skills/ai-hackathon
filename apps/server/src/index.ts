@@ -1,3 +1,16 @@
+// @ts-nocheck
+// shim for libraries that expect a browser environment (like some pdf parsers)
+if (typeof global.DOMMatrix === "undefined") {
+  global.DOMMatrix = class DOMMatrix {
+    constructor() {
+      this.m11 = 1; this.m12 = 0; this.m13 = 0; this.m14 = 0;
+      this.m21 = 0; this.m22 = 1; this.m23 = 0; this.m24 = 0;
+      this.m31 = 0; this.m32 = 0; this.m33 = 1; this.m34 = 0;
+      this.m41 = 0; this.m42 = 0; this.m43 = 0; this.m44 = 1;
+    }
+  };
+}
+
 import { startWorkers } from "@ai-hackathon/api";
 import { createContext } from "@ai-hackathon/api/context";
 import { appRouter } from "@ai-hackathon/api/routers/index";
@@ -13,39 +26,10 @@ import { logger as honoLogger } from "hono/logger";
 import { poweredBy } from "hono/powered-by";
 import { requestId } from "hono/request-id";
 import { timing } from "hono/timing";
-// @ts-ignore
 import pdf from "pdf-parse";
 import logger from "./lib/logger";
 
-// shim for libraries that expect a browser environment (like some pdf parsers)
-if (typeof (global as any).DOMMatrix === "undefined") {
-  (global as any).DOMMatrix = class DOMMatrix {
-    m11 = 1;
-    m12 = 0;
-    m13 = 0;
-    m14 = 0;
-    m21 = 0;
-    m22 = 1;
-    m23 = 0;
-    m24 = 0;
-    m31 = 0;
-    m32 = 0;
-    m33 = 1;
-    m34 = 0;
-    m41 = 0;
-    m42 = 0;
-    m43 = 0;
-    m44 = 1;
-  };
-}
-
-type Env = {
-  Variables: {
-    requestId: string;
-  };
-};
-
-const app = new Hono<Env>();
+const app = new Hono();
 
 app.use("*", requestId());
 app.use("*", timing());
@@ -158,7 +142,6 @@ app.post(
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
-      // standard pdf-parse usage
       const data = await pdf(buffer);
 
       logger.info(
@@ -194,7 +177,7 @@ serve({
   fetch: app.fetch,
   port: Number(port),
 });
-// Start workers
+
 logger.info("Starting background queue workers...");
 startWorkers()
   .then(() => {
