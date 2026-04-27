@@ -75,7 +75,7 @@ export function PlatformDocs() {
   return (
     <main className="min-h-screen bg-canvas px-6 py-12 text-ink-full md:px-6 lg:py-20">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-24">
-        {/* Hero Section */}
+        {/* hero section */}
         <section className="relative overflow-hidden rounded-card border border-line bg-surface p-10 shadow-none md:p-20 lg:p-24">
           <div className="relative z-10 max-w-3xl">
             <div className="mb-8 flex h-11 w-11 items-center justify-center rounded-micro border border-line bg-bg2">
@@ -113,12 +113,12 @@ export function PlatformDocs() {
             </div>
           </div>
 
-          {/* Subtle background decoration */}
+          {/* subtle background decoration */}
           <div className="absolute -top-20 -right-20 h-[500px] w-[500px] rounded-full bg-primary-alpha/5 blur-[120px]" />
           <div className="absolute -bottom-20 -left-20 h-[500px] w-[500px] rounded-full bg-primary-alpha/5 blur-[120px]" />
         </section>
 
-        {/* Feature Grid */}
+        {/* feature grid */}
         <section className="grid gap-comfortable md:grid-cols-2">
           {features.map((feature) => (
             <article
@@ -142,7 +142,7 @@ export function PlatformDocs() {
           ))}
         </section>
 
-        {/* Product Workflow */}
+        {/* product workflow */}
         <section className="rounded-card border border-line bg-surface p-10 shadow-none md:p-20">
           <div className="mb-section-gap text-center">
             <span className="mb-micro block font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.1em]">
@@ -154,7 +154,7 @@ export function PlatformDocs() {
           </div>
 
           <div className="relative grid gap-hero md:grid-cols-2 lg:grid-cols-4">
-            {/* Connecting line for desktop */}
+            {/* connecting line for desktop */}
             <div className="absolute top-10 left-0 -z-10 hidden h-[1px] w-full bg-line lg:block" />
 
             {workflow.map((w) => (
@@ -178,7 +178,7 @@ export function PlatformDocs() {
           </div>
         </section>
 
-        {/* Access Layer */}
+        {/* access layer */}
         <section className="grid gap-comfortable lg:grid-cols-12">
           <div className="flex flex-col justify-between rounded-card border border-line bg-bg2/40 p-comfortable shadow-none lg:col-span-4">
             <div>

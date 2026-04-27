@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-// Mock Database Models
+// mock database models
 const applicantSaveMock = vi.fn();
 const applicantFindByIdMock = vi.fn();
 const applicantFindByIdAndUpdateMock = vi.fn();
@@ -52,7 +52,7 @@ const ScreeningCache = {
   create: screeningCacheCreateMock.mockResolvedValue({}),
 };
 
-// Mocks for External Services
+// mocks for external services
 vi.mock("@ai-hackathon/env/server", () => ({
   env: {
     DATABASE_URL: "mongodb://localhost:27017/test",
@@ -79,7 +79,7 @@ vi.mock("@ai-hackathon/auth/email", () => ({
   sendScreeningCompletedEmail: vi.fn().mockResolvedValue({ success: true }),
 }));
 
-// Mock AI SDK
+// mock ai sdk
 const aiOutput = {
   matchScore: 92,
   strengths: ["Expert TypeScript skills", "Deep architectural knowledge"],
@@ -138,11 +138,11 @@ vi.mock("ai", () => ({
   },
 }));
 
-// Import Routers
+// import routers
 const { applicantRouter } = await import("../src/routers/applicant.router");
 const { screeningRouter } = await import("../src/routers/screening.router");
 
-// Auth Context
+// auth context
 const authedContext = {
   session: {
     user: {
@@ -185,21 +185,21 @@ describe("End-to-End Recruitment Workflow", () => {
       resumeText: "Experienced React and Node.js developer from Kigali...",
     });
 
-    // Verify AI was called with the right data
+    // verify ai was called with the right data
     expect(result.firstName).toBe("Jane");
     expect(result.status).toBe("shortlisted"); // 92 score >= 85
     expect(result.screening?.matchScore).toBe(92);
 
-    // Verify Profile Extraction worked
+    // verify profile extraction worked
     expect(result.headline).toBe("Senior Software Architect");
     expect(result.location).toBe("Kigali, Rwanda");
     expect(result.skills).toHaveLength(2);
     expect(result.experience?.[0]?.company).toBe("Tech Corp");
 
-    // Verify Persistence
+    // verify persistence
     expect(applicantSaveMock).toHaveBeenCalled();
     expect(screeningSaveMock).toHaveBeenCalled();
-    expect(jobFindByIdAndUpdateMock).toHaveBeenCalled(); // For syncing metrics
+    expect(jobFindByIdAndUpdateMock).toHaveBeenCalled(); // for syncing metrics
   });
 
   it("Manual Trigger Path: Recruiter re-runs AI analysis on existing applicant", async () => {
@@ -253,8 +253,8 @@ describe("End-to-End Recruitment Workflow", () => {
     expect(result.successCount).toBe(2);
     expect(applicantSaveMock).toHaveBeenCalledTimes(2);
 
-    // In batch, AI runs in background (non-blocking)
-    // We expect the syncJobMetrics to have been called
+    // in batch, ai runs in background (non-blocking)
+    // we expect the syncjobmetrics to have been called
     expect(jobFindByIdAndUpdateMock).toHaveBeenCalled();
   });
 
@@ -271,7 +271,7 @@ describe("End-to-End Recruitment Workflow", () => {
 
     expect(result.firstName).toBe("John");
     expect(applicantSaveMock).toHaveBeenCalled();
-    // Since we mock generateText to return valid data, publicApply should have processed it
+    // since we mock generatetext to return valid data, publicapply should have processed it
     expect(result.status).toBe("shortlisted");
     expect(screeningSaveMock).toHaveBeenCalled();
   });

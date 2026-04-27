@@ -47,12 +47,12 @@ export async function getBatchProgress(batchJobId: string) {
     };
   }
 
-  // Fallback for initial state or simple numeric progress
+  // fallback for initial state or simple numeric progress
   const total = job.data.applicantIds?.length || 0;
   return {
     status: state,
     total,
     completed: state === "completed" ? total : 0,
-    failed: state === "failed" ? total : 0, // Simplified
+    failed: state === "failed" ? total : 0, // simplified
   };
 }

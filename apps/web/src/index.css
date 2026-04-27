@@ -5,27 +5,27 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Meridian Foundation - Refined Studio Palette */
-  --canvas: #fafaf9; /* Extremely clean neutral */
+  /* studio palette */
+  --canvas: #fafaf9;
   --ink: #18181b;
 
-  /* Semantic Backgrounds - Natural Layering */
-  --bg-primary: #fafaf9; /* Main Canvas */
-  --bg-secondary: #f4f4f5; /* Subtle Lift */
-  --bg-tertiary: #eef2f6; /* Deepest Surface */
-  --bg-surface: #ffffff; /* Component Surface */
+  /* backgrounds */
+  --bg-primary: #fafaf9;
+  --bg-secondary: #f4f4f5;
+  --bg-tertiary: #eef2f6;
+  --bg-surface: #ffffff;
 
-  /* Ink Opacity Hierarchy */
+  /* typography hierarchy */
   --text-primary: #18181b;
   --text-secondary: #52525b;
   --text-tertiary: #a1a1aa;
 
-  /* Brand Definition */
+  /* brand */
   --brand-primary: #192840;
   --brand-alpha: rgba(25, 40, 64, 0.08);
   --brand-muted: #243858;
 
-  /* Semantic Status */
+  /* status */
   --status-success-bg: #eaf5f0;
   --status-success-text: #1a7055;
   --status-warning-bg: #faf3e8;
@@ -33,7 +33,7 @@
   --status-error-bg: #fdf0f0;
   --status-error-text: #8a2020;
 
-  /* Structural System */
+  /* structure */
   --border-subtle: rgba(28, 27, 24, 0.09);
   --border-medium: rgba(28, 27, 24, 0.13);
   --border-strong: rgba(25, 40, 64, 0.2);
@@ -42,7 +42,7 @@
   --input: var(--border-subtle);
   --ring: rgba(25, 40, 64, 0.12);
 
-  /* Geometric Scale */
+  /* scale */
   --r-micro: 4px;
   --r-standard: 7px;
   --r-card: 12px;
@@ -50,12 +50,12 @@
 
   --radius: var(--r-standard);
 
-  /* Typography Integration */
+  /* typography */
   --font-serif: var(--font-serif);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Layout Standard */
+  /* layout */
   --container-width: 1100px;
 }
 
@@ -74,7 +74,7 @@
   --color-surface: var(--bg-surface);
   --color-canvas: var(--canvas);
 
-  /* Standard shadcn mappings */
+  /* shadcn mappings */
   --color-popover: var(--bg-surface);
   --color-popover-foreground: var(--text-primary);
   --color-muted: var(--bg-secondary);

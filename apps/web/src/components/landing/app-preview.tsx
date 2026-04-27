@@ -32,7 +32,7 @@ export const AppPreview: React.FC = () => {
           className="overflow-hidden rounded-card border border-line bg-line p-[1px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.06)]"
         >
           <div className="overflow-hidden rounded-[11px] bg-surface">
-            {/* Window Chrome */}
+            {/* window chrome */}
             <div className="flex h-10 items-center justify-between border-line border-b bg-bg px-base">
               <div className="flex gap-small">
                 <div className="size-2 rounded-full bg-line" />
@@ -44,7 +44,7 @@ export const AppPreview: React.FC = () => {
             </div>
 
             <div className="flex h-[560px] flex-col divide-x divide-line lg:flex-row">
-              {/* Navigation Rail */}
+              {/* navigation rail */}
               <div className="hidden w-56 flex-col space-y-comfortable bg-bg/20 p-medium lg:flex">
                 <div className="space-y-base">
                   <p className="font-medium font-sans text-[9px] text-ink-faint uppercase tracking-[0.1em]">
@@ -70,7 +70,7 @@ export const AppPreview: React.FC = () => {
                 </div>
               </div>
 
-              {/* Main Workspace */}
+              {/* main workspace */}
               <div className="flex flex-1 flex-col overflow-hidden bg-surface">
                 <div className="flex h-[64px] items-center justify-between border-line border-b px-comfortable">
                   <div className="flex items-center gap-base rounded-standard border border-line bg-bg/30 px-base py-2">

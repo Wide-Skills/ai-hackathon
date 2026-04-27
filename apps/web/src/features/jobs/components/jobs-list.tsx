@@ -34,7 +34,7 @@ export function JobsList() {
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
 
-  // State
+  // state
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const debouncedSearch = useDebounce(search, 300);
   const [statusFilter, setStatusFilter] = useState(
@@ -49,7 +49,7 @@ export function JobsList() {
   );
   const [limit] = useState(10);
 
-  // Sync state to URL
+  // sync state to url
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     let changed = false;
@@ -124,7 +124,7 @@ export function JobsList() {
 
   return (
     <div className="w-full space-y-section-padding pb-section-padding">
-      {/* Search & Filters */}
+      {/* search & filters */}
       <div className="flex flex-col gap-base border-line border-b pb-section-gap lg:flex-row lg:items-center">
         <div className="relative w-full lg:flex-1">
           <div className="group flex h-10 items-center gap-3 rounded-standard border border-line bg-bg2/40 px-3.5 transition-all focus-within:border-primary/20 focus-within:bg-surface">

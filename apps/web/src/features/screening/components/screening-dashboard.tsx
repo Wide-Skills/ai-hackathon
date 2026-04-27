@@ -96,9 +96,9 @@ export function ScreeningDashboard() {
       return;
     }
 
-    // Group applicants by jobId if we are screening "all" jobs, because batchGenerate takes a single jobId
-    // To simplify, we will just use the first pending's jobId if "all" is selected
-    // Note: The ideal solution would group and spawn multiple batches, but here we'll just batch per job
+    // group applicants by jobid if we are screening "all" jobs, because batchgenerate takes a single jobid
+    // to simplify, we will just use the first pending's jobid if "all" is selected
+    // note: the ideal solution would group and spawn multiple batches, but here we'll just batch per job
     const groupedByJob = pendingToScreen.reduce(
       (acc, a) => {
         acc[a.jobId] = acc[a.jobId] || [];
@@ -124,11 +124,11 @@ export function ScreeningDashboard() {
 
         let done = false;
         while (!done) {
-          // Poll every 2 seconds
+          // poll every 2 seconds
           await new Promise((resolve) => setTimeout(resolve, 2000));
 
           try {
-            // We use the TRPC client directly for polling inside the async function
+            // we use the trpc client directly for polling inside the async function
             const state = await trpcClient.screenings.getBatchProgress.query({
               batchJobId,
             });
@@ -147,7 +147,7 @@ export function ScreeningDashboard() {
             }
           } catch (e) {
             console.error("Polling failed", e);
-            // Optionally break or retry
+            // optionally break or retry
           }
         }
       }
@@ -210,7 +210,7 @@ export function ScreeningDashboard() {
 
   return (
     <div className="w-full space-y-section-padding pb-section-padding">
-      {/* Top Metrics row */}
+      {/* top metrics row */}
       <div className="grid grid-cols-1 gap-comfortable sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Total Screened"
@@ -241,9 +241,9 @@ export function ScreeningDashboard() {
       </div>
 
       <div className="grid grid-cols-1 items-start gap-comfortable lg:grid-cols-4">
-        {/* Control Sidebar */}
+        {/* control sidebar */}
         <div className="space-y-comfortable lg:col-span-1">
-          {/* Engine Card */}
+          {/* engine card */}
           <Card variant="default" size="none" className="overflow-hidden">
             <CardHeader>
               <CardDescription>Analysis</CardDescription>
@@ -295,7 +295,7 @@ export function ScreeningDashboard() {
             </div>
           </Card>
 
-          {/* Distribution Card */}
+          {/* distribution card */}
           <Card variant="default" size="none" className="overflow-hidden">
             <CardHeader>
               <CardDescription>Metrics</CardDescription>
@@ -334,7 +334,7 @@ export function ScreeningDashboard() {
             </div>
           </Card>
 
-          {/* Filter Card */}
+          {/* filter card */}
           <Card variant="default" size="none" className="overflow-hidden">
             <CardHeader>
               <CardDescription>Filter</CardDescription>

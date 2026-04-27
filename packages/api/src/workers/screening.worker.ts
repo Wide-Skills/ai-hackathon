@@ -17,7 +17,6 @@ export const screeningWorker = new Worker<ScreeningJobData>(
       `[Screening Worker] Starting job ${job.id} for applicant ${job.data.applicantId}`,
     );
 
-    // We pass maxRetries: 1 because BullMQ handles retries for us.
     const result = await runAIInternal({
       ...job.data,
       maxRetries: 1,
@@ -32,7 +31,7 @@ export const screeningWorker = new Worker<ScreeningJobData>(
   },
   {
     connection,
-    concurrency: 2, // Configurable, limit to 2 to avoid Gemini rate limits
+    concurrency: 2,
   },
 );
 

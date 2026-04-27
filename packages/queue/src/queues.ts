@@ -6,8 +6,8 @@ export const screeningQueue = new Queue("screening", {
   defaultJobOptions: {
     attempts: 3,
     backoff: { type: "exponential", delay: 2000 },
-    removeOnComplete: { age: 86400 }, // Keep completed jobs for 24h
-    removeOnFail: { age: 604800 }, // Keep failed jobs for 7 days
+    removeOnComplete: { age: 86400 }, // keep completed jobs for 24h
+    removeOnFail: { age: 604800 }, // keep failed jobs for 7 days
   },
 });
 

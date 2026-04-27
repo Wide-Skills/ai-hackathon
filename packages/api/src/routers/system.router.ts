@@ -61,8 +61,8 @@ export const systemRouter = router({
     }),
 
   getQueueStats: protectedProcedure.query(async () => {
-    // In a real production app we'd get actual BullMQ stats here.
-    // For now returning mock data.
+    // in a real production app we'd get actual bullmq stats here.
+    // for now returning mock data.
     return {
       active: 0,
       waiting: 0,

@@ -9,7 +9,7 @@ export function usePersistentState<T>(
   const [state, setState] = useState<T>(defaultValue);
   const [_isInitialized, setIsInitialized] = useState(false);
 
-  // Initialize state from localStorage
+  // initialize state from localstorage
   useEffect(() => {
     try {
       const storedValue = localStorage.getItem(key);
@@ -23,7 +23,7 @@ export function usePersistentState<T>(
     }
   }, [key]);
 
-  // Update localStorage when state changes
+  // update localstorage when state changes
   const setPersistentState = useCallback(
     (value: T) => {
       try {

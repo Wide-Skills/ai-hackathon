@@ -3,6 +3,8 @@
 import {
   RiArrowLeftLine,
   RiArrowRightSLine,
+  RiDeleteBin7Line,
+  RiEditLine,
   RiMoreLine,
   RiSparklingLine,
 } from "@remixicon/react";
@@ -38,6 +40,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 import { ScoreBadge } from "../../dashboard/components/score-badge";
@@ -171,28 +180,42 @@ export function JobDetail({ id }: JobDetailProps) {
           <Badge variant={sc.variant} size="default" uppercase>
             {sc.label}
           </Badge>
-          <Link href={`/dashboard/jobs/${id}/edit` as Route}>
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-micro border-line font-medium font-sans text-[11px] uppercase tracking-wider"
-            >
-              Edit Details
-            </Button>
-          </Link>
+
           <AlertDialog>
-            <AlertDialogTrigger
-              render={
-                <Button
-                  disabled={isDeleting}
-                  variant="destructive"
-                  size="sm"
-                  className="rounded-micro font-medium font-sans text-[11px] uppercase tracking-wider"
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    size="icon-sm"
+                    className="rounded-micro border-line"
+                  >
+                    <RiMoreLine className="h-4 w-4 text-ink-faint" />
+                  </Button>
+                }
+              />
+              <DropdownMenuContent align="end" className="w-40">
+                <Link href={`/dashboard/jobs/${id}/edit` as Route}>
+                  <DropdownMenuItem>
+                    <RiEditLine className="mr-base size-3.5" />
+                    Edit Details
+                  </DropdownMenuItem>
+                </Link>
+                <DropdownMenuSeparator />
+                <AlertDialogTrigger
+                  render={
+                    <DropdownMenuItem
+                      variant="destructive"
+                      disabled={isDeleting}
+                    >
+                      <RiDeleteBin7Line className="mr-base size-3.5" />
+                      {isDeleting ? "Deleting..." : "Delete Job"}
+                    </DropdownMenuItem>
+                  }
                 />
-              }
-            >
-              {isDeleting ? "Deleting..." : "Delete Job"}
-            </AlertDialogTrigger>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete Job Posting</AlertDialogTitle>
@@ -216,13 +239,6 @@ export function JobDetail({ id }: JobDetailProps) {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-          <Button
-            variant="outline"
-            size="icon-sm"
-            className="rounded-micro border-line"
-          >
-            <RiMoreLine className="h-4 w-4 text-ink-faint" />
-          </Button>
         </div>
       </div>
 

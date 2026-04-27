@@ -103,7 +103,7 @@ export const jobRouter = router({
         throw new Error("Job not found");
       }
 
-      // Check if requirements or skills changed
+      // check if requirements or skills changed
       const reqsChanged =
         input.data.requirements &&
         JSON.stringify(input.data.requirements) !==
@@ -113,7 +113,7 @@ export const jobRouter = router({
         JSON.stringify(input.data.skills) !== JSON.stringify(existing.skills);
 
       if (reqsChanged || skillsChanged) {
-        // Increment version and mark screenings as outdated
+        // increment version and mark screenings as outdated
         const newVersion = (existing.version || 1) + 1;
         await Job.findByIdAndUpdate(input.id, {
           ...input.data,
@@ -177,7 +177,7 @@ export const jobRouter = router({
         _id: { $in: input.applicantIds },
       });
 
-      // Simple comparison mapper
+      // simple comparison mapper
       return applicants.map((a) => {
         const s = screenings.find((sr) => sr.applicantId.toString() === a.id);
         return {
@@ -230,7 +230,7 @@ export const jobRouter = router({
           count++;
         }
 
-        // Skill gaps analysis
+        // skill gaps analysis
         for (const skill of s.skillBreakdown) {
           if (!skillCounts[skill.skill]) {
             skillCounts[skill.skill] = { present: 0, total: 0 };

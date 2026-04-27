@@ -45,7 +45,7 @@ export const HiringPipeline: React.FC = () => {
           </marker>
         </defs>
 
-        {/* Connection Paths */}
+        {/* connection paths */}
         <g className="stroke-line" fill="none" strokeWidth="1.5">
           <path d="M92,90 C197,90 197,250 302,250" />
           <path d="M92,170 C197,170 197,250 302,250" />
@@ -57,7 +57,7 @@ export const HiringPipeline: React.FC = () => {
           <path d="M378,250 C483,250 483,330 588,330" />
         </g>
 
-        {/* Animated Particles - Input */}
+        {/* animated particles - input */}
         <g fill="var(--status-warning-text)">
           <circle r="3.5">
             <animateMotion
@@ -141,7 +141,7 @@ export const HiringPipeline: React.FC = () => {
           </circle>
         </g>
 
-        {/* Animated Particles - Output */}
+        {/* animated particles - output */}
         <g fill="var(--status-success-text)">
           <circle r="3.5">
             <animateMotion
@@ -193,7 +193,7 @@ export const HiringPipeline: React.FC = () => {
           </circle>
         </g>
 
-        {/* Nodes */}
+        {/* nodes */}
         <g className="fill-surface stroke-line-medium" strokeWidth="0.5">
           <circle cx="66" cy="90" r="30" />
           <circle cx="66" cy="170" r="30" />
@@ -206,7 +206,7 @@ export const HiringPipeline: React.FC = () => {
           <circle cx="614" cy="330" r="30" />
         </g>
 
-        {/* Hub */}
+        {/* hub */}
         <circle
           cx="340"
           cy="250"
@@ -215,7 +215,7 @@ export const HiringPipeline: React.FC = () => {
           strokeWidth="1"
         />
 
-        {/* Icons */}
+        {/* icons */}
         <g
           className="stroke-ink-muted"
           fill="none"
@@ -288,7 +288,7 @@ export const HiringPipeline: React.FC = () => {
           </g>
         </g>
 
-        {/* Hub Mark */}
+        {/* hub mark */}
         <g transform="translate(328,238)">
           <path
             d="M12 1 L14.2 9.5 L22.8 12 L14.2 14.5 L12 23 L9.8 14.5 L1.2 12 L9.8 9.5 Z"
@@ -297,7 +297,7 @@ export const HiringPipeline: React.FC = () => {
           />
         </g>
 
-        {/* Labels */}
+        {/* labels */}
         <g
           className="fill-ink-muted font-medium font-sans text-[13px]"
           textAnchor="middle"

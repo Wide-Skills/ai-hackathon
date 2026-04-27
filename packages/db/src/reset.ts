@@ -12,7 +12,7 @@ async function reset() {
 
   console.log("Resetting database...");
 
-  // ✅ 1. Clear YOUR app collections (mongoose models)
+  // ✅ 1. clear your app collections (mongoose models)
   const collections = [
     { name: "Applicants", model: Applicant },
     { name: "Jobs", model: Job },
@@ -29,7 +29,7 @@ async function reset() {
     }
   }
 
-  // ✅ 2. Clear Better Auth collections (NO mongoose models)
+  // ✅ 2. clear better auth collections (no mongoose models)
   const db = mongoose.connection.db;
 
   const authCollections = [

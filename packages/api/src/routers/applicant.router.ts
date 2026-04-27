@@ -28,7 +28,6 @@ export const applicantRouter = router({
     .mutation(async ({ input }) => {
       const job = await ensureJobExists(input.jobId);
 
-      // 1. If we have resume text, try to extract a full profile
       let extractedData: any = null;
       if (input.resumeText) {
         try {
@@ -42,7 +41,6 @@ export const applicantRouter = router({
         }
       }
 
-      // 2. Build applicant with extracted data or safe fallbacks
       const applicant = new Applicant({
         jobId: input.jobId,
         firstName: input.firstName,
@@ -127,7 +125,6 @@ export const applicantRouter = router({
       await applicant.save();
       await syncJobMetrics(input.jobId);
 
-      // 3. Save screening result if AI was successful
       if (extractedData) {
         const screeningPayload = {
           ...extractedData,
@@ -142,14 +139,12 @@ export const applicantRouter = router({
         );
       }
 
-      // 4. Send confirmation email (non-blocking)
       sendApplicationReceivedEmail({
         email: input.email,
         firstName: input.firstName,
         jobTitle: job.title,
       }).catch((err) => console.error("Email error:", err));
 
-      // 5. If no AI screening was done yet but we have resume text, trigger it in background
       if (!extractedData && input.resumeText) {
         enqueueScreening({
           applicantId: applicant.id,
@@ -265,7 +260,7 @@ export const applicantRouter = router({
           autoReject: job.autoRejectThreshold,
           needsReview: job.needsReviewThreshold,
         }),
-        availability: { status: "Available", type: "Full-time" }, // Default
+        availability: { status: "Available", type: "Full-time" }, // default
         screening: {
           ...validatedData,
           languages: validatedData.languages || [],
@@ -373,7 +368,7 @@ export const applicantRouter = router({
                 role: "Unknown",
               },
             ],
-            availability: { status: "Available", type: "Full-time" }, // Default
+            availability: { status: "Available", type: "Full-time" },
           });
           await applicant.save();
           successCount++;
@@ -446,7 +441,11 @@ export const applicantRouter = router({
       }
 
       const [applicants, totalCount] = await Promise.all([
-        Applicant.find(query).sort(sort).skip(skip).limit(limit),
+        Applicant.find(query)
+          .select("-resumeText")
+          .sort(sort)
+          .skip(skip)
+          .limit(limit),
         Applicant.countDocuments(query),
       ]);
 
@@ -482,7 +481,11 @@ export const applicantRouter = router({
       }
 
       const [applicants, totalCount] = await Promise.all([
-        Applicant.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
+        Applicant.find(query)
+          .select("-resumeText")
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit),
         Applicant.countDocuments(query),
       ]);
 
@@ -702,7 +705,7 @@ ${skills.map((s) => `- ${s}`).join("\n")}
         await applicant.save();
         generated++;
 
-        // Trigger AI screening in the background
+        // trigger ai screening in the background
         enqueueScreening({
           applicantId: applicant.id,
           jobId: job.id,

@@ -15,28 +15,36 @@ const recommendationConfig: Record<
   string,
   {
     label: string;
-    variant: "success" | "info" | "warning" | "destructive";
+    variant:
+      | "success"
+      | "info"
+      | "warning"
+      | "destructive"
+      | "success-subtle"
+      | "warning-subtle"
+      | "destructive-subtle"
+      | "ghost";
     icon: any;
   }
 > = {
   "Strongly Recommend": {
     label: "Strongly Recommend",
-    variant: "success",
+    variant: "success-subtle",
     icon: RiCheckboxCircleLine,
   },
   Recommend: {
     label: "Recommend",
-    variant: "info",
+    variant: "ghost",
     icon: RiThumbUpLine,
   },
   Consider: {
     label: "Consider",
-    variant: "warning",
+    variant: "warning-subtle",
     icon: RiThumbUpLine,
   },
   "Not Recommended": {
     label: "Not Recommended",
-    variant: "destructive",
+    variant: "destructive-subtle",
     icon: RiCloseCircleLine,
   },
 };
@@ -73,7 +81,7 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
         size="none"
       >
         <div className="flex flex-col gap-base sm:flex-row sm:items-start sm:gap-hero">
-          {/* Score Side */}
+          {/* score side */}
           <div className="flex shrink-0 flex-row items-center justify-between gap-base border-line border-b pb-base sm:w-20 sm:flex-col sm:border-r sm:border-b-0 sm:py-1 sm:pr-comfortable sm:pb-0">
             <div className="flex items-baseline gap-1">
               <div

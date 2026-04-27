@@ -42,7 +42,7 @@ const recommendationConfig = {
     icon: RiThumbUpLine,
   },
   "Not Recommended": {
-    variant: "destructive" as const,
+    variant: "destructive-subtle" as const,
     icon: RiCloseCircleLine,
   },
 };

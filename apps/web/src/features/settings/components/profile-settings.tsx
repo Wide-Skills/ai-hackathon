@@ -14,7 +14,7 @@ export function ProfileSettings() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
-  // Update local state when session loads
+  // update local state when session loads
   useState(() => {
     if (session?.user?.name) {
       const parts = session.user.name.split(" ");

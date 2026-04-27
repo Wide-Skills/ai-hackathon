@@ -74,7 +74,15 @@ interface ApplicantsTableProps {
 
 const statusConfig: Record<
   ApplicationStatus,
-  { label: string; variant: "secondary" | "info" | "success" | "destructive" }
+  {
+    label: string;
+    variant:
+      | "secondary"
+      | "info"
+      | "success"
+      | "destructive"
+      | "destructive-subtle";
+  }
 > = {
   pending: {
     label: "Pending",
@@ -90,7 +98,7 @@ const statusConfig: Record<
   },
   rejected: {
     label: "Rejected",
-    variant: "destructive",
+    variant: "destructive-subtle",
   },
   hired: {
     label: "Hired",
@@ -98,7 +106,7 @@ const statusConfig: Record<
   },
   failed: {
     label: "Failed",
-    variant: "destructive",
+    variant: "destructive-subtle",
   },
 };
 

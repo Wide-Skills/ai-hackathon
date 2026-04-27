@@ -23,7 +23,7 @@ export default async function AuthLayout({
     <main className="relative min-h-screen bg-canvas selection:bg-primary-alpha selection:text-primary lg:grid lg:grid-cols-[440px_1fr]">
       <AuthVisuals />
 
-      {/* Main Form Content */}
+      {/* main form content */}
       <div className="relative flex min-h-screen flex-col justify-center bg-bg px-6 sm:px-8 lg:px-24 xl:px-32">
         <Link
           href="/"

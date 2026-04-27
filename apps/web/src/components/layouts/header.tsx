@@ -117,7 +117,7 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-base">
-        {/* Command Palette Trigger */}
+        {/* command palette trigger */}
         <div className="relative hidden w-80 md:block">
           <button
             onClick={() => setOpen(true)}
@@ -216,7 +216,7 @@ export default function Header() {
           </CommandList>
         </CommandDialog>
 
-        {/* Action Tray */}
+        {/* action tray */}
         <div className="ml-small flex items-center gap-small border-line border-l pl-base">
           <Link href={"/dashboard/ai-tasks" as Route}>
             <button className="relative flex h-10 w-10 items-center justify-center rounded-standard border border-line bg-surface text-ink-faint transition-all hover:bg-bg-alt active:scale-[0.95]">

@@ -156,7 +156,7 @@ export type ApplicantScreening = z.infer<typeof ApplicantScreeningSchema>;
 
 export const ApplicantSchema = CreateApplicantSchema.extend({
   id: z.string(),
-  name: z.string().optional(), // Derived or convenience
+  name: z.string().optional(), // derived or convenience
   appliedAt: z.string().or(z.date()).optional(),
   status: ApplicationStatusSchema.default("pending"),
   screening: ApplicantScreeningSchema.optional(),

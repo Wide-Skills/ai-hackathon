@@ -47,10 +47,10 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
     try {
       setParsingPdf(true);
 
-      // Dynamically import pdfjs-dist only on the client
+      // dynamically import pdfjs-dist only on the client
       const pdfjsLib = await import("pdfjs-dist");
 
-      // Configure worker
+      // configure worker
       pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
       const arrayBuffer = await file.arrayBuffer();
@@ -174,7 +174,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
 
       <main className="container-tight pt-32 pb-24">
         <div className="grid grid-cols-1 gap-hero lg:grid-cols-3">
-          {/* Job Details */}
+          {/* job details */}
           <div className="space-y-section-gap lg:col-span-2">
             <div className="space-y-base">
               <Badge
@@ -244,7 +244,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
             </div>
           </div>
 
-          {/* Application Form */}
+          {/* application form */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-comfortable rounded-card border border-line bg-surface p-comfortable shadow-none">
               <div className="border-line border-b pb-base">

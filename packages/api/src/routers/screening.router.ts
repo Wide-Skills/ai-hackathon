@@ -18,8 +18,11 @@ export async function logTaskStep(params: {
   jobId?: string;
   applicantId?: string;
   details?: any;
+  startTime?: number;
 }) {
   try {
+    const duration = params.startTime ? Date.now() - params.startTime : undefined;
+
     await TaskLog.create({
       taskId: params.taskId,
       type: params.type,
@@ -29,6 +32,7 @@ export async function logTaskStep(params: {
       jobId: params.jobId,
       applicantId: params.applicantId,
       details: params.details,
+      duration,
     });
   } catch (err) {
     console.error("[TaskLog] Failed to create log:", err);
@@ -330,7 +334,7 @@ export async function evaluateAndExtractProfile(
     applicant instanceof mongoose.Document ? applicant.toObject() : applicant;
   const jobData = job instanceof mongoose.Document ? job.toObject() : job;
 
-  // Safety: Truncate extremely large resumes to prevent token bloat
+  // safety: truncate extremely large resumes to prevent token bloat
   const MAX_RESUME_CHARS = 15000;
   if (applicantData.resumeText && applicantData.resumeText.length > MAX_RESUME_CHARS) {
     console.warn(`[Screening] Truncating resume for ${applicantData.firstName} (Original: ${applicantData.resumeText.length} chars)`);
@@ -342,12 +346,12 @@ export async function evaluateAndExtractProfile(
     skills: applicantData.skills || [],
   });
 
-  // Calculate hash of the prompt and model to use as cache key
+  // calculate hash of the prompt and model to use as cache key
   const promptHash = createHash("md5")
     .update(`${WORKING_MODEL}:${prompt}`)
     .digest("hex");
 
-  // Check cache first
+  // check cache first
   if (!options.skipCache) {
     const cachedResult = await ScreeningCache.findOne({ promptHash });
     if (cachedResult) {
@@ -380,7 +384,7 @@ export async function evaluateAndExtractProfile(
     throw new Error("AI failed to generate a valid screening result");
   }
 
-  // Store in cache for future use
+  // store in cache for future use
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + CACHE_TTL_DAYS);
 
@@ -394,7 +398,7 @@ export async function evaluateAndExtractProfile(
 }
 
 /**
- * Internal helper to run screening logic with automatic retries.
+ * internal helper to run screening logic with automatic retries.
  */
 export async function runAIInternal(params: {
   applicantId: string;
@@ -459,6 +463,7 @@ export async function runAIInternal(params: {
         applicantId,
       });
 
+      const extractionStart = Date.now();
       const validatedData = await evaluateAndExtractProfile(job, applicant, {
         skipCache,
       });
@@ -471,6 +476,7 @@ export async function runAIInternal(params: {
         status: "success",
         jobId,
         applicantId,
+        startTime: extractionStart,
         details: {
           matchScore: validatedData.matchScore,
           recommendation: validatedData.recommendation,
@@ -560,7 +566,7 @@ export async function runAIInternal(params: {
       lastError = error;
       console.error(`[Screening] Attempt ${attempt} failed:`, error.message);
 
-      // Wait before retrying (exponential backoff)
+      // wait before retrying (exponential backoff)
       if (attempt < maxRetries) {
         const delay = attempt * 2000;
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -568,7 +574,7 @@ export async function runAIInternal(params: {
     }
   }
 
-  // If we reach here, all retries failed
+  // if we reach here, all retries failed
   await logTaskStep({
     taskId,
     type: "screening",
@@ -689,7 +695,7 @@ export const screeningRouter = router({
         triggeredByUserId: ctx.session.user.id,
         triggererEmail: ctx.session.user.email,
         triggererName: ctx.session.user.name ?? undefined,
-        skipCache: true, // Rescreening should ALWAYS bypass cache
+        skipCache: true, // rescreening should always bypass cache
       });
     }),
 
@@ -721,7 +727,7 @@ export const screeningRouter = router({
         });
       }
 
-      // If manual score is provided, we might want to update the applicant status too.
+      // if manual score is provided, we might want to update the applicant status too.
       if (input.manualScore !== undefined) {
         const job = await Job.findById(screening.jobId);
         if (job) {

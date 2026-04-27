@@ -24,7 +24,7 @@ const applicantSchema = new Schema(
     userId: { type: String, ref: "User" },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    name: { type: String }, // For convenience, though we have first/last
+    name: { type: String }, // for convenience, though we have first/last
     email: { type: String, required: true },
     headline: { type: String, required: true },
     bio: { type: String },
@@ -121,6 +121,12 @@ const applicantSchema = new Schema(
   },
   { timestamps: true },
 );
+
+// Optimize performance for common queries
+applicantSchema.index({ jobId: 1 });
+applicantSchema.index({ status: 1 });
+applicantSchema.index({ email: 1 });
+applicantSchema.index({ firstName: "text", lastName: "text", headline: "text" });
 
 export interface ApplicantDocument
   extends Omit<ApplicantRecord, "id" | "jobId" | "createdAt" | "updatedAt"> {

@@ -8,7 +8,7 @@ import {
   buildWelcomeEmail,
 } from "./email-templates";
 
-// Initialize Nodemailer transporter with Brevo SMTP
+// brevo smtp transporter
 const transporter = nodemailer.createTransport({
   host: env.SMTP_HOST,
   port: env.SMTP_PORT,

@@ -48,7 +48,7 @@ export function InteractivePerformanceChart({
       { date: string; appliedCount: number; screenedCount: number }
     > = {};
 
-    // Last 14 days
+    // last 14 days
     for (let i = 13; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);

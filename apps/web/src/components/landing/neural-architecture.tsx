@@ -19,14 +19,14 @@ export const AIArchitecture: React.FC = () => {
         xmlns="http://www.w3.org/2000/svg"
         className="h-full w-full max-w-[340px]"
       >
-        {/* Simple Connection Lines */}
+        {/* simple connection lines */}
         <g className="stroke-line" strokeWidth="1.5">
           {nodes.map((node, i) => (
             <path key={i} d={`M200,200 L${node.x},${node.y}`} />
           ))}
         </g>
 
-        {/* Flowing Particles out of Center (Success Green) */}
+        {/* flowing particles out of center (success green) */}
         <g fill="var(--status-success-text)">
           {nodes.map((node, i) => (
             <circle key={`p1-${i}`} r="3">
@@ -50,7 +50,7 @@ export const AIArchitecture: React.FC = () => {
           ))}
         </g>
 
-        {/* Central Hub */}
+        {/* central hub */}
         <g>
           <circle
             cx="200"
@@ -76,7 +76,7 @@ export const AIArchitecture: React.FC = () => {
           <circle cx="200" cy="200" r="6" className="fill-primary" />
         </g>
 
-        {/* Analysis Nodes */}
+        {/* analysis nodes */}
         {nodes.map((node, i) => (
           <g key={i}>
             <circle
@@ -98,7 +98,7 @@ export const AIArchitecture: React.FC = () => {
           </g>
         ))}
 
-        {/* Labels for central hub */}
+        {/* labels for central hub */}
         <text
           x="200"
           y="254"

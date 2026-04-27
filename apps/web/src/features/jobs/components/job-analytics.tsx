@@ -71,7 +71,7 @@ export function JobAnalytics({ jobId }: JobAnalyticsProps) {
       className="space-y-section-gap"
     >
       <div className="grid grid-cols-1 gap-hero lg:grid-cols-2">
-        {/* Score Distribution */}
+        {/* score distribution */}
         <Card
           variant="default"
           className="overflow-hidden border-line shadow-none transition-all hover:border-line-medium"
@@ -133,7 +133,7 @@ export function JobAnalytics({ jobId }: JobAnalyticsProps) {
           </div>
         </Card>
 
-        {/* Skill Gaps */}
+        {/* skill gaps */}
         <Card
           variant="default"
           className="overflow-hidden border-line shadow-none transition-all hover:border-line-medium"
@@ -184,7 +184,7 @@ export function JobAnalytics({ jobId }: JobAnalyticsProps) {
         </Card>
       </div>
 
-      {/* Average Attribute Scores */}
+      {/* average attribute scores */}
       <Card
         variant="default"
         className="overflow-hidden border-line shadow-none transition-all hover:border-line-medium"

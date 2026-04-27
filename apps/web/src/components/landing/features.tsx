@@ -236,7 +236,7 @@ export const Features: React.FC = () => {
   return (
     <section id="features">
       <div className="container-meridian">
-        {/* Header */}
+        {/* header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -261,9 +261,9 @@ export const Features: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* Bento grid */}
+        {/* bento grid */}
         <div className="grid grid-cols-1 gap-[1px] overflow-hidden rounded-card border border-line bg-line md:grid-cols-12">
-          {/* Hero cell — 01 AI Ranking */}
+          {/* hero cell — 01 ai ranking */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -287,7 +287,7 @@ export const Features: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Remaining cells */}
+          {/* remaining cells */}
           {cells.map((cell) => (
             <BentoCell key={cell.tag} {...cell} />
           ))}

@@ -3,23 +3,23 @@ import type { Logger, LoggerOptions } from "pino";
 
 import pino from "pino";
 
-// Log levels: trace, debug, info, warn, error, fatal
+// log levels: trace, debug, info, warn, error, fatal
 const logLevel = env.LOG_LEVEL;
 const isDevelopment = env.NODE_ENV !== "production";
 
-// Create logger options
+// create logger options
 const loggerOptions: LoggerOptions = {
   level: logLevel,
-  // Add timestamp formatting
+  // add timestamp formatting
   timestamp: pino.stdTimeFunctions.isoTime,
-  // Base context for all logs
+  // base context for all logs
   base: {
     env: env.NODE_ENV,
   },
 };
 
-// Use pino-pretty in development for readable logs
-// In production, use raw JSON for better performance and log aggregation
+// use pino-pretty in development for readable logs
+// in production, use raw json for better performance and log aggregation
 let logger: Logger;
 
 if (isDevelopment && env.PINO_PRETTY !== "false") {
@@ -40,31 +40,31 @@ if (isDevelopment && env.PINO_PRETTY !== "false") {
 }
 
 /**
- * Create a child logger with additional context
- * Useful for adding request IDs, user IDs, or other contextual information
+ * create a child logger with additional context
+ * useful for adding request ids, user ids, or other contextual information
  *
- * @example
- * const requestLogger = createChildLogger({ requestId: 'abc123', userId: 'user456' });
- * requestLogger.info('Processing request');
+ @example 
+ * const requestlogger = createchildlogger({ requestid: 'abc123', userid: 'user456' });
+ * requestlogger.info('processing request');
  */
 export function createChildLogger(bindings: Record<string, unknown>): Logger {
   return logger.child(bindings);
 }
 
 /**
- * Log levels explained:
- * - trace: Most detailed logging, typically disabled in production
- * - debug: Detailed information useful during development
- * - info: General information about application flow
- * - warn: Warning messages for potentially problematic situations
- * - error: Error messages for failures that don't stop the application
- * - fatal: Critical errors that may cause the application to terminate
+ * log levels explained:
+ * - trace: most detailed logging, typically disabled in production
+ * - debug: detailed information useful during development
+ * - info: general information about application flow
+ * - warn: warning messages for potentially problematic situations
+ * - error: error messages for failures that don't stop the application
+ * - fatal: critical errors that may cause the application to terminate
  *
- * @example
- * logger.info('Server started');
- * logger.info({ port: 3000 }, 'Server started on port');
- * logger.error({ err: error }, 'Failed to process request');
- * logger.debug({ userId, action }, 'User action logged');
+ @example 
+ * logger.info('server started');
+ * logger.info({ port: 3000 }, 'server started on port');
+ * logger.error({ err: error }, 'failed to process request');
+ * logger.debug({ userid, action }, 'user action logged');
  */
 export { logger };
 

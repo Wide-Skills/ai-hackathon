@@ -14,7 +14,7 @@ export function buildApplicationReceivedEmail({
     heading: "Application Received",
     intro: `Hi ${firstName}, thank you for applying for the ${jobTitle} position. Our AI-powered screening assistant is currently reviewing your profile against the job requirements.`,
     ctaLabel: "View Application Status",
-    ctaUrl: "#", // Placeholder until we have a candidate portal
+    ctaUrl: "#", // placeholder until we have a candidate portal
     outro: "We will be in touch shortly with an update.",
   });
 }

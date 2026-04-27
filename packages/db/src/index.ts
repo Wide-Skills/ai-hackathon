@@ -1,7 +1,11 @@
 import { env } from "@ai-hackathon/env/server";
 import mongoose from "mongoose";
 
-await mongoose.connect(env.DATABASE_URL).catch((error) => {
+await mongoose.connect(env.DATABASE_URL, {
+  maxPoolSize: 10,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+}).catch((error) => {
   console.log("Error connecting to database:", error);
 });
 

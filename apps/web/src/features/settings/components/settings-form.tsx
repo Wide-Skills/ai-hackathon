@@ -31,7 +31,7 @@ export function SettingsForm() {
   return (
     <div className="w-full pb-section-padding">
       <div className="flex flex-col gap-hero lg:flex-row">
-        {/* Settings Navigation */}
+        {/* settings navigation */}
         <div className="w-full flex-shrink-0 lg:w-64">
           <nav className="scrollbar-hide flex gap-1 overflow-x-auto pb-4 lg:flex-col lg:overflow-visible lg:pb-0">
             {tabs.map((tab) => {
@@ -68,7 +68,7 @@ export function SettingsForm() {
           </nav>
         </div>
 
-        {/* Content Area */}
+        {/* content area */}
         <div className="max-w-[800px] flex-1">
           <Card
             variant="default"

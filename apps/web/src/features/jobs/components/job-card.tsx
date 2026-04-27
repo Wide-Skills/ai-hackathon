@@ -65,7 +65,7 @@ export function JobCard({ job }: JobCardProps) {
       className="group cursor-pointer overflow-hidden border-line transition-all duration-200 hover:border-line-medium"
       size="none"
     >
-      {/* SECTION 1: Identity & Primary Info */}
+      {/* section 1: identity & primary info */}
       <CardHeader className="flex flex-row items-center justify-between bg-bg-alt/20 px-comfortable py-base">
         <div className="flex flex-col gap-micro">
           <div className="flex items-center gap-base">
@@ -104,7 +104,7 @@ export function JobCard({ job }: JobCardProps) {
         </div>
       </CardHeader>
 
-      {/* SECTION 2: Hierarchal Metadata Band */}
+      {/* section 2: hierarchal metadata band */}
       <div className="flex flex-wrap items-center gap-x-base gap-y-2 border-line border-b bg-bg/10 px-comfortable py-3">
         <div className="flex items-center gap-small font-medium font-sans text-[11px] text-ink-muted uppercase tracking-wider">
           <RiBuildingLine className="size-3.5 opacity-40" />
@@ -122,7 +122,7 @@ export function JobCard({ job }: JobCardProps) {
         </div>
       </div>
 
-      {/* SECTION 3: Content & Context */}
+      {/* section 3: content & context */}
       <div className="flex flex-col justify-between gap-hero space-y-medium p-comfortable md:flex-row md:items-start">
         <div className="flex-1 space-y-base">
           <p className="line-clamp-2 max-w-[70ch] font-light font-sans text-[15px] text-ink-muted leading-relaxed">
@@ -142,7 +142,7 @@ export function JobCard({ job }: JobCardProps) {
           </div>
         </div>
 
-        {/* SECTION 4: Performance Metrics */}
+        {/* section 4: performance metrics */}
         <div className="flex shrink-0 items-center gap-hero border-line border-l py-1 pl-comfortable">
           <div className="flex min-w-[80px] flex-col">
             <span className="font-serif text-[26px] text-primary leading-none">
@@ -163,7 +163,7 @@ export function JobCard({ job }: JobCardProps) {
         </div>
       </div>
 
-      {/* SECTION 5: Footer Progress & Action */}
+      {/* section 5: footer progress & action */}
       <div className="flex flex-col items-center justify-between gap-base border-line border-t bg-bg-alt/10 px-comfortable py-base lg:flex-row">
         <div className="flex w-full flex-1 items-center gap-base lg:w-auto">
           <div className="flex w-full max-w-[300px] items-center gap-base">

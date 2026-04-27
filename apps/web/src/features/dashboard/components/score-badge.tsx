@@ -13,7 +13,7 @@ export function ScoreBadge({ score }: ScoreBadgeProps) {
         ? ("info" as const)
         : score >= 55
           ? ("warning" as const)
-          : ("destructive" as const);
+          : ("destructive-subtle" as const);
 
   return (
     <Badge

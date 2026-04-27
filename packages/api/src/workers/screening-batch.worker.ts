@@ -24,14 +24,12 @@ export const batchScreeningWorker = new Worker<BatchScreeningJobData>(
       `[Batch Screening] Starting batch job ${job.id} for ${applicantIds.length} applicants`,
     );
 
-    // We update progress to 0 initially
     await job.updateProgress({
       total: applicantIds.length,
       completed: 0,
       failed: 0,
     });
 
-    // Add all child jobs to the screening queue
     const childJobs = await Promise.all(
       applicantIds.map((applicantId: string) =>
         screeningQueue.add(
@@ -53,16 +51,12 @@ export const batchScreeningWorker = new Worker<BatchScreeningJobData>(
       ),
     );
 
-    // Wait for all child jobs to complete
     let completed = 0;
     let failed = 0;
 
-    // We could use BullMQ Flow to track this automatically,
-    // but for simplicity we will poll the child jobs' state until they are all done.
     const childJobIds = childJobs.map((j) => j.id!);
 
     while (completed + failed < childJobIds.length) {
-      // Sleep for a bit
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const states = await Promise.all(
@@ -90,7 +84,7 @@ export const batchScreeningWorker = new Worker<BatchScreeningJobData>(
   },
   {
     connection,
-    concurrency: 1, // Process one batch at a time
+    concurrency: 1,
   },
 );
 

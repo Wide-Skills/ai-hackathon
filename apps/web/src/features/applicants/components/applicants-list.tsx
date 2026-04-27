@@ -52,7 +52,15 @@ import { IngestCandidatesDialog } from "./ingest-candidates-dialog";
 
 const statusConfig: Record<
   ApplicationStatus,
-  { label: string; variant: "secondary" | "info" | "success" | "destructive" }
+  {
+    label: string;
+    variant:
+      | "secondary"
+      | "info"
+      | "success"
+      | "destructive"
+      | "destructive-subtle";
+  }
 > = {
   pending: {
     label: "Pending",
@@ -68,7 +76,7 @@ const statusConfig: Record<
   },
   rejected: {
     label: "Rejected",
-    variant: "destructive",
+    variant: "destructive-subtle",
   },
   hired: {
     label: "Hired",
@@ -76,7 +84,7 @@ const statusConfig: Record<
   },
   failed: {
     label: "Failed",
-    variant: "destructive",
+    variant: "destructive-subtle",
   },
 };
 
@@ -217,7 +225,7 @@ export function ApplicantsList() {
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
 
-  // State
+  // state
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const debouncedSearch = useDebounce(search, 300);
   const [statusFilter, setStatusFilter] = useState<string>(
@@ -242,7 +250,7 @@ export function ApplicantsList() {
   );
   const [limit] = useState(10);
 
-  // Sync state to URL
+  // sync state to url
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     let changed = false;
@@ -331,7 +339,7 @@ export function ApplicantsList() {
       setSortField(field);
       setSortDir("desc");
     }
-    setPage(1); // Reset to first page on sort change
+    setPage(1); // reset to first page on sort change
   };
 
   const isLoading =
@@ -373,7 +381,7 @@ export function ApplicantsList() {
 
   return (
     <div className="w-full space-y-section-padding pb-section-padding">
-      {/* Search & Filters */}
+      {/* search & filters */}
       <div className="flex flex-col gap-base border-line border-b pb-section-gap lg:flex-row lg:items-center">
         <div className="relative w-full lg:flex-1">
           <div className="group flex h-10 items-center gap-3 rounded-standard border border-line bg-bg2/40 px-3.5 transition-all focus-within:border-primary/20 focus-within:bg-surface">
@@ -461,7 +469,7 @@ export function ApplicantsList() {
         </div>
       </div>
 
-      {/* Grid Headers & Sorting */}
+      {/* grid headers & sorting */}
       {view === "grid" && (
         <div className="mb-small flex items-center justify-between px-comfortable">
           <div className="flex items-center gap-comfortable">
@@ -484,7 +492,7 @@ export function ApplicantsList() {
         </div>
       )}
 
-      {/* Candidate View */}
+      {/* candidate view */}
       {view === "grid" ? (
         <div className="grid grid-cols-1 gap-base">
           {applicantsData.map((applicant, i) => (

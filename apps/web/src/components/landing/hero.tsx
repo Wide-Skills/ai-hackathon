@@ -11,7 +11,7 @@ export const Hero: React.FC = () => {
     <section className="relative pt-hero pb-section-padding">
       <div className="container-meridian">
         <div className="flex flex-col items-center gap-hero lg:flex-row">
-          {/* Content side */}
+          {/* content side */}
           <div className="max-w-[500px] flex-[0.8]">
             <motion.div
               initial={{ opacity: 0, y: 15 }}

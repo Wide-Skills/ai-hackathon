@@ -130,7 +130,7 @@ export function DashboardOverview() {
   return (
     <TooltipProvider>
       <div className="w-full space-y-section-padding pb-section-padding">
-        {/* Primary Metrics Layer */}
+        {/* primary metrics layer */}
         <section className="grid grid-cols-1 gap-comfortable md:grid-cols-2 lg:grid-cols-4">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -181,11 +181,11 @@ export function DashboardOverview() {
           </motion.div>
         </section>
 
-        {/* Strategic Layer */}
+        {/* strategic layer */}
         <div className="grid grid-cols-1 items-start gap-comfortable lg:grid-cols-12">
-          {/* Main Column */}
+          {/* main column */}
           <div className="space-y-comfortable lg:col-span-8">
-            {/* Top Talent */}
+            {/* top talent */}
             <Card variant="default" size="none" className="overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
@@ -245,7 +245,7 @@ export function DashboardOverview() {
               </div>
             </Card>
 
-            {/* Active Jobs */}
+            {/* active jobs */}
             <Card variant="default" size="none" className="overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
@@ -325,9 +325,9 @@ export function DashboardOverview() {
             </Card>
           </div>
 
-          {/* Side Column */}
+          {/* side column */}
           <div className="space-y-comfortable lg:col-span-4">
-            {/* Health Card */}
+            {/* health card */}
             <Card variant="default" className="overflow-hidden" size="none">
               <CardHeader>
                 <CardDescription>Metrics</CardDescription>
@@ -384,7 +384,7 @@ export function DashboardOverview() {
               </div>
             </Card>
 
-            {/* Activity Feed */}
+            {/* activity feed */}
             <Card
               variant="default"
               size="none"

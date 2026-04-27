@@ -37,6 +37,10 @@ const screeningSchema = new Schema(
   { timestamps: true },
 );
 
+// Performance indexes
+screeningSchema.index({ applicantId: 1 });
+screeningSchema.index({ jobId: 1 });
+
 export interface ScreeningResultDocument
   extends Omit<
     ScreeningResultRecord,
