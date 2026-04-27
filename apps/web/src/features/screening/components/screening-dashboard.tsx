@@ -1,8 +1,15 @@
 "use client";
 
-import { RiLoader2Line, RiRefreshLine } from "@remixicon/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { RiBrainLine, RiLoader2Line, RiRefreshLine } from "@remixicon/react";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import type { Route } from "next";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -25,7 +32,7 @@ import {
 } from "@/components/ui/select";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { cn } from "@/lib/utils";
-import { invalidateHiringData, trpc } from "@/utils/trpc";
+import { invalidateHiringData, trpc, trpcClient } from "@/utils/trpc";
 import { ScreeningCard } from "./screening-card";
 
 export function ScreeningDashboard() {
@@ -34,15 +41,18 @@ export function ScreeningDashboard() {
   const [progress, setProgress] = useState(0);
   const queryClient = useQueryClient();
 
-  const applicantsQuery = useQuery(
-    trpc.applicants.list.queryOptions({ page: 1, limit: 100 }),
-  );
-  const jobsQuery = useQuery(
-    trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
-  );
+  const applicantsQuery = useQuery({
+    ...trpc.applicants.list.queryOptions({ page: 1, limit: 100 }),
+    placeholderData: keepPreviousData,
+  });
 
-  const screenMutation = useMutation(
-    trpc.screenings.generate.mutationOptions(),
+  const jobsQuery = useQuery({
+    ...trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
+    placeholderData: keepPreviousData,
+  });
+
+  const batchScreenMutation = useMutation(
+    trpc.screenings.batchGenerate.mutationOptions(),
   );
 
   const applicants = applicantsQuery.data?.items ?? [];
@@ -85,35 +95,87 @@ export function ScreeningDashboard() {
       toast.info("No pending candidates to screen.");
       return;
     }
+
+    // Group applicants by jobId if we are screening "all" jobs, because batchGenerate takes a single jobId
+    // To simplify, we will just use the first pending's jobId if "all" is selected
+    // Note: The ideal solution would group and spawn multiple batches, but here we'll just batch per job
+    const groupedByJob = pendingToScreen.reduce(
+      (acc, a) => {
+        acc[a.jobId] = acc[a.jobId] || [];
+        acc[a.jobId].push(a.id);
+        return acc;
+      },
+      {} as Record<string, string[]>,
+    );
+
     setRunning(true);
     setProgress(0);
-    let completed = 0;
-    const errors: string[] = [];
-    for (const applicant of pendingToScreen) {
-      try {
-        await screenMutation.mutateAsync({
-          applicantId: applicant.id,
-          jobId: applicant.jobId,
+
+    let totalCompleted = 0;
+    let totalFailed = 0;
+    const totalToScreen = pendingToScreen.length;
+
+    try {
+      for (const [jobId, applicantIds] of Object.entries(groupedByJob)) {
+        const { batchJobId } = await batchScreenMutation.mutateAsync({
+          jobId,
+          applicantIds,
         });
-        completed++;
-        setProgress(Math.round((completed / pendingToScreen.length) * 100));
-      } catch {
-        errors.push(`${applicant.firstName} ${applicant.lastName}`);
+
+        let done = false;
+        while (!done) {
+          // Poll every 2 seconds
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+
+          try {
+            // We use the TRPC client directly for polling inside the async function
+            const state = await trpcClient.screenings.getBatchProgress.query({
+              batchJobId,
+            });
+
+            const currentProgress = Math.round(
+              ((totalCompleted + state.completed + state.failed) /
+                totalToScreen) *
+                100,
+            );
+            setProgress(currentProgress);
+
+            if (state.status === "completed" || state.status === "failed") {
+              totalCompleted += state.completed;
+              totalFailed += state.failed;
+              done = true;
+            }
+          } catch (e) {
+            console.error("Polling failed", e);
+            // Optionally break or retry
+          }
+        }
       }
-    }
-    await invalidateHiringData(queryClient);
-    setRunning(false);
-    setProgress(0);
-    if (errors.length > 0) {
-      toast.warning(
-        `Screened ${completed} candidates. ${errors.length} failed.`,
-      );
-    } else {
-      toast.success(`AI screening complete! Analyzed ${completed} candidates.`);
+
+      await invalidateHiringData(queryClient);
+
+      if (totalFailed > 0) {
+        toast.warning(
+          `Screening finished. ${totalCompleted} succeeded, ${totalFailed} failed.`,
+        );
+      } else {
+        toast.success(
+          `AI screening complete! Analyzed ${totalCompleted} candidates.`,
+        );
+      }
+    } catch (e: any) {
+      toast.error(e.message || "Failed to start batch screening.");
+    } finally {
+      setRunning(false);
+      setProgress(0);
     }
   };
 
-  if (applicantsQuery.isLoading || jobsQuery.isLoading) {
+  const isLoading =
+    (applicantsQuery.isPending && !applicantsQuery.data) ||
+    (jobsQuery.isPending && !jobsQuery.data);
+
+  if (isLoading) {
     return (
       <div className="w-full animate-pulse space-y-12">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
@@ -203,12 +265,24 @@ export function ScreeningDashboard() {
                 {running ? (
                   <>
                     <RiLoader2Line className="mr-2 h-3.5 w-3.5 animate-spin" />{" "}
-                    {progress}%
+                    {progress > 0 ? `${progress}%` : "Analyzing..."}
                   </>
                 ) : (
                   "Run AI Screening"
                 )}
               </Button>
+
+              <Link href={"/dashboard/ai-tasks" as Route} className="block">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-9 w-full gap-base rounded-standard border-line font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider"
+                >
+                  <RiBrainLine className="size-3.5" />
+                  System Health
+                </Button>
+              </Link>
+
               {running && (
                 <div className="h-1 w-full overflow-hidden rounded-pill bg-bg-deep">
                   <motion.div

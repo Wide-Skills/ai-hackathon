@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import "reflect-metadata";
+import { startWorkers } from "@ai-hackathon/api";
 import { createContext as createTrpcContext } from "@ai-hackathon/api/context";
 import { appRouter } from "@ai-hackathon/api/routers/index";
 import { auth } from "@ai-hackathon/auth";
@@ -84,6 +85,9 @@ async function bootstrap() {
 
   await app.listen(3000);
   logger.info("Server is running on http://localhost:3000");
+
+  logger.info("Starting background queue workers...");
+  await startWorkers();
 }
 
 bootstrap();

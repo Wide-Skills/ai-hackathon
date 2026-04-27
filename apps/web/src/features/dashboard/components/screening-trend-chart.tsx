@@ -21,6 +21,7 @@ export function ScreeningTrendChart({ applicants }: ScreeningTrendChartProps) {
 
   const grouped = screened.reduce(
     (acc, a) => {
+      if (!a.appliedAt) return acc;
       const date = new Date(a.appliedAt).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",

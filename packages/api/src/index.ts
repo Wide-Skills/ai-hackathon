@@ -7,3 +7,4 @@ export {
   router,
   t,
 } from "./trpc";
+export { startWorkers } from "./workers";

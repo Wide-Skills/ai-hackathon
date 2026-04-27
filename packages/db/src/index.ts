@@ -11,13 +11,14 @@ if (!database) {
   throw new Error("MongoDB database connection is not initialized.");
 }
 
-const client = database;
+const mongoClient = mongoose.connection.getClient();
+const client = mongoClient.db();
 
 export * from "./models/applicant.model";
 export * from "./models/audit-log.model";
-export * from "./models/auth.model";
 export * from "./models/job.model";
 export * from "./models/screening.model";
 export * from "./models/screening-cache.model";
+export * from "./models/task-log.model";
 
-export { client };
+export { client, mongoClient };

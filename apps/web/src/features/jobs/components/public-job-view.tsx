@@ -8,7 +8,7 @@ import {
   RiMapPinLine,
   RiUploadCloud2Line,
 } from "@remixicon/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
@@ -33,9 +33,10 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const jobQuery = useQuery(
-    trpc.jobs.getPublicById.queryOptions({ id: jobId }),
-  );
+  const jobQuery = useQuery({
+    ...trpc.jobs.getPublicById.queryOptions({ id: jobId }),
+    placeholderData: keepPreviousData,
+  });
   const applyMutation = useMutation(
     trpc.applicants.publicApply.mutationOptions(),
   );

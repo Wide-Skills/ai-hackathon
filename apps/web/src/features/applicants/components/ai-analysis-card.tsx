@@ -116,9 +116,18 @@ export function AIAnalysisCard({
                     scoreColor,
                   )}
                 >
-                  {screening.matchScore}
+                  {screening.manualScore ?? screening.matchScore}
                 </span>
                 <span className="font-serif text-[24px] text-ink-faint">%</span>
+                {screening.manualScore !== undefined && (
+                  <Badge
+                    variant="info"
+                    size="xs"
+                    className="mb-4 ml-2 font-mono text-[9px] uppercase tracking-tighter"
+                  >
+                    Overridden
+                  </Badge>
+                )}
               </div>
 
               <div className="pb-3">
@@ -164,6 +173,16 @@ export function AIAnalysisCard({
             <p className="max-w-[680px] font-light font-sans text-[16px] text-ink-muted leading-relaxed">
               {screening.summary}
             </p>
+            {screening.recruiterNotes && (
+              <div className="mt-base rounded-standard border border-line border-l-4 border-l-primary bg-bg-alt/5 p-base">
+                <div className="mb-1 font-medium font-sans text-[10px] text-primary uppercase tracking-widest">
+                  Recruiter Review Notes
+                </div>
+                <p className="font-sans text-[13px] text-ink-muted italic">
+                  "{screening.recruiterNotes}"
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="hidden lg:block">

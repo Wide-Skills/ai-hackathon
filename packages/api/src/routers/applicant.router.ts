@@ -1,5 +1,6 @@
 import { sendApplicationReceivedEmail } from "@ai-hackathon/auth/email";
 import { Applicant, ScreeningResult } from "@ai-hackathon/db";
+import { enqueueScreening } from "@ai-hackathon/queue";
 import {
   ApplicantSchema,
   ApplicationStatusSchema,
@@ -17,7 +18,6 @@ import {
   buildApplicantStatus,
   createOrUpdateScreening,
   evaluateAndExtractProfile,
-  runAIInternal,
   SYSTEM_USER_ID,
 } from "./screening.router";
 
@@ -151,11 +151,11 @@ export const applicantRouter = router({
 
       // 5. If no AI screening was done yet but we have resume text, trigger it in background
       if (!extractedData && input.resumeText) {
-        runAIInternal({
+        enqueueScreening({
           applicantId: applicant.id,
           jobId: job.id,
           triggeredByUserId: SYSTEM_USER_ID,
-        }).catch((err) => console.error("Auto-screening error:", err));
+        }).catch((err) => console.error("Auto-screening enqueue error:", err));
       }
 
       return serializeApplicant(applicant);
@@ -379,11 +379,13 @@ export const applicantRouter = router({
           successCount++;
 
           if (candidate.resumeText) {
-            runAIInternal({
+            enqueueScreening({
               applicantId: applicant.id,
               jobId: job.id,
               triggeredByUserId: ctx.session.user.id,
-            }).catch((err) => console.error("Auto-screening error:", err));
+            }).catch((err) =>
+              console.error("Auto-screening enqueue error:", err),
+            );
           }
         } catch (e) {
           console.error("Failed to ingest candidate:", e);
@@ -577,122 +579,123 @@ export const applicantRouter = router({
       const job = await ensureJobExists(input.jobId);
 
       const firstNames = [
-        "James",
-        "Mary",
-        "Robert",
-        "Patricia",
-        "John",
-        "Jennifer",
-        "Michael",
-        "Linda",
-        "William",
-        "Elizabeth",
-        "David",
-        "Barbara",
-        "Richard",
-        "Susan",
-        "Joseph",
-        "Jessica",
-        "Thomas",
-        "Sarah",
-        "Charles",
-        "Karen",
+        "Jean",
+        "Marie",
+        "Alain",
+        "Gisele",
+        "Eric",
+        "Divine",
+        "Bosco",
+        "Ange",
+        "Patrick",
+        "Clarisse",
       ];
       const lastNames = [
-        "Smith",
-        "Johnson",
-        "Williams",
-        "Brown",
-        "Jones",
-        "Garcia",
-        "Miller",
-        "Davis",
-        "Rodriguez",
-        "Martinez",
-        "Hernandez",
-        "Lopez",
-        "Gonzalez",
-        "Wilson",
-        "Anderson",
-        "Thomas",
-        "Taylor",
-        "Moore",
-        "Jackson",
-        "Martin",
+        "Nkurunziza",
+        "Mugisha",
+        "Umutoni",
+        "Habimana",
+        "Ishimwe",
+        "Kanimba",
+        "Rwigema",
+        "Kayitesi",
+        "Bizimana",
+        "Tuyisenge",
       ];
       const headlines = [
-        "Senior Frontend Engineer",
-        "Full Stack Developer",
-        "Backend Specialist",
-        "Cloud Architect",
-        "DevOps Engineer",
-        "Mobile App Developer",
-        "UI/UX Designer",
-        "Machine Learning Engineer",
-        "Data Scientist",
-        "Security Analyst",
-        "Systems Engineer",
-        "Product Manager",
+        "Senior Cloud Engineer",
+        "Frontend Architecture Specialist",
+        "Full Stack Web Developer",
+        "DevOps & Security Lead",
+        "Technical Product Manager",
       ];
       const locations = [
-        "San Francisco, CA",
-        "New York, NY",
-        "London, UK",
-        "Berlin, Germany",
-        "Toronto, Canada",
-        "Sydney, Australia",
+        "Kigali, Rwanda",
+        "Musanze, Rwanda",
+        "Huye, Rwanda",
         "Remote",
-        "Austin, TX",
-        "Seattle, WA",
-        "Amsterdam, Netherlands",
+        "Nairobi, Kenya",
+      ];
+
+      const resumeTemplates = [
+        (name: string, title: string, loc: string, skills: string[]) => `
+# ${name}
+${title} | ${loc}
+
+## Professional Summary
+Experienced professional with a strong track record in software delivery and technical leadership. Specialized in building scalable systems using modern frameworks and cloud-native architectures.
+
+## Core Expertise
+${skills.map((s) => `- ${s}`).join("\n")}
+
+## Professional Experience
+### Senior Software Engineer | Global Tech Hub (2020 - Present)
+- Led the migration of legacy monolith to microservices architecture.
+- Improved system reliability by 40% through automated testing and CI/CD pipelines.
+- Mentored junior developers and established code review standards.
+
+### Full Stack Developer | Innovation Rwanda (2017 - 2020)
+- Developed and maintained critical customer-facing web applications.
+- Collaborated with design teams to implement accessible and performant UIs.
+- Integrated multiple third-party APIs for payment and logistics.
+
+## Education
+- B.S. in Computer Science | University of Rwanda
+- Advanced Certification in Distributed Systems
+`,
       ];
 
       let generated = 0;
       for (let i = 0; i < input.count; i++) {
         const firstName =
-          firstNames[Math.floor(Math.random() * firstNames.length)];
+          firstNames[Math.floor(Math.random() * firstNames.length)]!;
         const lastName =
-          lastNames[Math.floor(Math.random() * lastNames.length)];
+          lastNames[Math.floor(Math.random() * lastNames.length)]!;
+        const name = `${firstName} ${lastName}`;
         const headline =
-          headlines[Math.floor(Math.random() * headlines.length)];
+          headlines[Math.floor(Math.random() * headlines.length)]!;
         const location =
-          locations[Math.floor(Math.random() * locations.length)];
-        const email = `${firstName?.toLowerCase() || ""}.${lastName?.toLowerCase() || ""}.${Math.floor(Math.random() * 1000)}@example.com`;
+          locations[Math.floor(Math.random() * locations.length)]!;
+        const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}.${Math.floor(Math.random() * 1000)}@example.com`;
 
-        const dummyResumeText = `
-          ${firstName} ${lastName}
-          ${headline} | ${location}
-          ${email}
-
-          Professional Summary:
-          Highly skilled ${headline} with over 5 years of experience in technical implementations and strategic architecture.
-          Proficient in ${job.skills.join(", ")} and other modern technologies.
-
-          Experience:
-          - Senior Engineer at Tech Solutions (2020 - Present)
-          - Software Developer at Innovation Hub (2017 - 2020)
-
-          Education:
-          - B.S. Computer Science, University of Technology
-        `;
+        const template = resumeTemplates[0]!;
+        const resumeText = template(name, headline, location, job.skills);
 
         const applicant = new Applicant({
           jobId: input.jobId,
           userId: ctx.session.user.id,
           firstName,
           lastName,
+          name,
           email,
-          name: `${firstName} ${lastName}`,
-          appliedAt: new Date().toISOString(),
           headline,
           location,
-          resumeText: dummyResumeText,
+          resumeText,
           status: "pending",
           skills: job.skills.map((s) => ({
             name: s,
             level: "Intermediate",
-            yearsOfExperience: 3,
+            yearsOfExperience: Math.floor(Math.random() * 5) + 2,
           })),
+          experience: [
+            {
+              company: "Previous Tech Co",
+              role: headline,
+              startDate: "2020-01",
+              description: "Developed various high-impact features.",
+              technologies: job.techStack.slice(0, 3),
+              isCurrent: true,
+            },
+          ],
+          education: [
+            {
+              institution: "Local University",
+              degree: "Bachelor's",
+              fieldOfStudy: "Computer Science",
+              startYear: 2013,
+              endYear: 2017,
+            },
+          ],
           availability: { status: "Available", type: "Full-time" },
         });
 
@@ -700,12 +703,12 @@ export const applicantRouter = router({
         generated++;
 
         // Trigger AI screening in the background
-        runAIInternal({
+        enqueueScreening({
           applicantId: applicant.id,
           jobId: job.id,
           triggeredByUserId: ctx.session.user.id,
         }).catch((err) =>
-          console.error("Background AI screening failed:", err),
+          console.error("Background AI screening enqueue failed:", err),
         );
       }
 

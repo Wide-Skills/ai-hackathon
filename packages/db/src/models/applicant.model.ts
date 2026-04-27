@@ -59,7 +59,7 @@ const applicantSchema = new Schema(
         endDate: String,
         description: String,
         technologies: [String],
-        isCurrent: Boolean,
+        isCurrent: { type: Boolean, default: false },
       },
     ],
     education: [

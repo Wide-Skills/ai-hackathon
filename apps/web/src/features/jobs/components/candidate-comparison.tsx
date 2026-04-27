@@ -5,7 +5,7 @@ import {
   RiCloseCircleLine,
   RiUserFollowLine,
 } from "@remixicon/react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   Card,
   CardDescription,
@@ -27,11 +27,14 @@ export function CandidateComparison({
   const comparisonQuery = useQuery({
     ...trpc.jobs.compareApplicants.queryOptions({ jobId, applicantIds }),
     enabled: applicantIds.length > 0,
+    placeholderData: keepPreviousData,
   });
 
   if (applicantIds.length === 0) return null;
 
-  if (comparisonQuery.isLoading) {
+  const isLoading = comparisonQuery.isPending && !comparisonQuery.data;
+
+  if (isLoading) {
     return <div className="h-64 animate-pulse rounded-card bg-bg2" />;
   }
 

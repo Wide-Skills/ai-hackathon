@@ -1,42 +1,58 @@
 import { env } from "@ai-hackathon/env/server";
 import mongoose from "mongoose";
+
 import { Applicant } from "./models/applicant.model";
 import { AuditLog } from "./models/audit-log.model";
-import { Account, Session, User, Verification } from "./models/auth.model";
 import { Job } from "./models/job.model";
 import { ScreeningResult } from "./models/screening.model";
 
 async function reset() {
-  console.log("Connecting to database for reset...");
+  console.log("Connecting to database...");
   await mongoose.connect(env.DATABASE_URL);
 
+  console.log("Resetting database...");
+
+  // ✅ 1. Clear YOUR app collections (mongoose models)
   const collections = [
     { name: "Applicants", model: Applicant },
     { name: "Jobs", model: Job },
     { name: "Screening Results", model: ScreeningResult },
-    { name: "Users", model: User },
-    { name: "Sessions", model: Session },
-    { name: "Accounts", model: Account },
-    { name: "Verifications", model: Verification },
     { name: "Audit Logs", model: AuditLog },
   ];
-
-  console.log("Resetting database...");
 
   for (const col of collections) {
     try {
       const result = await col.model.deleteMany({});
       console.log(`✓ Deleted ${result.deletedCount} ${col.name}`);
     } catch (error: any) {
-      console.error(`✗ Failed to reset ${col.name}:`, error.message);
+      console.error(`✗ Failed ${col.name}:`, error.message);
     }
   }
 
-  console.log("\nDatabase reset complete.");
+  // ✅ 2. Clear Better Auth collections (NO mongoose models)
+  const db = mongoose.connection.db;
+
+  const authCollections = [
+    "users",
+    "sessions",
+    "accounts",
+    "verifications",
+  ];
+
+  for (const name of authCollections) {
+    try {
+      await db.collection(name).deleteMany({});
+      console.log(`✓ Cleared ${name}`);
+    } catch (error: any) {
+      console.error(`✗ Failed ${name}:`, error.message);
+    }
+  }
+
+  console.log("\n✅ Database reset complete.");
   await mongoose.disconnect();
 }
 
-reset().catch((error) => {
-  console.error("Database reset failed:", error);
+reset().catch((err) => {
+  console.error("❌ Reset failed:", err);
   process.exit(1);
 });

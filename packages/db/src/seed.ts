@@ -1,41 +1,16 @@
-import { randomBytes, randomUUID, scryptSync } from "node:crypto";
+import { randomBytes, scryptSync } from "node:crypto";
 import { env } from "@ai-hackathon/env/server";
-import { DEMO_RECRUITER } from "@ai-hackathon/shared";
 import mongoose from "mongoose";
 import { Applicant } from "./models/applicant.model";
-import { Account, Session, User, Verification } from "./models/auth.model";
 import { Job } from "./models/job.model";
 import { ScreeningResult } from "./models/screening.model";
 
 const recruiterSeedUsers = [
   {
-    id: "usr-system",
-    name: "Umurava AI Core",
-    email: "system@umurava.ai",
-    image:
-      "https://ui-avatars.com/api/?name=Umurava+AI&background=192840&color=fff",
-    password: "SystemSeed123!",
-  },
-  {
-    id: DEMO_RECRUITER.id,
-    name: DEMO_RECRUITER.name,
-    email: DEMO_RECRUITER.email,
-    image:
-      "https://ui-avatars.com/api/?name=Recruiter&background=eeedea&color=192840",
-    password: DEMO_RECRUITER.password,
-  },
-  {
-    id: "usr-recruiter-a",
-    name: "Diane Uwase",
-    email: "diane@umurava.rw",
-    image: "https://i.pravatar.cc/150?u=diane",
-    password: "Recruiter123!",
-  },
-  {
-    id: "usr-recruiter-b",
-    name: "Jean-Paul Nkurunziza",
-    email: "jp@irembo.gov.rw",
-    image: "https://i.pravatar.cc/150?u=jp",
+    id: "usr-recruiter",
+    name: "Saddy Nkurunziza",
+    email: "saddynkurunziza8@gmail.com",
+    image: "https://i.pravatar.cc/150?u=saddy",
     password: "Recruiter123!",
   },
 ] as const;
@@ -944,86 +919,59 @@ async function seed() {
     }
     console.log("Connected to database.");
 
+    const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error("MongoDB database connection is not initialized.");
+    }
+
     console.log("Clearing existing data...");
-    await Session.deleteMany({});
-    await Account.deleteMany({});
-    await Verification.deleteMany({});
+    await db.collection("users").deleteMany({});
+    await db.collection("accounts").deleteMany({});
+    await db.collection("sessions").deleteMany({});
+    await db.collection("verifications").deleteMany({});
     await ScreeningResult.deleteMany({});
     await Applicant.deleteMany({});
     await Job.deleteMany({});
-    await User.deleteMany({});
     console.log("Cleared existing data.");
 
-    console.log("Creating auth users, accounts, and sessions...");
-    const candidateSeedUsers = mockApplicants.map((applicant) => ({
-      id: `usr-${applicant.id}`,
-      name: `${applicant.firstName} ${applicant.lastName}`,
-      email: applicant.email,
-      image: applicant.avatarUrl,
-      password: "Candidate123!",
-      createdAt: toDate(applicant.appliedAt),
-    }));
+    console.log("Creating auth user and account...");
 
-    const authUsers = [
-      ...recruiterSeedUsers.map((user, index) => ({
-        ...user,
-        createdAt: plusDays("2026-03-01", index * 2),
-      })),
-      ...candidateSeedUsers,
-    ];
+    const recruiter = {
+      ...recruiterSeedUsers[0],
+      createdAt: plusDays("2026-03-01", 0),
+    };
 
-    // Use direct MongoDB collection access to avoid Mongoose validation issues during bulk insert of _id
-    const userDocs = authUsers.map((user) => ({
-      _id: user.id,
-      name: user.name,
-      email: user.email,
+    await db.collection("users").insertOne({
+      _id: recruiter.id,
+      id: recruiter.id,
+      name: recruiter.name,
+      email: recruiter.email,
       emailVerified: true,
-      image: user.image,
-      createdAt: user.createdAt,
-      updatedAt: user.createdAt,
-    }));
-    await User.collection.insertMany(userDocs as any);
+      image: recruiter.image,
+      createdAt: recruiter.createdAt,
+      updatedAt: recruiter.createdAt,
+    });
 
-    const accountDocs = authUsers.map((user) => ({
-      _id: `acc-${user.id}`,
-      accountId: user.email,
+    await db.collection("accounts").insertOne({
+      _id: `acc-${recruiter.id}`,
+      id: `acc-${recruiter.id}`,
+      accountId: recruiter.email,
       providerId: "credential",
-      userId: user.id,
-      password: hashPassword(user.password),
-      createdAt: user.createdAt,
-      updatedAt: user.createdAt,
-    }));
-    await Account.collection.insertMany(accountDocs as any);
+      userId: recruiter.id,
+      password: hashPassword(recruiter.password),
+      createdAt: recruiter.createdAt,
+      updatedAt: recruiter.createdAt,
+    });
 
-    const recruiterSessions = recruiterSeedUsers.map((user, index) => ({
-      _id: `ses-${user.id}`,
-      token: randomUUID(),
-      expiresAt: plusDays("2026-05-01", 30 + index),
-      createdAt: plusDays("2026-04-12", index),
-      updatedAt: plusDays("2026-04-12", index),
-      ipAddress: `10.0.0.${index + 10}`,
-      userAgent: "seed-script/recruiter-session",
-      userId: user.id,
-    }));
-
-    await Session.collection.insertMany(recruiterSessions as any);
-    console.log(
-      `Created ${authUsers.length} users, ${authUsers.length} accounts, and ${recruiterSessions.length} recruiter sessions.`,
-    );
+    console.log("Created 1 auth user and 1 account.");
 
     console.log("Creating jobs...");
-    const recruiterOwners = recruiterSeedUsers.filter(
-      (user) => user.id !== "usr-system",
-    );
     const jobMapping: Record<string, string> = {};
 
-    for (const [index, mockJob] of mockJobs.entries()) {
-      const owner = recruiterOwners[index % recruiterOwners.length];
-      if (!owner) throw new Error("No recruiter owner available.");
-
+    for (const mockJob of mockJobs) {
       const job = await Job.create({
         ...mockJob,
-        createdByUserId: owner.id,
+        createdByUserId: recruiter.id,
         createdAt: toDate(mockJob.createdAt),
         updatedAt: toDate(mockJob.createdAt),
         applicantsCount: 0,
@@ -1035,37 +983,51 @@ async function seed() {
     console.log(`Inserted ${mockJobs.length} jobs.`);
 
     console.log("Creating applicants and screening results...");
-    const applicantStats = new Map<
-      string,
-      { a: number; s: number; sl: number }
-    >();
+    const applicantStats = new Map<string, { a: number; s: number; sl: number }>();
 
     for (const mockApplicant of mockApplicants) {
-      const { id, jobId, screening, ...applicantData } = mockApplicant;
+      const { id, jobId, screening } = mockApplicant;
       const realJobId = jobMapping[jobId];
       if (!realJobId) continue;
 
       const applicant = await Applicant.create({
-        ...applicantData,
+        firstName: mockApplicant.firstName,
+        lastName: mockApplicant.lastName,
+        email: mockApplicant.email,
+        headline: mockApplicant.headline,
+        bio: mockApplicant.bio,
+        location: mockApplicant.location,
+        avatarUrl: mockApplicant.avatarUrl,
+        skills: mockApplicant.skills,
+        languages: mockApplicant.languages,
+        experience: mockApplicant.experience,
+        education: mockApplicant.education,
+        certifications: mockApplicant.certifications,
+        projects: mockApplicant.projects,
+        availability: mockApplicant.availability,
+        socialLinks: mockApplicant.socialLinks,
+        status: mockApplicant.status,
         name: `${mockApplicant.firstName} ${mockApplicant.lastName}`,
         jobId: realJobId,
         userId: `usr-${id}`,
-        screening: screening,
+        screening,
         createdAt: toDate(mockApplicant.appliedAt),
         updatedAt: toDate(mockApplicant.appliedAt),
       });
 
       const current = applicantStats.get(realJobId) || { a: 0, s: 0, sl: 0 };
       current.a += 1;
+
       if (screening) {
         current.s += 1;
-        if (["shortlisted", "hired"].includes(mockApplicant.status))
+        if (["shortlisted", "hired"].includes(mockApplicant.status)) {
           current.sl += 1;
+        }
 
         await ScreeningResult.create({
           applicantId: applicant._id,
           jobId: realJobId,
-          createdByUserId: "usr-system",
+          createdByUserId: recruiter.id,
           matchScore: screening.matchScore,
           scoreBreakdown: (screening as any).scoreBreakdown,
           strengths: screening.strengths,
@@ -1077,6 +1039,7 @@ async function seed() {
           updatedAt: toDate(mockApplicant.appliedAt),
         });
       }
+
       applicantStats.set(realJobId, current);
     }
 
@@ -1088,9 +1051,7 @@ async function seed() {
       });
     }
 
-    console.log(
-      `Seeding complete. Inserted ${mockApplicants.length} applicants.`,
-    );
+    console.log(`Seeding complete. Inserted ${mockApplicants.length} applicants.`);
   } catch (error) {
     console.error("Error seeding database:", error);
     process.exitCode = 1;

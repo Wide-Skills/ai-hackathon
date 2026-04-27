@@ -1,9 +1,11 @@
 "use client";
 
 import { RiLayoutGridLine, RiListCheck, RiSearch2Line } from "@remixicon/react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import type { Route } from "next";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   QueryEmptyState,
@@ -19,35 +21,85 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useDebounce } from "@/hooks/use-debounce";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { setJobsViewMode } from "@/store/slices/uiSlice";
 import { trpc } from "@/utils/trpc";
 import { JobCard } from "./job-card";
 import { JobsTable } from "./jobs-table";
 
 export function JobsList() {
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("active");
-  const [view, setView] = useState<"grid" | "table">("grid");
-  const [page, setPage] = useState(1);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const dispatch = useAppDispatch();
+
+  // State
+  const [search, setSearch] = useState(searchParams.get("search") ?? "");
+  const debouncedSearch = useDebounce(search, 300);
+  const [statusFilter, setStatusFilter] = useState(
+    searchParams.get("status") ?? "active",
+  );
+
+  const view = useAppSelector((state) => state.ui.jobsViewMode);
+  const setView = (mode: "grid" | "table") => dispatch(setJobsViewMode(mode));
+
+  const [page, setPage] = useState(
+    Number.parseInt(searchParams.get("page") ?? "1", 10),
+  );
   const [limit] = useState(10);
 
-  // Reset to first page when filters change
+  // Sync state to URL
   useEffect(() => {
-    setPage(1);
-  }, [search, statusFilter]);
+    const params = new URLSearchParams(window.location.search);
+    let changed = false;
 
-  const jobsQuery = useQuery(
-    trpc.jobs.list.queryOptions({
+    const updateParam = (
+      key: string,
+      value: string | undefined,
+      defaultValue?: string,
+    ) => {
+      const current = params.get(key);
+      const target = value === defaultValue ? null : value;
+
+      if (target === null) {
+        if (current !== null) {
+          params.delete(key);
+          changed = true;
+        }
+      } else if (current !== target) {
+        params.set(key, target || "");
+        changed = true;
+      }
+    };
+
+    updateParam("search", debouncedSearch);
+    updateParam("status", statusFilter, "active");
+    updateParam("page", page > 1 ? page.toString() : undefined);
+
+    if (changed) {
+      router.replace(`${pathname}?${params.toString()}` as Route, {
+        scroll: false,
+      });
+    }
+  }, [debouncedSearch, statusFilter, page, router, pathname]);
+
+  const jobsQuery = useQuery({
+    ...trpc.jobs.list.queryOptions({
       page,
       limit,
-      search: search || undefined,
+      search: debouncedSearch || undefined,
       status: statusFilter !== "all" ? statusFilter : undefined,
     }),
-  );
+    placeholderData: keepPreviousData,
+  });
 
   const jobsData = jobsQuery.data?.items ?? [];
   const pagination = jobsQuery.data;
 
-  if (jobsQuery.isLoading) {
+  const isLoading = jobsQuery.isPending && !jobsQuery.data;
+
+  if (isLoading) {
     return (
       <div className="w-full animate-pulse space-y-12">
         <div className="h-10 w-full rounded-standard bg-bg2" />

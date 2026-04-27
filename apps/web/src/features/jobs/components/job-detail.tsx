@@ -6,7 +6,12 @@ import {
   RiMoreLine,
   RiSparklingLine,
 } from "@remixicon/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import type { Route } from "next";
 import Link from "next/link";
@@ -67,10 +72,10 @@ export function JobDetail({ id }: JobDetailProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const jobQuery = useQuery(trpc.jobs.getById.queryOptions({ id }));
-  const applicantsQuery = useQuery(
-    trpc.applicants.list.queryOptions({ page: 1, limit: 100 }),
-  );
-  const applicants = applicantsQuery.data?.items ?? [];
+  const applicantsQuery = useQuery({
+    ...trpc.applicants.list.queryOptions({ page: 1, limit: 100 }),
+    placeholderData: keepPreviousData,
+  });
 
   const deleteMutation = useMutation(
     trpc.jobs.delete.mutationOptions({
@@ -86,7 +91,11 @@ export function JobDetail({ id }: JobDetailProps) {
     }),
   );
 
-  if (jobQuery.isLoading || applicantsQuery.isLoading) {
+  const isLoading =
+    (jobQuery.isPending && !jobQuery.data) ||
+    (applicantsQuery.isPending && !applicantsQuery.data);
+
+  if (isLoading) {
     return (
       <div className="w-full animate-pulse space-y-12">
         <div className="h-8 w-40 rounded-standard bg-bg2" />

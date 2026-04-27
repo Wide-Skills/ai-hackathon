@@ -1,8 +1,11 @@
 "use client";
 
+import { RiHistoryLine } from "@remixicon/react";
 import { useQuery } from "@tanstack/react-query";
+import { formatDistanceToNow } from "date-fns";
 import { notFound, useRouter } from "next/navigation";
 import { QueryErrorState } from "@/components/data/query-state";
+import { cn } from "@/lib/utils";
 import { trpc } from "@/utils/trpc";
 import { AIAnalysisCard } from "./ai-analysis-card";
 import { ApplicantSidebar } from "./applicant-sidebar";
@@ -26,6 +29,11 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
       { enabled: !!applicantQuery.data?.jobId },
     ),
   );
+
+  const logsQuery = useQuery(
+    trpc.system.listTaskLogs.queryOptions({ applicantId: id, limit: 10 }),
+  );
+  const logs = logsQuery.data?.items ?? [];
 
   if (applicantQuery.isLoading || jobQuery.isLoading) {
     return (
@@ -97,6 +105,48 @@ export function ApplicantDetail({ id }: ApplicantDetailProps) {
                 jobId={applicant.jobId}
                 screening={applicant.screening}
               />
+
+              {logs.length > 0 && (
+                <div className="mt-base rounded-xl border border-line bg-bg-alt/5 p-comfortable shadow-sm">
+                  <div className="mb-base flex items-center gap-base font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
+                    <RiHistoryLine className="size-3.5" />
+                    Detailed Process Logs (Reasoning)
+                  </div>
+                  <div className="space-y-3">
+                    {logs.map((log) => (
+                      <div key={log.id} className="flex items-start gap-base">
+                        <div
+                          className={cn(
+                            "mt-1 size-1.5 shrink-0 rounded-full",
+                            log.status === "error"
+                              ? "bg-status-error-text"
+                              : log.status === "success"
+                                ? "bg-status-success-text"
+                                : "bg-primary/40",
+                          )}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-base">
+                            <span className="font-medium font-sans text-[11px] text-primary uppercase">
+                              {log.step}
+                            </span>
+                            <span className="text-[10px] text-ink-faint">
+                              {log.createdAt
+                                ? formatDistanceToNow(new Date(log.createdAt), {
+                                    addSuffix: true,
+                                  })
+                                : "just now"}
+                            </span>
+                          </div>
+                          <p className="font-sans text-[12px] text-ink-muted">
+                            {log.message}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </section>
           )}
 

@@ -145,10 +145,13 @@ export function ScreeningCard({ applicant, jobTitle }: ScreeningCardProps) {
               <div className="hidden h-4 w-px bg-line sm:block" />
               <div className="flex items-center justify-between gap-hero sm:justify-start">
                 <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
-                  {new Date(applicant.appliedAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
+                  {new Date(applicant.appliedAt || "").toLocaleDateString(
+                    "en-US",
+                    {
+                      month: "short",
+                      day: "numeric",
+                    },
+                  )}
                 </span>
                 <div className="flex items-center gap-micro font-medium font-sans text-[11px] text-primary/60 uppercase tracking-wider transition-all group-hover:text-primary">
                   AI Fit Report{" "}

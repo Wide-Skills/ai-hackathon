@@ -60,7 +60,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ScoreBadge } from "@/features/dashboard/components/score-badge";
-import { invalidateHiringData, trpc } from "@/utils/trpc";
+import { invalidateHiringData, trpc, trpcClient } from "@/utils/trpc";
 
 interface ApplicantsTableProps {
   data: Applicant[];
@@ -400,22 +400,72 @@ export function ApplicantsTable({ data }: ApplicantsTableProps) {
     { id: "screening_matchScore", desc: true },
   ]);
   const [rowSelection, setRowSelection] = useState({});
+  const [isBatchRunning, setIsBatchRunning] = useState(false);
+  const [batchProgress, setBatchProgress] = useState(0);
   const queryClient = useQueryClient();
 
-  const batchScreen = useMutation(
-    trpc.screenings.batchGenerate.mutationOptions({
-      onSuccess: (data) => {
-        toast.success(
-          `Batch screening complete: ${data.successCount} succeeded, ${data.failedCount} failed.`,
-        );
-        void invalidateHiringData(queryClient);
-        setRowSelection({});
-      },
-      onError: (error) => {
-        toast.error(error.message || "Batch screening failed");
-      },
-    }),
+  const batchScreenMutation = useMutation(
+    trpc.screenings.batchGenerate.mutationOptions(),
   );
+
+  const handleBatchScreen = async () => {
+    const applicantIds = selectedRows.map((r) => r.original.id);
+    const jobId = selectedRows[0]?.original.jobId;
+    if (!jobId || applicantIds.length === 0) return;
+
+    setIsBatchRunning(true);
+    setBatchProgress(0);
+
+    try {
+      const { batchJobId } = await batchScreenMutation.mutateAsync({
+        jobId,
+        applicantIds,
+      });
+
+      let done = false;
+      let totalCompleted = 0;
+      let totalFailed = 0;
+
+      while (!done) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        try {
+          const state = await trpcClient.screenings.getBatchProgress.query({
+            batchJobId,
+          });
+
+          const currentProgress = Math.round(
+            ((state.completed + state.failed) / applicantIds.length) * 100,
+          );
+          setBatchProgress(currentProgress);
+
+          if (state.status === "completed" || state.status === "failed") {
+            totalCompleted = state.completed;
+            totalFailed = state.failed;
+            done = true;
+          }
+        } catch (e) {
+          console.error("Polling failed", e);
+        }
+      }
+      await invalidateHiringData(queryClient);
+      setRowSelection({});
+
+      if (totalFailed > 0) {
+        toast.warning(
+          `Batch screening finished: ${totalCompleted} succeeded, ${totalFailed} failed.`,
+        );
+      } else {
+        toast.success(
+          `Batch screening complete: ${totalCompleted} candidates analyzed.`,
+        );
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Batch screening failed");
+    } finally {
+      setIsBatchRunning(false);
+      setBatchProgress(0);
+    }
+  };
 
   const table = useReactTable({
     data,
@@ -454,20 +504,14 @@ export function ApplicantsTable({ data }: ApplicantsTableProps) {
             </div>
             <Button
               size="sm"
-              disabled={batchScreen.isPending}
-              onClick={() => {
-                const applicantIds = selectedRows.map((r) => r.original.id);
-                const jobId = selectedRows[0]?.original.jobId;
-                if (jobId) {
-                  batchScreen.mutate({ jobId, applicantIds });
-                }
-              }}
+              disabled={isBatchRunning}
+              onClick={handleBatchScreen}
               className="h-9 gap-base rounded-standard bg-primary px-6 font-medium font-sans text-[12px] text-white shadow-lg shadow-primary/20 transition-all hover:translate-y-[-1px] active:scale-[0.97]"
             >
-              {batchScreen.isPending ? (
+              {isBatchRunning ? (
                 <>
                   <RiLoader2Line className="mr-1 size-3.5 animate-spin" />
-                  Analyzing...
+                  {batchProgress > 0 ? `${batchProgress}%` : "Analyzing..."}
                 </>
               ) : (
                 <>

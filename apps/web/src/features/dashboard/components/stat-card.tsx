@@ -1,3 +1,4 @@
+import React from "react";
 import { Card } from "@/components/ui/card";
 
 interface StatCardProps {
@@ -7,7 +8,12 @@ interface StatCardProps {
   trend?: string;
 }
 
-export function StatCard({ label, value, sublabel, trend }: StatCardProps) {
+export const StatCard = React.memo(function StatCard({
+  label,
+  value,
+  sublabel,
+  trend,
+}: StatCardProps) {
   return (
     <Card
       variant="default"
@@ -40,4 +46,4 @@ export function StatCard({ label, value, sublabel, trend }: StatCardProps) {
       )}
     </Card>
   );
-}
+});

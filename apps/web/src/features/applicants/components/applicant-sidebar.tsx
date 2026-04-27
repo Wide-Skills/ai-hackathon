@@ -1,5 +1,5 @@
 "use client";
-import type { Applicant } from "@ai-hackathon/shared";
+import type { Applicant, ApplicationStatus } from "@ai-hackathon/shared";
 import { RiBrainLine, RiDeleteBin7Line, RiLoader2Line } from "@remixicon/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -23,9 +23,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const statusOptions: { value: ApplicationStatus; label: string }[] = [
+  { value: "pending", label: "Pending" },
+  { value: "screening", label: "Screening" },
+  { value: "shortlisted", label: "Shortlisted" },
+  { value: "rejected", label: "Rejected" },
+  { value: "hired", label: "Hired" },
+];
 
 export function ApplicantSidebar({
   applicant,
@@ -57,6 +71,21 @@ export function ApplicantSidebar({
       onError: (error) => {
         toast.error(error.message || "Failed to delete applicant");
         setIsDeleting(false);
+      },
+    }),
+  );
+
+  const updateStatusMutation = useMutation(
+    trpc.applicants.update.mutationOptions({
+      onSuccess: () => {
+        toast.success("Status updated successfully");
+        queryClient.invalidateQueries({
+          queryKey: trpc.applicants.getById.queryKey({ id: applicant.id }),
+        });
+        void invalidateHiringData(queryClient);
+      },
+      onError: (error) => {
+        toast.error(error.message || "Failed to update status");
       },
     }),
   );
@@ -206,13 +235,17 @@ export function ApplicantSidebar({
           {[
             { label: "Target Job", val: jobTitle },
             {
-              label: "Applied",
-              val: new Date(applicant.appliedAt).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              }),
+              label: "Applied Date",
+              val: new Date(applicant.appliedAt || "").toLocaleDateString(
+                "en-US",
+                {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                },
+              ),
             },
+
             { label: "Availability", val: applicant.availability.type },
           ].map((item, i) => (
             <div
@@ -231,21 +264,31 @@ export function ApplicantSidebar({
             <span className="font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
               Current State
             </span>
-            <Badge
-              variant={
-                applicant.status === "shortlisted"
-                  ? "success"
-                  : applicant.status === "screening"
-                    ? "info"
-                    : applicant.status === "rejected"
-                      ? "destructive"
-                      : "secondary"
+            <Select
+              value={applicant.status}
+              onValueChange={(val) =>
+                updateStatusMutation.mutate({
+                  id: applicant.id,
+                  data: { status: val as ApplicationStatus },
+                })
               }
-              size="sm"
-              uppercase
+              disabled={updateStatusMutation.isPending}
             >
-              {applicant.status}
-            </Badge>
+              <SelectTrigger className="h-8 w-[120px] rounded-micro border-line bg-transparent font-medium font-sans text-[11px] uppercase shadow-none focus:ring-0">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent className="border-line bg-surface shadow-none">
+                {statusOptions.map((opt) => (
+                  <SelectItem
+                    key={opt.value}
+                    value={opt.value}
+                    className="font-medium font-sans text-[11px] uppercase"
+                  >
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </Card>

@@ -6,11 +6,13 @@ import {
 } from "react-redux";
 import applicantsReducer from "./slices/applicantsSlice";
 import jobsReducer from "./slices/jobsSlice";
+import uiReducer from "./slices/uiSlice";
 
 export const store = configureStore({
   reducer: {
     jobs: jobsReducer,
     applicants: applicantsReducer,
+    ui: uiReducer,
   },
   devTools: process.env.NODE_ENV !== "production",
 });

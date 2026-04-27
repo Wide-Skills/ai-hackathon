@@ -1,4 +1,4 @@
-import { client } from "@ai-hackathon/db";
+import { client, mongoClient } from "@ai-hackathon/db";
 import { env } from "@ai-hackathon/env/server";
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
@@ -7,12 +7,22 @@ import { writeAuditLog } from "./audit";
 import { sendMagicLinkEmail, sendWelcomeEmail } from "./email";
 
 export const auth = betterAuth({
-  database: mongodbAdapter(client),
+database: mongodbAdapter(client, {
+  client: mongoClient,
+}),
+  experimental: {
+    joins: true,
+  },
   baseURL: env.BETTER_AUTH_URL,
   trustedOrigins: [env.CORS_ORIGIN, env.BETTER_AUTH_URL],
   emailAndPassword: {
     enabled: false,
   },
+  advanced: {
+  database: {
+    generateId: () => crypto.randomUUID(),
+  },
+},
   socialProviders: {
     ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
       ? {

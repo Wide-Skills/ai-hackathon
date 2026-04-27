@@ -4,3 +4,4 @@ export * from "./schemas/dashboard.schema";
 export * from "./schemas/job.schema";
 export * from "./schemas/pagination.schema";
 export * from "./schemas/screening.schema";
+export * from "./schemas/task-log.schema";

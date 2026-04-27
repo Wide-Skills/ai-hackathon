@@ -57,10 +57,6 @@ vi.mock("@ai-hackathon/env/server", () => ({
     CORS_ORIGIN: "http://localhost:3000",
     GEMINI_API_KEY: "key",
     RESEND_API_KEY: "key",
-    R2_ACCOUNT_ID: "id",
-    R2_ACCESS_KEY_ID: "id",
-    R2_SECRET_ACCESS_KEY: "key",
-    R2_BUCKET_NAME: "bucket",
   },
 }));
 

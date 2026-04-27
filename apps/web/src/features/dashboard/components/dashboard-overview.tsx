@@ -6,10 +6,11 @@ import {
   RiGroupLine,
   RiSparklingLine,
 } from "@remixicon/react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import type { Route } from "next";
 import Link from "next/link";
+import { useMemo } from "react";
 import { QueryErrorState } from "@/components/data/query-state";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,18 +33,69 @@ import { StatCard } from "./stat-card";
 
 export function DashboardOverview() {
   const statsQuery = useQuery(trpc.jobs.stats.queryOptions());
-  const applicantsQuery = useQuery(
-    trpc.applicants.list.queryOptions({ page: 1, limit: 100 }),
-  );
-  const jobsQuery = useQuery(
-    trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
+  const applicantsQuery = useQuery({
+    ...trpc.applicants.list.queryOptions({ page: 1, limit: 100 }),
+    placeholderData: keepPreviousData,
+  });
+  const jobsQuery = useQuery({
+    ...trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
+    placeholderData: keepPreviousData,
+  });
+
+  const allApplicants = applicantsQuery.data?.items ?? [];
+  const allJobs = jobsQuery.data?.items ?? [];
+
+  const topApplicants = useMemo(
+    () =>
+      [...allApplicants]
+        .filter((a) => a.status === "shortlisted")
+        .sort(
+          (a, b) =>
+            (b.screening?.matchScore ?? 0) - (a.screening?.matchScore ?? 0),
+        )
+        .slice(0, 5),
+    [allApplicants],
   );
 
-  if (
-    statsQuery.isLoading ||
-    applicantsQuery.isLoading ||
-    jobsQuery.isLoading
-  ) {
+  const activeJobs = useMemo(
+    () => allJobs.filter((j) => j.status === "active").slice(0, 3),
+    [allJobs],
+  );
+
+  const recentActivity = useMemo(
+    () =>
+      [...allApplicants]
+        .filter((a) => a.screening && a.updatedAt)
+        .sort(
+          (a, b) =>
+            new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime(),
+        )
+        .slice(0, 5)
+        .map((a) => ({
+          id: a.id,
+          candidate: `${a.firstName} ${a.lastName}`,
+          job: allJobs.find((j) => j.id === a.jobId)?.title || "Job",
+          score: a.screening?.matchScore,
+          time: new Date(a.updatedAt!).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        })),
+    [allApplicants, allJobs],
+  );
+
+  const screeningCoverage = useMemo(() => {
+    if (allApplicants.length === 0) return 0;
+    const screenedCount = allApplicants.filter((a) => !!a.screening).length;
+    return Math.round((screenedCount / allApplicants.length) * 100);
+  }, [allApplicants]);
+
+  const isLoading =
+    statsQuery.isPending ||
+    (applicantsQuery.isPending && !applicantsQuery.data) ||
+    (jobsQuery.isPending && !jobsQuery.data);
+
+  if (isLoading) {
     return (
       <div className="w-full animate-pulse space-y-16">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
@@ -74,35 +126,6 @@ export function DashboardOverview() {
   }
 
   const stats = statsQuery.data;
-  const allApplicants = applicantsQuery.data?.items ?? [];
-  const allJobs = jobsQuery.data?.items ?? [];
-
-  const topApplicants = [...allApplicants]
-    .filter((a) => a.status === "shortlisted")
-    .sort(
-      (a, b) => (b.screening?.matchScore ?? 0) - (a.screening?.matchScore ?? 0),
-    )
-    .slice(0, 5);
-
-  const activeJobs = allJobs.filter((j) => j.status === "active").slice(0, 3);
-
-  const recentActivity = [...allApplicants]
-    .filter((a) => a.screening && a.updatedAt)
-    .sort(
-      (a, b) =>
-        new Date(b.updatedAt!).getTime() - new Date(a.updatedAt!).getTime(),
-    )
-    .slice(0, 5)
-    .map((a) => ({
-      id: a.id,
-      candidate: `${a.firstName} ${a.lastName}`,
-      job: allJobs.find((j) => j.id === a.jobId)?.title || "Job",
-      score: a.screening?.matchScore,
-      time: new Date(a.updatedAt!).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    }));
 
   return (
     <TooltipProvider>
@@ -335,21 +358,14 @@ export function DashboardOverview() {
                       Screening Coverage
                     </p>
                     <p className="font-serif text-[26px] text-primary leading-none tracking-tight">
-                      {allApplicants.length > 0
-                        ? Math.round(
-                            (allApplicants.filter((a) => !!a.screening).length /
-                              allApplicants.length) *
-                              100,
-                          )
-                        : 0}
-                      %
+                      {screeningCoverage}%
                     </p>
                   </div>
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-bg-deep">
                     <div
                       className="h-full bg-status-success-text"
                       style={{
-                        width: `${allApplicants.length > 0 ? Math.round((allApplicants.filter((a) => !!a.screening).length / allApplicants.length) * 100) : 0}%`,
+                        width: `${screeningCoverage}%`,
                       }}
                     />
                   </div>

@@ -17,11 +17,13 @@
     "@ai-hackathon/auth": "workspace:*",
     "@ai-hackathon/db": "workspace:*",
     "@ai-hackathon/env": "workspace:*",
+    "@ai-hackathon/queue": "workspace:*",
     "@ai-hackathon/shared": "workspace:^",
     "@ai-sdk/google": "^3.0.64",
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",
     "ai": "^6.0.168",
+    "bullmq": "^5.34.4",
     "dotenv": "catalog:",
     "mongoose": "catalog:",
     "zod": "catalog:"

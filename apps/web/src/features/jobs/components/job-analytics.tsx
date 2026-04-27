@@ -6,7 +6,7 @@ import {
   RiListCheck3,
   RiRadarLine,
 } from "@remixicon/react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
   Bar,
@@ -30,11 +30,14 @@ interface JobAnalyticsProps {
 }
 
 export function JobAnalytics({ jobId }: JobAnalyticsProps) {
-  const analyticsQuery = useQuery(
-    trpc.jobs.getAnalytics.queryOptions({ jobId }),
-  );
+  const analyticsQuery = useQuery({
+    ...trpc.jobs.getAnalytics.queryOptions({ jobId }),
+    placeholderData: keepPreviousData,
+  });
 
-  if (analyticsQuery.isLoading) {
+  const isLoading = analyticsQuery.isPending && !analyticsQuery.data;
+
+  if (isLoading) {
     return (
       <div className="grid grid-cols-1 gap-comfortable lg:grid-cols-2">
         <div className="h-64 animate-pulse rounded-card bg-bg2" />

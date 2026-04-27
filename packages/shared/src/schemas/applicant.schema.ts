@@ -30,11 +30,11 @@ export const LanguageSchema = z.object({
 export const ExperienceSchema = z.object({
   company: z.string(),
   role: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
-  description: z.string(),
-  technologies: z.array(z.string()),
-  isCurrent: z.boolean(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  description: z.string().optional(),
+  technologies: z.array(z.string()).default([]),
+  isCurrent: z.boolean().optional(),
 });
 
 export const EducationSchema = z.object({
@@ -157,7 +157,7 @@ export type ApplicantScreening = z.infer<typeof ApplicantScreeningSchema>;
 export const ApplicantSchema = CreateApplicantSchema.extend({
   id: z.string(),
   name: z.string().optional(), // Derived or convenience
-  appliedAt: z.string().or(z.date()),
+  appliedAt: z.string().or(z.date()).optional(),
   status: ApplicationStatusSchema.default("pending"),
   screening: ApplicantScreeningSchema.optional(),
   createdAt: z.date().optional().or(z.string()),

@@ -5,8 +5,37 @@ import {
   Job,
   ScreeningCache,
   ScreeningResult,
+  TaskLog,
 } from "@ai-hackathon/db";
+
+export async function logTaskStep(params: {
+  taskId: string;
+  type: "screening" | "batch-screening" | "extraction" | "system";
+  step: string;
+  message: string;
+  status?: "info" | "success" | "warning" | "error";
+  jobId?: string;
+  applicantId?: string;
+  details?: any;
+}) {
+  try {
+    await TaskLog.create({
+      taskId: params.taskId,
+      type: params.type,
+      step: params.step,
+      message: params.message,
+      status: params.status || "info",
+      jobId: params.jobId,
+      applicantId: params.applicantId,
+      details: params.details,
+    });
+  } catch (err) {
+    console.error("[TaskLog] Failed to create log:", err);
+  }
+}
+
 import { env } from "@ai-hackathon/env/server";
+import { enqueueBatchScreening, getBatchProgress } from "@ai-hackathon/queue";
 import {
   LANGUAGE_PROFICIENCIES,
   ScreeningResultSchema,
@@ -27,7 +56,7 @@ const google = createGoogleGenerativeAI({
 const CACHE_TTL_DAYS = 7;
 export const SYSTEM_USER_ID = "usr_automated_system";
 
-const WORKING_MODEL = "gemini-2.0-flash";
+const WORKING_MODEL = "gemini-2.5-flash";
 
 export function buildApplicantStatus(
   matchScore: number,
@@ -287,6 +316,7 @@ export async function runAIInternal(params: {
   triggererEmail?: string;
   triggererName?: string;
   maxRetries?: number;
+  taskId?: string;
 }) {
   const {
     applicantId,
@@ -295,7 +325,17 @@ export async function runAIInternal(params: {
     triggererEmail,
     triggererName,
     maxRetries = 3,
+    taskId = `manual-${Date.now()}`,
   } = params;
+
+  await logTaskStep({
+    taskId,
+    type: "screening",
+    step: "start",
+    message: `Starting AI screening for applicant ${applicantId}`,
+    jobId,
+    applicantId,
+  });
 
   const [applicant, job] = await Promise.all([
     Applicant.findById(applicantId),
@@ -303,6 +343,15 @@ export async function runAIInternal(params: {
   ]);
 
   if (!applicant) {
+    await logTaskStep({
+      taskId,
+      type: "screening",
+      step: "error",
+      message: "Applicant not found",
+      status: "error",
+      jobId,
+      applicantId,
+    });
     throw new TRPCError({
       code: "NOT_FOUND",
       message: "Applicant not found",
@@ -312,11 +361,27 @@ export async function runAIInternal(params: {
   let lastError: any;
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      console.log(
-        `[Screening] AI Analysis Attempt ${attempt}/${maxRetries} for Applicant ${applicantId}`,
-      );
+      await logTaskStep({
+        taskId,
+        type: "screening",
+        step: "extraction",
+        message: `Attempt ${attempt}/${maxRetries}: Analyzing resume text and extracting profile`,
+        jobId,
+        applicantId,
+      });
 
       const validatedData = await evaluateAndExtractProfile(job, applicant);
+
+      await logTaskStep({
+        taskId,
+        type: "screening",
+        step: "extraction_complete",
+        message: `Successfully extracted data. Match Score: ${validatedData.matchScore}`,
+        status: "success",
+        jobId,
+        applicantId,
+        details: { matchScore: validatedData.matchScore },
+      });
 
       console.log(
         `[Screening] AI Analysis Complete for Applicant ${applicantId}. Match Score: ${validatedData.matchScore}`,
@@ -408,6 +473,16 @@ export async function runAIInternal(params: {
   }
 
   // If we reach here, all retries failed
+  await logTaskStep({
+    taskId,
+    type: "screening",
+    step: "failed",
+    message: `All ${maxRetries} attempts failed: ${lastError?.message}`,
+    status: "error",
+    jobId,
+    applicantId,
+  });
+
   console.error(
     `[Screening] All ${maxRetries} attempts failed for Applicant ${applicantId}`,
   );
@@ -479,30 +554,32 @@ export const screeningRouter = router({
         applicantIds: z.array(z.string()),
       }),
     )
-    .output(z.object({ successCount: z.number(), failedCount: z.number() }))
+    .output(z.object({ batchJobId: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      let successCount = 0;
-      let failedCount = 0;
+      const { batchJobId } = await enqueueBatchScreening({
+        applicantIds: input.applicantIds,
+        jobId: input.jobId,
+        triggeredByUserId: ctx.session.user.id,
+        triggererEmail: ctx.session.user.email,
+        triggererName: ctx.session.user.name ?? undefined,
+      });
 
-      // We process these in sequence to avoid rate limiting issues with Gemini free tier if applicable,
-      // but runAIInternal has retries. Let's do them in small batches or sequence.
-      for (const applicantId of input.applicantIds) {
-        try {
-          await runAIInternal({
-            applicantId,
-            jobId: input.jobId,
-            triggeredByUserId: ctx.session.user.id,
-            triggererEmail: ctx.session.user.email,
-            triggererName: ctx.session.user.name ?? undefined,
-          });
-          successCount++;
-        } catch (error) {
-          console.error(`Batch screening failed for ${applicantId}:`, error);
-          failedCount++;
-        }
-      }
+      return { batchJobId: batchJobId ?? "" };
+    }),
 
-      return { successCount, failedCount };
+  getBatchProgress: protectedProcedure
+    .input(z.object({ batchJobId: z.string() }))
+    .output(
+      z.object({
+        status: z.string(),
+        total: z.number(),
+        completed: z.number(),
+        failed: z.number(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const progress = await getBatchProgress(input.batchJobId);
+      return progress;
     }),
 
   rescreen: protectedProcedure

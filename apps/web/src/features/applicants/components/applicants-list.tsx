@@ -9,12 +9,17 @@ import {
   RiLoader2Line,
   RiSearch2Line,
 } from "@remixicon/react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import type { Route } from "next";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   QueryEmptyState,
@@ -38,6 +43,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ScoreBadge } from "@/features/dashboard/components/score-badge";
+import { useDebounce } from "@/hooks/use-debounce";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { setApplicantsViewMode } from "@/store/slices/uiSlice";
 import { invalidateHiringData, trpc } from "@/utils/trpc";
 import { ApplicantsTable } from "./applicants-table";
 import { IngestCandidatesDialog } from "./ingest-candidates-dialog";
@@ -72,6 +80,122 @@ const statusConfig: Record<
   },
 };
 
+const ApplicantItem = React.memo(
+  ({
+    applicant,
+    jobTitle,
+    onScreen,
+    isScreening,
+    index,
+  }: {
+    applicant: any;
+    jobTitle?: string;
+    onScreen: (id: string, jobId: string) => void;
+    isScreening: boolean;
+    index: number;
+  }) => {
+    const sc = statusConfig[applicant.status as ApplicationStatus];
+
+    return (
+      <motion.div
+        key={applicant.id}
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.02 }}
+      >
+        <Card
+          variant="default"
+          className="group overflow-hidden border-line shadow-none transition-all hover:border-line-medium"
+          size="none"
+        >
+          <Link
+            href={`/dashboard/applicants/${applicant.id}` as Route}
+            className="flex flex-col items-stretch gap-base p-comfortable sm:flex-row sm:items-center"
+          >
+            <div className="flex min-w-0 flex-1 items-center gap-comfortable">
+              <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 font-medium font-sans text-[13px] text-ink-faint uppercase transition-transform group-hover:scale-[1.05]">
+                {applicant.firstName[0]}
+                {applicant.lastName[0]}
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="mb-1 font-serif text-[18px] text-primary leading-tight transition-colors group-hover:text-primary-muted">
+                  {applicant.firstName} {applicant.lastName}
+                </p>
+                <div className="flex flex-wrap items-center gap-x-base gap-y-1">
+                  <p className="max-w-[240px] truncate font-light font-sans text-[12px] text-ink-muted leading-none">
+                    {applicant.headline}
+                  </p>
+                  {jobTitle ? (
+                    <>
+                      <div className="hidden size-1 rounded-full bg-line sm:block" />
+                      <div className="max-w-[180px] truncate font-medium font-sans text-[10px] text-primary/40 uppercase leading-none tracking-wider">
+                        {jobTitle}
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-base border-line border-t pt-base sm:flex-nowrap sm:justify-end sm:border-0 sm:pt-0">
+              <div className="hidden items-center gap-base xl:flex">
+                <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
+                  {applicant.location}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-base">
+                <ScoreBadge score={applicant.screening?.matchScore ?? 0} />
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onScreen(applicant.id, applicant.jobId);
+                      }}
+                      disabled={isScreening}
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-micro border border-line bg-bg transition-all hover:bg-bg-alt active:scale-95 disabled:opacity-50"
+                    >
+                      {isScreening ? (
+                        <RiLoader2Line className="h-3 w-3 animate-spin text-primary" />
+                      ) : (
+                        <RiBrainLine className="h-3 w-3 text-ink-faint" />
+                      )}
+                    </TooltipTrigger>
+                    <TooltipContent className="rounded-standard border-line bg-surface px-3 py-1 font-medium font-sans text-[11px] text-primary">
+                      Re-Analyze Profile
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+
+              <div className="flex min-w-[100px] justify-end sm:w-32">
+                <Badge variant={sc.variant} size="sm" uppercase>
+                  {sc.label}
+                </Badge>
+              </div>
+
+              <div className="hidden items-center border-line border-l pl-comfortable sm:flex">
+                <span className="min-w-[60px] text-right font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
+                  {new Date(applicant.appliedAt || "").toLocaleDateString(
+                    "en-US",
+                    {
+                      month: "short",
+                      day: "numeric",
+                    },
+                  )}
+                </span>
+              </div>
+            </div>
+          </Link>
+        </Card>
+      </motion.div>
+    );
+  },
+);
+
 type SortField = "score" | "name" | "applied";
 type SortDir = "asc" | "desc";
 
@@ -88,33 +212,100 @@ function isStatusFilter(value: string): value is ApplicationStatus | "all" {
 }
 
 export function ApplicantsList() {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  const initialJobId = searchParams.get("job") ?? "all";
+  const dispatch = useAppDispatch();
 
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [jobFilter, setJobFilter] = useState<string>(initialJobId);
-  const [sortField, setSortField] = useState<SortField>("score");
-  const [sortDir, setSortDir] = useState<SortDir>("desc");
-  const [view, setView] = useState<"grid" | "table">("grid");
-  const [page, setPage] = useState(1);
+  // State
+  const [search, setSearch] = useState(searchParams.get("search") ?? "");
+  const debouncedSearch = useDebounce(search, 300);
+  const [statusFilter, setStatusFilter] = useState<string>(
+    searchParams.get("status") ?? "all",
+  );
+  const [jobFilter, setJobFilter] = useState<string>(
+    searchParams.get("job") ?? "all",
+  );
+  const [sortField, setSortField] = useState<SortField>(
+    (searchParams.get("sortBy") as SortField) ?? "score",
+  );
+  const [sortDir, setSortDir] = useState<SortDir>(
+    (searchParams.get("sortOrder") as SortDir) ?? "desc",
+  );
+
+  const view = useAppSelector((state) => state.ui.applicantsViewMode);
+  const setView = (mode: "grid" | "table") =>
+    dispatch(setApplicantsViewMode(mode));
+
+  const [page, setPage] = useState(
+    Number.parseInt(searchParams.get("page") ?? "1", 10),
+  );
   const [limit] = useState(10);
 
-  const applicantsQuery = useQuery(
-    trpc.applicants.list.queryOptions({
+  // Sync state to URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    let changed = false;
+
+    const updateParam = (
+      key: string,
+      value: string | undefined,
+      defaultValue?: string,
+    ) => {
+      const current = params.get(key);
+      const target = value === defaultValue ? null : value;
+
+      if (target === null) {
+        if (current !== null) {
+          params.delete(key);
+          changed = true;
+        }
+      } else if (current !== target) {
+        params.set(key, target || "");
+        changed = true;
+      }
+    };
+
+    updateParam("search", debouncedSearch);
+    updateParam("status", statusFilter, "all");
+    updateParam("job", jobFilter, "all");
+    updateParam("sortBy", sortField, "score");
+    updateParam("sortOrder", sortDir, "desc");
+    updateParam("page", page > 1 ? page.toString() : undefined);
+
+    if (changed) {
+      router.replace(`${pathname}?${params.toString()}` as Route, {
+        scroll: false,
+      });
+    }
+  }, [
+    debouncedSearch,
+    statusFilter,
+    jobFilter,
+    sortField,
+    sortDir,
+    page,
+    router,
+    pathname,
+  ]);
+
+  const applicantsQuery = useQuery({
+    ...trpc.applicants.list.queryOptions({
       page,
       limit,
-      search: search || undefined,
+      search: debouncedSearch || undefined,
       status: statusFilter !== "all" ? statusFilter : undefined,
       jobId: jobFilter !== "all" ? jobFilter : undefined,
       sortBy: sortField,
       sortOrder: sortDir,
     }),
-  );
+    placeholderData: keepPreviousData,
+  });
 
-  const jobsQuery = useQuery(
-    trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
-  );
+  const jobsQuery = useQuery({
+    ...trpc.jobs.list.queryOptions({ page: 1, limit: 100 }),
+    placeholderData: keepPreviousData,
+  });
 
   const applicantsData = applicantsQuery.data?.items ?? [];
   const pagination = applicantsQuery.data;
@@ -133,18 +324,6 @@ export function ApplicantsList() {
     }),
   );
 
-  useEffect(() => {
-    const jobId = searchParams.get("job");
-    if (jobId) {
-      setJobFilter(jobId);
-    }
-  }, [searchParams]);
-
-  // Reset to first page when filters change
-  useEffect(() => {
-    setPage(1);
-  }, [search, statusFilter, jobFilter]);
-
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDir(sortDir === "asc" ? "desc" : "asc");
@@ -155,7 +334,11 @@ export function ApplicantsList() {
     setPage(1); // Reset to first page on sort change
   };
 
-  if (applicantsQuery.isLoading || jobsQuery.isLoading) {
+  const isLoading =
+    (applicantsQuery.isPending && !applicantsQuery.data) ||
+    (jobsQuery.isPending && !jobsQuery.data);
+
+  if (isLoading) {
     return (
       <div className="w-full animate-pulse space-y-12">
         <div className="h-10 w-full rounded-full bg-secondary/30" />
@@ -258,21 +441,17 @@ export function ApplicantsList() {
               <SelectValue placeholder="Status">
                 {statusFilter === "all"
                   ? "All States"
-                  : statusFilter === "pending"
-                    ? "Pending"
-                    : statusFilter === "screening"
-                      ? "Analyzing"
-                      : statusFilter === "shortlisted"
-                        ? "Shortlisted"
-                        : "Rejected"}
+                  : statusConfig[statusFilter as ApplicationStatus]?.label ||
+                    "Status"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent className="border-line bg-surface shadow-none">
               <SelectItem value="all">All States</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="screening">Analyzing</SelectItem>
-              <SelectItem value="shortlisted">Shortlisted</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
+              {Object.entries(statusConfig).map(([val, config]) => (
+                <SelectItem key={val} value={val}>
+                  {config.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -308,108 +487,21 @@ export function ApplicantsList() {
       {/* Candidate View */}
       {view === "grid" ? (
         <div className="grid grid-cols-1 gap-base">
-          {applicantsData.map((applicant, i) => {
-            const sc = statusConfig[applicant.status];
-            const job = jobsData.find((j) => j.id === applicant.jobId);
-
-            return (
-              <motion.div
-                key={applicant.id}
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.02 }}
-              >
-                <Card
-                  variant="default"
-                  className="group overflow-hidden border-line shadow-none transition-all hover:border-line-medium"
-                  size="none"
-                >
-                  <Link
-                    href={`/dashboard/applicants/${applicant.id}` as Route}
-                    className="flex flex-col items-stretch gap-base p-comfortable sm:flex-row sm:items-center"
-                  >
-                    <div className="flex min-w-0 flex-1 items-center gap-comfortable">
-                      <div className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-micro border border-line bg-bg2 font-medium font-sans text-[13px] text-ink-faint uppercase transition-transform group-hover:scale-[1.05]">
-                        {applicant.firstName[0]}
-                        {applicant.lastName[0]}
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <p className="mb-1 font-serif text-[18px] text-primary leading-tight transition-colors group-hover:text-primary-muted">
-                          {applicant.firstName} {applicant.lastName}
-                        </p>
-                        <div className="flex flex-wrap items-center gap-x-base gap-y-1">
-                          <p className="max-w-[240px] truncate font-light font-sans text-[12px] text-ink-muted leading-none">
-                            {applicant.headline}
-                          </p>
-                          <div className="hidden size-1 rounded-full bg-line sm:block" />
-                          <div className="max-w-[180px] truncate font-medium font-sans text-[10px] text-primary/40 uppercase leading-none tracking-wider">
-                            {job?.title}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center justify-between gap-base border-line border-t pt-base sm:flex-nowrap sm:justify-end sm:border-0 sm:pt-0">
-                      <div className="hidden items-center gap-base xl:flex">
-                        <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-wider">
-                          {applicant.location}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-base">
-                        <ScoreBadge
-                          score={applicant.screening?.matchScore ?? 0}
-                        />
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                screenMutation.mutate({
-                                  applicantId: applicant.id,
-                                  jobId: applicant.jobId,
-                                });
-                              }}
-                              disabled={screenMutation.isPending}
-                              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-micro border border-line bg-bg transition-all hover:bg-bg-alt active:scale-95 disabled:opacity-50"
-                            >
-                              {screenMutation.isPending &&
-                              screenMutation.variables?.applicantId ===
-                                applicant.id ? (
-                                <RiLoader2Line className="h-3 w-3 animate-spin text-primary" />
-                              ) : (
-                                <RiBrainLine className="h-3 w-3 text-ink-faint" />
-                              )}
-                            </TooltipTrigger>
-                            <TooltipContent className="rounded-standard border-line bg-surface px-3 py-1 font-medium font-sans text-[11px] text-primary">
-                              Refresh AI Summary
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-
-                      <div className="flex min-w-[100px] justify-end sm:w-32">
-                        <Badge variant={sc.variant} size="sm" uppercase>
-                          {sc.label}
-                        </Badge>
-                      </div>
-
-                      <div className="hidden items-center border-line border-l pl-comfortable sm:flex">
-                        <span className="min-w-[60px] text-right font-medium font-sans text-[10px] text-ink-faint uppercase tracking-wider">
-                          {new Date(applicant.appliedAt).toLocaleDateString(
-                            "en-US",
-                            { month: "short", day: "numeric" },
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                </Card>
-              </motion.div>
-            );
-          })}
+          {applicantsData.map((applicant, i) => (
+            <ApplicantItem
+              key={applicant.id}
+              index={i}
+              applicant={applicant}
+              jobTitle={jobsData.find((j) => j.id === applicant.jobId)?.title}
+              isScreening={
+                screenMutation.isPending &&
+                screenMutation.variables?.applicantId === applicant.id
+              }
+              onScreen={(id, jobId) =>
+                screenMutation.mutate({ applicantId: id, jobId })
+              }
+            />
+          ))}
 
           {applicantsData.length === 0 ? (
             <QueryEmptyState
