@@ -5,7 +5,10 @@ export default defineConfig({
   format: "esm",
   outDir: "./dist",
   clean: true,
+  bundle: true,
+  platform: "node",
+  skipNodeModules: false, // ensure node_modules are bundled
   deps: {
-    alwaysBundle: [/@ai-hackathon\/.*/],
+    alwaysBundle: [/.*/], // bundle everything
   },
 });

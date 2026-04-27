@@ -1,12 +1,14 @@
 "use client";
 
 import {
+  RiAtLine,
   RiBriefcaseLine,
   RiCheckboxCircleLine,
   RiFileTextLine,
   RiLoader2Line,
   RiMapPinLine,
   RiUploadCloud2Line,
+  RiUserLine,
 } from "@remixicon/react";
 import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { motion } from "motion/react";
@@ -16,7 +18,12 @@ import { Footer } from "@/components/landing/footer";
 import { Navbar } from "@/components/landing/navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { trpc } from "@/utils/trpc";
 
 interface PublicJobViewProps {
@@ -46,11 +53,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
   const extractTextFromPdf = useCallback(async (file: File) => {
     try {
       setParsingPdf(true);
-
-      // dynamically import pdfjs-dist only on the client
       const pdfjsLib = await import("pdfjs-dist");
-
-      // configure worker
       pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
       const arrayBuffer = await file.arrayBuffer();
@@ -71,7 +74,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
       setFileName(file.name);
       toast.success("Resume parsed successfully!");
     } catch (e) {
-      console.error("PDF Parsing error:", e);
+      console.error("pdf parsing error:", e);
       toast.error("Failed to parse PDF. Please try a different file.");
     } finally {
       setParsingPdf(false);
@@ -119,50 +122,75 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
 
   if (jobQuery.isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <RiLoader2Line className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex min-h-screen items-center justify-center bg-canvas">
+        <div className="flex flex-col items-center gap-base">
+          <RiLoader2Line className="h-10 w-10 animate-spin text-primary opacity-20" />
+          <span className="font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.1em]">
+            Initializing Environment
+          </span>
+        </div>
       </div>
     );
   }
 
   if (!job) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center space-y-4">
-        <h1 className="font-bold text-2xl">Job Not Found</h1>
-        <p className="text-muted-foreground">
-          The job listing you are looking for does not exist or has been closed.
-        </p>
-        <Button onClick={() => (window.location.href = "/")}>Go Home</Button>
+      <div className="flex min-h-screen flex-col items-center justify-center bg-canvas p-comfortable text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-md"
+        >
+          <h1 className="font-serif text-[42px] text-primary leading-tight">
+            Job Not Found
+          </h1>
+          <p className="mt-base font-light font-sans text-[16px] text-ink-muted leading-relaxed">
+            The position you are looking for may have been closed or the link
+            has expired.
+          </p>
+          <Button
+            variant="outline"
+            className="mt-hero h-11 rounded-standard border-line px-10 font-medium font-sans"
+            onClick={() => (window.location.href = "/")}
+          >
+            Return to Career Page
+          </Button>
+        </motion.div>
       </div>
     );
   }
 
   if (submitted) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-bg-alt/20">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-canvas p-comfortable">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md space-y-base rounded-card border border-line bg-surface p-comfortable text-center shadow-none"
+          className="w-full max-w-md space-y-medium rounded-card border border-line bg-surface p-section-gap text-center shadow-[0_20px_40px_-15px_rgba(0,0,0,0.03)]"
         >
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-status-success-bg/20 bg-status-success-bg">
-            <RiCheckboxCircleLine className="size-8 text-status-success-text" />
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-status-success-bg/30 bg-status-success-bg/50">
+            <RiCheckboxCircleLine className="size-10 text-status-success-text" />
           </div>
-          <h2 className="font-serif text-[28px] text-primary leading-tight">
-            Application Received
-          </h2>
-          <p className="font-light font-sans text-[15px] text-ink-muted leading-relaxed">
-            Thank you for applying for the{" "}
-            <span className="font-medium text-primary">{job.title}</span>{" "}
-            position. Our AI system will review your match score shortly.
-          </p>
-          <Button
-            variant="outline"
-            className="h-10 rounded-standard border-line px-8 font-medium font-sans"
-            onClick={() => (window.location.href = "/")}
-          >
-            Return Home
-          </Button>
+          <div className="space-y-base">
+            <h2 className="font-serif text-[32px] text-primary leading-tight">
+              Application Received
+            </h2>
+            <p className="font-light font-sans text-[15px] text-ink-muted leading-relaxed">
+              Thank you for applying for the{" "}
+              <span className="font-medium text-primary">{job.title}</span>{" "}
+              position. Our AI-driven selection engine will analyze your profile
+              and update you via email.
+            </p>
+          </div>
+          <div className="pt-base">
+            <Button
+              variant="outline"
+              className="h-11 w-full rounded-standard border-line font-medium font-sans"
+              onClick={() => (window.location.href = "/")}
+            >
+              Finish and Return Home
+            </Button>
+          </div>
         </motion.div>
       </div>
     );
@@ -172,198 +200,281 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
     <div className="min-h-screen bg-canvas">
       <Navbar />
 
-      <main className="container-tight pt-32 pb-24">
-        <div className="grid grid-cols-1 gap-hero lg:grid-cols-3">
+      <main className="container-meridian pt-32 pb-32">
+        <div className="mx-auto max-w-4xl">
           {/* job details */}
-          <div className="space-y-section-gap lg:col-span-2">
-            <div className="space-y-base">
+          <div className="space-y-section-gap">
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="space-y-base text-center"
+            >
               <Badge
                 variant="secondary"
-                className="rounded-micro border-line bg-bg2 px-3 py-0.5 font-medium font-sans text-[10px] text-primary uppercase"
+                className="mx-auto rounded-micro border-line bg-bg2 px-3 py-0.5 font-medium font-sans text-[10px] text-primary uppercase tracking-[0.06em]"
               >
                 {job.department}
               </Badge>
-              <h1 className="font-serif text-[42px] text-primary leading-[1.1] tracking-tight md:text-[56px]">
+              <h1 className="mx-auto max-w-[800px] font-serif text-[42px] text-primary leading-[1.1] tracking-tight md:text-[64px]">
                 {job.title}
               </h1>
-              <div className="flex flex-wrap gap-base font-medium font-sans text-[12px] text-ink-faint uppercase tracking-wider">
+              <div className="flex flex-wrap items-center justify-center gap-x-hero gap-y-base font-medium font-sans text-[12px] text-ink-faint uppercase tracking-[0.1em]">
                 <div className="flex items-center gap-base">
-                  <RiMapPinLine className="size-4" />
+                  <RiMapPinLine className="size-4 opacity-40" />
                   {job.location}
                 </div>
                 <div className="flex items-center gap-base">
-                  <RiBriefcaseLine className="size-4" />
+                  <RiBriefcaseLine className="size-4 opacity-40" />
                   {job.type}
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="space-y-section-gap">
-              <section>
-                <h3 className="border-line border-b pb-base font-serif text-[22px] text-primary">
-                  Description
-                </h3>
-                <p className="whitespace-pre-wrap pt-comfortable font-light font-sans text-[15px] text-ink-muted leading-relaxed">
-                  {job.description}
-                </p>
-              </section>
+            <div className="space-y-section-gap pt-hero">
+              <motion.section
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                <div className="mb-base border-line border-b pb-small">
+                  <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+                    Context
+                  </span>
+                  <h3 className="mt-micro font-serif text-[22px] text-primary">
+                    Position Architecture
+                  </h3>
+                </div>
+                <Card
+                  variant="default"
+                  className="border-line bg-bg-alt/10 p-comfortable shadow-none"
+                >
+                  <p className="whitespace-pre-wrap font-light font-sans text-[15px] text-ink-muted leading-[1.7]">
+                    {job.description}
+                  </p>
+                </Card>
+              </motion.section>
 
-              <section>
-                <h3 className="border-line border-b pb-base font-serif text-[22px] text-primary">
-                  Strategic Requirements
-                </h3>
-                <ul className="grid grid-cols-1 gap-base pt-comfortable md:grid-cols-2">
-                  {job.requirements.map((req, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-base font-light font-sans text-[14px] text-ink-muted leading-snug"
-                    >
-                      <div className="mt-1.5 size-1.5 flex-shrink-0 rounded-full bg-primary/30" />
-                      {req}
-                    </li>
-                  ))}
-                </ul>
-              </section>
+              <motion.section
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <div className="mb-base border-line border-b pb-small">
+                  <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+                    Benchmarking
+                  </span>
+                  <h3 className="mt-micro font-serif text-[22px] text-primary">
+                    Strategic Requirements
+                  </h3>
+                </div>
+                <Card
+                  variant="default"
+                  className="border-line bg-bg-alt/10 p-comfortable shadow-none"
+                >
+                  <ul className="grid grid-cols-1 gap-x-hero gap-y-base md:grid-cols-2">
+                    {job.requirements.map((req, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-base font-light font-sans text-[14px] text-ink-muted leading-relaxed"
+                      >
+                        <div className="mt-2 size-1 flex-shrink-0 rounded-full bg-primary/30" />
+                        {req}
+                      </li>
+                    ))}
+                  </ul>
+                </Card>
+              </motion.section>
 
-              <section>
-                <h3 className="border-line border-b pb-base font-serif text-[22px] text-primary">
-                  Key Expertise
-                </h3>
-                <div className="flex flex-wrap gap-small pt-comfortable">
+              <motion.section
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <div className="mb-base border-line border-b pb-small">
+                  <span className="font-medium font-sans text-[11px] text-ink-faint uppercase tracking-[0.06em]">
+                    Expertise
+                  </span>
+                  <h3 className="mt-micro font-serif text-[22px] text-primary">
+                    Stack & Competencies
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-small pt-base">
                   {job.skills.map((skill, i) => (
                     <Badge
                       key={i}
-                      variant="outline"
+                      variant="secondary"
                       className="rounded-micro border-line bg-bg2 px-4 py-1 font-medium font-sans text-[12px] text-primary shadow-none"
                     >
                       {skill}
                     </Badge>
                   ))}
                 </div>
-              </section>
+              </motion.section>
             </div>
-          </div>
 
-          {/* application form */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 space-y-comfortable rounded-card border border-line bg-surface p-comfortable shadow-none">
-              <div className="border-line border-b pb-base">
-                <h3 className="font-serif text-[24px] text-primary">
-                  Apply Now
-                </h3>
-              </div>
+            {/* redesigned studio application form */}
+            <div className="border-line border-t pt-hero">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="mx-auto max-w-2xl"
+              >
+                <div className="mb-hero text-center">
+                  <span className="font-medium font-sans text-[11px] text-primary/40 uppercase tracking-[0.2em]">
+                    Submission Portal
+                  </span>
+                  <h3 className="mt-micro font-serif text-[32px] text-primary leading-tight">
+                    Submit Your Credentials
+                  </h3>
+                </div>
 
-              <form onSubmit={handleApply} className="space-y-base">
-                <div className="grid grid-cols-2 gap-base">
+                <form onSubmit={handleApply} className="space-y-comfortable">
+                  <div className="grid grid-cols-1 gap-comfortable md:grid-cols-2">
+                    <div className="space-y-micro">
+                      <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.15em]">
+                        First Identity
+                      </label>
+                      <InputGroup className="h-11 overflow-hidden rounded-standard border-line bg-bg2 px-1 shadow-none transition-all focus-within:border-primary/20 focus-within:ring-Pa">
+                        <InputGroupAddon align="inline-start" className="pl-3">
+                          <RiUserLine className="h-3.5 w-3.5 text-ink-faint" />
+                        </InputGroupAddon>
+                        <InputGroupInput
+                          required
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          placeholder="e.g. Jane"
+                          className="bg-transparent font-normal font-sans text-[13px]"
+                        />
+                      </InputGroup>
+                    </div>
+                    <div className="space-y-micro">
+                      <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.15em]">
+                        Last Identity
+                      </label>
+                      <InputGroup className="h-11 overflow-hidden rounded-standard border-line bg-bg2 px-1 shadow-none transition-all focus-within:border-primary/20 focus-within:ring-Pa">
+                        <InputGroupAddon align="inline-start" className="pl-3">
+                          <RiUserLine className="h-3.5 w-3.5 text-ink-faint" />
+                        </InputGroupAddon>
+                        <InputGroupInput
+                          required
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          placeholder="e.g. Doe"
+                          className="bg-transparent font-normal font-sans text-[13px]"
+                        />
+                      </InputGroup>
+                    </div>
+                  </div>
+
                   <div className="space-y-micro">
-                    <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
-                      First Name
+                    <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.15em]">
+                      Direct Channel
                     </label>
-                    <Input
-                      required
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="Jane"
-                      className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] shadow-none"
-                    />
+                    <InputGroup className="h-11 overflow-hidden rounded-standard border-line bg-bg2 px-1 shadow-none transition-all focus-within:border-primary/20 focus-within:ring-Pa">
+                      <InputGroupAddon align="inline-start" className="pl-3">
+                        <RiAtLine className="h-3.5 w-3.5 text-ink-faint" />
+                      </InputGroupAddon>
+                      <InputGroupInput
+                        required
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="jane.doe@example.com"
+                        className="bg-transparent font-normal font-sans text-[13px]"
+                      />
+                    </InputGroup>
                   </div>
-                  <div className="space-y-micro">
-                    <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
-                      Last Name
+
+                  <div className="space-y-micro pt-base">
+                    <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-[0.15em]">
+                      Performance History
                     </label>
-                    <Input
-                      required
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      placeholder="Doe"
-                      className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] shadow-none"
-                    />
+                    <div
+                      onClick={() =>
+                        document.getElementById("file-upload")?.click()
+                      }
+                      className={`group relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-card border transition-all ${
+                        resumeText
+                          ? "border-primary/20 bg-primary-alpha/5 p-8"
+                          : "border-line border-dashed bg-bg2 p-12 hover:border-primary/20 hover:bg-bg-alt/40"
+                      }`}
+                    >
+                      <input
+                        id="file-upload"
+                        type="file"
+                        accept=".pdf"
+                        className="hidden"
+                        onChange={handleFileChange}
+                      />
+                      {parsingPdf ? (
+                        <div className="flex flex-col items-center gap-base">
+                          <RiLoader2Line className="size-7 animate-spin text-primary" />
+                          <span className="font-medium font-sans text-[12px] text-primary uppercase tracking-widest">
+                            Analyzing Portfolio...
+                          </span>
+                        </div>
+                      ) : resumeText ? (
+                        <div className="flex flex-col items-center gap-small text-center">
+                          <div className="flex size-14 items-center justify-center rounded-micro border border-line bg-surface shadow-sm">
+                            <RiFileTextLine className="size-7 text-primary" />
+                          </div>
+                          <div className="space-y-1">
+                            <p className="max-w-[220px] truncate font-medium font-sans text-[14px] text-primary">
+                              {fileName || "Profile Prepared"}
+                            </p>
+                            <p className="font-light font-sans text-[11px] text-status-success-text">
+                              Intelligence Extracted • Ready
+                            </p>
+                          </div>
+                          <span className="mt-base font-medium font-sans text-[10px] text-primary/40 uppercase tracking-widest underline-offset-4 hover:text-primary hover:underline">
+                            Change File
+                          </span>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="mb-comfortable flex size-12 items-center justify-center rounded-full bg-white text-ink-faint shadow-sm group-hover:scale-105 group-hover:text-primary transition-all">
+                            <RiUploadCloud2Line className="size-6" />
+                          </div>
+                          <span className="text-center font-medium font-sans text-[13px] text-primary uppercase tracking-widest">
+                            Upload PDF Resume
+                          </span>
+                          <span className="mt-1 font-light font-sans text-[11px] text-ink-faint">
+                            High-fidelity document max 5MB
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="space-y-micro">
-                  <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
-                    Email Address
-                  </label>
-                  <Input
-                    required
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="jane.doe@example.com"
-                    className="h-10 rounded-standard border-line bg-bg2 font-normal font-sans text-[13px] shadow-none"
-                  />
-                </div>
-
-                <div className="space-y-micro">
-                  <label className="ml-1 font-medium font-sans text-[10px] text-ink-faint uppercase tracking-widest">
-                    Resume (PDF)
-                  </label>
-                  <div
-                    onClick={() =>
-                      document.getElementById("file-upload")?.click()
-                    }
-                    className={`flex cursor-pointer flex-col items-center justify-center rounded-standard border border-dashed p-8 transition-all ${
-                      resumeText
-                        ? "border-primary/20 bg-primary-alpha/5"
-                        : "border-line bg-bg2 hover:border-primary/20 hover:bg-bg-alt/40"
-                    }`}
-                  >
-                    <input
-                      id="file-upload"
-                      type="file"
-                      accept=".pdf"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-                    {parsingPdf ? (
-                      <div className="flex flex-col items-center gap-base">
-                        <RiLoader2Line className="size-6 animate-spin text-primary" />
-                        <span className="font-medium font-sans text-[13px] text-primary">
-                          Analyzing...
+                  <div className="pt-hero">
+                    <Button
+                      type="submit"
+                      disabled={submitting || parsingPdf}
+                      className="h-14 w-full rounded-standard bg-primary font-medium font-sans text-[15px] text-white shadow-none transition-all hover:-translate-y-px hover:bg-primary-muted hover:shadow-[0_15px_30px_-10px_rgba(25,40,64,0.3)] active:scale-[0.98]"
+                    >
+                      {submitting ? (
+                        <div className="flex items-center gap-base text-white/80">
+                          <RiLoader2Line className="size-5 animate-spin" />
+                          <span className="uppercase tracking-widest">
+                            Syncing Profile...
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="uppercase tracking-widest">
+                          Finalize Application
                         </span>
-                      </div>
-                    ) : resumeText ? (
-                      <div className="flex items-center gap-base">
-                        <RiFileTextLine className="size-6 text-primary" />
-                        <span className="max-w-[150px] truncate font-medium font-sans text-[13px] text-primary">
-                          {fileName || "Profile Ready"}
-                        </span>
-                      </div>
-                    ) : (
-                      <>
-                        <RiUploadCloud2Line className="mb-base size-6 text-ink-faint" />
-                        <span className="text-center font-medium font-sans text-[13px] text-primary">
-                          Upload Document
-                        </span>
-                        <span className="mt-1 font-light font-sans text-[11px] text-ink-faint">
-                          PDF max 5MB
-                        </span>
-                      </>
-                    )}
+                      )}
+                    </Button>
                   </div>
-                </div>
 
-                <Button
-                  type="submit"
-                  disabled={submitting || parsingPdf}
-                  className="mt-base h-11 w-full rounded-standard bg-primary font-medium font-sans text-[14px] text-white shadow-none transition-all active:scale-[0.98]"
-                >
-                  {submitting ? (
-                    <>
-                      <RiLoader2Line className="mr-base size-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    "Submit Application"
-                  )}
-                </Button>
-
-                <p className="px-base text-center font-light font-sans text-[10px] text-ink-faint italic leading-relaxed">
-                  By applying, you agree to our terms. Data is processed with AI
-                  analysis to determine fit.
-                </p>
-              </form>
+                  <div className="flex items-center justify-center gap-small text-center opacity-40">
+                    <div className="h-px w-8 bg-line" />
+                
+                    <div className="h-px w-8 bg-line" />
+                  </div>
+                </form>
+              </motion.div>
             </div>
           </div>
         </div>
