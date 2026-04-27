@@ -5,7 +5,9 @@ export default defineConfig({
   format: "esm",
   outDir: "./dist",
   clean: true,
+  bundle: true,
+  platform: "node",
   deps: {
-    alwaysBundle: [/@ai-hackathon\/.*/],
+    alwaysBundle: [/@ai-hackathon\/.*/], // only bundle internal workspace packages
   },
 });

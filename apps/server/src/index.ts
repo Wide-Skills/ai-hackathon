@@ -1,89 +1,205 @@
-import { randomUUID } from "node:crypto";
-import "reflect-metadata";
-import { createContext as createTrpcContext } from "@ai-hackathon/api/context";
+import { startWorkers } from "@ai-hackathon/api";
+import { createContext } from "@ai-hackathon/api/context";
 import { appRouter } from "@ai-hackathon/api/routers/index";
 import { auth } from "@ai-hackathon/auth";
 import { env } from "@ai-hackathon/env/server";
-import { NestFactory } from "@nestjs/core";
-import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { toNodeHandler } from "better-auth/node";
-import pinoHttp from "pino-http";
-
-import { AppModule } from "./app.module";
+import { serve } from "@hono/node-server";
+import { getConnInfo } from "@hono/node-server/conninfo";
+import { trpcServer } from "@hono/trpc-server";
+import { Hono } from "hono";
+import { bodyLimit } from "hono/body-limit";
+import { cors } from "hono/cors";
+import { logger as honoLogger } from "hono/logger";
+import { poweredBy } from "hono/powered-by";
+import { requestId } from "hono/request-id";
+import { timing } from "hono/timing";
+// @ts-ignore
+import pdf from "pdf-parse";
 import logger from "./lib/logger";
 
-async function bootstrap() {
-  logger.info(`Starting server in ${env.NODE_ENV} mode`);
-  logger.info(`BETTER_AUTH_URL: ${env.BETTER_AUTH_URL}`);
-  logger.info(`CORS_ORIGIN: ${env.CORS_ORIGIN}`);
-  logger.info(`Google Client ID present: ${!!env.GOOGLE_CLIENT_ID}`);
-
-  const app = await NestFactory.create(AppModule);
-
-  app.enableCors({
-    origin: env.CORS_ORIGIN,
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  });
-
-  const expressApp = app.getHttpAdapter().getInstance();
-  const authHandler = toNodeHandler(auth);
-
-  expressApp.use(
-    pinoHttp({
-      logger,
-      genReqId(req, res) {
-        const requestId =
-          (req.headers["x-request-id"] as string | undefined) ?? randomUUID();
-
-        res.setHeader("x-request-id", requestId);
-        return requestId;
-      },
-      customProps(req) {
-        return {
-          route: req.url,
-        };
-      },
-      customLogLevel(_req, res, error) {
-        if (error || res.statusCode >= 500) {
-          return "error";
-        }
-        if (res.statusCode >= 400) {
-          return "warn";
-        }
-        return "info";
-      },
-      customSuccessMessage(req, res) {
-        return `${req.method} ${req.url} completed with ${res.statusCode}`;
-      },
-      customErrorMessage(req, res, error) {
-        return `${req.method} ${req.url} failed with ${res.statusCode}: ${error.message}`;
-      },
-    }),
-  );
-
-  expressApp.all(/\/api\/auth\/.*/, async (req: any, res: any) => {
-    try {
-      return await authHandler(req, res);
-    } catch (error: any) {
-      res.status(500).json({
-        error: "Internal Server Error",
-        message: error.message,
-      });
-    }
-  });
-
-  expressApp.use(
-    "/trpc",
-    createExpressMiddleware({
-      router: appRouter,
-      createContext: ({ req }) => createTrpcContext({ req }),
-    }),
-  );
-
-  await app.listen(3000);
-  logger.info("Server is running on http://localhost:3000");
+// shim for libraries that expect a browser environment (like some pdf parsers)
+if (typeof (global as any).DOMMatrix === "undefined") {
+  (global as any).DOMMatrix = class DOMMatrix {
+    m11 = 1;
+    m12 = 0;
+    m13 = 0;
+    m14 = 0;
+    m21 = 0;
+    m22 = 1;
+    m23 = 0;
+    m24 = 0;
+    m31 = 0;
+    m32 = 0;
+    m33 = 1;
+    m34 = 0;
+    m41 = 0;
+    m42 = 0;
+    m43 = 0;
+    m44 = 1;
+  };
 }
 
-bootstrap();
+type Env = {
+  Variables: {
+    requestId: string;
+  };
+};
+
+const app = new Hono<Env>();
+
+app.use("*", requestId());
+app.use("*", timing());
+app.use("*", poweredBy());
+
+app.use("*", async (c, next) => {
+  const info = getConnInfo(c);
+  const agent = c.req.header("user-agent");
+
+  c.res.headers.set("X-AI-Powered", "Gemini-2.5-Flash");
+  c.res.headers.set("X-Recruiter-Intelligence", "Active");
+
+  await next();
+
+  logger.debug(
+    {
+      requestId: c.get("requestId"),
+      method: c.req.method,
+      path: c.req.path,
+      remoteAddress: info.remote.address,
+      userAgent: agent,
+    },
+    "Request completed",
+  );
+});
+
+app.use(
+  "*",
+  honoLogger((str) => logger.info(str)),
+);
+
+app.use(
+  "*",
+  cors({
+    origin: env.CORS_ORIGIN,
+    allowMethods: ["GET", "POST", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  }),
+);
+
+app.onError((err, c) => {
+  logger.error({ err }, "Global Hono Error");
+  return c.json(
+    {
+      error: "Internal Server Error",
+      message: err.message,
+    },
+    500,
+  );
+});
+
+app.notFound((c) => {
+  return c.json(
+    { error: "Not Found", message: "The requested resource does not exist" },
+    404,
+  );
+});
+
+app.get("/", (c) => c.text("AI Hackathon API (Hono) is running"));
+app.get("/health", (c) =>
+  c.json({ status: "ok", timestamp: new Date().toISOString() }),
+);
+
+app.all("/api/auth/*", async (c) => {
+  const res = await auth.handler(c.req.raw);
+  return res;
+});
+
+app.use(
+  "/trpc/*",
+  trpcServer({
+    router: appRouter,
+    endpoint: "/trpc",
+    createContext: (_opts, c) =>
+      createContext({
+        req: { headers: Object.fromEntries(c.req.raw.headers) },
+      }),
+  }) as any,
+);
+
+app.post(
+  "/applicants/upload-resume",
+  bodyLimit({
+    maxSize: 10 * 1024 * 1024,
+    onError: (c) =>
+      c.json(
+        { error: "File too large", message: "Maximum upload size is 10MB" },
+        413,
+      ),
+  }),
+  async (c) => {
+    try {
+      const body = await c.req.parseBody();
+      const file = body.file as File | undefined;
+
+      if (!file) {
+        return c.json({ error: "No file uploaded" }, 400);
+      }
+
+      logger.info(
+        {
+          filename: file.name,
+          type: file.type,
+          size: file.size,
+        },
+        "Starting PDF extraction",
+      );
+
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      // standard pdf-parse usage
+      const data = await pdf(buffer);
+
+      logger.info(
+        {
+          pages: data.numpages,
+          textLength: data.text?.length,
+        },
+        "Extraction complete",
+      );
+
+      return c.json({
+        text: data.text,
+        numpages: data.numpages,
+      });
+    } catch (error: any) {
+      logger.error({ err: error }, "PDF Parsing Error");
+      return c.json(
+        {
+          error: "Failed to parse PDF",
+          message: error.message,
+        },
+        500,
+      );
+    }
+  },
+);
+
+const port = env.PORT || 3000;
+
+logger.info(`Starting server on port ${port}`);
+
+serve({
+  fetch: app.fetch,
+  port: Number(port),
+});
+// Start workers
+logger.info("Starting background queue workers...");
+startWorkers()
+  .then(() => {
+    logger.info("Background queue workers started successfully");
+  })
+  .catch((err) => {
+    logger.error({ err }, "Failed to start background workers");
+  });
