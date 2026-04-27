@@ -7,7 +7,6 @@ export default defineConfig({
   clean: true,
   bundle: true,
   platform: "node",
-  skipNodeModules: false, // ensure node_modules are bundled
   deps: {
     alwaysBundle: [/.*/], // bundle everything
   },
