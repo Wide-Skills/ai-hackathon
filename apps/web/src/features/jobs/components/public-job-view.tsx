@@ -433,7 +433,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
                         </div>
                       ) : (
                         <>
-                          <div className="mb-comfortable flex size-12 items-center justify-center rounded-full bg-white text-ink-faint shadow-sm group-hover:scale-105 group-hover:text-primary transition-all">
+                          <div className="mb-comfortable flex size-12 items-center justify-center rounded-full bg-white text-ink-faint shadow-sm transition-all group-hover:scale-105 group-hover:text-primary">
                             <RiUploadCloud2Line className="size-6" />
                           </div>
                           <span className="text-center font-medium font-sans text-[13px] text-primary uppercase tracking-widest">
@@ -470,7 +470,7 @@ export function PublicJobView({ jobId }: PublicJobViewProps) {
 
                   <div className="flex items-center justify-center gap-small text-center opacity-40">
                     <div className="h-px w-8 bg-line" />
-                
+
                     <div className="h-px w-8 bg-line" />
                   </div>
                 </form>
