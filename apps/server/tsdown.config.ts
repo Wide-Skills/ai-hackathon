@@ -8,6 +8,6 @@ export default defineConfig({
   bundle: true,
   platform: "node",
   deps: {
-    alwaysBundle: [/.*/], // bundle everything
+    alwaysBundle: [/@ai-hackathon\/.*/], // only bundle internal workspace packages
   },
 });

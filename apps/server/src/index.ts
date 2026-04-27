@@ -13,8 +13,31 @@ import { logger as honoLogger } from "hono/logger";
 import { poweredBy } from "hono/powered-by";
 import { requestId } from "hono/request-id";
 import { timing } from "hono/timing";
-import { PDFParse } from "pdf-parse";
+// @ts-ignore
+import pdf from "pdf-parse";
 import logger from "./lib/logger";
+
+// shim for libraries that expect a browser environment (like some pdf parsers)
+if (typeof (global as any).DOMMatrix === "undefined") {
+  (global as any).DOMMatrix = class DOMMatrix {
+    m11 = 1;
+    m12 = 0;
+    m13 = 0;
+    m14 = 0;
+    m21 = 0;
+    m22 = 1;
+    m23 = 0;
+    m24 = 0;
+    m31 = 0;
+    m32 = 0;
+    m33 = 1;
+    m34 = 0;
+    m41 = 0;
+    m42 = 0;
+    m43 = 0;
+    m44 = 1;
+  };
+}
 
 type Env = {
   Variables: {
@@ -135,20 +158,20 @@ app.post(
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
-      const parser = new PDFParse({ data: buffer });
-      const result = await parser.getText();
+      // standard pdf-parse usage
+      const data = await pdf(buffer);
 
       logger.info(
         {
-          pages: result.pages.length,
-          textLength: result.text?.length,
+          pages: data.numpages,
+          textLength: data.text?.length,
         },
         "Extraction complete",
       );
 
       return c.json({
-        text: result.text,
-        numpages: result.pages.length,
+        text: data.text,
+        numpages: data.numpages,
       });
     } catch (error: any) {
       logger.error({ err: error }, "PDF Parsing Error");
