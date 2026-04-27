@@ -180,4 +180,3 @@ startWorkers()
   .catch((err) => {
     logger.error({ err }, "Failed to start background workers");
   });
-
