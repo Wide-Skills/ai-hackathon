@@ -81,7 +81,7 @@ app.use(
     router: appRouter,
     endpoint: "/trpc",
     createContext: (_opts, c) => createContext({ req: { headers: Object.fromEntries(c.req.raw.headers) } }),
-  }),
+  }) as any,
 );
 
 app.post(
