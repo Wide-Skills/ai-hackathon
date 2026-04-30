@@ -12,10 +12,6 @@ import {
   Section,
   Text,
 } from "@react-email/components";
-import React from "react";
-
-// @ts-expect-error
-const _react = React;
 
 interface ScreeningCompletedEmailProps {
   recruiterName: string;
