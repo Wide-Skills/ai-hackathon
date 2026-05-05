@@ -28,14 +28,10 @@ export const auth = betterAuth({
     crossOriginCookies: {
       enabled: true,
     },
-    cookies: {
-      state: {
-        attributes: {
-          sameSite: "none",
-          secure: true,
-          httpOnly: true,
-        },
-      },
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
     },
     useSecureCookies: true,
   },
