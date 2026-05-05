@@ -13,6 +13,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { authClient } from "@/lib/auth-client";
+import { env } from "@ai-hackathon/env/web";
 
 const GoogleIcon = (props: React.ComponentProps<"svg">) => (
   <svg
@@ -55,8 +56,8 @@ export function AuthView() {
       const result = await authClient.signIn.magicLink({
         email,
         name: name.trim() || undefined,
-        callbackURL: `${process.env.NEXT_PUBLIC_BASE_URL || ""}/dashboard`,
-        newUserCallbackURL: `${process.env.NEXT_PUBLIC_BASE_URL || ""}/dashboard`,
+        callbackURL: `${env.NEXT_PUBLIC_BASE_URL}/dashboard`,
+        newUserCallbackURL: `${env.NEXT_PUBLIC_BASE_URL}/dashboard`,
       });
 
       if (result?.error) {
@@ -78,8 +79,8 @@ export function AuthView() {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: `${process.env.NEXT_PUBLIC_BASE_URL || ""}/dashboard`,
-        newUserCallbackURL: `${process.env.NEXT_PUBLIC_BASE_URL || ""}/dashboard`,
+        callbackURL: `${env.NEXT_PUBLIC_BASE_URL}/dashboard`,
+        newUserCallbackURL: `${env.NEXT_PUBLIC_BASE_URL}/dashboard`,
       });
     } catch (error) {
       toast.error(

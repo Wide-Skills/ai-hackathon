@@ -13,6 +13,7 @@ export const auth = betterAuth({
   experimental: {
     joins: true,
   },
+  secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
   trustedOrigins: [env.CORS_ORIGIN, env.BETTER_AUTH_URL],
   emailAndPassword: {
@@ -23,7 +24,9 @@ export const auth = betterAuth({
       generateId: () => crypto.randomUUID(),
     },
     // fix state_mismatch on cross-domain production environments (render/vercel)
-    crossAndOrigin: true,
+    crossOriginCookies: {
+      enabled: true,
+    },
     useSecureCookies: env.NODE_ENV === "production",
   },
   socialProviders: {

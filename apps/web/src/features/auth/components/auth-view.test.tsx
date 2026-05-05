@@ -54,8 +54,8 @@ describe("AuthView", () => {
       expect(signInMagicLinkMock).toHaveBeenCalledWith({
         name: "Saddy Nkurunziza",
         email: "saddynkurunziza8@gmail.com",
-        callbackURL: "/dashboard",
-        newUserCallbackURL: "/dashboard",
+        callbackURL: "http://localhost:3001/dashboard",
+        newUserCallbackURL: "http://localhost:3001/dashboard",
       });
     });
   });
@@ -72,8 +72,8 @@ describe("AuthView", () => {
     await waitFor(() => {
       expect(signInSocialMock).toHaveBeenCalledWith({
         provider: "google",
-        callbackURL: "/dashboard",
-        newUserCallbackURL: "/dashboard",
+        callbackURL: "http://localhost:3001/dashboard",
+        newUserCallbackURL: "http://localhost:3001/dashboard",
       });
     });
   });
