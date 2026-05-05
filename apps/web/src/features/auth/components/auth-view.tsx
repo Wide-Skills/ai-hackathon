@@ -1,5 +1,6 @@
 "use client";
 
+import { env } from "@ai-hackathon/env/web";
 import { DEMO_RECRUITER } from "@ai-hackathon/shared";
 import { RiAtLine, RiUserLine } from "@remixicon/react";
 import Link from "next/link";
@@ -13,7 +14,6 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { authClient } from "@/lib/auth-client";
-import { env } from "@ai-hackathon/env/web";
 
 const GoogleIcon = (props: React.ComponentProps<"svg">) => (
   <svg

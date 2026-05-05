@@ -2,7 +2,7 @@ import { client, mongoClient } from "@ai-hackathon/db";
 import { env } from "@ai-hackathon/env/server";
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { magicLink } from "better-auth/plugins";
+import { magicLink, oAuthProxy } from "better-auth/plugins";
 import { writeAuditLog } from "./audit";
 import { sendMagicLinkEmail, sendWelcomeEmail } from "./email";
 
@@ -15,7 +15,10 @@ export const auth = betterAuth({
   },
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
-  trustedOrigins: [env.CORS_ORIGIN, env.BETTER_AUTH_URL],
+  trustedOrigins: [
+    new URL(env.CORS_ORIGIN).origin,
+    new URL(env.BETTER_AUTH_URL).origin,
+  ],
   emailAndPassword: {
     enabled: false,
   },
@@ -27,7 +30,15 @@ export const auth = betterAuth({
     crossOriginCookies: {
       enabled: true,
     },
-    useSecureCookies: env.NODE_ENV === "production",
+    cookies: {
+      state: {
+        attributes: {
+          sameSite: "none",
+          secure: true,
+        },
+      },
+    },
+    useSecureCookies: true,
   },
   socialProviders: {
     ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
@@ -48,6 +59,7 @@ export const auth = betterAuth({
       : {}),
   },
   plugins: [
+    oAuthProxy(),
     magicLink({
       sendMagicLink: async (data, ctx) => {
         await sendMagicLinkEmail({
