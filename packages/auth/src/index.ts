@@ -15,10 +15,8 @@ export const auth = betterAuth({
   },
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
-  trustedOrigins: [
-    new URL(env.CORS_ORIGIN).origin,
-    new URL(env.BETTER_AUTH_URL).origin,
-  ],
+  trustHost: true,
+  trustedOrigins: [env.CORS_ORIGIN],
   emailAndPassword: {
     enabled: false,
   },
@@ -35,6 +33,7 @@ export const auth = betterAuth({
         attributes: {
           sameSite: "none",
           secure: true,
+          httpOnly: true,
         },
       },
     },
