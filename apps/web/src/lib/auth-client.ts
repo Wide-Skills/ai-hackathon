@@ -1,5 +1,6 @@
 import { env } from "@ai-hackathon/env/web";
-import { magicLinkClient, oAuthProxyClient } from "better-auth/client/plugins";
+import { magicLinkClient } from "better-auth/client/plugins";
+import { oAuthProxy } from "better-auth/plugins";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
@@ -7,5 +8,5 @@ export const authClient = createAuthClient({
   fetchOptions: {
     credentials: "include",
   },
-  plugins: [magicLinkClient(), oAuthProxyClient()],
+  plugins: [magicLinkClient(), oAuthProxy()],
 });
